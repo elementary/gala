@@ -67,7 +67,7 @@ public class Gala.DaemonManager : GLib.Object {
 
     private async void start_x () {
         try {
-            var subprocess = new Subprocess (NONE, "gala-daemon");
+            var subprocess = new Subprocess (NONE, "gala-daemon-gtk3");
             yield subprocess.wait_async ();
 
             //Restart the daemon if it crashes
@@ -102,6 +102,7 @@ public class Gala.DaemonManager : GLib.Object {
                 break;
 
             case "MODAL":
+                daemon_client.make_dock (window);
                 window.move_frame (false, 0, 0);
                 window.make_above ();
                 break;

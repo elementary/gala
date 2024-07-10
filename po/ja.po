@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-06-19 13:09+0000\n"
+"POT-Creation-Date: 2024-07-08 13:44+0000\n"
+"PO-Revision-Date: 2024-07-10 16:16+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,151 +17,75 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
-#: src/Dialogs.vala:144
-#, c-format
-msgid "“%s” is not responding"
-msgstr "“%s”は応答していません"
-
-#: src/Dialogs.vala:146
-msgid "Application is not responding"
-msgstr "アプリケーションは応答していません"
-
-#: src/Dialogs.vala:149
-msgid ""
-"You may choose to wait a short while for the application to continue, or "
-"force it to quit entirely."
-msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
-
-#: src/Dialogs.vala:150
-msgid "Force Quit"
-msgstr "強制終了"
-
-#: src/Dialogs.vala:151
-msgid "Wait"
-msgstr "待機"
-
-#: src/Dialogs.vala:217
-#, c-format
-msgid "“%s” wants to inhibit system shortcuts"
-msgstr "“%s”がシステムショートカットを横取りしようとしています"
-
-#: src/Dialogs.vala:219
-msgid "An application wants to inhibit system shortcuts"
-msgstr "アプリケーションがシステムショートカットを横取りしようとしています"
-
-#: src/Dialogs.vala:222
-msgid "All system shortcuts will be redirected to the application."
-msgstr "すべてのシステムショートカットはこのアプリケーションに送られます。"
-
-#: src/Dialogs.vala:223
-msgid "Allow"
-msgstr "許可"
-
-#: src/Dialogs.vala:224
-msgid "Deny"
-msgstr "拒否"
-
-#: src/ScreenshotManager.vala:285
-msgid "Screenshots"
-msgstr "スクリーンショット"
-
-#: src/ScreenshotManager.vala:364
-msgid "Screenshot taken"
-msgstr "スクリーンショットが取得されました"
-
-#: src/WindowManager.vala:2299
-#, c-format
-msgid "Changes will automatically revert after %i second."
-msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
-
-#: src/WindowManager.vala:2306
-msgid "Keep new display settings?"
-msgstr "新しいディスプレイの設定を維持しますか?"
-
-#: src/WindowManager.vala:2310
-msgid "Keep Settings"
-msgstr "設定を維持"
-
-#: src/WindowManager.vala:2311
-msgid "Use Previous Settings"
-msgstr "以前の設定を使う"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
-#, c-format
-msgid "Screenshot from %s"
-msgstr "スクリーンショット %s"
-
-#: daemon/BackgroundMenu.vala:11
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "壁紙を変更…"
 
-#: daemon/BackgroundMenu.vala:16
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "ディスプレイの設定…"
 
-#: daemon/BackgroundMenu.vala:22
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "システム設定…"
 
-#: daemon/BackgroundMenu.vala:47
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "システム設定を開けませんでした"
 
-#: daemon/BackgroundMenu.vala:48
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 "“settings://” URI スキーム用のハンドラーをインストールする必要があります。"
 
-#: daemon/WindowMenu.vala:36
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
 msgstr "非表示"
 
-#: daemon/WindowMenu.vala:49
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
 msgstr "移動"
 
-#: daemon/WindowMenu.vala:57
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
 msgstr "サイズを変更"
 
-#: daemon/WindowMenu.vala:65
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
 msgstr "最前面に維持"
 
-#: daemon/WindowMenu.vala:73
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
 msgstr "すべてのワークスペースに表示"
 
-#: daemon/WindowMenu.vala:81
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
 msgstr "左のワークスペースへ移動"
 
-#: daemon/WindowMenu.vala:89
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
 msgstr "右のワークスペースへ移動"
 
-#: daemon/WindowMenu.vala:97
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
 msgstr "スクリーンショットを撮る"
 
-#: daemon/WindowMenu.vala:105
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
 msgstr "閉じる"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
 msgstr "タイル表示を解除"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
 msgstr "元に戻す"
 
-#: daemon/WindowMenu.vala:140
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
 msgstr "最大化"
 
@@ -285,6 +209,87 @@ msgstr "そのほか"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "従来のアプリケーションからの通知用のフォールバックデスクトップファイルです。"
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr "不明なプログラム"
+
+#: src/Dialogs.vala:144
+#, c-format
+msgid "“%s” is not responding"
+msgstr "“%s”は応答していません"
+
+#: src/Dialogs.vala:146
+msgid "Application is not responding"
+msgstr "アプリケーションは応答していません"
+
+#: src/Dialogs.vala:149
+msgid ""
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
+msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
+
+#: src/Dialogs.vala:150
+msgid "Force Quit"
+msgstr "強制終了"
+
+#: src/Dialogs.vala:151
+msgid "Wait"
+msgstr "待機"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr "“%s”がシステムショートカットを横取りしようとしています"
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr "アプリケーションがシステムショートカットを横取りしようとしています"
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr "すべてのシステムショートカットはこのアプリケーションに送られます。"
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr "許可"
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr "拒否"
+
+#: src/ScreenshotManager.vala:290
+msgid "Screenshots"
+msgstr "スクリーンショット"
+
+#: src/ScreenshotManager.vala:369
+msgid "Screenshot taken"
+msgstr "スクリーンショットが取得されました"
+
+#: src/WindowManager.vala:2318
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
+
+#: src/WindowManager.vala:2325
+msgid "Keep new display settings?"
+msgstr "新しいディスプレイの設定を維持しますか?"
+
+#: src/WindowManager.vala:2329
+msgid "Keep Settings"
+msgstr "設定を維持"
+
+#: src/WindowManager.vala:2330
+msgid "Use Previous Settings"
+msgstr "以前の設定を使う"
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2369
+#, c-format
+msgid "Screenshot from %s"
+msgstr "スクリーンショット %s"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"

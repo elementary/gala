@@ -21,8 +21,8 @@ public class Gala.Daemon.Application : Gtk.Application {
         });
 
         var app_provider = new Gtk.CssProvider ();
-        app_provider.load_from_resource ("io/elementary/desktop/gala-daemon/gala-daemon.css");
-        Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+        app_provider.load_from_resource ("/io/elementary/desktop/gala-daemon/gala-daemon.css");
+        Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     public override void activate () {
@@ -31,6 +31,9 @@ public class Gala.Daemon.Application : Gtk.Application {
 
     public override bool dbus_register (DBusConnection connection, string object_path) throws Error {
         base.dbus_register (connection, object_path);
+
+        // We are using gtk in the DBus () constructor so we need to init it early
+        Gtk.init ();
 
         connection.register_object (object_path, new DBus ());
 
