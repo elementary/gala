@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
+"POT-Creation-Date: 2024-07-08 13:44+0000\n"
 "PO-Revision-Date: 2024-06-17 03:16+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -20,153 +20,74 @@ msgstr ""
 "X-Generator: Weblate 5.5.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:144
-#, c-format
-msgid "“%s” is not responding"
-msgstr "«%s» svarer ikke"
-
-#: src/Dialogs.vala:146
-msgid "Application is not responding"
-msgstr "Programmet svarer ikke"
-
-#: src/Dialogs.vala:149
-msgid ""
-"You may choose to wait a short while for the application to continue, or "
-"force it to quit entirely."
-msgstr ""
-"Du kan velge å vente på at programmet skal fortsette en kort stund, eller "
-"påtvinge avslutning av det."
-
-#: src/Dialogs.vala:150
-msgid "Force Quit"
-msgstr "Tving avslutning"
-
-#: src/Dialogs.vala:151
-msgid "Wait"
-msgstr "Vent"
-
-#: src/Dialogs.vala:217
-#, c-format
-msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:219
-msgid "An application wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:222
-msgid "All system shortcuts will be redirected to the application."
-msgstr ""
-
-#: src/Dialogs.vala:223
-msgid "Allow"
-msgstr ""
-
-#: src/Dialogs.vala:224
-msgid "Deny"
-msgstr ""
-
-#: src/ScreenshotManager.vala:285
-msgid "Screenshots"
-msgstr "Skjermavbildninger"
-
-#: src/ScreenshotManager.vala:364
-msgid "Screenshot taken"
-msgstr "Skjermavbildning utført"
-
-#: src/WindowManager.vala:2299
-#, c-format
-msgid "Changes will automatically revert after %i second."
-msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
-msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
-
-#: src/WindowManager.vala:2306
-msgid "Keep new display settings?"
-msgstr "Behold de nye skjerminnstillingene?"
-
-#: src/WindowManager.vala:2310
-msgid "Keep Settings"
-msgstr "Behold innstillinger"
-
-#: src/WindowManager.vala:2311
-msgid "Use Previous Settings"
-msgstr "Bruk tidligere oppsett"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Skjermavbildning fra %s"
-
-#: daemon/BackgroundMenu.vala:11
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Endre bakgrunnsbilde …"
 
-#: daemon/BackgroundMenu.vala:16
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Skjerminnstillinger …"
 
-#: daemon/BackgroundMenu.vala:22
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Systeminnstillinger …"
 
-#: daemon/BackgroundMenu.vala:47
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "Systeminnstillinger …"
 
-#: daemon/BackgroundMenu.vala:48
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 #, fuzzy
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Noe som håndterer «settings://»-adresser må installeres."
 
-#: daemon/WindowMenu.vala:36
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
 msgstr "Skjul"
 
-#: daemon/WindowMenu.vala:49
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
 msgstr "Flytt"
 
-#: daemon/WindowMenu.vala:57
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
 msgstr "Skaler"
 
-#: daemon/WindowMenu.vala:65
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
 msgstr "Alltid øverst"
 
-#: daemon/WindowMenu.vala:73
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
 msgstr "Alltid på synlig arbeidsområde"
 
-#: daemon/WindowMenu.vala:81
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
 msgstr "Flytt til arbeidsområdet til venstre"
 
-#: daemon/WindowMenu.vala:89
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
 msgstr "Flytt til arbeidsområdet til høyre"
 
-#: daemon/WindowMenu.vala:97
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
 msgstr "Utfør skjermavbildning"
 
-#: daemon/WindowMenu.vala:105
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
 msgstr "Lukk"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
 msgstr "Opphev flislegging"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
 msgstr "Gjenopprett"
 
-#: daemon/WindowMenu.vala:140
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
 msgstr "Maksimér"
 
@@ -296,6 +217,90 @@ msgstr "Annet"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr ""
+
+#: src/Dialogs.vala:144
+#, c-format
+msgid "“%s” is not responding"
+msgstr "«%s» svarer ikke"
+
+#: src/Dialogs.vala:146
+msgid "Application is not responding"
+msgstr "Programmet svarer ikke"
+
+#: src/Dialogs.vala:149
+msgid ""
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
+msgstr ""
+"Du kan velge å vente på at programmet skal fortsette en kort stund, eller "
+"påtvinge avslutning av det."
+
+#: src/Dialogs.vala:150
+msgid "Force Quit"
+msgstr "Tving avslutning"
+
+#: src/Dialogs.vala:151
+msgid "Wait"
+msgstr "Vent"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
+
+#: src/ScreenshotManager.vala:290
+msgid "Screenshots"
+msgstr "Skjermavbildninger"
+
+#: src/ScreenshotManager.vala:369
+msgid "Screenshot taken"
+msgstr "Skjermavbildning utført"
+
+#: src/WindowManager.vala:2318
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
+msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
+
+#: src/WindowManager.vala:2325
+msgid "Keep new display settings?"
+msgstr "Behold de nye skjerminnstillingene?"
+
+#: src/WindowManager.vala:2329
+msgid "Keep Settings"
+msgstr "Behold innstillinger"
+
+#: src/WindowManager.vala:2330
+msgid "Use Previous Settings"
+msgstr "Bruk tidligere oppsett"
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2369
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Skjermavbildning fra %s"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
