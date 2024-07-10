@@ -56,6 +56,7 @@ namespace Pantheon.Desktop {
         public static Wl.Interface iface;
         public Destroy destroy;
         public SetKeepAbove set_keep_above;
+        public MakeModal make_modal;
     }
 
     [CCode (has_target = false, has_typedef = false)]
@@ -74,6 +75,8 @@ namespace Pantheon.Desktop {
     public delegate void SetHideMode (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] HideMode hide_mode);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeModal (Wl.Client client, Wl.Resource resource, uint dim);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }

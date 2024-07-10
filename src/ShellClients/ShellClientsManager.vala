@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
@@ -20,14 +20,14 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
 
-    private ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 
@@ -142,5 +142,9 @@ public class Gala.ShellClientsManager : Object {
         }
 
         windows[window].set_hide_mode (hide_mode);
+    }
+
+    public void make_modal (Meta.Window window, bool dim) {
+        wm.modal_actor.make_modal (window, dim);
     }
 }
