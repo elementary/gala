@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
+"POT-Creation-Date: 2024-07-08 13:44+0000\n"
 "PO-Revision-Date: 2023-05-18 20:06+0000\n"
 "Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
@@ -20,152 +20,73 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:144
-#, c-format
-msgid "“%s” is not responding"
-msgstr "“%s” yanıt vermiyor"
-
-#: src/Dialogs.vala:146
-msgid "Application is not responding"
-msgstr "Uygulama yanıt vermiyor"
-
-#: src/Dialogs.vala:149
-msgid ""
-"You may choose to wait a short while for the application to continue, or "
-"force it to quit entirely."
-msgstr ""
-"Uygulamanın devam etmesi için kısa bir süre beklemeyi veya tamamen kapanmaya "
-"zorlamayı seçebilirsiniz."
-
-#: src/Dialogs.vala:150
-msgid "Force Quit"
-msgstr "Zorla Çık"
-
-#: src/Dialogs.vala:151
-msgid "Wait"
-msgstr "Bekle"
-
-#: src/Dialogs.vala:217
-#, c-format
-msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:219
-msgid "An application wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:222
-msgid "All system shortcuts will be redirected to the application."
-msgstr ""
-
-#: src/Dialogs.vala:223
-msgid "Allow"
-msgstr ""
-
-#: src/Dialogs.vala:224
-msgid "Deny"
-msgstr ""
-
-#: src/ScreenshotManager.vala:285
-msgid "Screenshots"
-msgstr "Ekran Görüntüleri"
-
-#: src/ScreenshotManager.vala:364
-msgid "Screenshot taken"
-msgstr "Ekran görüntüsüsü alındı"
-
-#: src/WindowManager.vala:2299
-#, c-format
-msgid "Changes will automatically revert after %i second."
-msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
-msgstr[1] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
-
-#: src/WindowManager.vala:2306
-msgid "Keep new display settings?"
-msgstr "Yeni görüntü ayarları korunsun mu?"
-
-#: src/WindowManager.vala:2310
-msgid "Keep Settings"
-msgstr "Ayarları Koru"
-
-#: src/WindowManager.vala:2311
-msgid "Use Previous Settings"
-msgstr "Önceki Ayarları Kullan"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
-#, c-format
-msgid "Screenshot from %s"
-msgstr "%s ekran görüntüsü"
-
-#: daemon/BackgroundMenu.vala:11
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Duvar Kağıdını Değiştir…"
 
-#: daemon/BackgroundMenu.vala:16
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Görüntü Ayarları…"
 
-#: daemon/BackgroundMenu.vala:22
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Sistem Ayarları…"
 
-#: daemon/BackgroundMenu.vala:47
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "Sistem Ayarları…"
 
-#: daemon/BackgroundMenu.vala:48
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
-#: daemon/WindowMenu.vala:36
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
 msgstr "Gizle"
 
-#: daemon/WindowMenu.vala:49
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
 msgstr "Taşı"
 
-#: daemon/WindowMenu.vala:57
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
 msgstr "Yeniden Boyutlandır"
 
-#: daemon/WindowMenu.vala:65
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
 msgstr "Her Zaman Üstte"
 
-#: daemon/WindowMenu.vala:73
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
 msgstr "Her Zaman Görünür Çalışma Alanında"
 
-#: daemon/WindowMenu.vala:81
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
 msgstr "Soldaki Çalışma Alanına Taşı"
 
-#: daemon/WindowMenu.vala:89
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
 msgstr "Sağdaki Çalışma Alanına Taşı"
 
-#: daemon/WindowMenu.vala:97
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
 msgstr "Ekran Görüntüsü Al"
 
-#: daemon/WindowMenu.vala:105
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
 msgstr "Kapat"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
 msgstr "Döşemeden Çık"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
 msgstr "Tam Ekrandan Çık"
 
-#: daemon/WindowMenu.vala:140
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
 msgstr "Ekranı Kapla"
 
@@ -288,6 +209,90 @@ msgstr "Diğer"
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Güncel olmayan uygulamalardan gelen bildirimler için yedek masaüstü dosyası."
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr ""
+
+#: src/Dialogs.vala:144
+#, c-format
+msgid "“%s” is not responding"
+msgstr "“%s” yanıt vermiyor"
+
+#: src/Dialogs.vala:146
+msgid "Application is not responding"
+msgstr "Uygulama yanıt vermiyor"
+
+#: src/Dialogs.vala:149
+msgid ""
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
+msgstr ""
+"Uygulamanın devam etmesi için kısa bir süre beklemeyi veya tamamen kapanmaya "
+"zorlamayı seçebilirsiniz."
+
+#: src/Dialogs.vala:150
+msgid "Force Quit"
+msgstr "Zorla Çık"
+
+#: src/Dialogs.vala:151
+msgid "Wait"
+msgstr "Bekle"
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
+
+#: src/ScreenshotManager.vala:290
+msgid "Screenshots"
+msgstr "Ekran Görüntüleri"
+
+#: src/ScreenshotManager.vala:369
+msgid "Screenshot taken"
+msgstr "Ekran görüntüsüsü alındı"
+
+#: src/WindowManager.vala:2318
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
+msgstr[1] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
+
+#: src/WindowManager.vala:2325
+msgid "Keep new display settings?"
+msgstr "Yeni görüntü ayarları korunsun mu?"
+
+#: src/WindowManager.vala:2329
+msgid "Keep Settings"
+msgstr "Ayarları Koru"
+
+#: src/WindowManager.vala:2330
+msgid "Use Previous Settings"
+msgstr "Önceki Ayarları Kullan"
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2369
+#, c-format
+msgid "Screenshot from %s"
+msgstr "%s ekran görüntüsü"
 
 #, fuzzy
 #~| msgid "Show window titles in multitasking view"

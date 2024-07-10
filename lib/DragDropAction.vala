@@ -86,7 +86,7 @@ namespace Gala {
          */
         public string drag_id { get; construct; }
 
-        public Actor handle { get; private set; }
+        public Actor? handle { get; private set; }
         /**
          * Indicates whether a drag action is currently active
          */
@@ -241,6 +241,7 @@ namespace Gala {
                     } else if (dragging) {
                         if (hovered != null) {
                             finish ();
+                            hovered = null;
                         } else {
                             cancel ();
                         }
@@ -460,6 +461,7 @@ namespace Gala {
             }
 
             dragging = false;
+            handle = null;
         }
 
         private bool is_valid_touch_event (Clutter.Event event) {

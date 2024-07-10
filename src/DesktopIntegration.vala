@@ -58,6 +58,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public Window[] get_windows () throws GLib.DBusError, GLib.IOError {
         Window[] returned_windows = {};
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
+        var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (!is_eligible_window (window)) {
@@ -74,6 +75,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("client-type", new GLib.Variant.uint32 (window.get_client_type ()));
                 properties.insert ("is-hidden", new GLib.Variant.boolean (window.is_hidden ()));
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
+                properties.insert ("on-active-workspace", new GLib.Variant.boolean (window.located_on_workspace (active_workspace)));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
 

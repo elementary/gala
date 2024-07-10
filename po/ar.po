@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
+"POT-Creation-Date: 2024-07-08 13:44+0000\n"
 "PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: aalhaif <aalhaif@hotmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
@@ -21,158 +21,73 @@ msgstr ""
 "X-Generator: Weblate 5.0.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: src/Dialogs.vala:144
-#, c-format
-msgid "“%s” is not responding"
-msgstr ""
-
-#: src/Dialogs.vala:146
-msgid "Application is not responding"
-msgstr ""
-
-#: src/Dialogs.vala:149
-msgid ""
-"You may choose to wait a short while for the application to continue, or "
-"force it to quit entirely."
-msgstr ""
-
-#: src/Dialogs.vala:150
-msgid "Force Quit"
-msgstr ""
-
-#: src/Dialogs.vala:151
-msgid "Wait"
-msgstr ""
-
-#: src/Dialogs.vala:217
-#, c-format
-msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:219
-msgid "An application wants to inhibit system shortcuts"
-msgstr ""
-
-#: src/Dialogs.vala:222
-msgid "All system shortcuts will be redirected to the application."
-msgstr ""
-
-#: src/Dialogs.vala:223
-msgid "Allow"
-msgstr ""
-
-#: src/Dialogs.vala:224
-msgid "Deny"
-msgstr ""
-
-#: src/ScreenshotManager.vala:285
-msgid "Screenshots"
-msgstr "لقطات الشاشة"
-
-#: src/ScreenshotManager.vala:364
-msgid "Screenshot taken"
-msgstr "لقطات الشاشة الملتقطة"
-
-#: src/WindowManager.vala:2299
-#, c-format
-msgid "Changes will automatically revert after %i second."
-msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] "التغييرات ستظهر اللآن."
-msgstr[1] "التغييرات ستظهر بعد ثانية واحدة."
-msgstr[2] "التغييرات ستظهر بعد ثانيتين."
-msgstr[3] "التغييرات ستظهر بعد %i ثواني."
-msgstr[4] "التغييرات ستظهر بعد %i ثانية."
-msgstr[5] "التغييرات ستظهر قريباً."
-
-#: src/WindowManager.vala:2306
-#, fuzzy
-#| msgid "Display Settings…"
-msgid "Keep new display settings?"
-msgstr "إعدادات شاشة العرض…"
-
-#: src/WindowManager.vala:2310
-#, fuzzy
-#| msgid "System Settings…"
-msgid "Keep Settings"
-msgstr "إعدادات النظام…"
-
-#: src/WindowManager.vala:2311
-msgid "Use Previous Settings"
-msgstr ""
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
-#, c-format
-msgid "Screenshot from %s"
-msgstr "لقطات شاشة من %s"
-
-#: daemon/BackgroundMenu.vala:11
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "قم بتغيير صورة الخلفية…"
 
-#: daemon/BackgroundMenu.vala:16
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "إعدادات شاشة العرض…"
 
-#: daemon/BackgroundMenu.vala:22
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "إعدادات النظام…"
 
-#: daemon/BackgroundMenu.vala:47
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "إعدادات النظام…"
 
-#: daemon/BackgroundMenu.vala:48
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
-#: daemon/WindowMenu.vala:36
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
 msgstr "أخف"
 
-#: daemon/WindowMenu.vala:49
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
 msgstr "حرك"
 
-#: daemon/WindowMenu.vala:57
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
 msgstr "غير الحجم"
 
-#: daemon/WindowMenu.vala:65
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
 msgstr "دائماً في المقدمة"
 
-#: daemon/WindowMenu.vala:73
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
 msgstr "دائماً في مساحة العمل الظاهرة"
 
-#: daemon/WindowMenu.vala:81
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
 msgstr "انتقل إلى مساحة العمل على اليسار"
 
-#: daemon/WindowMenu.vala:89
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
 msgstr "انتقل إلى مساحة العمل على اليمين"
 
-#: daemon/WindowMenu.vala:97
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
 msgstr "التقط صورة للشاشة"
 
-#: daemon/WindowMenu.vala:105
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
 msgstr "أغلق"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
 msgstr "ألغ التجانب"
 
-#: daemon/WindowMenu.vala:138
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
 msgstr "ألغ التكبير"
 
-#: daemon/WindowMenu.vala:140
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
 msgstr "قم بالتكبير"
 
@@ -287,6 +202,96 @@ msgstr "أخرى"
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr ""
+
+#: src/Dialogs.vala:144
+#, c-format
+msgid "“%s” is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:146
+msgid "Application is not responding"
+msgstr ""
+
+#: src/Dialogs.vala:149
+msgid ""
+"You may choose to wait a short while for the application to continue, or "
+"force it to quit entirely."
+msgstr ""
+
+#: src/Dialogs.vala:150
+msgid "Force Quit"
+msgstr ""
+
+#: src/Dialogs.vala:151
+msgid "Wait"
+msgstr ""
+
+#: src/Dialogs.vala:217
+#, c-format
+msgid "“%s” wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:219
+msgid "An application wants to inhibit system shortcuts"
+msgstr ""
+
+#: src/Dialogs.vala:222
+msgid "All system shortcuts will be redirected to the application."
+msgstr ""
+
+#: src/Dialogs.vala:223
+msgid "Allow"
+msgstr ""
+
+#: src/Dialogs.vala:224
+msgid "Deny"
+msgstr ""
+
+#: src/ScreenshotManager.vala:290
+msgid "Screenshots"
+msgstr "لقطات الشاشة"
+
+#: src/ScreenshotManager.vala:369
+msgid "Screenshot taken"
+msgstr "لقطات الشاشة الملتقطة"
+
+#: src/WindowManager.vala:2318
+#, c-format
+msgid "Changes will automatically revert after %i second."
+msgid_plural "Changes will automatically revert after %i seconds."
+msgstr[0] "التغييرات ستظهر اللآن."
+msgstr[1] "التغييرات ستظهر بعد ثانية واحدة."
+msgstr[2] "التغييرات ستظهر بعد ثانيتين."
+msgstr[3] "التغييرات ستظهر بعد %i ثواني."
+msgstr[4] "التغييرات ستظهر بعد %i ثانية."
+msgstr[5] "التغييرات ستظهر قريباً."
+
+#: src/WindowManager.vala:2325
+#, fuzzy
+#| msgid "Display Settings…"
+msgid "Keep new display settings?"
+msgstr "إعدادات شاشة العرض…"
+
+#: src/WindowManager.vala:2329
+#, fuzzy
+#| msgid "System Settings…"
+msgid "Keep Settings"
+msgstr "إعدادات النظام…"
+
+#: src/WindowManager.vala:2330
+msgid "Use Previous Settings"
+msgstr ""
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/WindowManager.vala:2369
+#, c-format
+msgid "Screenshot from %s"
+msgstr "لقطات شاشة من %s"
 
 #, fuzzy
 #~| msgid "Show window titles in multitasking view"

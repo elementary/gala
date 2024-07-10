@@ -116,8 +116,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
-            click_action.clicked.connect (() => {
-                actor_clicked (click_action.get_button ());
+            click_action.clicked.connect ((action, actor) => {
+                actor_clicked (action.get_button ());
             });
 
             add_action (click_action);
