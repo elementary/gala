@@ -14,16 +14,6 @@
  public class Gala.ModalActor : Clutter.Actor {
     public Meta.Display display { get; construct; }
 
-    public bool dim {
-        set {
-            if (value) {
-                background_color = { 0, 0, 0, 200 };
-            } else {
-                background_color = { 0, 0, 0, 0 };
-            }
-        }
-    }
-
     private int modal_dialogs = 0;
 
     public ModalActor (Meta.Display display) {
@@ -50,12 +40,18 @@
         set_size (width, height);
     }
 
-    public void make_modal (Meta.Window window) {
+    public void make_modal (Meta.Window window, bool dim) {
         modal_dialogs++;
         window.unmanaged.connect (unmake_modal);
 
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         InternalUtils.clutter_actor_reparent (actor, this);
+
+        if (dim) {
+            background_color = { 0, 0, 0, 200 };
+        } else {
+            background_color = { 0, 0, 0, 0 };
+        }
 
         check_visible ();
     }

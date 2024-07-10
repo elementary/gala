@@ -145,7 +145,6 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void make_modal (Meta.Window window, bool dim) {
-        wm.modal_actor.make_modal (window);
-        wm.modal_actor.dim = dim;
+        wm.modal_actor.make_modal (window, dim);
     }
 }
