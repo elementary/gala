@@ -84,7 +84,19 @@ namespace Gala {
             var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
 
             new_window.selected.connect ((clone) => window_selected (clone.window));
-            new_window.destroy.connect (() => reflow ());
+            new_window.destroy.connect ((_new_window) => {
+                // make sure to release reference if the window is selected
+                if (_new_window == current_window) {
+                    select_next_window (Meta.MotionDirection.RIGHT);
+                }
+
+                // if window is still selected, reset the selection
+                if (_new_window == current_window) {
+                    current_window = null;
+                }
+
+                reflow ();
+            });
             new_window.request_reposition.connect (() => reflow ());
 
             unowned Meta.Window? target = null;
