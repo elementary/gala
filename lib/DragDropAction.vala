@@ -74,7 +74,7 @@ namespace Gala {
          *
          * @param button The button which was pressed
          */
-        public signal void actor_clicked (uint32 button);
+        public signal void actor_clicked (uint32 button, bool control_modifier);
 
         /**
          * The type of the action
@@ -229,7 +229,7 @@ namespace Gala {
 
                         // release has happened within bounds of actor
                         if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-                            actor_clicked (event.get_button ());
+                            actor_clicked (event.get_button (), event.has_control_modifier ());
                         }
 
                         if (clicked) {
