@@ -26,6 +26,7 @@ public class Gala.ShellClientsManager : Object {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -97,20 +98,22 @@ public class Gala.ShellClientsManager : Object {
         }
     }
 
-    public void set_anchor (Meta.Window window, Meta.Side side) {
-        if (window in windows) {
-            windows[window].update_anchor (side);
-            return;
-        }
-
-#if HAS_MUTTER46
+    private void make_dock (Meta.Window window) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_dock (window);
                 break;
             }
         }
-#endif
+    }
+
+    public void set_anchor (Meta.Window window, Meta.Side side) {
+        if (window in windows) {
+            windows[window].update_anchor (side);
+            return;
+        }
+
+        make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
         windows[window] = new PanelWindow (wm, window, side);
@@ -142,5 +145,15 @@ public class Gala.ShellClientsManager : Object {
         }
 
         windows[window].set_hide_mode (hide_mode);
+    }
+
+    public void make_centered (Meta.Window window) {
+        if (window in centered_windows) {
+            return;
+        }
+
+        make_dock (window);
+
+        centered_windows[window] = new CenteredWindow (wm, window);
     }
 }
