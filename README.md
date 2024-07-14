@@ -6,7 +6,6 @@ A window & compositing manager based on libmutter and designed by elementary for
 ## Building, Testing, and Installation
 
 You'll need the following dependencies:
-* meson
 * gettext (>= 0.19.6)
 * gsettings-desktop-schemas-dev
 * libcanberra-dev
@@ -18,6 +17,7 @@ You'll need the following dependencies:
 * libgtk-3-dev (>= 3.10.0)
 * libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
 * libxml2-utils
+* meson (>= 0.59.0)
 * valac (>= 0.46.0)
 
 Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build

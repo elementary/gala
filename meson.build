@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
     version: '7.1.3',
-    meson_version: '>= 0.58.0',
+    meson_version: '>= 0.59.0',
     license: 'GPL3',
 )
 
@@ -195,4 +195,8 @@ if vapigen.found()
     subdir('vapi')
 endif
 
-meson.add_install_script('build-aux/meson/post_install.py')
+gnome.post_install(
+    glib_compile_schemas: true,
+    gtk_update_icon_cache: true,
+    update_desktop_database: true
+)
