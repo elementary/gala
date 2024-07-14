@@ -1,7 +1,7 @@
 Source: gala
 Section: x11
 Priority: optional
-Maintainer: elementary OS Team <builds@elementary.io>
+Maintainer: elementary, Inc. <builds@elementary.io>
 Build-Depends: debhelper (>= 10.5.1),
                gettext (>= 0.19.6),
                gsettings-desktop-schemas-dev,
@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 10.5.1),
                libmutter-14-dev | libmutter-13-dev | libmutter-12-dev | libmutter-11-dev | libmutter-10-dev,
                libsqlite3-dev,
                libxml2-utils,
-               meson,
+               meson (>= 0.59.0),
                valac (>= 0.28.0)
 Standards-Version: 4.1.1
 Homepage: https://github.com/elementary/gala
