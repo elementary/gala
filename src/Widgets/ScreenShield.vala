@@ -125,10 +125,12 @@ namespace Gala {
             // Listen for keypresses or mouse movement
             key_press_event.connect ((event) => {
                 on_user_became_active ();
+                return Clutter.EVENT_STOP;
             });
 
             motion_event.connect ((event) => {
                 on_user_became_active ();
+                return Clutter.EVENT_STOP;
             });
 
             background_color = Clutter.Color.from_string ("black");
