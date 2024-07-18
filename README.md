@@ -11,7 +11,7 @@ You'll need the following dependencies:
 * libcanberra-dev
 * libclutter-1.0-dev (>= 1.12.0)
 * libgee-0.8-dev
-* libglib2.0-dev (>= 2.44)
+* libglib2.0-dev (>= 2.74)
 * libgnome-desktop-3-dev
 * libgranite-dev (>= 5.4.0)
 * libgtk-3-dev (>= 3.10.0)

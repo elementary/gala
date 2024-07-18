@@ -69,15 +69,15 @@ add_project_arguments([
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
         '-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
-        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
-        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_44',
+        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
+        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
     ],
     language: 'c',
 )
 
 
 # Dependencies
-glib_version_required = '2.44.0'
+glib_version_required = '2.74.0'
 gtk_version_required = '3.10.0'
 
 canberra_dep = dependency('libcanberra')
