@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
+"POT-Creation-Date: 2024-07-18 17:28+0000\n"
 "PO-Revision-Date: 2024-07-09 14:02+0000\n"
 "Last-Translator: lenemter <lenemter@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
-"\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
+">\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,13 +109,31 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Улучшения:"
 
 #: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Исправлены сочетания клавиш в режиме многозадачности"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Update panel color after dimming the wallpaper"
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Обновление цвета панели после затемнения обоев"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Обновлены переводы"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -123,74 +141,24 @@ msgstr ""
 "Смена обоев и переход в спящий режим теперь учитывают опцию «Уменьшить "
 "анимации»"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Соответствующие указатели перетаскивания при перемещении окон"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Исправлена ошибка, из-за которой жесты в режиме многозадачности могли "
 "перестать работать"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Улучшено поведение динамических рабочих столов с несколькими мониторами"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Обновлены переводы"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Улучшено сочетание клавиш «Переместить на рабочий стол»"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"Исправлен выбор раскладки клавиатуры при запуске, чтобы индикатор "
-"соответствовал выбранной раскладке"
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr "Исправлены сочетания клавиш в режиме многозадачности"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"Исправлена подсветка активного рабочего стола при открытии режима "
-"многозадачности, и добавлены мулититач жесты для анимации подсветки"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "Обновление цвета панели после затемнения обоев"
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr "Масштабирование закруглённых углов для каждого экрана"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "Поддержка дробного масштабирования"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Улучшения производительности"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Удалена текстура из многозадачного вида"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Исправлен случайный выбор окон в переключателе окон"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -292,6 +260,35 @@ msgstr "Использовать предыдущие настройки"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"
+
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "Исправлен выбор раскладки клавиатуры при запуске, чтобы индикатор "
+#~ "соответствовал выбранной раскладке"
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "Исправлена подсветка активного рабочего стола при открытии режима "
+#~ "многозадачности, и добавлены мулититач жесты для анимации подсветки"
+
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Масштабирование закруглённых углов для каждого экрана"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "Поддержка дробного масштабирования"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Улучшения производительности"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "Удалена текстура из многозадачного вида"
+
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr "Исправлен случайный выбор окон в переключателе окон"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Перезагрузка анимированных обоев при смене часовых поясов"

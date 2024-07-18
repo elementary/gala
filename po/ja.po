@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
+"POT-Creation-Date: 2024-07-18 17:28+0000\n"
 "PO-Revision-Date: 2024-07-10 16:16+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
@@ -109,88 +109,56 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr ""
+"“マルチタスク画面”でスクリーンショット取得のキーボードショートカットが効かな"
+"い不具合を修正"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Update panel color after dimming the wallpaper"
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "壁紙を暗くした場合にパネルの色を更新するように修正"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "翻訳の更新"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定に従うように修正"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "ウィンドウ移動時、ドラッグ & ドロップの形をした適切なポインターを使用するよう"
 "に修正"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "マルチタスク画面でジェスチャーが動作しなくなる可能性がある不具合を修正"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "マルチモニター環境におけるダイナミックワークスペースの挙動を改善"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "翻訳の更新"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "“move-to-workspace”ショートカットの処理を改善"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"起動時にキーボードレイアウトを適切に設定することで、インジケーターの表示が実"
-"際に有効なレイアウトと一致するように修正"
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-"“マルチタスク画面”でスクリーンショット取得のキーボードショートカットが効かな"
-"い不具合を修正"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライトし、"
-"手の動きに合わせてアニメーション表示されるように修正"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "壁紙を暗くした場合にパネルの色を更新するように修正"
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr "画面四隅を丸く表示する比率を画面ごとに計算するように修正"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "分数スケーリングに対応"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "パフォーマンスの改善"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "マルチタスク画面からテクスチャを削除"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -290,6 +258,36 @@ msgstr "以前の設定を使う"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
+
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "起動時にキーボードレイアウトを適切に設定することで、インジケーターの表示が"
+#~ "実際に有効なレイアウトと一致するように修正"
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライト"
+#~ "し、手の動きに合わせてアニメーション表示されるように修正"
+
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "画面四隅を丸く表示する比率を画面ごとに計算するように修正"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "分数スケーリングに対応"
+
+#~ msgid "Performance improvements"
+#~ msgstr "パフォーマンスの改善"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "マルチタスク画面からテクスチャを削除"
+
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"
