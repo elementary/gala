@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-07-10 16:16+0000\n"
+"PO-Revision-Date: 2024-07-19 17:28+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -116,18 +116,12 @@ msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr ""
-"“マルチタスク画面”でスクリーンショット取得のキーボードショートカットが効かな"
-"い不具合を修正"
+msgstr "“マルチタスク画面”でのキーボード操作を改善"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr "壁紙を暗くした場合にパネルの色を更新するように修正"
+msgstr "壁紙の遷移と同時にパネルの色を変更するように修正"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
