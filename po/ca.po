@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-07-09 14:02+0000\n"
+"PO-Revision-Date: 2024-07-19 17:28+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,18 +115,12 @@ msgid "Improvements:"
 msgstr "Millores:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr ""
-"Correcció de les dreceres de teclat de captures de pantalla mentre esteu a "
-"la vista multitasca"
+msgstr "Millora de la navegació amb el teclat a la vista multitasca"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr "Actualitza el color del plafó després d'atenuar el fons de pantalla"
+msgstr "Canvia el color del plafó alhora que la transició del fons de pantalla"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
