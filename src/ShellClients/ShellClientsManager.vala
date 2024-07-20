@@ -152,8 +152,10 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
-        make_dock (window);
-
         centered_windows[window] = new CenteredWindow (wm, window);
+    }
+
+    public bool allow_inhibit_shortcuts_without_dialog (Meta.Window window) {
+        return (window in centered_windows);
     }
 }

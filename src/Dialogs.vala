@@ -229,8 +229,9 @@ namespace Gala {
                 return;
             }
 
-            // Naive check to always allow inhibiting by our settings app. This is needed for setting custom shortcuts
-            if (app.id == "io.elementary.settings.desktop") {
+            if (app.id == "io.elementary.settings.desktop" || // Naive check to always allow inhibiting by our settings app. This is needed for setting custom shortcuts
+                ShellClientsManager.get_instance ().allow_inhibit_shortcuts_without_dialog (window) // Certain windows (e.g. centered ones) may want to disable move via super + drag
+            ) {
                 on_response (0);
                 return;
             }
