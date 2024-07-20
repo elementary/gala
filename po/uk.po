@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-07-10 16:16+0000\n"
+"PO-Revision-Date: 2024-07-21 06:16+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -116,18 +116,14 @@ msgid "Improvements:"
 msgstr "Удосконалення:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
-"Виправлено комбінації клавіш під час створення знімків екрана у "
-"багатозадачному режимі"
+"Удосконалено навігацію за допомогою комбінацій клавіш у багатозадачному "
+"режимі"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr "Оновлення кольору панелі після затемнення шпалер"
+msgstr "Зміна кольору панелі одночасно зі зміною шпалер"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
