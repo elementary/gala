@@ -16,7 +16,6 @@ public class Gala.CenteredWindow : Object {
     construct {
         window.size_changed.connect (position_window);
         window.stick ();
-        window.make_above ();
 
         var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => position_window ());
