@@ -155,7 +155,7 @@ public class Gala.ShellClientsManager : Object {
         centered_windows[window] = new CenteredWindow (wm, window);
     }
 
-    public bool allow_inhibit_shortcuts_without_dialog (Meta.Window window) {
-        return (window in centered_windows);
+    public bool is_positioned_window (Meta.Window window) {
+        return (window in centered_windows) || (window in windows);
     }
 }
