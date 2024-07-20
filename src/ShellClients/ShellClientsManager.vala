@@ -156,6 +156,15 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public bool is_positioned_window (Meta.Window window) {
-        return (window in centered_windows) || (window in windows);
+        bool positioned = (window in centered_windows) || (window in windows);
+        window.foreach_ancestor ((ancestor) => {
+            if (ancestor in centered_windows || ancestor in windows) {
+                positioned = true;
+            }
+
+            return !positioned;
+        });
+
+        return positioned;
     }
 }
