@@ -20,6 +20,7 @@ public class Gala.ManagedClient : Object {
     public Meta.WaylandClient? wayland_client { get; private set; }
 
     private Subprocess? subprocess;
+    // id is used to identify X11 client
     private string? id;
 
     public ManagedClient (Meta.Display display, string[] args, bool supports_id) {
