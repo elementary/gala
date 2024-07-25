@@ -78,7 +78,9 @@ public class Gala.ManagedClient : Object {
         }
     }
 
-    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+    private void make_dock_x11 (Meta.Window window) requires (
+        !Meta.Util.is_wayland_compositor () && supports_id && window.title == id
+    ) {
         unowned var x11_display = display.get_x11_display ();
 
 #if HAS_MUTTER46
