@@ -18,13 +18,26 @@ public class Gala.ManagedClient : Object {
     public bool supports_id { get; construct; }
 
     public Meta.WaylandClient? wayland_client { get; private set; }
-
+    
     private Subprocess? subprocess;
     // id is used to identify X11 client
     private string? id;
 
+    // currently used to avoid overlaping
+    private static Gee.HashSet<string> ids;
+
     public ManagedClient (Meta.Display display, string[] args, bool supports_id) {
         Object (display: display, args: args, supports_id: supports_id);
+    }
+
+    ~ManagedClient () {
+        if (id != null) {
+            ids.remove (id);
+        }
+    }
+
+    static construct {
+        ids = new Gee.HashSet<string> ();
     }
 
     construct {
@@ -86,7 +99,11 @@ public class Gala.ManagedClient : Object {
             var _args = args;
 
             if (supports_id) {
-                id = GLib.Uuid.string_random ();
+                while (id == null || id in ids) {
+                    id = Uuid.string_random ();
+                }
+                ids.add (id);
+
                 _args += "--id";
                 _args += id;
             }
