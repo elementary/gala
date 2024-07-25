@@ -345,15 +345,15 @@ namespace Gala {
             switch (anchor) {
                 case TOP:
                     break;
-    
+
                 case BOTTOM:
                     side = BOTTOM;
                     break;
-    
+
                 case LEFT:
                     side = LEFT;
                     break;
-    
+
                 case RIGHT:
                     side = RIGHT;
                     break;

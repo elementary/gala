@@ -128,12 +128,12 @@ public class Gala.ShellClientsManager : Object {
         // gtk3's gdk_x11_window_set_type_hint() is used as a reference
         unowned var xdisplay = x11_display.get_xdisplay ();
         var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
-        var FORMAT = 32;
-        var PROP_MODE_REPLACE = 0;
         var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
 
         // (X.Atom) 4 is XA_ATOM
-        xdisplay.change_property (x_window, atom, (X.Atom) 4, FORMAT, PROP_MODE_REPLACE, (uchar[]) dock_atom, 1);
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {

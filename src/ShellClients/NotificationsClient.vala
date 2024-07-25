@@ -16,7 +16,7 @@ public class Gala.NotificationsClient : Object {
 
     construct {
         client = new ManagedClient (display, { "io.elementary.notifications" }, false);
-        
+
         client.window_created.connect ((window) => {
             window.set_data (NOTIFICATION_DATA_KEY, true);
             window.make_above ();

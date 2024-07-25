@@ -18,7 +18,7 @@ public class Gala.ManagedClient : Object {
     public bool supports_id { get; construct; }
 
     public Meta.WaylandClient? wayland_client { get; private set; }
-    
+
     private Subprocess? subprocess;
     // id is used to identify X11 client
     private string? id;
