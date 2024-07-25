@@ -17,8 +17,7 @@ public class Gala.ManagedClient : Object {
     public string[] args { get; construct; }
     public bool supports_id { get; construct; }
 
-    public Meta.WaylandClient? wayland_client { get; private set; }
-
+    private Meta.WaylandClient? wayland_client;
     private Subprocess? subprocess;
     // id is used to identify X11 client
     private string? id;
@@ -69,6 +68,40 @@ public class Gala.ManagedClient : Object {
                 });
             }
         }
+    }
+
+    public void make_dock (Meta.Window window) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            wayland_client.make_dock (window);
+        } else {
+            make_dock_x11 (window);
+        }
+    }
+
+    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+        unowned var x11_display = display.get_x11_display ();
+
+#if HAS_MUTTER46
+        var x_window = x11_display.lookup_xwindow (window);
+#else
+        var x_window = window.get_xwindow ();
+#endif
+        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
+        unowned var xdisplay = x11_display.get_xdisplay ();
+        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
+        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
+
+        // (X.Atom) 4 is XA_ATOM
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+    }
+
+    public bool owns_window (Meta.Window window) {
+        var is_wayland = Meta.Util.is_wayland_compositor ();
+
+        return is_wayland && wayland_client.owns_window (window) ||
+               !is_wayland && supports_id && window.title == id;
     }
 
     private async void start_wayland () {

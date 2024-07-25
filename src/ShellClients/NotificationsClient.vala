@@ -21,7 +21,7 @@ public class Gala.NotificationsClient : Object {
             window.set_data (NOTIFICATION_DATA_KEY, true);
             window.make_above ();
 #if HAS_MUTTER46
-            client.wayland_client.make_dock (window);
+            client.make_dock (window);
 #endif
         });
     }
