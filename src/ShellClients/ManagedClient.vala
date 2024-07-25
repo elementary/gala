@@ -23,7 +23,7 @@ public class Gala.ManagedClient : Object {
     // id is used to identify X11 client
     private string? id;
 
-    // currently used to avoid overlaping
+    // currently used to avoid overlapping
     private static Gee.HashSet<string> ids;
 
     public ManagedClient (Meta.Display display, string[] args, bool supports_id) {
