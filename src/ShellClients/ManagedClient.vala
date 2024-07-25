@@ -143,8 +143,6 @@ public class Gala.ManagedClient : Object {
                 _args += id;
             }
 
-            debug ("Launching client with id: %s", id);
-
             subprocess = new Subprocess.newv (_args, NONE);
             yield subprocess.wait_async ();
 
