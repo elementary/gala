@@ -336,5 +336,30 @@ namespace Gala {
                 return { 0, 0, (int) screen_width, (int) screen_height };
             }
         }
+
+        /**
+         * Returns Meta.Side that correspondes to Pantheon.Desktop.Anchor.
+         */
+        public static Meta.Side anchor_to_side (Pantheon.Desktop.Anchor anchor) {
+            Meta.Side side = TOP;
+            switch (anchor) {
+                case TOP:
+                    break;
+    
+                case BOTTOM:
+                    side = BOTTOM;
+                    break;
+    
+                case LEFT:
+                    side = LEFT;
+                    break;
+    
+                case RIGHT:
+                    side = RIGHT;
+                    break;
+            }
+
+            return side;
+        }
     }
 }

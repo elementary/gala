@@ -167,6 +167,10 @@ namespace Gala {
             DBusAccelerator.init (this);
             MediaFeedback.init ();
 
+            if (!Meta.Util.is_wayland_compositor ()) {
+                PantheonShellX11.init (display);
+            }
+
             WindowListener.init (display);
             KeyboardManager.init (display);
             window_tracker = new WindowTracker ();

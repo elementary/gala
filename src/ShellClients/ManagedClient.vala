@@ -15,13 +15,15 @@ public class Gala.ManagedClient : Object {
 
     public Meta.Display display { get; construct; }
     public string[] args { get; construct; }
+    public bool supports_id { get; construct; }
 
     public Meta.WaylandClient? wayland_client { get; private set; }
 
     private Subprocess? subprocess;
+    private string? id;
 
-    public ManagedClient (Meta.Display display, string[] args) {
-        Object (display: display, args: args);
+    public ManagedClient (Meta.Display display, string[] args, bool supports_id) {
+        Object (display: display, args: args, supports_id: supports_id);
     }
 
     construct {
@@ -44,6 +46,14 @@ public class Gala.ManagedClient : Object {
             });
         } else {
             start_x.begin ();
+
+            if (supports_id) {
+                display.window_created.connect ((window) => {
+                    if (window.title == id) {
+                        window_created (window);
+                    }
+                });
+            }
         }
     }
 
@@ -72,7 +82,17 @@ public class Gala.ManagedClient : Object {
 
     private async void start_x () {
         try {
-            subprocess = new Subprocess.newv (args, NONE);
+            var _args = args;
+
+            if (supports_id) {
+                id = GLib.Uuid.string_random ();
+                _args += "--id";
+                _args += id;
+            }
+
+            debug ("Launching client with id: %s", id);
+
+            subprocess = new Subprocess.newv (_args, NONE);
             yield subprocess.wait_async ();
 
             //Restart the daemon if it crashes
