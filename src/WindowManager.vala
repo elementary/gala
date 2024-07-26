@@ -1170,50 +1170,6 @@ namespace Gala {
          * effects
          */
 
-        private void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
-            // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
-                return;
-
-            // Due to how this is implemented, by relying on the functionality
-            // offered by the dynamic workspace handler, let's just bail out
-            // if that's not available.
-            if (!Meta.Prefs.get_dynamic_workspaces ())
-                return;
-
-            unowned Meta.Display display = get_display ();
-            var time = display.get_current_time ();
-            unowned Meta.Workspace win_ws = window.get_workspace ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-
-            if (which_change == Meta.SizeChange.FULLSCREEN) {
-                // Do nothing if the current workspace would be empty
-                if (Utils.get_n_windows (win_ws) <= 1)
-                    return;
-
-                var old_ws_index = win_ws.index ();
-                var new_ws_index = old_ws_index + 1;
-                InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-                unowned var new_ws = manager.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws);
-                new_ws.activate_with_focus (window, time);
-
-                ws_assoc.insert (window, old_ws_index);
-            } else if (ws_assoc.contains (window)) {
-                var old_ws_index = ws_assoc.get (window);
-                var new_ws_index = win_ws.index ();
-
-                if (new_ws_index != old_ws_index && old_ws_index < manager.get_n_workspaces ()) {
-                    unowned var old_ws = manager.get_workspace_by_index (old_ws_index);
-                    window.change_workspace (old_ws);
-                    old_ws.activate_with_focus (window, time);
-                }
-
-                ws_assoc.remove (window);
-            }
-        }
-
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
 #if HAS_MUTTER45
@@ -1259,8 +1215,14 @@ namespace Gala {
                     unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 case Meta.SizeChange.FULLSCREEN:
+                    if (behavior_settings.get_boolean ("move-fullscreened-workspace")) {
+                        move_window_to_next_ws (window);
+                    }
+                    break;
                 case Meta.SizeChange.UNFULLSCREEN:
-                    handle_fullscreen_window (window, which_change_local);
+                    if (behavior_settings.get_boolean ("move-fullscreened-workspace")) {
+                        move_window_to_old_ws (window);
+                    }
                     break;
             }
 
@@ -1823,6 +1785,8 @@ namespace Gala {
             new_ws.activate_with_focus (window, time);
 
             ws_assoc[window] = old_ws_index;
+
+            window.unmanaging.connect (switch_to_old_ws);
         }
 
         private void move_window_to_old_ws (Meta.Window window) {
@@ -1847,6 +1811,32 @@ namespace Gala {
                 unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
                 window.change_workspace (old_ws);
                 old_ws.activate_with_focus (window, time);
+            }
+
+            ws_assoc.remove (window);
+        }
+
+        private void switch_to_old_ws (Meta.Window window) {
+            unowned var win_ws = window.get_workspace ();
+
+            // Do nothing if the current workspace is populated with other windows
+            if (Utils.get_n_windows (win_ws) > 1) {
+                return;
+            }
+
+            if (!ws_assoc.contains (window)) {
+                return;
+            }
+
+            var old_ws_index = ws_assoc.get (window);
+            var new_ws_index = win_ws.index ();
+
+            unowned var display = get_display ();
+            unowned var workspace_manager = display.get_workspace_manager ();
+            if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
+                uint time = display.get_current_time ();
+                unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
+                old_ws.activate (time);
             }
 
             ws_assoc.remove (window);

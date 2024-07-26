@@ -106,8 +106,9 @@ namespace Gala {
 
             // remove empty workspaces after we switched away from them unless it's the last one
             var prev_workspace = manager.get_workspace_by_index (from);
-            if (Utils.get_n_windows (prev_workspace) < 1
-                && from != manager.get_n_workspaces () - 1) {
+            if (prev_workspace.n_windows == 0
+                && from != manager.get_n_workspaces () - 1
+                && remove_freeze_count < 1) {
 
                 // If we're about to remove a workspace, cancel any DnD going on in the multitasking view
                 // or else things might get broke
@@ -204,7 +205,9 @@ namespace Gala {
          *
          * @param workspace The workspace to remove
          */
-        private void remove_workspace (Meta.Workspace workspace) {
+        private void remove_workspace (Meta.Workspace workspace) requires (
+            remove_freeze_count < 1 && workspace.n_windows == 0
+        ) {
             unowned Meta.Display display = workspace.get_display ();
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var time = display.get_current_time ();
@@ -258,7 +261,7 @@ namespace Gala {
          * be removed. Particularly useful in conjunction with freeze/thaw_remove to
          * cleanup after an operation that required stable workspace/window indices
          */
-        private void cleanup () {
+        private void cleanup () requires (remove_freeze_count < 1) {
             if (!Meta.Prefs.get_dynamic_workspaces ()) {
                 return;
             }
