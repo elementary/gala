@@ -147,7 +147,15 @@ namespace Gala {
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
-            show_stage ();
+            prepare_stage ();
+
+            ulong changed_handler = 0;
+            changed_handler = ((BackgroundContainer) background_group).changed.connect (() => {
+                background_group.disconnect (changed_handler);
+                changed_handler = 0;
+
+                show_stage ();
+            });
 
             AccessDialog.watch_portal ();
 
@@ -157,7 +165,7 @@ namespace Gala {
             });
         }
 
-        private void show_stage () {
+        private void prepare_stage () {
             unowned Meta.Display display = get_display ();
 
             screen_shield = new ScreenShield (this);
@@ -225,7 +233,7 @@ namespace Gala {
             ui_group.add_child (window_group);
 
             background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
+            ((BackgroundContainer) background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
@@ -364,18 +372,20 @@ namespace Gala {
 
             update_input_area ();
 
-
             display.window_created.connect ((window) => window_created (window));
+        }
+
+        private void show_stage () requires (!stage.visible) {
+            warning (stage.visible.to_string ());
 
             stage.show ();
 
-            Idle.add (() => {
+            Idle.add_once (() => {
                 // let the session manager move to the next phase
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-                display.get_context ().notify_ready ();
-                return GLib.Source.REMOVE;
+                get_display ().get_context ().notify_ready ();
             });
         }
 
