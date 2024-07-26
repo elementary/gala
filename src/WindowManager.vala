@@ -376,8 +376,6 @@ namespace Gala {
         }
 
         private void show_stage () requires (!stage.visible) {
-            warning (stage.visible.to_string ());
-
             stage.show ();
 
             Idle.add_once (() => {
