@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-06-18 23:36+0000\n"
+"PO-Revision-Date: 2024-07-23 15:16+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -117,16 +117,12 @@ msgid "Improvements:"
 msgstr "Fejlesztések:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Képernyőkép-billentyűkombinációk javítva többfeladatos nézetben"
+msgstr "Billentyűzettel való navigáció javítva többfeladatos nézetben"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr "A panel színének frissítése a háttérkép sötétítése után"
+msgstr "A panel színének frissítése a háttérkép átmenetével egyidőben"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
@@ -183,7 +179,7 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Ismeretlen"
 
 #: src/Dialogs.vala:144
 #, c-format
