@@ -29,6 +29,8 @@ gala_bin_sources = files(
     'Background/BackgroundSource.vala',
     'Background/BlurEffect.vala',
     'Background/SystemBackground.vala',
+    'BackgroundStateManager/BackgroundListener.vala',
+    'BackgroundStateManager/BackgroundStateManager.vala',
     'ColorFilters/ColorblindnessCorrectionEffect.vala',
     'ColorFilters/FilterManager.vala',
     'ColorFilters/MonochromeEffect.vala',

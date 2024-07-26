@@ -165,6 +165,7 @@ namespace Gala {
 
             DBus.init (this);
             DBusAccelerator.init (this);
+            BackgroundStateManager.init (this);
             MediaFeedback.init ();
 
             WindowListener.init (display);
