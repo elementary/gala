@@ -36,6 +36,12 @@ public class Gala.ShellClientsManager : Object {
         notifications_client = new NotificationsClient (wm.get_display ());
 
         start_clients.begin ();
+
+        //X11 only
+        wm.get_display ().window_created.connect ((window) => {
+            window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
+            parse_mutter_hints (window);
+        });
     }
 
     private async void start_clients () {
@@ -98,13 +104,40 @@ public class Gala.ShellClientsManager : Object {
         }
     }
 
-    private void make_dock (Meta.Window window) {
+    public void make_dock (Meta.Window window) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            make_dock_wayland (window);
+        } else {
+            make_dock_x11 (window);
+        }
+    }
+
+    private void make_dock_wayland (Meta.Window window) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_dock (window);
                 break;
             }
         }
+    }
+
+    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+        unowned var x11_display = wm.get_display ().get_x11_display ();
+
+#if HAS_MUTTER46
+        var x_window = x11_display.lookup_xwindow (window);
+#else
+        var x_window = window.get_xwindow ();
+#endif
+        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
+        unowned var xdisplay = x11_display.get_xdisplay ();
+        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
+        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
+
+        // (X.Atom) 4 is XA_ATOM
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
@@ -155,5 +188,27 @@ public class Gala.ShellClientsManager : Object {
         make_dock (window);
 
         centered_windows[window] = new CenteredWindow (wm, window);
+    }
+
+    //X11 only
+    private void parse_mutter_hints (Meta.Window window) {
+        if (window.mutter_hints == null) {
+            return;
+        }
+
+        var mutter_hints = window.mutter_hints.split (":");
+        foreach (var mutter_hint in mutter_hints) {
+            var split = mutter_hint.split ("=");
+            var key = split[0];
+            var val = split[1];
+
+            if (key == "anchor") {
+                set_anchor (window, int.parse (val));
+            }
+
+            if (key == "hide-mode") {
+                set_hide_mode (window, int.parse (val));
+            }
+        }
     }
 }
