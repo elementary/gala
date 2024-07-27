@@ -168,6 +168,14 @@ namespace Gala {
         public abstract void perform_action (ActionType type);
 
         /**
+         * Tells the window manager to move the Notifications Stack down
+         * by the given number of points, to make room for menus.
+         *
+         * @param offset The number of points by which to move the notifications stack
+         */
+        public abstract void offset_notifications (int32 offset);
+
+        /**
          * Moves the window to the given workspace.
          *
          * @param window    The window to be moved

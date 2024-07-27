@@ -1052,6 +1052,10 @@ namespace Gala {
             }
         }
 
+        public void offset_notifications (int32 offset) {
+            notification_stack.offset_notifications (offset);
+        }
+
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:

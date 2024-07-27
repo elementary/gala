@@ -29,6 +29,7 @@ public class Gala.NotificationStack : Object {
     private const int WIDTH = 300;
 
     private int stack_y;
+    private int stack_y_offset;
     private int stack_width;
 
     public Meta.Display display { get; construct; }
@@ -103,7 +104,7 @@ public class Gala.NotificationStack : Object {
             notification_x_pos = 0;
         }
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (stack_y_offset + ADDITIONAL_MARGIN, scale));
         notifications.insert (0, notification);
     }
 
@@ -118,7 +119,7 @@ public class Gala.NotificationStack : Object {
     }
 
     private void update_positions (bool animate, float scale, float add_y = 0.0f) {
-        var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
+        var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (stack_y_offset + ADDITIONAL_MARGIN, scale);
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;
@@ -158,6 +159,11 @@ public class Gala.NotificationStack : Object {
 
             y += window.get_frame_rect ().height;
         }
+    }
+
+    public void offset_notifications (int32 offset) {
+        stack_y_offset = offset;
+        update_positions (true);
     }
 
     public void destroy_notification (Meta.WindowActor notification, bool animate) {
