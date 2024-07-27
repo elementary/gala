@@ -199,15 +199,39 @@ public class Gala.ShellClientsManager : Object {
         var mutter_hints = window.mutter_hints.split (":");
         foreach (var mutter_hint in mutter_hints) {
             var split = mutter_hint.split ("=");
+
+            if (split.length != 2) {
+                continue;
+            }
+
             var key = split[0];
             var val = split[1];
 
-            if (key == "anchor") {
-                set_anchor (window, int.parse (val));
-            }
+            switch (key) {
+                case "anchor":
+                    set_anchor (window, int.parse (val));
+                    break;
 
-            if (key == "hide-mode") {
-                set_hide_mode (window, int.parse (val));
+                case "hide-mode":
+                    set_hide_mode (window, int.parse (val));
+                    break;
+
+                case "size":
+                    var split_val = val.split (",");
+                    if (split_val.length != 2) {
+                        break;
+                    }
+                    var width = int.parse (split_val[0]);
+                    var height = int.parse (split_val[1]);
+                    set_size (window, width, height);
+                    break;
+
+                case "centered":
+                    make_centered (window);
+                    break;
+
+                default:
+                    break;
             }
         }
     }
