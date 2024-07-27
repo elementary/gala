@@ -18,6 +18,7 @@
 namespace Gala {
     public class BackgroundContainer : Meta.BackgroundGroup {
         public signal void changed ();
+        public signal void color_information_updated (BackgroundState new_state);
         public signal void show_background_menu (int x, int y);
 
         public WindowManager wm { get; construct; }
@@ -53,10 +54,6 @@ namespace Gala {
         }
 
         private void update () {
-            var reference_child = (get_child_at_index (0) as BackgroundManager);
-            if (reference_child != null)
-                reference_child.changed.disconnect (background_changed);
-
             destroy_all_children ();
 
             for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
@@ -64,13 +61,11 @@ namespace Gala {
 
                 add_child (background);
 
-                if (i == 0)
-                    background.changed.connect (background_changed);
+                if (i == 0) {
+                    background.changed.connect (() => changed ());
+                    background.color_information_updated.connect ((new_state) => color_information_updated (new_state));
+                }
             }
-        }
-
-        private void background_changed () {
-            changed ();
         }
     }
 }

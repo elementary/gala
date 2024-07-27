@@ -27,6 +27,7 @@ gala_bin_sources = files(
     'Background/BackgroundContainer.vala',
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
+    'Background/BackgroundUtils.vala',
     'Background/BlurEffect.vala',
     'Background/SystemBackground.vala',
     'BackgroundStateManager/BackgroundListener.vala',

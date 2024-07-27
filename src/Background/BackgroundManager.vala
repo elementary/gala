@@ -9,6 +9,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     private const int FADE_ANIMATION_TIME = 1000;
 
     public signal void changed ();
+    public signal void color_information_updated (BackgroundState new_state);
 
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
@@ -54,7 +55,12 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         background_actor = new_background_actor;
         new_background_actor = null;
 
-        changed ();
+        if (monitor_index == 0) {
+            BackgroundUtils.determine_background_state.begin (this, BackgroundStateManager.panel_height, (obj, res) => {
+                color_information_updated (BackgroundUtils.determine_background_state.end (res));
+            });
+            changed ();
+        }
 
         if (old_background_actor == null) {
             return;

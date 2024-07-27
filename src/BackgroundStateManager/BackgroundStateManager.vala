@@ -16,6 +16,9 @@ public class Gala.BackgroundStateManager : GLib.Object {
     private BackgroundListener background_listener;
 
     [DBus (visible = false)]
+    public static int panel_height = 30;
+
+    [DBus (visible = false)]
     public static void init (WindowManager wm) {
         BackgroundStateManager.wm = wm;
 
@@ -42,7 +45,9 @@ public class Gala.BackgroundStateManager : GLib.Object {
     public signal void state_changed (BackgroundState state, uint animation_duration); 
 
     public void initialize (int panel_height) throws GLib.Error {
-        background_listener = new BackgroundListener (wm, panel_height);
+        BackgroundStateManager.panel_height = panel_height;
+
+        background_listener = new BackgroundListener (wm);
         background_listener.state_changed.connect ((state, animation_duration) => state_changed (state, animation_duration));
     }
 }
