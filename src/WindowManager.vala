@@ -77,6 +77,8 @@ namespace Gala {
          */
         private Zoom? zoom = null;
 
+        private Clutter.Actor fade_in_screen;
+
         private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -357,6 +359,15 @@ namespace Gala {
 
                 ui_group.add_child (screen_shield);
 
+                int width, height;
+                display.get_size (out width, out height);
+                fade_in_screen = new Clutter.Actor () {
+                    width = width,
+                    height = height,
+                    background_color = Clutter.Color.from_rgba (0, 0, 0, 255),
+                };
+                stage.add_child (fade_in_screen);
+
                 display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                     if (window_overview.is_opened ()) {
                         window_overview.close ();
@@ -372,11 +383,13 @@ namespace Gala {
 
             update_input_area ();
 
+            stage.show ();
+
             display.window_created.connect ((window) => window_created (window));
         }
 
-        private void show_stage () requires (!stage.visible) {
-            stage.show ();
+        private void show_stage () requires (fade_in_screen.visible) {
+            fade_in_screen.visible = false;
 
             Idle.add_once (() => {
                 // let the session manager move to the next phase
