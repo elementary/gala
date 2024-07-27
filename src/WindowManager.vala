@@ -156,7 +156,8 @@ namespace Gala {
                 background_group.disconnect (changed_handler);
                 changed_handler = 0;
 
-                show_stage ();
+                // Wait for Wingpanel animation 
+                Timeout.add_once (300, show_stage);
             });
 
             AccessDialog.watch_portal ();
