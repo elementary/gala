@@ -37,11 +37,12 @@ public class Gala.ShellClientsManager : Object {
 
         start_clients.begin ();
 
-        //X11 only
-        wm.get_display ().window_created.connect ((window) => {
-            window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
-            parse_mutter_hints (window);
-        });
+        if (!Meta.Util.is_wayland_compositor ()) {
+            wm.get_display ().window_created.connect ((window) => {
+                window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
+                parse_mutter_hints (window);
+            });
+        }
     }
 
     private async void start_clients () {
@@ -112,7 +113,7 @@ public class Gala.ShellClientsManager : Object {
         }
     }
 
-    private void make_dock_wayland (Meta.Window window) {
+    private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_dock (window);
@@ -191,7 +192,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     //X11 only
-    private void parse_mutter_hints (Meta.Window window) {
+    private void parse_mutter_hints (Meta.Window window) requires  (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
             return;
         }
