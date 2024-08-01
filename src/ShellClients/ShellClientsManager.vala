@@ -192,7 +192,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     //X11 only
-    private void parse_mutter_hints (Meta.Window window) requires  (!Meta.Util.is_wayland_compositor ()) {
+    private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
             return;
         }
