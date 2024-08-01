@@ -210,11 +210,21 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    set_anchor (window, int.parse (val));
+                    int parsed;
+                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 15) {
+                        set_anchor (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as anchor", val);
+                    }
                     break;
 
                 case "hide-mode":
-                    set_hide_mode (window, int.parse (val));
+                    int parsed;
+                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 4) {
+                        set_hide_mode (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as hide mode", val);
+                    }
                     break;
 
                 case "size":
@@ -222,9 +232,12 @@ public class Gala.ShellClientsManager : Object {
                     if (split_val.length != 2) {
                         break;
                     }
-                    var width = int.parse (split_val[0]);
-                    var height = int.parse (split_val[1]);
-                    set_size (window, width, height);
+                    int parsed_width, parsed_height = 0; //set to 0 because vala doesn't realize height will be set too
+                    if (int.try_parse (split_val[0], out parsed_width) && int.try_parse (split_val[1], out parsed_height)) {
+                        set_size (window, parsed_width, parsed_height);
+                    } else {
+                        warning ("Failed to parse %s as width and height", val);
+                    }
                     break;
 
                 case "centered":
