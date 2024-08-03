@@ -1,18 +1,13 @@
 // copied from mutter
 
 uniform sampler2D tex;
-uniform float x1;
-uniform float y1;
-uniform float x2;
-uniform float y2;
+uniform vec4 bounds; // x, y: top left; z, w: bottom right
 uniform float clip_radius;
-uniform float pixel_step_x;
-uniform float pixel_step_y;
-
+uniform vec2 pixel_step;
 
 float rounded_rect_coverage (vec2 p) {
-  float center_left  = x1 + clip_radius;
-  float center_right = x2 - clip_radius;
+  float center_left  = bounds.x + clip_radius;
+  float center_right = bounds.z - clip_radius;
   float center_x;
 
   if (p.x < center_left)
@@ -22,8 +17,8 @@ float rounded_rect_coverage (vec2 p) {
   else
     return 1.0; // The vast majority of pixels exit early here
 
-  float center_top    = y1 + clip_radius;
-  float center_bottom = y2 - clip_radius;
+  float center_top    = bounds.y + clip_radius;
+  float center_bottom = bounds.w - clip_radius;
   float center_y;
 
   if (p.y < center_top)
@@ -51,17 +46,15 @@ float rounded_rect_coverage (vec2 p) {
 }
 
 void main () {
-  vec2 pixel_step = vec2 (pixel_step_x, pixel_step_y);
+  vec4 sample = texture2D (tex, cogl_tex_coord0_in.xy);
+
   vec2 texture_coord = cogl_tex_coord0_in.xy / pixel_step;
-
-  vec4 sample = texture2D(tex, cogl_tex_coord0_in.xy);
   float res = rounded_rect_coverage (texture_coord);
-  // cogl_color_out = sample * res;
 
-      cogl_color_out = vec4 (
-        sample.r * res,
-        sample.g * res,
-        sample.b * res,
-        sample.a * res
-    );
+  cogl_color_out = vec4 (
+    sample.r * res,
+    sample.g * res,
+    sample.b * res,
+    sample.a * res
+  );
 }

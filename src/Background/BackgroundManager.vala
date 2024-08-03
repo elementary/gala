@@ -142,7 +142,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         if (rounded_corders) {
             background_actor.add_effect (
                 new RoundedCornersEffect (
-                    0.0f, 0.0f, background_actor.width, background_actor.height,
                     Utils.scale_to_int (12, wm.get_display ().get_monitor_scale (monitor_index)),
                     wm.get_display ().get_monitor_scale (monitor_index)
                 )

@@ -4,14 +4,8 @@
  */
 
 public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
-    private float x1;
-    private float y1;
-    private float x2;
-    private float y2;
-
     public float clip_radius {
         construct set {
-            warning ("Set clip_radius: %f", value);
             set_uniform_value ("clip_radius",  value);
         }
     }
@@ -24,33 +18,18 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         construct set {
             _monitor_scale = value;
 
-            update_pixel_step ();
+            if (actor != null) {
+                update_pixel_step ();
+            }
         }
     }
 
-    public void set_bounds (float _x1, float _y1, float _x2, float _y2) {
-        x1 = _x1;
-        y1 = _y1;
-        x2 = _x2;
-        y2 = _y2;
-
-        warning ("Set bounds: %f %f %f %f", x1, y1, x2, y2);
-        set_uniform_value ("x1", x1);
-        set_uniform_value ("y1", y1);
-        set_uniform_value ("x2", x2);
-        set_uniform_value ("y2", y2);
-
-        update_pixel_step ();
-    }
-
-    public RoundedCornersEffect (float x1, float y1, float x2, float y2, float clip_radius, float monitor_scale) {
+    public RoundedCornersEffect (float clip_radius, float monitor_scale) {
         Object (
             shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
             clip_radius: clip_radius,
             monitor_scale: monitor_scale
         );
-
-        set_bounds (x1, y1, x2, y2);
     }
 
     construct {
@@ -60,11 +39,42 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         } catch (Error e) {
             critical ("Unable to load rounded-corners.vert: %s", e.message);
         }
+
+        notify["actor"].connect (() => {
+            if (actor == null) {
+                return;
+            }
+
+            actor.notify["width"].connect (update_bounds);
+            actor.notify["height"].connect (update_bounds);
+
+            update_bounds ();
+        });
     }
 
-    private void update_pixel_step () {
-        warning ("Set pixel_Step: %f %f", 1.0f / ((x2 - x1) * monitor_scale), 1.0f / ((y2 - y1) * monitor_scale));
-        set_uniform_value ("pixel_step_x", 1.0f / ((x2 - x1) * monitor_scale));
-        set_uniform_value ("pixel_step_y", 1.0f / ((y2 - y1) * monitor_scale));
+    private void update_bounds () requires (actor != null) {
+        float[] bounds = {
+            0.0f,
+            0.0f,
+            actor.width,
+            actor.height
+        };
+
+        var bounds_value = GLib.Value (typeof (Clutter.ShaderFloat));
+        Clutter.Value.set_shader_float (bounds_value, bounds);
+        set_uniform_value ("bounds", bounds_value);
+
+        update_pixel_step ();
+    }
+
+    private void update_pixel_step () requires (actor != null) {
+        float[] pixel_step = {
+            1.0f / (actor.width * monitor_scale),
+            1.0f / (actor.height * monitor_scale)
+        };
+
+        var pixel_step_value = GLib.Value (typeof (Clutter.ShaderFloat));
+        Clutter.Value.set_shader_float (pixel_step_value, pixel_step);
+        set_uniform_value ("pixel_step", pixel_step_value);
     }
 }
