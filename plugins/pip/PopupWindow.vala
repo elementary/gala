@@ -19,9 +19,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     public Gala.WindowManager wm { get; construct; }
     public Meta.WindowActor window_actor { get; construct; }
 
-    private bool dynamic_container = false;
-
     private Clutter.Actor clone;
+    private Clutter.Actor clone_container;
     private Clutter.Actor container;
     private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
@@ -65,16 +64,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         container_margin = button_size / 2;
 
         reactive = true;
-
         set_pivot_point (0.5f, 0.5f);
         set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-
-        unowned var window = window_actor.get_meta_window ();
-        window.unmanaged.connect (on_close_click_clicked);
-        window.notify["appears-focused"].connect (update_window_focus);
-
-        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
-        workspace_manager.active_workspace_changed.connect (update_window_focus);
 
         clone = new Clutter.Clone (window_actor);
 
@@ -83,15 +74,20 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         move_action.drag_canceled.connect (on_move_end);
         move_action.actor_clicked.connect (activate);
 
-        container = new Clutter.Actor ();
-        container.reactive = true;
-        container.set_scale (0.35f, 0.35f);
-        container.add_effect (new ShadowEffect ("window") { border_radius = 6});
-        container.add_child (clone);
+        clone_container = new Clutter.Actor () {
+            scale_x = 0.35f,
+            scale_y = 0.35f
+        };
+        clone_container.add_child (clone);
+        
+        container = new Clutter.Actor () {
+            reactive = true
+        };
+        container.add_child (clone_container);
+        container.add_effect (new ShadowEffect ("window"));
         container.add_action (move_action);
 
         update_size ();
-        update_container_position ();
 
 #if HAS_MUTTER45
         Mtk.Rectangle monitor_rect;
@@ -132,6 +128,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
         update_clone_clip ();
+
+        unowned var window = window_actor.get_meta_window ();
+        window.unmanaged.connect (on_close_click_clicked);
+        window.notify["appears-focused"].connect (update_window_focus);
+
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (update_window_focus);
     }
 
     public override void show () {
@@ -206,9 +209,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     public void set_container_clip (Graphene.Rect? container_clip) {
-        container.clip_rect = container_clip;
-        dynamic_container = true;
-        update_container_scale ();
+        clone_container.clip_rect = container_clip;
+        update_clone_container_scale ();
         on_allocation_changed ();
     }
 
@@ -269,7 +271,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
                 width = begin_resize_width + diff_x;
                 height = begin_resize_height + diff_y;
 
-                update_container_scale ();
+                update_clone_container_scale ();
                 update_size ();
 
                 break;
@@ -348,15 +350,23 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void update_size () {
-        if (dynamic_container) {
+        int clone_container_width, clone_container_height;
+
+        if (clone_container.has_clip) {
             float src_width = 0.0f, src_height = 0.0f;
-            container.get_clip (null, null, out src_width, out src_height);
-            width = (int)(src_width * container.scale_x + button_size);
-            height = (int)(src_height * container.scale_y + button_size);
+            clone_container.get_clip (null, null, out src_width, out src_height);
+            clone_container_width = (int) (src_width * clone_container.scale_x);
+            clone_container_height = (int) (src_height * clone_container.scale_y);
         } else {
-            width = (int)(container.width * container.scale_x + button_size);
-            height = (int)(container.height * container.scale_y + button_size);
+            clone_container_width = (int) (clone_container.width * clone_container.scale_x);
+            clone_container_height = (int) (clone_container.height * clone_container.scale_y);
         }
+
+        container.width = clone_container_width;
+        container.height = clone_container_height;
+
+        width = clone_container_width + button_size;
+        height = clone_container_height + button_size;
     }
 
     private void update_clone_clip () {
@@ -367,16 +377,16 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         clone.set_clip (x_offset, y_offset, rect.width, rect.height);
         clone.set_position (-x_offset, -y_offset);
 
-        container.set_size (rect.width, rect.height);
+        clone_container.set_size (rect.width, rect.height);
     }
 
-    private void update_container_scale () {
+    private void update_clone_container_scale () {
         float src_width = 1.0f, src_height = 1.0f;
-        if (dynamic_container) {
-            container.get_clip (null, null, out src_width, out src_height);
+        if (clone_container.has_clip) {
+            clone_container.get_clip (null, null, out src_width, out src_height);
         } else {
-            src_width = container.width;
-            src_height = container.height;
+            src_width = clone_container.width;
+            src_height = clone_container.height;
         }
 
         float max_width = width - button_size;
@@ -395,18 +405,18 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         float new_scale_x = new_width / window_width;
         float new_scale_y = new_height / window_height;
 
-        container.scale_x = new_scale_x.clamp (MINIMUM_SCALE, MAXIMUM_SCALE);
-        container.scale_y = new_scale_y.clamp (MINIMUM_SCALE, MAXIMUM_SCALE);
+        clone_container.scale_x = new_scale_x.clamp (MINIMUM_SCALE, MAXIMUM_SCALE);
+        clone_container.scale_y = new_scale_y.clamp (MINIMUM_SCALE, MAXIMUM_SCALE);
 
-        update_container_position ();
+        update_clone_container_position ();
     }
 
-    private void update_container_position () {
-        if (dynamic_container) {
+    private void update_clone_container_position () {
+        if (clone_container.has_clip) {
             float clip_x = 0.0f, clip_y = 0.0f;
-            container.get_clip (out clip_x, out clip_y, null, null);
-            container.x = (float)(-clip_x * container.scale_x + container_margin);
-            container.y = (float)(-clip_y * container.scale_y + container_margin);
+            clone_container.get_clip (out clip_x, out clip_y, null, null);
+            clone_container.x = (float) (-clip_x * clone_container.scale_x);
+            clone_container.y = (float) (-clip_y * clone_container.scale_y);
         }
     }
 
@@ -545,8 +555,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void get_target_window_size (out float width, out float height) {
-        if (dynamic_container) {
-            container.get_clip (null, null, out width, out height);
+        if (clone_container.has_clip) {
+            clone_container.get_clip (null, null, out width, out height);
         } else if (clone.has_clip) {
             clone.get_clip (null, null, out width, out height);
         } else {
