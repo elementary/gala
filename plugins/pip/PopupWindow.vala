@@ -79,7 +79,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             scale_y = 0.35f
         };
         clone_container.add_child (clone);
-        
+
         container = new Clutter.Actor () {
             reactive = true
         };
