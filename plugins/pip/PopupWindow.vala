@@ -19,9 +19,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     public Gala.WindowManager wm { get; construct; }
     public Meta.WindowActor window_actor { get; construct; }
 
-    private Clutter.Actor clone;
-    private Clutter.Actor clone_container;
-    private Clutter.Actor container;
+    private Clutter.Clone clone; // clone itself
+    private Clutter.Actor clone_container; // clips the clone
+    private Clutter.Actor container; // draws the shadow
     private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
     private DragDropAction move_action;
