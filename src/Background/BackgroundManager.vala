@@ -13,6 +13,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
     public bool control_position { get; construct; }
+    public bool rounded_corders { get; construct; }
     public Meta.BackgroundActor newest_background_actor {
         get {
             return (new_background_actor != null) ? new_background_actor : background_actor;
@@ -23,8 +24,13 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     private Meta.BackgroundActor? background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
 
-    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
-        Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
+    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position, bool rounded_corders) {
+        Object (
+            wm: wm,
+            monitor_index: monitor_index,
+            control_position: control_position,
+            rounded_corders: rounded_corders
+        );
     }
 
     construct {
@@ -75,7 +81,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         } else {
             old_background_actor.destroy ();
         }
-
     }
 
     private void update_background_actor (bool animate = true) {
@@ -91,17 +96,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
-
-            new_background_actor.add_effect (
-                new RoundedCornersEffect (
-                    0.0f, 0.0f, new_background_actor.width, new_background_actor.height,
-                    Utils.scale_to_int (32, wm.get_display ().get_monitor_scale (monitor_index)),
-                    wm.get_display ().get_monitor_scale (monitor_index)
-                )
-            );
-    
-            warning ("%f %f", new_background_actor.width, new_background_actor.height);
-
             swap_background_actor (animate);
             return;
         }
@@ -110,17 +104,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         handler = background.loaded.connect (() => {
             background.disconnect (handler);
             background.set_data<ulong> ("background-loaded-handler", 0);
-
-
-            new_background_actor.add_effect (
-                new RoundedCornersEffect (
-                    0.0f, 0.0f, background_actor.width, background_actor.height,
-                    Utils.scale_to_int (32, wm.get_display ().get_monitor_scale (monitor_index)),
-                    wm.get_display ().get_monitor_scale (monitor_index)
-                )
-            );
-
-            warning ("%f %f", new_background_actor.width, new_background_actor.height);
 
             swap_background_actor (animate);
         });
@@ -154,6 +137,16 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         if (control_position) {
             background_actor.set_position (monitor.x, monitor.y);
+        }
+
+        if (rounded_corders) {
+            background_actor.add_effect (
+                new RoundedCornersEffect (
+                    0.0f, 0.0f, background_actor.width, background_actor.height,
+                    Utils.scale_to_int (12, wm.get_display ().get_monitor_scale (monitor_index)),
+                    wm.get_display ().get_monitor_scale (monitor_index)
+                )
+            );
         }
 
         ulong changed_handler = 0;
