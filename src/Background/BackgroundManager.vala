@@ -91,7 +91,17 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
+
+            new_background_actor.add_effect (
+                new RoundedCornersEffect (
+                    0.0f, 0.0f, new_background_actor.width, new_background_actor.height,
+                    Utils.scale_to_int (32, wm.get_display ().get_monitor_scale (monitor_index)),
+                    wm.get_display ().get_monitor_scale (monitor_index)
+                )
+            );
+    
+            warning ("%f %f", new_background_actor.width, new_background_actor.height);
+
             swap_background_actor (animate);
             return;
         }
@@ -101,8 +111,18 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             background.disconnect (handler);
             background.set_data<ulong> ("background-loaded-handler", 0);
 
+
+            new_background_actor.add_effect (
+                new RoundedCornersEffect (
+                    0.0f, 0.0f, background_actor.width, background_actor.height,
+                    Utils.scale_to_int (32, wm.get_display ().get_monitor_scale (monitor_index)),
+                    wm.get_display ().get_monitor_scale (monitor_index)
+                )
+            );
+
+            warning ("%f %f", new_background_actor.width, new_background_actor.height);
+
             swap_background_actor (animate);
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
         });
         background.set_data<ulong> ("background-loaded-handler", handler);
     }
@@ -118,7 +138,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         var background = background_source.get_background (monitor_index);
         var background_actor = new Meta.BackgroundActor (display, monitor_index);
-
         unowned var content = (Meta.BackgroundContent) background_actor.content;
         content.background = background.background;
 
