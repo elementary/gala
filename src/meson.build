@@ -11,7 +11,6 @@ gala_bin_sources = files(
     'NotificationStack.vala',
     'PantheonShell.vala',
     'PluginManager.vala',
-    'RoundedCornersEffect.vala',
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
