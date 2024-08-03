@@ -30,6 +30,7 @@ namespace Gala {
         public GDesktop.BackgroundStyle style { get; construct; }
         public string? filename { get; construct; }
         public Meta.Background background { get; private set; }
+        public Meta.BackgroundImage image { get; private set; }
 
         private Animation? animation = null;
         private Gee.HashMap<string,ulong> file_watches;
@@ -169,7 +170,7 @@ namespace Gala {
             for (var i = 0; i < files.length; i++) {
                 watch_file (files[i]);
 
-                var image = cache.load (File.new_for_path (files[i]));
+                image = cache.load (File.new_for_path (files[i]));
 
                 if (image.is_loaded ()) {
                     num_pending_images--;
@@ -230,7 +231,7 @@ namespace Gala {
             watch_file (filename);
 
             var cache = Meta.BackgroundImageCache.get_default ();
-            var image = cache.load (File.new_for_path (filename));
+            image = cache.load (File.new_for_path (filename));
             if (image.is_loaded ())
                 set_loaded ();
             else {

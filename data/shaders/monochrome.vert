@@ -15,5 +15,5 @@ void main() {
         sample.g * (1.0 - STRENGTH) + gray * STRENGTH,
         sample.b * (1.0 - STRENGTH) + gray * STRENGTH,
         sample.a
-    ) ;
+    );
 }

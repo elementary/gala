@@ -13,6 +13,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     public WindowManager wm { get; construct; }
     public int monitor_index { get; construct; }
     public bool control_position { get; construct; }
+    public bool rounded_corders { get; construct; }
     public Meta.BackgroundActor newest_background_actor {
         get {
             return (new_background_actor != null) ? new_background_actor : background_actor;
@@ -23,8 +24,13 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     private Meta.BackgroundActor? background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
 
-    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
-        Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
+    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position, bool rounded_corders) {
+        Object (
+            wm: wm,
+            monitor_index: monitor_index,
+            control_position: control_position,
+            rounded_corders: rounded_corders
+        );
     }
 
     construct {
@@ -75,7 +81,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         } else {
             old_background_actor.destroy ();
         }
-
     }
 
     private void update_background_actor (bool animate = true) {
@@ -91,7 +96,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
             swap_background_actor (animate);
             return;
         }
@@ -102,7 +106,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             background.set_data<ulong> ("background-loaded-handler", 0);
 
             swap_background_actor (animate);
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
         });
         background.set_data<ulong> ("background-loaded-handler", handler);
     }
@@ -118,7 +121,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         var background = background_source.get_background (monitor_index);
         var background_actor = new Meta.BackgroundActor (display, monitor_index);
-
         unowned var content = (Meta.BackgroundContent) background_actor.content;
         content.background = background.background;
 
@@ -135,6 +137,15 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         if (control_position) {
             background_actor.set_position (monitor.x, monitor.y);
+        }
+
+        if (rounded_corders) {
+            background_actor.add_effect (
+                new RoundedCornersEffect (
+                    Utils.scale_to_int (12, wm.get_display ().get_monitor_scale (monitor_index)),
+                    wm.get_display ().get_monitor_scale (monitor_index)
+                )
+            );
         }
 
         ulong changed_handler = 0;
