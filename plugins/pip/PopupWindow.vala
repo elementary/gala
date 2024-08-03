@@ -369,6 +369,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         height = clone_container_height + button_size;
     }
 
+    /*
+     * Offsets clone by csd shadow size.
+     */
     private void update_clone_clip () {
         var rect = window_actor.get_meta_window ().get_frame_rect ();
 
