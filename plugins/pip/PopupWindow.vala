@@ -79,13 +79,19 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             scale_y = 0.35f
         };
         clone_container.add_child (clone);
-
+        
+        var rounded_container = new Clutter.Actor ();
+        rounded_container.add_child (clone_container);
+        rounded_container.add_effect (new RoundedCornersEffect (9, scale));
+        
         container = new Clutter.Actor () {
             reactive = true
         };
-        container.add_child (clone_container);
-        container.add_effect (new ShadowEffect ("window"));
+        container.add_child (rounded_container);
+        container.add_effect (new ShadowEffect ("window") { border_radius = 6 });
         container.add_action (move_action);
+
+        rounded_container.add_constraint (new Clutter.BindConstraint (container, Clutter.BindCoordinate.SIZE, 0.0f));
 
         update_size ();
 
