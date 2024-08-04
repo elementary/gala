@@ -107,10 +107,37 @@ public class Gala.DesktopIntegration : GLib.Object {
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (window.get_id () == uid) {
-                    window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    if (window.has_focus ()) {
+                        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+                        shake_window (window);
+                    } else {
+                        window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    }
                 }
             }
         }
+    }
+
+    private void shake_window (Meta.Window window) {
+        if (window.get_maximized () == BOTH) {
+            return;
+        }
+
+        var rect = window.get_frame_rect ();
+
+        int n = 0;
+        Timeout.add (10, () => {
+            int diff = 15;
+            if (n % 2 == 0) {
+                diff = -15;
+            }
+
+            window.move_frame (false, rect.x + diff, rect.y);
+
+            n++;
+
+            return n <= 10;
+        });
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
