@@ -108,8 +108,7 @@ public class Gala.DesktopIntegration : GLib.Object {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (window.get_id () == uid) {
                     if (window.has_focus ()) {
-                        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
-                        shake_window (window);
+                        notify_already_focused (window);
                     } else {
                         window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
                     }
@@ -118,8 +117,18 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
     }
 
-    private void shake_window (Meta.Window window) {
+    private bool notifying = false;
+    private void notify_already_focused (Meta.Window window) {
+        if (notifying) {
+            return;
+        }
+
+        notifying = true;
+
+        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+
         if (window.get_maximized () == BOTH) {
+            notifying = false;
             return;
         }
 
@@ -136,7 +145,14 @@ public class Gala.DesktopIntegration : GLib.Object {
 
             n++;
 
-            return n <= 10;
+            var should_continue = n <= 10;
+
+            if (!should_continue) {
+                notifying = false;
+                window.move_frame (false, rect.x, rect.y);
+            }
+
+            return should_continue;
         });
     }
 
