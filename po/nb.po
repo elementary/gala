@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-06-17 03:16+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2024-08-07 18:17+0000\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
 "Language: nb\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -111,7 +111,6 @@ msgstr ""
 "elementary for bruk med Pantheon."
 
 #: data/gala.metainfo.xml.in:24
-#, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
@@ -226,7 +225,7 @@ msgstr ""
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Tillat"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
