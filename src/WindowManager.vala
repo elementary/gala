@@ -144,7 +144,7 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
-            daemon_manager = new DaemonManager (get_display ());
+            daemon_manager = new DaemonManager (this);
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
@@ -326,12 +326,12 @@ namespace Gala {
                     window_switcher = new WindowSwitcher (this, gesture_tracker);
                     ui_group.add_child (window_switcher);
 
-                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
+                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) daemon_manager.handle_switch_windows);
                 }
 
                 if (plugin_manager.window_overview_provider == null

@@ -72,6 +72,8 @@ public class Gala.Daemon.DBus : GLib.Object {
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
+    private WindowSwitcher window_switcher;
+
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
 
@@ -123,6 +125,8 @@ public class Gala.Daemon.DBus : GLib.Object {
                 return Source.REMOVE;
             });
         });
+
+        //  window_switcher = new WindowSwitcher ();
     }
 
     private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
@@ -213,5 +217,9 @@ public class Gala.Daemon.DBus : GLib.Object {
             message_dialog.present ();
             message_dialog.response.connect (message_dialog.destroy);
         }
+    }
+
+    public void show_window_switcher (WindowSwitcher.Window[] windows) throws DBusError, IOError {
+        new WindowSwitcher (windows);
     }
 }

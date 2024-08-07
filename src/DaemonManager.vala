@@ -10,19 +10,27 @@ public class Gala.DaemonManager : GLib.Object {
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
     private const int SPACING = 12;
 
+    public struct Window {
+        string title;
+        string icon;
+        bool current;
+    }
+
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
         public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
+        public abstract async void show_window_switcher (Window[] windows) throws Error;
     }
 
+    public WindowManagerGala wm { get; construct; }
     public Meta.Display display { get; construct; }
 
     private Meta.WaylandClient daemon_client;
     private Daemon? daemon_proxy = null;
 
-    public DaemonManager (Meta.Display display) {
-        Object (display: display);
+    public DaemonManager (WindowManagerGala wm) {
+        Object (wm: wm, display: wm.get_display ());
     }
 
     construct {
@@ -153,5 +161,41 @@ public class Gala.DaemonManager : GLib.Object {
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }
+    }
+
+    [CCode (instance_pos = -1)]
+    public void handle_switch_windows (
+        Meta.Display display, Meta.Window? window,
+        Clutter.KeyEvent event, Meta.KeyBinding binding
+    ) {
+        show_window_switcher.begin ();
+    }
+
+    private async void show_window_switcher () {
+        var workspace = display.get_workspace_manager ().get_active_workspace ();
+
+        var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
+        if (windows == null) {
+            return;
+        }
+
+        unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
+
+        Window[] window_structs = {};
+
+        unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
+
+        foreach (unowned var window in windows) {
+            var app = window_tracker.get_app_for_window (window);
+
+            Window window_struct = {
+                window.title,
+                app.icon.to_string (),
+                window == current_window
+            };
+            window_structs += window_struct;
+        }
+
+        daemon_proxy.show_window_switcher.begin (window_structs);
     }
 }
