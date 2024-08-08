@@ -186,9 +186,20 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
-        make_dock (window);
-
         centered_windows[window] = new CenteredWindow (wm, window);
+    }
+
+    public bool is_positioned_window (Meta.Window window) {
+        bool positioned = (window in centered_windows) || (window in windows);
+        window.foreach_ancestor ((ancestor) => {
+            if (ancestor in centered_windows || ancestor in windows) {
+                positioned = true;
+            }
+
+            return !positioned;
+        });
+
+        return positioned;
     }
 
     //X11 only
