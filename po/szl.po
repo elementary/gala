@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-18 17:28+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
 "PO-Revision-Date: 2020-02-24 21:15+0000\n"
 "Last-Translator: gkkulik <g.kulik@o2.pl>\n"
 "Language-Team: Silesian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -168,6 +168,10 @@ msgstr "Zbiōr powrotu dlo powiadōmiyń ôd starych programōw."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
+msgstr ""
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
 msgstr ""
 
 #: src/Dialogs.vala:144
