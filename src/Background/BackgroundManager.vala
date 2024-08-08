@@ -117,6 +117,8 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         unowned var display = wm.get_display ();
 
         var background = background_source.get_background (monitor_index);
+        background.changed.connect (() => changed ());
+
         var background_actor = new Meta.BackgroundActor (display, monitor_index);
 
         unowned var content = (Meta.BackgroundContent) background_actor.content;
@@ -138,7 +140,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         }
 
         ulong changed_handler = 0;
-        changed_handler = background.changed.connect (() => {
+        changed_handler = background.invalidate.connect (() => {
             background.disconnect (changed_handler);
             changed_handler = 0;
             update_background_actor ();
