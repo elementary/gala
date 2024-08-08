@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2018-02-23 18:17+0000\n"
-"Last-Translator: Shawn <syst3mfailur3@gmail.com>\n"
-"Language-Team: English (Canada) <https://weblate.elementary.io/projects/"
-"desktop/gala/en_CA/>\n"
+"PO-Revision-Date: 2024-08-07 18:17+0000\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
+"Language-Team: English (Canada) <https://l10n.elementary.io/projects/desktop/"
+"gala/en_CA/>\n"
 "Language: en_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:48+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -104,13 +104,13 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
 #: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
 #: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
-msgstr ""
+msgstr "Improvements:"
 
 #: data/gala.metainfo.xml.in:34
 #, fuzzy
@@ -126,7 +126,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
 #: data/gala.metainfo.xml.in:125
 msgid "Updated translations"
-msgstr ""
+msgstr "Updated translations"
 
 #: data/gala.metainfo.xml.in:69
 msgid ""
@@ -218,7 +218,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
-msgstr ""
+msgstr "Screenshots"
 
 #: src/ScreenshotManager.vala:369
 msgid "Screenshot taken"

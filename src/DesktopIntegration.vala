@@ -107,10 +107,51 @@ public class Gala.DesktopIntegration : GLib.Object {
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (window.get_id () == uid) {
-                    window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    if (window.has_focus ()) {
+                        notify_already_focused (window);
+                    } else {
+                        window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    }
                 }
             }
         }
+    }
+
+    private bool notifying = false;
+    private void notify_already_focused (Meta.Window window) {
+        if (notifying) {
+            return;
+        }
+
+        notifying = true;
+
+        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+
+        if (window.get_maximized () == BOTH) {
+            notifying = false;
+            return;
+        }
+
+        var transition = new Clutter.KeyframeTransition ("translation-x") {
+            repeat_count = 5,
+            duration = 100,
+            remove_on_complete = true
+        };
+        transition.set_from_value (0);
+        transition.set_to_value (0);
+        transition.set_key_frames ( { 0.5, -0.5 } );
+
+        var offset = InternalUtils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
+        transition.set_values ( { -offset, offset });
+
+        transition.stopped.connect (() => {
+            notifying = false;
+            wm.get_display ().enable_unredirect ();
+        });
+
+        wm.get_display ().disable_unredirect ();
+
+        ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {

@@ -66,6 +66,10 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
+        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+            return;
+        }
+
         if (!(app_id in app_windows)) {
             app_windows[app_id] = new GLib.Array<Meta.Window?> ();
         }
