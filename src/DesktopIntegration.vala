@@ -132,28 +132,26 @@ public class Gala.DesktopIntegration : GLib.Object {
             return;
         }
 
-        var rect = window.get_frame_rect ();
+        var transition = new Clutter.KeyframeTransition ("translation-x") {
+            repeat_count = 5,
+            duration = 100,
+            remove_on_complete = true
+        };
+        transition.set_from_value (0);
+        transition.set_to_value (0);
+        transition.set_key_frames ( { 0.5, -0.5 } );
 
-        int n = 0;
-        Timeout.add (10, () => {
-            int diff = 15;
-            if (n % 2 == 0) {
-                diff = -15;
-            }
+        var offset = InternalUtils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
+        transition.set_values ( { -offset, offset });
 
-            window.move_frame (false, rect.x + diff, rect.y);
-
-            n++;
-
-            var should_continue = n <= 10;
-
-            if (!should_continue) {
-                notifying = false;
-                window.move_frame (false, rect.x, rect.y);
-            }
-
-            return should_continue;
+        transition.stopped.connect (() => {
+            notifying = false;
+            wm.get_display ().enable_unredirect ();
         });
+
+        wm.get_display ().disable_unredirect ();
+
+        ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
