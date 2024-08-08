@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2019-12-10 17:16-0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-08-07 18:17+0000\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
+"Language-Team: English (Australia) <https://l10n.elementary.io/projects/"
+"desktop/gala/en_AU/>\n"
 "Language: en_AU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -125,7 +127,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
 #: data/gala.metainfo.xml.in:125
 msgid "Updated translations"
-msgstr ""
+msgstr "Updated translations"
 
 #: data/gala.metainfo.xml.in:69
 msgid ""
@@ -217,7 +219,7 @@ msgstr ""
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
-msgstr ""
+msgstr "Screenshots"
 
 #: src/ScreenshotManager.vala:369
 msgid "Screenshot taken"
