@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
+"POT-Creation-Date: 2024-07-18 17:28+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -110,83 +110,49 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "کۆمپانیای ئێلەمێنتەری هاوپشک."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
 #: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "دیمەنی مەڵتی-تاسکینگ"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "وەرگێڕانەکان نوێکراونەوە"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "وەرگێڕانەکان نوێکراونەوە"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "باشترکراوەکانی ئەدا"
-
-#: data/gala.metainfo.xml.in:128
-#, fuzzy
-#| msgid "Multitasking View"
-msgid "Remove texture from Multitasking View"
-msgstr "دیمەنی مەڵتی-تاسکینگ"
-
-#: data/gala.metainfo.xml.in:129
-#, fuzzy
-#| msgid "Fix selecting windows underneath the window switcher"
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -294,6 +260,14 @@ msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"
+
+#~ msgid "Performance improvements"
+#~ msgstr "باشترکراوەکانی ئەدا"
+
+#, fuzzy
+#~| msgid "Fix selecting windows underneath the window switcher"
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr "چارەسەرکردنی دیاریکردنی پەنجەرەکان لە ژێڕە پەنجەرەی سویچەردا"
 
 #, fuzzy
 #~| msgid "Show window titles in multitasking view"

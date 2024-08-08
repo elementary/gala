@@ -2,10 +2,6 @@
 launch-on-x=true
 args=io.elementary.wingpanel
 
-[io.elementary.desktop.agent-polkit]
-launch-on-x=true
-args=/usr/libexec/policykit-1-pantheon/io.elementary.desktop.agent-polkit
-
 [io.elementary.dock]
-launch-on-x=false
+launch-on-x=true
 args=io.elementary.dock

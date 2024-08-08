@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2024-07-09 14:02+0000\n"
+"POT-Creation-Date: 2024-07-18 17:28+0000\n"
+"PO-Revision-Date: 2024-07-19 17:28+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -108,13 +108,27 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Millores:"
 
 #: data/gala.metainfo.xml.in:34
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Millora de la navegació amb el teclat a la vista multitasca"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Canvia el color del plafó alhora que la transició del fons de pantalla"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Traduccions actualitzades"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -122,77 +136,25 @@ msgstr ""
 "Canviar el fons de pantalla o l'opció de dormir respecta l'opció \"Redueix "
 "el moviment\"."
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Useu els punters d'arrossegar i deixar anar adequats quan moveu finestres"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Solució del problema que els gestos de la vista de multitasca poden deixar "
 "de funcionar"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Millora del comportament dinàmic dels espais de treball amb diversos monitors"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Traduccions actualitzades"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Millora del maneig de la drecera de desplaçament a l'espai de treball"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"Configura la disposició del teclat correctament a l'inici perquè l'indicador "
-"coincideixi amb la disposició seleccionada"
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-"Correcció de les dreceres de teclat de captures de pantalla mentre esteu a "
-"la vista multitasca"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"Estableix correctament el ressaltat de l'espai de treball actiu quan entreu "
-"a la Visualització multitasca i animeu 1:1 amb gestos multitàctils"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "Actualitza el color del plafó després d'atenuar el fons de pantalla"
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr "Escala els cantons arrodonits per pantalla"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "Admet l'escala fraccionada"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Millores de rendiment"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Suprimeix la textura de la vista multitasca"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Evita seleccionar finestres accidentalment al commutador de finestres"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -296,6 +258,36 @@ msgstr "Usa la configuració anterior"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"
+
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "Configura la disposició del teclat correctament a l'inici perquè "
+#~ "l'indicador coincideixi amb la disposició seleccionada"
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "Estableix correctament el ressaltat de l'espai de treball actiu quan "
+#~ "entreu a la Visualització multitasca i animeu 1:1 amb gestos multitàctils"
+
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Escala els cantons arrodonits per pantalla"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "Admet l'escala fraccionada"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Millores de rendiment"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "Suprimeix la textura de la vista multitasca"
+
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "Evita seleccionar finestres accidentalment al commutador de finestres"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr ""
