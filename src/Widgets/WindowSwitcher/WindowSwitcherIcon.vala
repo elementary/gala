@@ -40,6 +40,9 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
+        get_accessible ().accessible_name = window.title;
+        get_accessible ().accessible_role = LIST_ITEM;
+
         reactive = true;
 
         this.scale_factor = scale_factor;
@@ -76,5 +79,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
 
             ctx.restore ();
         }
+
+        get_accessible ().notify_state_change (Atk.StateType.SELECTED, selected);
     }
 }
