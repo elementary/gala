@@ -210,7 +210,7 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    int parsed;
+                    int parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
                     if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 15) {
                         set_anchor (window, parsed);
                     } else {
@@ -219,7 +219,7 @@ public class Gala.ShellClientsManager : Object {
                     break;
 
                 case "hide-mode":
-                    int parsed;
+                    int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
                     if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 4) {
                         set_hide_mode (window, parsed);
                     } else {
