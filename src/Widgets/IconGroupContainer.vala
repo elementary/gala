@@ -153,6 +153,7 @@ namespace Gala {
 
             foreach (var child in children) {
                 if (child is IconGroup) {
+                    child.ref (); //The list only contains weak references so make sure the child isn't freed before it's added again
                     remove_group ((IconGroup) child);
                 }
             }
@@ -160,6 +161,7 @@ namespace Gala {
             foreach (var child in children) {
                 if (child is IconGroup) {
                     add_group ((IconGroup) child);
+                    child.unref ();
                 }
             }
         }
