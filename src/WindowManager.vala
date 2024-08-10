@@ -2056,7 +2056,6 @@ namespace Gala {
                 }
             }
 
-
             main_container.clip_to_allocation = true;
             main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
             main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
