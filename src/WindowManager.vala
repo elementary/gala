@@ -947,24 +947,30 @@ namespace Gala {
                         current.minimize ();
                     break;
                 case ActionType.START_MOVE_CURRENT:
-                    if (current != null && current.allows_move ())
+                    if (current != null && current.allows_move ()) {
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+                        var device = Clutter.get_default_backend ().get_default_seat ().get_pointer ();
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, device, null, Gtk.get_current_event_time (), null);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
 #endif
+                    }
+
                     break;
                 case ActionType.START_RESIZE_CURRENT:
-                    if (current != null && current.allows_resize ())
+                    if (current != null && current.allows_resize ()) {
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+                        var device = Clutter.get_default_backend ().get_default_seat ().get_pointer ();
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, device, null, Gtk.get_current_event_time (), null);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
 #endif
+                    }
+
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
                     if (current == null)
