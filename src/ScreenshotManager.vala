@@ -351,25 +351,17 @@ namespace Gala {
                 return false;
             }
 
-            var stream = new GLib.MemoryOutputStream.resizable ();
-
+            uint8[] buffer;
             try {
-                screenshot.save_to_stream (stream, "png", null);
+                screenshot.save_to_buffer (out buffer, "png");
             } catch (Error e) {
-                warning ("Could not save screenshot to clipboard: failed to save image to stream: %s", e.message);
-                return false;
-            }
-
-            try {
-                stream.close (null);
-            } catch (Error e) {
-                warning ("Could not save screenshot to clipboard: failed to close the stream: %s", e.message);
+                warning ("Could not save screenshot to clipboard: failed to save image to buffer: %s", e.message);
                 return false;
             }
 
             try {
                 unowned var selection = wm.get_display ().get_selection ();
-                var source = new Meta.SelectionSourceMemory ("image/png", stream.steal_as_bytes ());
+                var source = new Meta.SelectionSourceMemory ("image/png", new GLib.Bytes.take (buffer));
                 selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
             } catch (Error e) {
                 warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
