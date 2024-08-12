@@ -369,7 +369,7 @@ namespace Gala {
 
             try {
                 unowned var selection = wm.get_display ().get_selection ();
-                var source = Meta.SelectionSourceMemory.@new ("image/png", stream.steal_as_bytes ());
+                var source = new Meta.SelectionSourceMemory ("image/png", stream.steal_as_bytes ());
                 selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
             } catch (Error e) {
                 warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
