@@ -929,7 +929,9 @@ namespace Gala {
                         event.get_time (),
                         null
                     );
-
+                } else if (event.get_type () == LEAVE) {
+                    /* We get leave emitted when beginning a grab op, so we have
+                       to filter it in order to avoid disconnecting and popping twice */
                     return Clutter.EVENT_PROPAGATE;
                 }
 
