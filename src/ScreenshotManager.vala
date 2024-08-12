@@ -300,7 +300,7 @@ namespace Gala {
             return Environment.get_home_dir ();
         }
 
-        private static async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
+        private async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
             return (filename != "")
                 ? yield save_image_to_file (image, filename, scale, out used_filename)
                 : save_image_to_clipboard (image, filename, out used_filename);
@@ -342,19 +342,43 @@ namespace Gala {
             }
         }
 
-        private static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
-
-            unowned Gdk.Display display = Gdk.Display.get_default ();
-            unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
 
             var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
             if (screenshot == null) {
-                warning ("could not save screenshot to clipboard: null pixbuf");
+                warning ("Could not save screenshot to clipboard: null pixbuf");
                 return false;
             }
 
-            clipboard.set_image (screenshot);
+            var stream = new GLib.MemoryOutputStream.resizable ();
+
+            try {
+                screenshot.save_to_stream (stream, "png", null);
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to save image to stream: %s", e.message);
+                return false;
+            }
+
+            try {
+                stream.close (null);
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to close the stream: %s", e.message);
+                return false;
+            }
+
+            unowned var selection = wm.get_display ().get_selection ();
+
+            Meta.SelectionSourceMemory source;
+            try {
+                source = Meta.SelectionSourceMemory.@new ("image/png", stream.steal_as_bytes ());
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
+                return false;
+            }
+
+            selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
+
             return true;
         }
 
