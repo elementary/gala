@@ -1990,12 +1990,16 @@ namespace Gala {
             var from_has_fullscreened = false;
 
             // collect all windows and put them in the appropriate containers
-            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
+            var slist = new GLib.SList<Meta.Window> ();
+            display.list_all_windows ().@foreach ((win) => {
+                slist.append (win);
+            });
+            foreach (unowned var window in display.sort_windows_by_stacking (slist)) {
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+
                 if (actor.is_destroyed ()) {
                     continue;
                 }
-
-                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
                     move_primary_only && !window.is_on_primary_monitor () ||
