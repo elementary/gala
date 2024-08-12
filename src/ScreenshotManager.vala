@@ -367,17 +367,14 @@ namespace Gala {
                 return false;
             }
 
-            unowned var selection = wm.get_display ().get_selection ();
-
-            Meta.SelectionSourceMemory source;
             try {
-                source = Meta.SelectionSourceMemory.@new ("image/png", stream.steal_as_bytes ());
+                unowned var selection = wm.get_display ().get_selection ();
+                var source = Meta.SelectionSourceMemory.@new ("image/png", stream.steal_as_bytes ());
+                selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
             } catch (Error e) {
                 warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
                 return false;
             }
-
-            selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
 
             return true;
         }
