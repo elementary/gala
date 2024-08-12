@@ -142,9 +142,15 @@ public class Gala.PanelClone : Object {
         clone.y = calculate_clone_y (false);
         clone.restore_easing_state ();
 
-        clone.get_transition ("y").completed.connect (() => {
+        unowned var y_transition = clone.get_transition ("y");
+        if (y_transition != null) {
+            y_transition.completed.connect (() => {
+                clone.visible = false;
+                panel_hidden = false;
+            });
+        } else {
             clone.visible = false;
             panel_hidden = false;
-        });
+        }
     }
 }
