@@ -326,7 +326,7 @@ namespace Gala {
             }
 
             try {
-                var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+                var screenshot = ScreenshotUtils.pixbuf_from_surface (image, image.get_width (), image.get_height ());
                 var file = File.new_for_path (used_filename);
                 FileIOStream stream;
                 if (file.query_exists ()) {
@@ -348,7 +348,7 @@ namespace Gala {
             unowned Gdk.Display display = Gdk.Display.get_default ();
             unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
 
-            var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+            var screenshot = ScreenshotUtils.pixbuf_from_surface (image, image.get_width (), image.get_height ());
             if (screenshot == null) {
                 warning ("could not save screenshot to clipboard: null pixbuf");
                 return false;
@@ -388,15 +388,17 @@ namespace Gala {
 
             try {
                 if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
+                    warning ("first");
                     wm.stage.paint_to_buffer (
                         {x, y, width, height},
                         scale,
                         image.get_data (),
                         image.get_stride (),
-                        Cogl.PixelFormat.BGRA_8888_PRE,
+                        Cogl.PixelFormat.CAIRO_ARGB32_COMPAT,
                         paint_flags
                     );
                 } else {
+                    warning ("second");
                     wm.stage.paint_to_buffer (
                         {x, y, width, height},
                         scale,
