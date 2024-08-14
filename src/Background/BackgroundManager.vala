@@ -16,6 +16,10 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     public bool rounded_corners { get; construct; }
     public Meta.BackgroundActor newest_background_actor {
         get {
+            if (new_background_actor != null) {
+                warning ("New actor is NOT null");
+            }
+
             return (new_background_actor != null) ? new_background_actor : background_actor;
         }
     }
@@ -55,6 +59,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         background_actor = new_background_actor;
         new_background_actor = null;
 
+        warning ("changing");
         changed ();
 
         if (old_background_actor == null) {

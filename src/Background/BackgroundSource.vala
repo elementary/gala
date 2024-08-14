@@ -132,14 +132,14 @@ namespace Gala {
             if (Drawing.StyleManager.get_instance ().prefers_color_scheme == DARK) {
                 var uri = gnome_background_settings.get_string ("picture-uri-dark");
                 var path = File.new_for_uri (uri).get_path ();
-                if (FileUtils.test (path, EXISTS)) {
+                if (path != null && FileUtils.test (path, EXISTS)) {
                     return path;
                 }
             }
 
             var uri = gnome_background_settings.get_string ("picture-uri");
             var path = File.new_for_uri (uri).get_path ();
-            if (FileUtils.test (path, EXISTS)) {
+            if (path != null && FileUtils.test (path, EXISTS)) {
                 return path;
             }
 

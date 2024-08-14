@@ -42,7 +42,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public Meta.BackgroundGroup background_group { get; protected set; }
+        public BackgroundContainerInterface background_group { get; protected set; }
 
         /**
          * {@inheritDoc}

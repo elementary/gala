@@ -116,7 +116,7 @@ namespace Gala {
         /**
          * The background group is a container for the background actors forming the wallpaper
          */
-        public abstract Meta.BackgroundGroup background_group { get; protected set; }
+        public abstract BackgroundContainerInterface background_group { get; protected set; }
 
         /**
          * View that allows to see and manage all your windows and desktops.
