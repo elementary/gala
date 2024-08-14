@@ -9,6 +9,8 @@ public class Gala.CenteredWindow : Object {
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
+    private uint idle_move_id = 0;
+
     public CenteredWindow (WindowManager wm, Meta.Window window) {
         Object (wm: wm, window: window);
     }
@@ -23,6 +25,8 @@ public class Gala.CenteredWindow : Object {
         position_window ();
 
         window.shown.connect (() => window.focus (wm.get_display ().get_current_time ()));
+
+        window.unmanaging.connect (() => Source.remove (idle_move_id));
     }
 
     private void position_window () {
@@ -33,8 +37,15 @@ public class Gala.CenteredWindow : Object {
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
         var y = monitor_geom.y + (monitor_geom.height - window_rect.height) / 2;
 
-        Idle.add (() => {
+
+        if (idle_move_id != 0) {
+            Source.remove (idle_move_id);
+        }
+
+        idle_move_id = Idle.add (() => {
             window.move_frame (false, x, y);
+
+            idle_move_id = 0;
             return Source.REMOVE;
         });
     }
