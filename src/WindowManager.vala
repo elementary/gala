@@ -915,6 +915,33 @@ namespace Gala {
             });
         }
 
+        private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
+            var proxy = push_modal (stage);
+
+            ulong handler = 0;
+            handler = stage.captured_event.connect ((event) => {
+                if (event.get_type () == MOTION || event.get_type () == ENTER ||
+                    event.get_type () == TOUCHPAD_HOLD || event.get_type () == TOUCH_BEGIN) {
+                    window.begin_grab_op (
+                        op,
+                        event.get_device (),
+                        event.get_event_sequence (),
+                        event.get_time (),
+                        null
+                    );
+                } else if (event.get_type () == LEAVE) {
+                    /* We get leave emitted when beginning a grab op, so we have
+                       to filter it in order to avoid disconnecting and popping twice */
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
+                pop_modal (proxy);
+                stage.disconnect (handler);
+
+                return Clutter.EVENT_PROPAGATE;
+            });
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -949,7 +976,7 @@ namespace Gala {
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+                        set_grab_trigger (current, KEYBOARD_MOVING);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
@@ -959,7 +986,7 @@ namespace Gala {
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+                        set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
