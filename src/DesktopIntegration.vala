@@ -6,6 +6,8 @@
 
 [DBus (name="org.pantheon.gala.DesktopIntegration")]
 public class Gala.DesktopIntegration : GLib.Object {
+    private string NOTIFY_TRANSITION_NAME = "notify-already-focused";
+
     public struct RunningApplication {
         string app_id;
         GLib.HashTable<unowned string, Variant> details;
@@ -121,25 +123,21 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
     }
 
-    private bool notifying = false;
     private void notify_already_focused (Meta.Window window) {
-        if (notifying) {
+        if (window.get_maximized () == BOTH) {
             return;
         }
 
-        notifying = true;
+        unowned var actor = ((Meta.WindowActor) window.get_compositor_private ());
+        actor.remove_transition (NOTIFY_TRANSITION_NAME);
 
         wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
 
-        if (window.get_maximized () == BOTH) {
-            notifying = false;
-            return;
-        }
-
         var transition = new Clutter.KeyframeTransition ("translation-x") {
-            repeat_count = 5,
+            repeat_count = 4,
             duration = 100,
-            remove_on_complete = true
+            progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+            remove_on_complete = true,
         };
         transition.set_from_value (0);
         transition.set_to_value (0);
@@ -149,13 +147,12 @@ public class Gala.DesktopIntegration : GLib.Object {
         transition.set_values ( { -offset, offset });
 
         transition.stopped.connect (() => {
-            notifying = false;
             wm.get_display ().enable_unredirect ();
         });
 
         wm.get_display ().disable_unredirect ();
 
-        ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
+        actor.add_transition (NOTIFY_TRANSITION_NAME, transition);
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
