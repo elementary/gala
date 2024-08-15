@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-08-08 20:38+0000\n"
-"PO-Revision-Date: 2024-08-15 10:16+0000\n"
+"PO-Revision-Date: 2024-08-16 15:16+0000\n"
 "Last-Translator: José Rafael <jrafaeldesantana@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
@@ -90,7 +90,7 @@ msgstr "Maximizar"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr "Multitarefa  &amp; Gerenciamento de janela"
+msgstr "Multitarefa &amp; Gerenciamento de janela"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
@@ -253,7 +253,7 @@ msgstr "Manter configurações"
 
 #: src/WindowManager.vala:2330
 msgid "Use Previous Settings"
-msgstr "Usar configurações anteriores"
+msgstr "Usar as configurações anteriores"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2369
