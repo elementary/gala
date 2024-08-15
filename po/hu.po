@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-08-08 20:38+0000\n"
-"PO-Revision-Date: 2024-07-23 15:16+0000\n"
+"PO-Revision-Date: 2024-08-15 10:16+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -183,7 +183,7 @@ msgstr "Ismeretlen"
 
 #: src/DesktopIntegration.vala:128
 msgid "Window has already focus"
-msgstr ""
+msgstr "Az ablak már fókuszban van"
 
 #: src/Dialogs.vala:144
 #, c-format
