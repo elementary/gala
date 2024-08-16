@@ -38,7 +38,9 @@ public class Gala.PanelWindow : Object {
         window.size_changed.connect (position_window);
 
         window.unmanaging.connect (() => {
-            Source.remove (idle_move_id);
+            if (idle_move_id != 0) {
+                Source.remove (idle_move_id);
+            }
 
             destroy_barrier ();
 
