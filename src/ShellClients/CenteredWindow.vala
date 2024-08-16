@@ -26,7 +26,11 @@ public class Gala.CenteredWindow : Object {
 
         window.shown.connect (() => window.focus (wm.get_display ().get_current_time ()));
 
-        window.unmanaging.connect (() => Source.remove (idle_move_id));
+        window.unmanaging.connect (() => {
+            if (idle_move_id != 0) {
+                Source.remove (idle_move_id);
+            }
+        });
     }
 
     private void position_window () {
@@ -36,7 +40,6 @@ public class Gala.CenteredWindow : Object {
 
         var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
         var y = monitor_geom.y + (monitor_geom.height - window_rect.height) / 2;
-
 
         if (idle_move_id != 0) {
             Source.remove (idle_move_id);
