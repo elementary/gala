@@ -277,6 +277,10 @@ namespace Gala {
 
                     var window_rect = ((WindowClone) child).slot;
 
+                    if (window_rect == null) {
+                        continue;
+                    }
+
                     if (direction == LEFT) {
                         if (window_rect.x > current_rect.x) {
                             continue;
