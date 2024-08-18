@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Daemon.WindowMenu : Gtk.Menu {
+public class Gala.Daemon.WindowMenu : Gtk.Popover {
     private static GLib.Settings gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
 
-    public signal void perform_action (Gala.ActionType type);
+    public signal void perform_action (Gala.ActionType type) {
+        popdown ();
+    }
 
     private Granite.AccelLabel always_on_top_accellabel;
     private Granite.AccelLabel close_accellabel;
@@ -18,16 +20,16 @@ public class Gala.Daemon.WindowMenu : Gtk.Menu {
     private Granite.AccelLabel on_visible_workspace_accellabel;
     private Granite.AccelLabel resize_accellabel;
     private Granite.AccelLabel screenshot_accellabel;
-    private Gtk.MenuItem minimize;
-    private Gtk.MenuItem maximize;
-    private Gtk.MenuItem move;
-    private Gtk.MenuItem resize;
-    private Gtk.CheckMenuItem always_on_top;
-    private Gtk.CheckMenuItem on_visible_workspace;
-    private Gtk.MenuItem move_left;
-    private Gtk.MenuItem move_right;
-    private Gtk.MenuItem close;
-    private Gtk.MenuItem screenshot;
+    private Gtk.Button minimize;
+    private Gtk.Button maximize;
+    private Gtk.Button move;
+    private Gtk.Button resize;
+    private Gtk.CheckButton always_on_top;
+    private Gtk.CheckButton on_visible_workspace;
+    private Gtk.Button move_left;
+    private Gtk.Button move_right;
+    private Gtk.Button close;
+    private Gtk.Button screenshot;
 
     private ulong always_on_top_sid = 0U;
     private ulong on_visible_workspace_sid = 0U;
@@ -35,94 +37,121 @@ public class Gala.Daemon.WindowMenu : Gtk.Menu {
     construct {
         minimize_accellabel = new Granite.AccelLabel (_("Hide"));
 
-        minimize = new Gtk.MenuItem ();
-        minimize.add (minimize_accellabel);
-        minimize.activate.connect (() => {
+        minimize = new Gtk.Button () {
+            child = minimize_accellabel
+        };
+        minimize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        minimize.clicked.connect (() => {
             perform_action (Gala.ActionType.HIDE_CURRENT);
         });
 
-        maximize = new Gtk.MenuItem ();
-        maximize.activate.connect (() => {
+        maximize = new Gtk.Button ();
+        maximize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        maximize.clicked.connect (() => {
             perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
         });
 
         move_accellabel = new Granite.AccelLabel (_("Move"));
 
-        move = new Gtk.MenuItem ();
-        move.add (move_accellabel);
-        move.activate.connect (() => {
+        move = new Gtk.Button () {
+            child = move_accellabel
+        };
+        move.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        move.clicked.connect (() => {
             perform_action (Gala.ActionType.START_MOVE_CURRENT);
         });
 
         resize_accellabel = new Granite.AccelLabel (_("Resize"));
 
-        resize = new Gtk.MenuItem ();
-        resize.add (resize_accellabel);
-        resize.activate.connect (() => {
+        resize = new Gtk.Button () {
+            child = resize_accellabel
+        };
+        resize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        resize.clicked.connect (() => {
             perform_action (Gala.ActionType.START_RESIZE_CURRENT);
         });
 
         always_on_top_accellabel = new Granite.AccelLabel (_("Always on Top"));
 
-        always_on_top = new Gtk.CheckMenuItem ();
-        always_on_top.add (always_on_top_accellabel);
-        always_on_top_sid = always_on_top.activate.connect (() => {
+        always_on_top = new Gtk.CheckButton () {
+            child = always_on_top_accellabel
+        };
+        always_on_top.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        always_on_top_sid = always_on_top.toggled.connect (() => {
             perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT);
         });
 
         on_visible_workspace_accellabel = new Granite.AccelLabel (_("Always on Visible Workspace"));
 
-        on_visible_workspace = new Gtk.CheckMenuItem ();
-        on_visible_workspace.add (on_visible_workspace_accellabel);
-        on_visible_workspace_sid = on_visible_workspace.activate.connect (() => {
+        on_visible_workspace = new Gtk.CheckButton () {
+            child = on_visible_workspace_accellabel
+        };
+        on_visible_workspace.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        on_visible_workspace_sid = on_visible_workspace.toggled.connect (() => {
             perform_action (Gala.ActionType.TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT);
         });
 
         move_left_accellabel = new Granite.AccelLabel (_("Move to Workspace Left"));
 
-        move_left = new Gtk.MenuItem ();
-        move_left.add (move_left_accellabel);
-        move_left.activate.connect (() => {
+        move_left = new Gtk.Button () {
+            child = move_left_accellabel
+        };
+        move_left.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        move_left.clicked.connect (() => {
             perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_LEFT);
         });
 
         move_right_accellabel = new Granite.AccelLabel (_("Move to Workspace Right"));
 
-        move_right = new Gtk.MenuItem ();
-        move_right.add (move_right_accellabel);
-        move_right.activate.connect (() => {
+        move_right = new Gtk.Button () {
+            child = move_right_accellabel
+        };
+        move_right.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        move_right.clicked.connect (() => {
             perform_action (Gala.ActionType.MOVE_CURRENT_WORKSPACE_RIGHT);
         });
 
         screenshot_accellabel = new Granite.AccelLabel (_("Take Screenshot"));
 
-        screenshot = new Gtk.MenuItem ();
-        screenshot.add (screenshot_accellabel);
-        screenshot.activate.connect (() => {
+        screenshot = new Gtk.Button () {
+            child = screenshot_accellabel
+        };
+        screenshot.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        screenshot.clicked.connect (() => {
             perform_action (Gala.ActionType.SCREENSHOT_CURRENT);
         });
 
         close_accellabel = new Granite.AccelLabel (_("Close"));
 
-        close = new Gtk.MenuItem ();
-        close.add (close_accellabel);
-        close.activate.connect (() => {
+        close = new Gtk.Button () {
+            child = close_accellabel
+        };
+        close.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        close.clicked.connect (() => {
             perform_action (Gala.ActionType.CLOSE_CURRENT);
         });
 
-        append (screenshot);
-        append (new Gtk.SeparatorMenuItem ());
-        append (always_on_top);
-        append (on_visible_workspace);
-        append (move_left);
-        append (move_right);
-        append (new Gtk.SeparatorMenuItem ());
-        append (move);
-        append (resize);
-        append (maximize);
-        append (new Gtk.SeparatorMenuItem ());
-        append (minimize);
-        append (close);
+        var box = new Gtk.Box (VERTICAL, 0);
+        box.append (screenshot);
+        box.append (new Gtk.Separator (HORIZONTAL));
+        box.append (always_on_top);
+        box.append (on_visible_workspace);
+        box.append (move_left);
+        box.append (move_right);
+        box.append (new Gtk.Separator (HORIZONTAL));
+        box.append (move);
+        box.append (resize);
+        box.append (maximize);
+        box.append (new Gtk.Separator (HORIZONTAL));
+        box.append (minimize);
+        box.append (close);
+
+        child = box;
+        halign = START;
+        position = BOTTOM;
+        autohide = false;
+        has_arrow = false;
+        add_css_class (Granite.STYLE_CLASS_MENU);
     }
 
     public void update (Gala.WindowFlags flags) {
@@ -141,14 +170,11 @@ public class Gala.Daemon.WindowMenu : Gtk.Menu {
             }
 
             maximize.get_child ().destroy ();
-            maximize.add (
-                new Granite.AccelLabel (
-                    maximize_label,
-                    keybind_settings.get_strv ("toggle-maximized")[0]
-                )
+            maximize.child = new Granite.AccelLabel (
+                maximize_label,
+                keybind_settings.get_strv ("toggle-maximized")[0]
             );
         }
-
 
         move.visible = Gala.WindowFlags.ALLOWS_MOVE in flags;
         if (move.visible) {
@@ -160,7 +186,7 @@ public class Gala.Daemon.WindowMenu : Gtk.Menu {
             resize_accellabel.accel_string = keybind_settings.get_strv ("begin-resize")[0];
         }
 
-        // Setting active causes signal fires on activate so
+        // Setting active causes signal fires on clicked so
         // we temporarily block those signals from emissions
         SignalHandler.block (always_on_top, always_on_top_sid);
         SignalHandler.block (on_visible_workspace, on_visible_workspace_sid);

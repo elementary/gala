@@ -44,6 +44,10 @@ public class Gala.DesktopIntegration : GLib.Object {
             return false;
         }
 
+        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+            return false;
+        }
+
         switch (window.get_window_type ()) {
             case Meta.WindowType.NORMAL:
             case Meta.WindowType.DIALOG:
@@ -58,6 +62,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public Window[] get_windows () throws GLib.DBusError, GLib.IOError {
         Window[] returned_windows = {};
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
+        var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (!is_eligible_window (window)) {
@@ -74,6 +79,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("client-type", new GLib.Variant.uint32 (window.get_client_type ()));
                 properties.insert ("is-hidden", new GLib.Variant.boolean (window.is_hidden ()));
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
+                properties.insert ("on-active-workspace", new GLib.Variant.boolean (window.located_on_workspace (active_workspace)));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
 
@@ -105,10 +111,51 @@ public class Gala.DesktopIntegration : GLib.Object {
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (window.get_id () == uid) {
-                    window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    if (window.has_focus ()) {
+                        notify_already_focused (window);
+                    } else {
+                        window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+                    }
                 }
             }
         }
+    }
+
+    private bool notifying = false;
+    private void notify_already_focused (Meta.Window window) {
+        if (notifying) {
+            return;
+        }
+
+        notifying = true;
+
+        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+
+        if (window.get_maximized () == BOTH) {
+            notifying = false;
+            return;
+        }
+
+        var transition = new Clutter.KeyframeTransition ("translation-x") {
+            repeat_count = 5,
+            duration = 100,
+            remove_on_complete = true
+        };
+        transition.set_from_value (0);
+        transition.set_to_value (0);
+        transition.set_key_frames ( { 0.5, -0.5 } );
+
+        var offset = InternalUtils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
+        transition.set_values ( { -offset, offset });
+
+        transition.stopped.connect (() => {
+            notifying = false;
+            wm.get_display ().enable_unredirect ();
+        });
+
+        wm.get_display ().disable_unredirect ();
+
+        ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {

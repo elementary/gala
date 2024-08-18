@@ -294,7 +294,6 @@ namespace Gala {
          *
          * @param actor      The actor from which to create a snapshot
          * @param inner_rect The inner (actually visible) rectangle of the window
-         * @param outer_rect The outer (input region) rectangle of the window
          *
          * @return           A copy of the actor at that time or %NULL
          */
@@ -400,16 +399,6 @@ namespace Gala {
             }
 
             return texture;
-        }
-
-        private static Gtk.CssProvider gala_css = null;
-        public static unowned Gtk.CssProvider? get_gala_css () {
-            if (gala_css == null) {
-                gala_css = new Gtk.CssProvider ();
-                gala_css.load_from_resource ("/io/elementary/desktop/gala/gala.css");
-            }
-
-            return gala_css;
         }
     }
 }

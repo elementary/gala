@@ -55,7 +55,7 @@ namespace Gala {
         wayland_pantheon_panel_interface = {
             destroy_panel_surface,
             set_anchor,
-            focus,
+            focus_panel,
             set_size,
             set_hide_mode,
         };
@@ -67,9 +67,13 @@ namespace Gala {
         wayland_pantheon_extended_behavior_interface = {
             destroy_extended_behavior_surface,
             set_keep_above,
+            make_centered,
+            focus_extended_behavior,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
+        WidgetSurface.quark = GLib.Quark.from_string ("-gala-wayland-widget-surface-data");
+        ExtendedBehaviorSurface.quark = GLib.Quark.from_string ("-gala-wayland-extended-behavior-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
             unowned var resource = client.create_resource (ref Pantheon.Desktop.ShellInterface.iface, (int) version, id);
@@ -260,15 +264,29 @@ namespace Gala {
         ShellClientsManager.get_instance ().set_anchor (window, side);
     }
 
-    internal static void focus (Wl.Client client, Wl.Resource resource) {
+    internal static void focus_panel (Wl.Client client, Wl.Resource resource) {
         unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
         if (panel_surface.wayland_surface == null) {
             warning ("Window tried to focus but wayland surface is null.");
             return;
         }
 
+        focus (panel_surface.wayland_surface);
+    }
+
+    internal static void focus_extended_behavior (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? extended_behavior_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (extended_behavior_surface.wayland_surface == null) {
+            warning ("Window tried to focus but wayland surface is null.");
+            return;
+        }
+
+        focus (extended_behavior_surface.wayland_surface);
+    }
+
+    internal static void focus (Object wayland_surface) {
         Meta.Window? window;
-        panel_surface.wayland_surface.get ("window", out window, null);
+        wayland_surface.get ("window", out window, null);
         if (window == null) {
             warning ("Window tried to focus but wayland surface had no associated window.");
             return;
@@ -324,6 +342,21 @@ namespace Gala {
         }
 
         window.make_above ();
+    }
+
+    internal static void make_centered (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_centered (window);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

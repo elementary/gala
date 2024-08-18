@@ -146,7 +146,6 @@ namespace Gala {
             }
 
             var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-            unowned Meta.ShapedTexture window_texture = (Meta.ShapedTexture) window_actor.get_texture ();
 
             float actor_x, actor_y;
             window_actor.get_position (out actor_x, out actor_y);
@@ -162,8 +161,14 @@ namespace Gala {
 #else
             Cairo.RectangleInt clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
 #endif
-            var image = (Cairo.ImageSurface) window_texture.get_image (clip);
+            var image = (Cairo.ImageSurface) window_actor.get_image (clip);
             if (include_cursor) {
+                if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {
+                    float resource_scale = window_actor.get_resource_scale ();
+
+                    image.set_device_scale (resource_scale, resource_scale);
+                }
+
                 image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
             }
 
@@ -295,7 +300,7 @@ namespace Gala {
             return Environment.get_home_dir ();
         }
 
-        private static async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
+        private async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
             return (filename != "")
                 ? yield save_image_to_file (image, filename, scale, out used_filename)
                 : save_image_to_clipboard (image, filename, out used_filename);
@@ -337,19 +342,32 @@ namespace Gala {
             }
         }
 
-        private static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
-
-            unowned Gdk.Display display = Gdk.Display.get_default ();
-            unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
 
             var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
             if (screenshot == null) {
-                warning ("could not save screenshot to clipboard: null pixbuf");
+                warning ("Could not save screenshot to clipboard: null pixbuf");
                 return false;
             }
 
-            clipboard.set_image (screenshot);
+            uint8[] buffer;
+            try {
+                screenshot.save_to_buffer (out buffer, "png");
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to save image to buffer: %s", e.message);
+                return false;
+            }
+
+            try {
+                unowned var selection = wm.get_display ().get_selection ();
+                var source = new Meta.SelectionSourceMemory ("image/png", new GLib.Bytes.take (buffer));
+                selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
+                return false;
+            }
+
             return true;
         }
 

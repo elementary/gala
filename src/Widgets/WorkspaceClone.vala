@@ -31,7 +31,8 @@ namespace Gala {
             Object (
                 wm: wm,
                 monitor_index: wm.get_display ().get_primary_monitor (),
-                control_position: false
+                control_position: false,
+                rounded_corners: true
             );
         }
 

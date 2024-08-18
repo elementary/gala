@@ -115,7 +115,7 @@ public class Gala.Zoom : Object {
         // Nothing to do if zooming out of our bounds is requested
         if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
             if (play_sound) {
-                Gdk.beep ();
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
             }
             return;
         }

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-06-17 17:08+0000\n"
-"PO-Revision-Date: 2024-06-18 23:36+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"PO-Revision-Date: 2024-08-11 09:16+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
 "\n"
@@ -17,8 +17,172 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
+
+#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
+msgid "Change Wallpaper…"
+msgstr "Canvia el fons de pantalla…"
+
+#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
+msgid "Display Settings…"
+msgstr "Paràmetres de la pantalla…"
+
+#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
+msgid "System Settings…"
+msgstr "Paràmetres del sistema…"
+
+#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+msgid "Failed to open System Settings"
+msgstr "Ha fallat obrir els paràmetres del sistema."
+
+#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+msgid "A handler for the “settings://” URI scheme must be installed."
+msgstr "Cal instal·lar un gestor per a l'esquema d'URI \"settings://\"."
+
+#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
+msgid "Hide"
+msgstr "Amaga"
+
+#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
+msgid "Move"
+msgstr "Mou"
+
+#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
+msgid "Resize"
+msgstr "Canvia'n la mida"
+
+#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
+msgid "Always on Top"
+msgstr "Sempre al davant"
+
+#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
+msgid "Always on Visible Workspace"
+msgstr "Sempre a l'espai de treball visible"
+
+#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
+msgid "Move to Workspace Left"
+msgstr "Mou a l'espai de treball de l'esquerra"
+
+#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
+msgid "Move to Workspace Right"
+msgstr "Mou a l'espai de treball de la dreta"
+
+#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
+msgid "Take Screenshot"
+msgstr "Fes una captura"
+
+#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
+msgid "Close"
+msgstr "Tanca"
+
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+msgid "Untile"
+msgstr "No en mosaic"
+
+#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+msgid "Unmaximize"
+msgstr "Desmaximitza"
+
+#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
+msgid "Maximize"
+msgstr "Maximitza"
+
+#: data/gala.metainfo.xml.in:11
+msgid "Multitasking &amp; Window Management"
+msgstr "Multitasca i gestió de finestres"
+
+#: data/gala.metainfo.xml.in:12
+msgid "A window &amp; compositing manager for Pantheon"
+msgstr "Un gestor de finestres i de composició per al Pantheon"
+
+#: data/gala.metainfo.xml.in:14
+msgid ""
+"A window &amp; compositing manager based on libmutter and designed by "
+"elementary for use with Pantheon."
+msgstr ""
+"Un gestor de finestres i de composició basat en libmutter i dissenyat per "
+"l'elementary per usar amb el Pantheon."
+
+#: data/gala.metainfo.xml.in:24
+msgid "elementary, Inc."
+msgstr "elementary, Inc."
+
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
+msgid "Improvements:"
+msgstr "Millores:"
+
+#: data/gala.metainfo.xml.in:34
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Millora de la navegació amb el teclat a la vista multitasca"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Canvia el color del plafó alhora que la transició del fons de pantalla"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Traduccions actualitzades"
+
+#: data/gala.metainfo.xml.in:69
+msgid ""
+"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
+"option"
+msgstr ""
+"Canviar el fons de pantalla o l'opció de dormir respecta l'opció \"Redueix "
+"el moviment\"."
+
+#: data/gala.metainfo.xml.in:70
+msgid "Use appropriate drag-and-drop pointers when moving windows"
+msgstr ""
+"Useu els punters d'arrossegar i deixar anar adequats quan moveu finestres"
+
+#: data/gala.metainfo.xml.in:71
+msgid "Fix the issue when gestures in the multitasking view might stop working"
+msgstr ""
+"Solució del problema que els gestos de la vista de multitasca poden deixar "
+"de funcionar"
+
+#: data/gala.metainfo.xml.in:72
+msgid "Improve dynamic workspaces behaviour with multiple monitors"
+msgstr ""
+"Millora del comportament dinàmic dels espais de treball amb diversos monitors"
+
+#: data/gala.metainfo.xml.in:94
+msgid "Improve handling of move-to-workspace shortcut"
+msgstr "Millora del maneig de la drecera de desplaçament a l'espai de treball"
+
+#: data/gala-multitaskingview.desktop.in:4
+#: data/gala-multitaskingview.desktop.in:6
+msgid "Multitasking View"
+msgstr "Vista de multitasca"
+
+#: data/gala-multitaskingview.desktop.in:5
+msgid "View all open windows and workspaces"
+msgstr "Visualitza totes les finestres obertes i totes les àrees de treball"
+
+#: data/gala-other.desktop.in:4
+msgid "Other"
+msgstr "Altres"
+
+#: data/gala-other.desktop.in:5
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr ""
+"Fitxer d'escriptori alternatiu per a notificacions d'aplicacions "
+"desactualitzades."
+
+#: lib/App.vala:51
+msgctxt "program"
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
+msgstr "La finestra ja té el focus."
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -66,231 +230,68 @@ msgstr "Permet-ho"
 msgid "Deny"
 msgstr "Denega-ho"
 
-#: src/ScreenshotManager.vala:285
+#: src/ScreenshotManager.vala:290
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
-#: src/ScreenshotManager.vala:364
+#: src/ScreenshotManager.vala:369
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
-#: src/WindowManager.vala:2299
+#: src/WindowManager.vala:2318
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:2306
+#: src/WindowManager.vala:2325
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:2310
+#: src/WindowManager.vala:2329
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:2311
+#: src/WindowManager.vala:2330
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2350
+#: src/WindowManager.vala:2369
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"
 
-#: daemon/BackgroundMenu.vala:11
-msgid "Change Wallpaper…"
-msgstr "Canvia el fons de pantalla…"
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "Configura la disposició del teclat correctament a l'inici perquè "
+#~ "l'indicador coincideixi amb la disposició seleccionada"
 
-#: daemon/BackgroundMenu.vala:16
-msgid "Display Settings…"
-msgstr "Paràmetres de la pantalla…"
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "Estableix correctament el ressaltat de l'espai de treball actiu quan "
+#~ "entreu a la Visualització multitasca i animeu 1:1 amb gestos multitàctils"
 
-#: daemon/BackgroundMenu.vala:22
-msgid "System Settings…"
-msgstr "Paràmetres del sistema…"
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Escala els cantons arrodonits per pantalla"
 
-#: daemon/BackgroundMenu.vala:47
-msgid "Failed to open System Settings"
-msgstr "Ha fallat obrir els paràmetres del sistema."
+#~ msgid "Support fractional scaling"
+#~ msgstr "Admet l'escala fraccionada"
 
-#: daemon/BackgroundMenu.vala:48
-msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr "Cal instal·lar un gestor per a l'esquema d'URI \"settings://\"."
+#~ msgid "Performance improvements"
+#~ msgstr "Millores de rendiment"
 
-#: daemon/WindowMenu.vala:36
-msgid "Hide"
-msgstr "Amaga"
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "Suprimeix la textura de la vista multitasca"
 
-#: daemon/WindowMenu.vala:49
-msgid "Move"
-msgstr "Mou"
-
-#: daemon/WindowMenu.vala:57
-msgid "Resize"
-msgstr "Canvia'n la mida"
-
-#: daemon/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "Sempre al davant"
-
-#: daemon/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "Sempre a l'espai de treball visible"
-
-#: daemon/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "Mou a l'espai de treball de l'esquerra"
-
-#: daemon/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "Mou a l'espai de treball de la dreta"
-
-#: daemon/WindowMenu.vala:97
-msgid "Take Screenshot"
-msgstr "Fes una captura"
-
-#: daemon/WindowMenu.vala:105
-msgid "Close"
-msgstr "Tanca"
-
-#: daemon/WindowMenu.vala:138
-msgid "Untile"
-msgstr "No en mosaic"
-
-#: daemon/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "Desmaximitza"
-
-#: daemon/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "Maximitza"
-
-#: data/gala.metainfo.xml.in:11
-msgid "Multitasking &amp; Window Management"
-msgstr "Multitasca i gestió de finestres"
-
-#: data/gala.metainfo.xml.in:12
-msgid "A window &amp; compositing manager for Pantheon"
-msgstr "Un gestor de finestres i de composició per al Pantheon"
-
-#: data/gala.metainfo.xml.in:14
-msgid ""
-"A window &amp; compositing manager based on libmutter and designed by "
-"elementary for use with Pantheon."
-msgstr ""
-"Un gestor de finestres i de composició basat en libmutter i dissenyat per "
-"l'elementary per usar amb el Pantheon."
-
-#: data/gala.metainfo.xml.in:24
-msgid "elementary, Inc."
-msgstr "elementary, Inc."
-
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
-msgid "Improvements:"
-msgstr "Millores:"
-
-#: data/gala.metainfo.xml.in:34
-msgid ""
-"Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
-"option"
-msgstr ""
-"Canviar el fons de pantalla o l'opció de dormir respecta l'opció \"Redueix "
-"el moviment\"."
-
-#: data/gala.metainfo.xml.in:35
-msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
-"Useu els punters d'arrossegar i deixar anar adequats quan moveu finestres"
-
-#: data/gala.metainfo.xml.in:36
-msgid "Fix the issue when gestures in the multitasking view might stop working"
-msgstr ""
-"Solució del problema que els gestos de la vista de multitasca poden deixar "
-"de funcionar"
-
-#: data/gala.metainfo.xml.in:37
-msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
-"Millora del comportament dinàmic dels espais de treball amb diversos monitors"
-
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Traduccions actualitzades"
-
-#: data/gala.metainfo.xml.in:59
-msgid "Improve handling of move-to-workspace shortcut"
-msgstr "Millora del maneig de la drecera de desplaçament a l'espai de treball"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"Configura la disposició del teclat correctament a l'inici perquè l'indicador "
-"coincideixi amb la disposició seleccionada"
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-"Correcció de les dreceres de teclat de captures de pantalla mentre esteu a "
-"la vista multitasca"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"Estableix correctament el ressaltat de l'espai de treball actiu quan entreu "
-"a la Visualització multitasca i animeu 1:1 amb gestos multitàctils"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "Actualitza el color del plafó després d'atenuar el fons de pantalla"
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr "Escala els cantons arrodonits per pantalla"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "Admet l'escala fraccionada"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Millores de rendiment"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Suprimeix la textura de la vista multitasca"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "Evita seleccionar finestres accidentalment al commutador de finestres"
-
-#: data/gala-multitaskingview.desktop.in:4
-#: data/gala-multitaskingview.desktop.in:6
-msgid "Multitasking View"
-msgstr "Vista de multitasca"
-
-#: data/gala-multitaskingview.desktop.in:5
-msgid "View all open windows and workspaces"
-msgstr "Visualitza totes les finestres obertes i totes les àrees de treball"
-
-#: data/gala-other.desktop.in:4
-msgid "Other"
-msgstr "Altres"
-
-#: data/gala-other.desktop.in:5
-msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
-"Fitxer d'escriptori alternatiu per a notificacions d'aplicacions "
-"desactualitzades."
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "Evita seleccionar finestres accidentalment al commutador de finestres"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr ""
