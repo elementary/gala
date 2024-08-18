@@ -174,7 +174,7 @@ namespace Gala {
 
             var primary = display.get_primary_monitor ();
 
-            if (InternalUtils.workspaces_only_on_primary ()) {
+            //  if (InternalUtils.workspaces_only_on_primary ()) {
                 for (var monitor = 0; monitor < display.get_n_monitors (); monitor++) {
                     if (monitor == primary) {
                         continue;
@@ -187,7 +187,7 @@ namespace Gala {
                     window_containers_monitors.append (monitor_clone);
                     add_child (monitor_clone);
                 }
-            }
+            //  }
 
             var primary_geometry = display.get_monitor_geometry (primary);
             var scale = display.get_monitor_scale (primary);

@@ -9,6 +9,11 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : Clutter.Actor {
+    private struct ChildCloneInfo {
+        unowned Clutter.Clone clone;
+        unowned Meta.Window window;
+    }
+
     private const int CLOSE_WINDOW_ICON_SIZE = 36;
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
@@ -28,17 +33,9 @@ public class Gala.WindowClone : Clutter.Actor {
     public signal void request_reposition ();
 
     public WindowManager wm { get; construct; }
-
     public Meta.Window window { get; construct; }
-
-    /**
-     * The currently assigned slot of the window in the tiling layout. May be null.
-     */
-#if HAS_MUTTER45
-    public Mtk.Rectangle? slot { get; private set; default = null; }
-#else
-    public Meta.Rectangle? slot { get; private set; default = null; }
-#endif
+    public bool overview_mode { get; construct; }
+    public GestureTracker? gesture_tracker { get; construct; }
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -53,8 +50,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    public bool overview_mode { get; construct; }
-    public GestureTracker? gesture_tracker { get; construct; }
     private float _monitor_scale_factor = 1.0f;
     public float monitor_scale_factor {
         get {
@@ -63,37 +58,49 @@ public class Gala.WindowClone : Clutter.Actor {
         set {
             if (value != _monitor_scale_factor) {
                 _monitor_scale_factor = value;
-                reallocate ();
+                reload_icons ();
             }
         }
     }
 
-    [CCode (notify = false)]
     public uint8 shadow_opacity {
         get {
-            return shadow_effect != null ? shadow_effect.shadow_opacity : 255;
+            return shadow_effect != null ? shadow_effect.shadow_opacity : 0;
         }
         set {
             if (shadow_effect != null) {
                 shadow_effect.shadow_opacity = value;
-                queue_redraw ();
             }
         }
     }
 
-    private DragDropAction? drag_action = null;
-    private Clutter.Clone? clone = null;
-    private ShadowEffect? shadow_effect = null;
+    /**
+     * The currently assigned slot of the window in the tiling layout. May be null.
+     */
+#if HAS_MUTTER45
+    public Mtk.Rectangle? slot { get; private set; default = null; }
+#else
+    public Meta.Rectangle? slot { get; private set; default = null; }
+#endif
 
-    private Clutter.Actor prev_parent = null;
+    /**
+     * Current transition progress. 0 - original state. 1 - slot state.
+     */
+    public double last_progress_percentage { get; set; default = 0.0; }
+
+    private DragDropAction? drag_action = null;
+    private unowned Clutter.Actor prev_parent = null;
     private int prev_index = -1;
-    private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
-    private Gala.CloseButton close_button;
     private ActiveShape active_shape;
-    private Clutter.Actor window_icon;
+    private Clutter.Actor windows_container;
+    private Clutter.Clone clone;
     private Tooltip window_title;
+    private Gala.CloseButton close_button;
+    private Clutter.Actor window_icon;
+    private ShadowEffect? shadow_effect = null;
+    private HashTable<Meta.Window, ChildCloneInfo?> child_clone_infos = new HashTable<Meta.Window, ChildCloneInfo?> (null, null);
 
     public WindowClone (WindowManager wm, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
         Object (
@@ -114,6 +121,8 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
 
+        wm.get_display ().window_created.connect (add_new_window_child);
+
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
@@ -132,18 +141,43 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        window_title = new Tooltip ();
-        window_title.opacity = 0;
+        active_shape = new ActiveShape () {
+            opacity = 0
+        };
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        windows_container = new Clutter.Actor ();
+        
+        var actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (actor == null) {
+            critical ("Window actor is null!");
+            return;
+        }
 
+        clone = new Clutter.Clone (actor);
+        windows_container.add_child (clone);
+        
+        window_title = new Tooltip () {
+            opacity = 0
+        };
+        
         add_child (active_shape);
+        add_child (windows_container);
         add_child (window_title);
 
-        reallocate ();
 
-        load_clone ();
+        check_shadow_requirements ();
+
+        if (should_fade ()) {
+            opacity = 0;
+        }
+
+        foreach (unowned var child_window in wm.get_display ().list_all_windows ()) {
+            add_new_window_child (child_window);
+        }
+
+        reload_icons ();
+
+        transition_to_original_state (false);
     }
 
     ~WindowClone () {
@@ -152,9 +186,18 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
+
+        wm.get_display ().window_created.disconnect (add_new_window_child);
     }
 
-    private void reallocate () {
+    private void reload_icons () {
+        if (close_button != null) {
+            remove_child (close_button);
+        }
+        if (window_icon != null) {
+            remove_child (window_icon);
+        }
+
         var window_frame_rect = window.get_frame_rect ();
 
         close_button = new Gala.CloseButton (monitor_scale_factor) {
@@ -162,9 +205,10 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         close_button.triggered.connect (close_window);
 
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
-        window_icon.opacity = 0;
-        window_icon.set_pivot_point (0.5f, 0.5f);
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
+            opacity = 0,
+            pivot_point = { 0.5f, 0.5f }
+        };
         set_window_icon_position (window_frame_rect.width, window_frame_rect.height, monitor_scale_factor);
 
         add_child (close_button);
@@ -173,66 +217,32 @@ public class Gala.WindowClone : Clutter.Actor {
         set_child_below_sibling (window_icon, window_title);
     }
 
-    /**
-     * Waits for the texture of a new Meta.WindowActor to be available
-     * and makes a close of it. If it was already was assigned a slot
-     * at this point it will animate to it. Otherwise it will just place
-     * itself at the location of the original window. Also adds the shadow
-     * effect and makes sure the shadow is updated on size changes.
-     *
-     * @param was_waiting Internal argument used to indicate that we had to
-     *                    wait before the window's texture became available.
-     */
-    private void load_clone (bool was_waiting = false) {
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null)
-                    load_clone (true);
-                return Source.REMOVE;
-            });
-
+    private void add_new_window_child (Meta.Window new_window) {
+        if (new_window.window_type != MODAL_DIALOG || !(window.is_ancestor_of_transient (new_window) || new_window.find_root_ancestor () == window)) {
             return;
         }
 
-        if (overview_mode) {
-            actor.hide ();
+        unowned var new_window_actor = (Meta.WindowActor) new_window.get_compositor_private ();
+        if (new_window_actor == null) {
+            warning ("New window actor is null");
+            return;
         }
 
-        clone = new Clutter.Clone (actor);
-        add_child (clone);
+        var actor_clone = new Clutter.Clone (new_window_actor);
+        windows_container.add_child (actor_clone);
 
-        set_child_below_sibling (active_shape, clone);
-        set_child_above_sibling (close_button, clone);
-        set_child_above_sibling (window_icon, clone);
-        set_child_above_sibling (window_title, clone);
+        var info = ChildCloneInfo () {
+            clone = actor_clone,
+            window = new_window
+        };
+        child_clone_infos.insert (new_window, info);
 
-        transition_to_original_state (false);
-
-        check_shadow_requirements ();
-
-        if (should_fade ()) {
-            opacity = 0;
-        }
-
-        // if we were waiting the view was most probably already opened when our window
-        // finally got available. So we fade-in and make sure we took the took place.
-        // If the slot is not available however, the view was probably closed while this
-        // window was opened, so we stay at our old place.
-        if (was_waiting && slot != null) {
-            opacity = 0;
-            take_slot (slot);
-            opacity = 255;
-
-            request_reposition ();
-        }
+        new_window.unmanaged.connect (() => {
+            child_clone_infos.remove (new_window);
+        });
     }
 
     private void check_shadow_requirements () {
-        if (clone == null) {
-            return;
-        }
-
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new ShadowEffect ("window");
@@ -306,6 +316,7 @@ public class Gala.WindowClone : Clutter.Actor {
             place_widgets ((int)width, (int)height, scale);
 
             shadow_opacity = (uint8) opacity;
+            last_progress_percentage = (1.0 - percentage); // 1.0 means slot position, so reverse the percentage
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -313,11 +324,13 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = (animate && wm.enable_animations) ? MultitaskingView.ANIMATION_DURATION : 0;
+            add_last_progress_transition (0.0);
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (duration);
+            if (animate && wm.enable_animations) {
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
 
             set_position (target_x, target_y);
             set_size (outer_rect.width, outer_rect.height);
@@ -326,21 +339,30 @@ public class Gala.WindowClone : Clutter.Actor {
                 opacity = 0;
             }
 
-            restore_easing_state ();
-
-            if (animate) {
-                toggle_shadow (false);
+            if (animate && wm.enable_animations) {
+                restore_easing_state ();
             }
 
-            window_icon.save_easing_state ();
-            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (duration);
+            toggle_shadow (false);
+
+            if (animate && wm.enable_animations) {
+                window_icon.save_easing_state ();
+                window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
             window_icon.opacity = 0;
             set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
-            window_icon.restore_easing_state ();
+            if (animate && wm.enable_animations) {
+                window_icon.restore_easing_state ();
+            }
 
-            var transition = window_icon.get_transition ("opacity");
-            if (transition != null) {
+            if (animate && wm.enable_animations) {
+                unowned var transition = window_icon.get_transition ("opacity");
+                if (transition == null) {
+                    critical ("Opacity transition not found");
+                    return;
+                }
+
                 transition.completed.connect (() => {
                     in_slot_animation = false;
                     place_widgets (outer_rect.width, outer_rect.height, target_scale);
@@ -393,6 +415,7 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (width, height, scale, false);
 
             shadow_opacity = (uint8) opacity;
+            last_progress_percentage = percentage;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -400,28 +423,40 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+            toggle_shadow (true);
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (duration);
+            add_last_progress_transition (1.0);
 
+            if (wm.enable_animations) {
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
             set_size (rect.width, rect.height);
             set_position (rect.x, rect.y);
             opacity = 255;
-            restore_easing_state ();
+            if (wm.enable_animations) {
+                restore_easing_state ();
+            }
 
-            window_icon.save_easing_state ();
-            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (duration);
+            if (wm.enable_animations) {
+                window_icon.save_easing_state ();
+                window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            }
             window_icon.opacity = 255;
             set_window_icon_position (rect.width, rect.height, scale);
-            window_icon.restore_easing_state ();
+            if (wm.enable_animations) {
+                window_icon.restore_easing_state ();
+            }
 
-            toggle_shadow (true);
-
-            var transition = window_icon.get_transition ("opacity");
-            if (transition != null) {
+            if (wm.enable_animations) {
+                unowned var transition = window_icon.get_transition ("opacity");
+                if (transition == null) {
+                    critical ("Opacity transition not found");
+                    return;
+                }
+    
                 transition.completed.connect (() => {
                     in_slot_animation = false;
                     place_widgets (rect.width, rect.height, scale);
@@ -439,6 +474,22 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
+    private void add_last_progress_transition (double target_value) {
+        remove_transition ("last_progress_percentage");
+
+        if (wm.enable_animations) {
+            var progress_transition = new Clutter.PropertyTransition ("last_progress_percentage") {
+                duration = MultitaskingView.ANIMATION_DURATION,
+                progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
+                interval = new Clutter.Interval (typeof (float), last_progress_percentage, target_value),
+                remove_on_complete = true
+            };
+            add_transition ("last_progress_percentage", progress_transition);
+        } else {
+            last_progress_percentage = target_value;
+        }
+    }
+
     /**
      * Except for the texture clone and the highlight all children are placed
      * according to their given allocations. The first two are placed in a way
@@ -446,6 +497,10 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
+
+        if (drag_action != null && drag_action.dragging) {
+            return;
+        }
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
@@ -459,13 +514,46 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        if (clone == null || (drag_action != null && drag_action.dragging)) {
-            return;
+        var shadow_offset_x = outer_rect.x - input_rect.x;
+        var shadow_offset_y = outer_rect.y - input_rect.y;
+
+        foreach (var child_info in child_clone_infos.get_values ()) {
+            var child_input_rect = child_info.window.get_buffer_rect ();
+            var child_outer_rect = child_info.window.get_frame_rect ();
+
+            var child_shadow_offset_x = child_outer_rect.x - child_input_rect.x;
+            var child_shadow_offset_y = child_outer_rect.y - child_input_rect.y;
+
+            var child_parent_x_diff = child_input_rect.x - input_rect.x;
+            var child_parent_y_diff = child_input_rect.y - input_rect.y;
+
+            var target_calculated_x = child_parent_x_diff.clamp (
+                shadow_offset_x - child_shadow_offset_x,
+                shadow_offset_x - child_shadow_offset_x + outer_rect.width - child_outer_rect.width
+            );
+            var target_calculated_y = child_parent_y_diff.clamp (
+                shadow_offset_y - child_shadow_offset_y,
+                shadow_offset_y - child_shadow_offset_y + outer_rect.height - child_outer_rect.height
+            );
+
+            var calculated_x = GestureTracker.animation_value (
+                child_parent_x_diff,
+                target_calculated_x,
+                last_progress_percentage,
+                last_progress_percentage % 1 == 0
+            );
+            var calculated_y = GestureTracker.animation_value (
+                child_parent_y_diff,
+                target_calculated_y,
+                last_progress_percentage,
+                last_progress_percentage % 1 == 0
+            );
+
+            child_info.clone.set_position (calculated_x, calculated_y);
         }
 
-        clone.set_scale (scale_factor, scale_factor);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
-                            (input_rect.y - outer_rect.y) * scale_factor);
+        windows_container.set_scale (scale_factor, scale_factor);
+        windows_container.set_position (-shadow_offset_x * scale_factor, -shadow_offset_y * scale_factor);
     }
 
 #if HAS_MUTTER45
@@ -547,68 +635,38 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     private void toggle_shadow (bool show) {
-        if (get_transition ("shadow-opacity") != null) {
-            remove_transition ("shadow-opacity");
-        }
+        remove_transition ("shadow-opacity");
+
+        var target_value = show ? 255 : 0;
 
         if (wm.enable_animations) {
             var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
                 progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
+                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, target_value)
             };
 
             add_transition ("shadow-opacity", shadow_transition);
         } else {
-            shadow_opacity = show ? 255 : 0;
+            shadow_opacity = target_value;
         }
     }
 
-    /**
-     * Send the window the delete signal and listen for new windows to be added
-     * to the window's workspace, in which case we check if the new window is a
-     * dialog of the window we were going to delete. If that's the case, we request
-     * to select our window.
-     */
     private void close_window (uint32 timestamp) {
-        unowned var display = window.get_display ();
-        check_confirm_dialog_cb = display.window_entered_monitor.connect (check_confirm_dialog);
-
         window.@delete (timestamp);
-    }
-
-    private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        if (new_window.get_transient_for () == window) {
-            Idle.add (() => {
-                selected ();
-                return Source.REMOVE;
-            });
-
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
     }
 
     /**
      * The window unmanaged by the compositor, so we need to destroy ourselves too.
      */
     private void unmanaged () {
-        remove_all_transitions ();
-
         if (drag_action != null && drag_action.dragging) {
             drag_action.cancel ();
         }
 
-        if (clone != null) {
-            clone.destroy ();
-        }
-
-        if (check_confirm_dialog_cb != 0) {
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
-
+        remove_all_transitions ();
+        clone.destroy ();
         destroy ();
     }
 
@@ -630,44 +688,55 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     private Clutter.Actor drag_begin (float click_x, float click_y) {
         float abs_x, abs_y;
-        float prev_parent_x, prev_parent_y;
 
         prev_parent = get_parent ();
         prev_index = prev_parent.get_children ().index (this);
+
+        float prev_parent_x, prev_parent_y;
         prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
 
-        var stage = get_stage ();
+        unowned var stage = get_stage ();
         prev_parent.remove_child (this);
         stage.add_child (this);
 
         active_shape.hide ();
 
-        var scale = window_icon.width / clone.width;
-        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+        var scale = window_icon.width / windows_container.width;
 
-        clone.get_transformed_position (out abs_x, out abs_y);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
-        clone.set_scale (scale, scale);
-        clone.opacity = 0;
-        clone.restore_easing_state ();
+        windows_container.get_transformed_position (out abs_x, out abs_y);
+        if (wm.enable_animations) {
+            windows_container.save_easing_state ();
+            windows_container.set_easing_duration (FADE_ANIMATION_DURATION);
+            windows_container.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+        }
+
+        windows_container.set_pivot_point ((click_x - abs_x) / windows_container.width, (click_y - abs_y) / windows_container.height);
+        windows_container.set_scale (scale, scale);
+        windows_container.opacity = 0;
+
+        if (wm.enable_animations) {
+            windows_container.restore_easing_state ();
+        }
 
         request_reposition ();
 
         get_transformed_position (out abs_x, out abs_y);
-
         set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
 
-        window_icon.save_easing_state ();
-        window_icon.set_easing_duration (duration);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (FADE_ANIMATION_DURATION);
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
+        }
+
         window_icon.set_position (
             click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
             click_y - (abs_y + prev_parent_y) - window_icon.height / 2
         );
-        window_icon.restore_easing_state ();
+
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         close_button.opacity = 0;
         window_title.opacity = 0;
@@ -702,16 +771,19 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = wm.enable_animations ? duration : 0;
 
-        window_icon.save_easing_state ();
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
+            window_icon.set_easing_duration (duration);
+        }
 
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
         window_icon.set_scale (scale, scale);
         window_icon.set_opacity (opacity);
 
-        window_icon.restore_easing_state ();
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         if (insert_thumb != null) {
             insert_thumb.set_window_thumb (window);
@@ -810,24 +882,33 @@ public class Gala.WindowClone : Clutter.Actor {
         get_parent ().remove_child (this);
         prev_parent.insert_child_at_index (this, prev_index);
 
-        var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+        if (wm.enable_animations) {
+            windows_container.save_easing_state ();
+            windows_container.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            windows_container.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        }
 
-        clone.set_pivot_point (0.0f, 0.0f);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_scale (1, 1);
-        clone.opacity = 255;
-        clone.restore_easing_state ();
+        windows_container.set_pivot_point (0.0f, 0.0f);
+        windows_container.set_scale (1, 1);
+        windows_container.opacity = 255;
+
+        if (wm.enable_animations) {
+            windows_container.restore_easing_state ();
+        }
 
         request_reposition ();
 
-        window_icon.save_easing_state ();
-        window_icon.set_easing_duration (duration);
-        window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        if (wm.enable_animations) {
+            window_icon.save_easing_state ();
+            window_icon.set_easing_duration (MultitaskingView.ANIMATION_DURATION);
+            window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        }
 
         set_window_icon_position (slot.width, slot.height, monitor_scale_factor);
-        window_icon.restore_easing_state ();
+
+        if (wm.enable_animations) {
+            window_icon.restore_easing_state ();
+        }
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
