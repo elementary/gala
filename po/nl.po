@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2024-05-31 09:13+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"PO-Revision-Date: 2024-08-17 17:19+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -32,14 +32,13 @@ msgid "System Settings…"
 msgstr "Systeeminstellingen…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "Systeeminstellingen…"
+msgstr "Kon systeeminstellingen niet openen"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
+"Een handler voor de \"settings://\" URI scheme moet worden geïnstalleerd."
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
@@ -75,7 +74,7 @@ msgstr "Neem schermfoto"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
-msgstr "Sluit"
+msgstr "Sluiten"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
@@ -109,13 +108,27 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
 #: data/gala.metainfo.xml.in:34
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Verbeter toetsenbordnavigatie in multitasking-weergave"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Verander paneelkleur tegelijk met achtergrondovergang"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Bijgewerkte vertalingen"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -123,70 +136,24 @@ msgstr ""
 "De bureaubladachtergrond veranderen of schakelen naar de slaapstand "
 "respecteert de \"Beperk bewegende elementen\" optie"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
+"Gebruik passende klikken-en-slepen aanwijzers wanneer vensters versleept "
+"worden"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Verbeter de fout wanneer gebaren in de multitasking weergave niet meer werken"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Verbeter dynamische werkruimtes gedrag met meerdere schermen"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Geüpdatete vertalingen"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:106
-#, fuzzy
-#| msgid "Enable rounded corner mask"
-msgid "Scale rounded corners per-display"
-msgstr "Zet afgeronde vensterhoeken aan"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Prestatieverbeteringen"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Verwijder de textuur uit de multitasking weergave"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr ""
-"Vermijd het per ongeluk selecteren van vensters in de vensterschakelaar"
+msgstr "Verbeter omgaan met verplaats-naar-werkruimte sneltoets"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -209,7 +176,11 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
+msgstr "Window heeft al de focus"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -239,23 +210,23 @@ msgstr "Wachten"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” wil systeemsneltoetsen verhinderen"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Een applicatie wil systeemsneltoetsen verhinderen"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Alle systeemsneltoetsen zullen worden doorverwezen naar de applicatie."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Sta toe"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Weigeren"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
@@ -289,6 +260,18 @@ msgstr "Vorige instellingen gebruiken"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Schermafbeelding van %s"
+
+#, fuzzy
+#~| msgid "Enable rounded corner mask"
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Zet afgeronde vensterhoeken aan"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Prestatieverbeteringen"
+
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "Vermijd het per ongeluk selecteren van vensters in de vensterschakelaar"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Geanimeerde achtergronden herladen wanneer de tijdzone verandert"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
 "PO-Revision-Date: 2020-02-24 21:15+0000\n"
 "Last-Translator: gkkulik <g.kulik@o2.pl>\n"
 "Language-Team: Silesian <https://l10n.elementary.io/projects/desktop/gala/"
@@ -104,80 +104,48 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Ulepszynia:"
 
 #: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Multitasking View"
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Widok multitaskingu"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Zaktualizowane przekłady"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Zaktualizowane przekłady"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:128
-#, fuzzy
-#| msgid "Multitasking View"
-msgid "Remove texture from Multitasking View"
-msgstr "Widok multitaskingu"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
 msgstr ""
 
 #: data/gala-multitaskingview.desktop.in:4
@@ -200,6 +168,10 @@ msgstr "Zbiōr powrotu dlo powiadōmiyń ôd starych programōw."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
+msgstr ""
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
 msgstr ""
 
 #: src/Dialogs.vala:144

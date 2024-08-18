@@ -2,8 +2,9 @@ name: Release
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
     types: [closed]
+
 jobs:
   release:
      runs-on: ubuntu-22.04

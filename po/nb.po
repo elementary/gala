@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2024-06-17 03:16+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"PO-Revision-Date: 2024-08-07 18:17+0000\n"
+"Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
 "Language: nb\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -111,95 +111,57 @@ msgstr ""
 "elementary for bruk med Pantheon."
 
 #: data/gala.metainfo.xml.in:24
-#, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:123
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
 #: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Update panel color after dimming the wallpaper"
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:125
+msgid "Updated translations"
+msgstr "Oppdaterte oversettelser"
+
+#: data/gala.metainfo.xml.in:69
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Endring av bakgrunnsbilde eller dvalemodus respekterer «Reduser bevegelse»"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Bruk av riktige dra- og slipp-pekere ved flytting av vinduer"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Fikset problem der håndvendinger i fleroppgaveløsningsvisning sluttet å "
 "fungere"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Forbedret adferd for dynamiske arbeidsområder med flere skjermer"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Oppdaterte oversettelser"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Forbedret håndtering av snarveien for flytting til arbeidsområde"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren samsvarer "
-"med valgt oppsett."
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning og "
-"animert 1:1 med flerpekingshåndvendinger"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
-
-#: data/gala.metainfo.xml.in:106
-#, fuzzy
-#| msgid "Enable rounded corner mask"
-msgid "Scale rounded corners per-display"
-msgstr "Bruk maske for avrundede hjørner"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "Støtte for brøkbasert skalering"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Ytelsesforbedringer"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
-
-#: data/gala.metainfo.xml.in:129
-#, fuzzy
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr ""
-"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
-"bytteren."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -221,6 +183,10 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
+msgstr ""
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
 msgstr ""
 
 #: src/Dialogs.vala:144
@@ -263,7 +229,7 @@ msgstr ""
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Tillat"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
@@ -301,6 +267,40 @@ msgstr "Bruk tidligere oppsett"
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
+
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren "
+#~ "samsvarer med valgt oppsett."
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning "
+#~ "og animert 1:1 med flerpekingshåndvendinger"
+
+#, fuzzy
+#~| msgid "Enable rounded corner mask"
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Bruk maske for avrundede hjørner"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "Støtte for brøkbasert skalering"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Ytelsesforbedringer"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
+
+#, fuzzy
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+#~ "bytteren."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
