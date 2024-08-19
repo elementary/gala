@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2022-04-20 09:31+0000\n"
-"Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"PO-Revision-Date: 2024-08-16 15:16+0000\n"
+"Last-Translator: José Rafael <jrafaeldesantana@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Alterar papel de parede…"
 
 #: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "Configurações de tela…"
 
 #: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "Configurações do sistema…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "Falha ao abrir as configurações do sistema"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Um handler para o esquema URI “settings://” deve ser instalado."
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
-msgstr ""
+msgstr "Esconder"
 
 #: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
@@ -69,10 +69,8 @@ msgid "Move to Workspace Right"
 msgstr "Mover para área de trabalho à direita"
 
 #: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Take Screenshot"
-msgstr "Capturas de tela"
+msgstr "Capturar tela"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
@@ -80,7 +78,7 @@ msgstr "Fechar"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "Desagrupar"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
@@ -92,7 +90,7 @@ msgstr "Maximizar"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr "Multitarefa  &amp; Gerenciamento de janela"
+msgstr "Multitarefa &amp; Gerenciamento de janela"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
@@ -117,14 +115,12 @@ msgid "Improvements:"
 msgstr "Melhorias:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Visão Multitarefa"
+msgstr "Melhore a navegação pelo teclado no modo multitarefa"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr ""
+msgstr "Alterar a cor do painel durante a transição do papel de parede"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
@@ -137,22 +133,28 @@ msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Alterar o papel de parede ou suspender agora respeita a opção \"Reduzir "
+"Movimento\""
 
 #: data/gala.metainfo.xml.in:70
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Use os ponteiros de arrastar e soltar apropriados ao mover janelas"
 
 #: data/gala.metainfo.xml.in:71
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Corrigido um problema em que os gestos na visualização multitarefa podiam "
+"parar de funcionar"
 
 #: data/gala.metainfo.xml.in:72
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
+"Melhore o comportamento dos espaços de trabalho dinâmicos com vários "
+"monitores"
 
 #: data/gala.metainfo.xml.in:94
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Melhoria do funcionamento do atalho de mover para a área de trabalho"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -174,80 +176,84 @@ msgstr "Arquivo reserva para notificações de aplicativos desatualizados."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
+msgstr "A janela já está focada"
 
 #: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” não está respondendo"
 
 #: src/Dialogs.vala:146
 msgid "Application is not responding"
-msgstr ""
+msgstr "A aplicação não está respondendo"
 
 #: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Você pode optar por esperar um momento para continuar ou forçar o "
+"encerramento da aplicação."
 
 #: src/Dialogs.vala:150
 msgid "Force Quit"
-msgstr ""
+msgstr "Forçar encerramento"
 
 #: src/Dialogs.vala:151
 msgid "Wait"
-msgstr ""
+msgstr "Aguardar"
 
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” quer inibir os atalhos do sistema"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Uma aplicação quer inibir os atalhos do sistema"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Todos os atalhos do sistema serão direcionados para a aplicação."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "Permitir"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Recusar"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
 msgstr "Capturas de tela"
 
 #: src/ScreenshotManager.vala:369
-#, fuzzy
-#| msgid "Screenshots"
 msgid "Screenshot taken"
-msgstr "Capturas de tela"
+msgstr "Captura de tela realizada"
 
 #: src/WindowManager.vala:2318
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "As alterações serão revertidas automaticamente após %i segundo."
+msgstr[1] "As alterações serão revertidas automaticamente após %i segundos."
 
 #: src/WindowManager.vala:2325
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Manter as novas configurações de tela?"
 
 #: src/WindowManager.vala:2329
 msgid "Keep Settings"
-msgstr ""
+msgstr "Manter configurações"
 
 #: src/WindowManager.vala:2330
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Usar as configurações anteriores"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2369

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-18 17:28+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
 "PO-Revision-Date: 2023-02-07 16:25+0000\n"
 "Last-Translator: Martin Myrvold <myrvold.martin@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <https://l10n.elementary.io/projects/"
@@ -174,6 +174,10 @@ msgstr "Tilbakefallsfil for varsel frå utdaterte program."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
+msgstr ""
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
 msgstr ""
 
 #: src/Dialogs.vala:144

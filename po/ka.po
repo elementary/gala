@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-02-22 04:12+0000\n"
+"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"PO-Revision-Date: 2024-08-16 15:16+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0.2\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -78,7 +78,7 @@ msgstr "დახურვა"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "მოხსნა"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
@@ -113,10 +113,8 @@ msgid "Improvements:"
 msgstr "გაუმჯობესებები:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "მრავალამოცანიანი ხედი"
+msgstr "გაუმჯობესდა კლავიატურით ნავიგაცია მრავალამოცანიან ხედში"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Change panel color at the same time as wallpaper transition"
@@ -170,6 +168,10 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
+msgstr "უცნობი"
+
+#: src/DesktopIntegration.vala:128
+msgid "Window has already focus"
 msgstr ""
 
 #: src/Dialogs.vala:144
@@ -210,11 +212,11 @@ msgstr ""
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "დაშვება"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "აკრძალვა"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"

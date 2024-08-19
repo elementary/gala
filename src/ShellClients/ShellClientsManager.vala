@@ -153,7 +153,7 @@ public class Gala.ShellClientsManager : Object {
         windows[window] = new PanelWindow (wm, window, side);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
-        window.unmanaged.connect_after (() => windows.remove (window));
+        window.unmanaging.connect_after (() => windows.remove (window));
     }
 
     /**
@@ -187,6 +187,8 @@ public class Gala.ShellClientsManager : Object {
         }
 
         centered_windows[window] = new CenteredWindow (wm, window);
+
+        window.unmanaging.connect_after (() => centered_windows.remove (window));
     }
 
     public bool is_positioned_window (Meta.Window window) {
