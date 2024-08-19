@@ -382,13 +382,12 @@ namespace Gala {
         }
 
         private void init_a11y () {
-            Cally.accessibility_init ();
-
             if (!Clutter.get_accessibility_enabled ()) {
                 warning ("Clutter has no accessibility enabled");
-            } else {
-                AtkBridge.adaptor_init (0, {});
+                return;
             }
+
+            AtkBridge.adaptor_init (0, {});
         }
 
         private void update_ui_group_size () {
