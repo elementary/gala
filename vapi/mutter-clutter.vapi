@@ -8978,3 +8978,50 @@ namespace Clutter {
 	[Version (since = "1.10")]
 	public static uint unicode_to_keysym (uint32 wc);
 }
+
+[CCode (cprefix = "Cally", gir_namespace = "Cally", gir_version = "14", lower_case_cprefix = "cally_")]
+namespace Cally {
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_actor_get_type ()")]
+	public class Actor : Atk.GObjectAccessible, Atk.Action, Atk.Component {
+		[CCode (has_construct_function = false, type = "AtkObject*")]
+		public Actor (Clutter.Actor actor);
+		public uint add_action_full (string action_name, string action_description, string action_keybinding, owned Cally.ActionCallback callback);
+		public bool remove_action (int action_id);
+		public bool remove_action_by_name (string action_name);
+	}
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_clone_get_type ()")]
+	public class Clone : Cally.Actor, Atk.Action, Atk.Component {
+		[CCode (has_construct_function = false, type = "AtkObject*")]
+		public Clone (Clutter.Actor actor);
+	}
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_root_get_type ()")]
+	public class Root : Atk.GObjectAccessible {
+		[CCode (has_construct_function = false, type = "AtkObject*")]
+		public Root ();
+	}
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_stage_get_type ()")]
+	public class Stage : Cally.Actor, Atk.Action, Atk.Component, Atk.Window {
+		[CCode (has_construct_function = false, type = "AtkObject*")]
+		public Stage (Clutter.Actor actor);
+	}
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_text_get_type ()")]
+	public class Text : Cally.Actor, Atk.Action, Atk.Component, Atk.EditableText, Atk.Text {
+		[CCode (has_construct_function = false, type = "AtkObject*")]
+		public Text (Clutter.Actor actor);
+	}
+	[CCode (cheader_filename = "cally/cally.h", type_id = "cally_util_get_type ()")]
+	public class Util : Atk.Util {
+		[CCode (has_construct_function = false)]
+		protected Util ();
+	}
+	[CCode (cheader_filename = "cally/cally.h", instance_pos = 1.9)]
+	public delegate void ActionCallback (Cally.Actor cally_actor);
+	[CCode (cheader_filename = "cally/cally.h", has_target = false)]
+	public delegate void ActionFunc (Cally.Actor cally_actor);
+	[CCode (cheader_filename = "cally/cally.h")]
+	public static bool accessibility_init ();
+	[CCode (cheader_filename = "cally/cally.h")]
+	public static bool get_cally_initialized ();
+	[CCode (cheader_filename = "cally/cally.h")]
+	public static bool snoop_key_event (Clutter.Stage stage, Clutter.KeyEvent key);
+}
