@@ -42,6 +42,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
 
         get_accessible ().accessible_name = window.title;
         get_accessible ().accessible_role = LIST_ITEM;
+        get_accessible ().notify_state_change (Atk.StateType.FOCUSABLE, true);
 
         reactive = true;
 
@@ -81,5 +82,6 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
         }
 
         get_accessible ().notify_state_change (Atk.StateType.SELECTED, selected);
+        get_accessible ().notify_state_change (Atk.StateType.FOCUSED, selected);
     }
 }
