@@ -132,7 +132,7 @@ namespace Gala {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
-            animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
+            animations_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
             behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");

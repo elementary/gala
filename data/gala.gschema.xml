@@ -184,7 +184,7 @@
     </key>
   </schema>
 
-  <schema path="/org/pantheon/desktop/gala/animations/" id="org.pantheon.desktop.gala.animations">
+  <schema path="/io/elementary/desktop/wm/animations/" id="io.elementary.desktop.wm.animations">
     <key type="b" name="enable-animations">
       <default>true</default>
       <summary>Enable Animations</summary>
