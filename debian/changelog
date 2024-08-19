@@ -1,3 +1,9 @@
+gala (8.0.0) jammy; urgency=medium
+
+  * Release 8.0.0 (#1993)
+
+ -- elementary, Inc. <builds@elementary.io>  Mon, 19 Aug 2024 18:17:24 +0000
+
 gala (7.1.3) jammy; urgency=medium
 
   * Release 7.1.3 (#1777)
