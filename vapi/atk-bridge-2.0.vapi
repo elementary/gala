@@ -1,4 +1,4 @@
-[CCode (cprefix = "AtkBridge", lower_case_cprefix = "atk_bridge_")]
+[CCode (lower_case_cprefix = "atk_bridge_")]
 namespace AtkBridge {
 	public static int adaptor_init (int argc, char[] argv);
     public static void adaptor_cleanup ();
