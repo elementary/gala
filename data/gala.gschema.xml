@@ -30,7 +30,7 @@
     </key>
   </schema>
 
-  <schema path="/org/pantheon/desktop/gala/behavior/" id="org.pantheon.desktop.gala.behavior">
+  <schema path="/io/elementary/desktop/wm/behavior/" id="io.elementary.desktop.wm.behavior">
     <key enum="GalaActionType" name="hotcorner-topleft">
       <default>"none"</default>
       <summary>Action for the top left corner</summary>
@@ -86,9 +86,6 @@
 			<summary>Automatically move fullscreened windows to a new workspace</summary>
 			<description></description>
 		</key>
-  </schema>
-
-  <schema path="/io/elementary/desktop/wm/behavior/" id="io.elementary.desktop.wm.behavior">
     <key type="b" name="enable-hotcorners-in-fullscreen">
       <default>false</default>
       <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>

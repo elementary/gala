@@ -36,7 +36,6 @@ conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
 conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', gala_version)
-conf.set_quoted('SCHEMA', 'org.pantheon.desktop.gala')
 config_h = configure_file(
     output: 'config.h',
     configuration: conf
