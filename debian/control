@@ -6,6 +6,7 @@ Build-Depends: debhelper (>= 10.5.1),
                desktop-file-utils,
                gettext (>= 0.19.6),
                gsettings-desktop-schemas-dev,
+               libatk-bridge2.0-dev,
                libcanberra-dev,
                libcanberra-gtk3-dev,
                libgee-0.8-dev,
@@ -29,6 +30,7 @@ Package: gala
 Architecture: any
 Depends: gsettings-desktop-schemas,
          io.elementary.portals (>=1.1.0),
+         libatk-bridge2.0-0t64,
          libgala0 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
