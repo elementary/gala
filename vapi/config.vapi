@@ -24,6 +24,5 @@ namespace Config
 	public const string PKGDATADIR;
 	public const string VERSION;
 	public const string PLUGINDIR;
-	public const string SCHEMA;
 	public const string RESOURCEPATH;
 }

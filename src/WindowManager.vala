@@ -134,7 +134,7 @@ namespace Gala {
 
             animations_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
-            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
 

@@ -58,7 +58,7 @@ namespace Gala {
         }
 
         construct {
-            gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            gala_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             style_manager = Drawing.StyleManager.get_instance ();
 
             visible = false;
