@@ -244,7 +244,7 @@ namespace Gala {
             FilterManager.init (this);
 
             /*keybindings*/
-            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+            var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
             display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
             display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
