@@ -149,6 +149,8 @@ namespace Gala {
 
             show_stage ();
 
+            init_a11y ();
+
             AccessDialog.watch_portal ();
 
             unowned Meta.Display display = get_display ();
@@ -377,6 +379,15 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
+        }
+
+        private void init_a11y () {
+            if (!Clutter.get_accessibility_enabled ()) {
+                warning ("Clutter has no accessibility enabled");
+                return;
+            }
+
+            AtkBridge.adaptor_init (0, {});
         }
 
         private void update_ui_group_size () {

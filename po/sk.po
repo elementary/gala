@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"POT-Creation-Date: 2024-08-20 20:01+0000\n"
 "PO-Revision-Date: 2024-08-20 11:26+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
-"Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
-"\n"
+"Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
+">\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,9 +109,9 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:129
 msgid "Improvements:"
 msgstr "Vylepšenia:"
 
@@ -123,13 +123,13 @@ msgstr "Zlepšenie ovládania klávesnicou v Zobrazení úloh"
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Zmeniť farbu panelu v ten istý čas ako pri prechode tapety"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Updated translations"
 msgstr "Aktualizované preklady"
 
-#: data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:75
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -137,20 +137,20 @@ msgstr ""
 "Zmena tapety alebo prechod do režimu spánku rešpektuje možnosť „Obmedziť "
 "animácie“"
 
-#: data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:76
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Používať vhodné „drag-and-drop“ ukazovatele pri presúvaní okien"
 
-#: data/gala.metainfo.xml.in:71
+#: data/gala.metainfo.xml.in:77
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "Oprava chyby, kedy mohli prestať fungovať gestá v zobrazení úloh"
 
-#: data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:78
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Zlepšenie správania dynamických pracovných priestorov pre viaceré monitory"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:100
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Zlepšenie spracovania skratky presunu na pracovnú plochu"
 
@@ -177,7 +177,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Neznáme"
 
-#: src/DesktopIntegration.vala:128
+#: src/DesktopIntegration.vala:132
 msgid "Window has already focus"
 msgstr "Okno je už zamerané"
 
@@ -230,11 +230,15 @@ msgstr "Zakázať"
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
-#: src/ScreenshotManager.vala:369
+#: src/ScreenshotManager.vala:382
 msgid "Screenshot taken"
 msgstr "Snímka obrazovky vytvorená"
 
-#: src/WindowManager.vala:2318
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+msgid "Window switcher"
+msgstr ""
+
+#: src/WindowManager.vala:2360
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -242,20 +246,20 @@ msgstr[0] "Za %i sekundu sa zmeny automaticky vrátia späť."
 msgstr[1] "Za %i sekundy sa zmeny automaticky vrátia späť."
 msgstr[2] "Za %i sekúnd sa zmeny automaticky vrátia späť."
 
-#: src/WindowManager.vala:2325
+#: src/WindowManager.vala:2367
 msgid "Keep new display settings?"
 msgstr "Ponechať nové nastavenia obrazovky?"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2371
 msgid "Keep Settings"
 msgstr "Ponechať nastavenia"
 
-#: src/WindowManager.vala:2330
+#: src/WindowManager.vala:2372
 msgid "Use Previous Settings"
 msgstr "Použiť predchádzajúce nastavenia"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2369
+#: src/WindowManager.vala:2411
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Snímka obrazovky z %s"
