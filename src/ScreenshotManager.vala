@@ -361,8 +361,7 @@ namespace Gala {
 
             try {
                 unowned var selection = wm.get_display ().get_selection ();
-                var bytes = new GLib.Bytes.take (buffer);
-                var source = new Meta.SelectionSourceMemory ("image/png", bytes);
+                var source = new Meta.SelectionSourceMemory ("image/png", new GLib.Bytes.take (buffer));
                 selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
             } catch (Error e) {
                 warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
