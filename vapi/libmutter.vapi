@@ -917,8 +917,10 @@ namespace Meta {
 		public WaylandClient (GLib.SubprocessLauncher launcher) throws GLib.Error;
 #endif
 		public void hide_from_window_list (Meta.Window window);
-#if HAS_MUTTER46
+#if HAS_MUTTER45
 		public void make_desktop (Meta.Window window);
+#endif
+#if HAS_MUTTER46
 		public void make_dock (Meta.Window window);
 #endif
 		public bool owns_window (Meta.Window window);

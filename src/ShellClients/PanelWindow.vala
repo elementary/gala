@@ -61,7 +61,7 @@ public class Gala.PanelWindow : Object {
         workspace_manager.workspace_removed.connect (update_strut);
     }
 
-#if HAS_MUTTER46
+#if HAS_MUTTER45
     public Mtk.Rectangle get_custom_window_rect () {
 #else
     public Meta.Rectangle get_custom_window_rect () {
