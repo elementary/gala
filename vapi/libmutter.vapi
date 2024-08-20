@@ -792,7 +792,11 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/meta-selection-source-memory.h", type_id = "meta_selection_source_memory_get_type ()")]
 	public sealed class SelectionSourceMemory : Meta.SelectionSource {
 		[CCode (has_construct_function = false, type = "MetaSelectionSource*")]
+#if HAS_MUTTER46
 		public SelectionSourceMemory (string mimetype, GLib.Bytes content) throws GLib.Error;
+#else
+		public SelectionSourceMemory (string mimetype, GLib.Bytes content);
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-settings.h", has_type_id = false)]
 	[Compact]
