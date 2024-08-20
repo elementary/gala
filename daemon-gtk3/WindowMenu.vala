@@ -4,7 +4,7 @@
  */
 
 public class Gala.Daemon.WindowMenu : Gtk.Menu {
-    private static GLib.Settings gala_keybind_settings = new GLib.Settings ("org.pantheon.desktop.gala.keybindings");
+    private static GLib.Settings gala_keybind_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
 
     public signal void perform_action (Gala.ActionType type);

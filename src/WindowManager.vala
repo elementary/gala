@@ -132,9 +132,9 @@ namespace Gala {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
-            animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
+            animations_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
-            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
 
@@ -246,7 +246,7 @@ namespace Gala {
             FilterManager.init (this);
 
             /*keybindings*/
-            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+            var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
             display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
             display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
