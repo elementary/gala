@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-08 20:38+0000\n"
+"POT-Creation-Date: 2024-08-20 20:01+0000\n"
 "PO-Revision-Date: 2024-08-07 18:17+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -114,9 +114,9 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:73
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:129
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
@@ -132,34 +132,34 @@ msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Updated translations"
 msgstr "Oppdaterte oversettelser"
 
-#: data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:75
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Endring av bakgrunnsbilde eller dvalemodus respekterer «Reduser bevegelse»"
 
-#: data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:76
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Bruk av riktige dra- og slipp-pekere ved flytting av vinduer"
 
-#: data/gala.metainfo.xml.in:71
+#: data/gala.metainfo.xml.in:77
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Fikset problem der håndvendinger i fleroppgaveløsningsvisning sluttet å "
 "fungere"
 
-#: data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:78
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Forbedret adferd for dynamiske arbeidsområder med flere skjermer"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:100
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Forbedret håndtering av snarveien for flytting til arbeidsområde"
 
@@ -185,7 +185,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr ""
 
-#: src/DesktopIntegration.vala:128
+#: src/DesktopIntegration.vala:132
 msgid "Window has already focus"
 msgstr ""
 
@@ -239,31 +239,35 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Skjermavbildninger"
 
-#: src/ScreenshotManager.vala:369
+#: src/ScreenshotManager.vala:382
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2318
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+msgid "Window switcher"
+msgstr ""
+
+#: src/WindowManager.vala:2360
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
 msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
 
-#: src/WindowManager.vala:2325
+#: src/WindowManager.vala:2367
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2371
 msgid "Keep Settings"
 msgstr "Behold innstillinger"
 
-#: src/WindowManager.vala:2330
+#: src/WindowManager.vala:2372
 msgid "Use Previous Settings"
 msgstr "Bruk tidligere oppsett"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2369
+#: src/WindowManager.vala:2411
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Skjermavbildning fra %s"
