@@ -116,7 +116,9 @@ public class Gala.ShellClientsManager : Object {
     private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
+#if HAS_MUTTER46
                 client.wayland_client.make_dock (window);
+#endif
                 break;
             }
         }
