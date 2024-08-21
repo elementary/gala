@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-20 20:01+0000\n"
-"PO-Revision-Date: 2024-08-09 22:16+0000\n"
+"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-08-21 17:26+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
 ">\n"
@@ -109,27 +109,27 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
+#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:127
 msgid "Improvements:"
 msgstr "Улучшения:"
 
-#: data/gala.metainfo.xml.in:34
-msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Улучшена навигация с клавиатуры в режиме многозадачности"
-
-#: data/gala.metainfo.xml.in:35
-msgid "Change panel color at the same time as wallpaper transition"
-msgstr "Обновление цвета панели одновременно со сменой обоев"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:79
-#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:116
-#: data/gala.metainfo.xml.in:131
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:129
 msgid "Updated translations"
 msgstr "Обновлены переводы"
 
-#: data/gala.metainfo.xml.in:75
+#: data/gala.metainfo.xml.in:47
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Улучшена навигация с клавиатуры в режиме многозадачности"
+
+#: data/gala.metainfo.xml.in:48
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Обновление цвета панели одновременно со сменой обоев"
+
+#: data/gala.metainfo.xml.in:88
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -137,22 +137,22 @@ msgstr ""
 "Смена обоев и переход в спящий режим теперь учитывают опцию «Уменьшить "
 "анимации»"
 
-#: data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:89
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Соответствующие указатели перетаскивания при перемещении окон"
 
-#: data/gala.metainfo.xml.in:77
+#: data/gala.metainfo.xml.in:90
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Исправлена ошибка, из-за которой жесты в режиме многозадачности могли "
 "перестать работать"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:91
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Улучшено поведение динамических рабочих столов с несколькими мониторами"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:113
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Улучшено сочетание клавиш «Переместить на рабочий стол»"
 
@@ -237,9 +237,9 @@ msgstr "Снимок экрана сделан"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Переключатель окон"
 
-#: src/WindowManager.vala:2360
+#: src/WindowManager.vala:2361
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -247,20 +247,20 @@ msgstr[0] "Изменения будут отменены через %i секу
 msgstr[1] "Изменения будут отменены через %i секунды."
 msgstr[2] "Изменения будут отменены через %i секунд."
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:2368
 msgid "Keep new display settings?"
 msgstr "Сохранить новые настройки экрана?"
 
-#: src/WindowManager.vala:2371
+#: src/WindowManager.vala:2372
 msgid "Keep Settings"
 msgstr "Сохранить настройки"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2373
 msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2411
+#: src/WindowManager.vala:2412
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"

@@ -27,6 +27,19 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.0.1" date="2024-08-21" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1052">Workspace doesn't switch automatically when invoke app from different workspace</issue>
+        <issue url="https://github.com/elementary/gala/issues/1301">Make Window Switcher accessible</issue>
+      </issues>
+    </release>
+
     <release version="8.0.0" date="2024-08-19" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -125,12 +138,6 @@
     </release>
 
     <release version="7.1.0" date="2023-06-26" urgency="medium">
-      <description>
-        <p>Improvements:</p>
-        <ul>
-          <li>Updated translations</li>
-        </ul>
-      </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/1091">Accessibility grayscale and colourblind filters</issue>
       </issues>
