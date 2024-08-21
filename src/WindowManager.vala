@@ -102,7 +102,7 @@ namespace Gala {
 #else
         private Meta.Rectangle old_rect_size_change;
 #endif
-        private Clutter.Actor latest_window_snapshot;
+        private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings animations_settings;
         private GLib.Settings behavior_settings;
@@ -1437,13 +1437,13 @@ namespace Gala {
                 latest_window_snapshot.restore_easing_state ();
 
                 ulong maximize_old_handler_id = 0UL;
-                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
-                    latest_window_snapshot.disconnect (maximize_old_handler_id);
-                    latest_window_snapshot.destroy ();
+                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
+                    snapshot.disconnect (maximize_old_handler_id);
+                    snapshot.destroy ();
                     actor.set_translation (0.0f, 0.0f, 0.0f);
                 });
 
-                latest_window_snapshot.restore_easing_state ();
+                latest_window_snapshot = null;
 
                 actor.set_pivot_point (0.0f, 0.0f);
                 actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
@@ -1812,10 +1812,12 @@ namespace Gala {
                 latest_window_snapshot.restore_easing_state ();
 
                 ulong unmaximize_old_handler_id = 0UL;
-                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
-                    latest_window_snapshot.disconnect (unmaximize_old_handler_id);
-                    latest_window_snapshot.destroy ();
+                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
+                    snapshot.disconnect (unmaximize_old_handler_id);
+                    snapshot.destroy ();
                 });
+
+                latest_window_snapshot = null;
 
                 actor.set_pivot_point (0.0f, 0.0f);
                 actor.set_position (ex, ey);
