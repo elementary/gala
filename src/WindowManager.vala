@@ -132,9 +132,9 @@ namespace Gala {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
-            animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
+            animations_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
-            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
 
@@ -148,6 +148,8 @@ namespace Gala {
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
+
+            init_a11y ();
 
             AccessDialog.watch_portal ();
 
@@ -172,6 +174,7 @@ namespace Gala {
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
+            WindowAttentionTracker.init (display);
 
             notification_stack = new NotificationStack (display);
 
@@ -244,7 +247,7 @@ namespace Gala {
             FilterManager.init (this);
 
             /*keybindings*/
-            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+            var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
             display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
             display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
@@ -377,6 +380,15 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
+        }
+
+        private void init_a11y () {
+            if (!Clutter.get_accessibility_enabled ()) {
+                warning ("Clutter has no accessibility enabled");
+                return;
+            }
+
+            AtkBridge.adaptor_init (0, {});
         }
 
         private void update_ui_group_size () {
@@ -926,8 +938,10 @@ namespace Gala {
                         op,
                         event.get_device (),
                         event.get_event_sequence (),
-                        event.get_time (),
-                        null
+                        event.get_time ()
+#if HAS_MUTTER46
+                        , null
+#endif
                     );
                 } else if (event.get_type () == LEAVE) {
                     /* We get leave emitted when beginning a grab op, so we have

@@ -24,7 +24,7 @@ public class Gala.Zoom : Object {
         Object (wm: wm);
 
         unowned var display = wm.get_display ();
-        var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
+        var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
         display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
         display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
