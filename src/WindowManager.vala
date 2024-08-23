@@ -134,9 +134,9 @@ namespace Gala {
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
-            animations_settings = new GLib.Settings (Config.SCHEMA + ".animations");
+            animations_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
             animations_settings.bind ("enable-animations", this, "enable-animations", GLib.SettingsBindFlags.GET);
-            behavior_settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+            behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             enable_animations = animations_settings.get_boolean ("enable-animations");
 
@@ -159,6 +159,8 @@ namespace Gala {
                 // Wait for Wingpanel animation 
                 Timeout.add_once (300, show_stage);
             });
+
+            init_a11y ();
 
             AccessDialog.watch_portal ();
 
@@ -183,6 +185,7 @@ namespace Gala {
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
+            WindowAttentionTracker.init (display);
 
             notification_stack = new NotificationStack (display);
 
@@ -255,7 +258,7 @@ namespace Gala {
             FilterManager.init (this);
 
             /*keybindings*/
-            var keybinding_settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+            var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
             display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
             display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
@@ -399,6 +402,15 @@ namespace Gala {
 #endif
                 get_display ().get_context ().notify_ready ();
             });
+        }
+
+        private void init_a11y () {
+            if (!Clutter.get_accessibility_enabled ()) {
+                warning ("Clutter has no accessibility enabled");
+                return;
+            }
+
+            AtkBridge.adaptor_init (0, {});
         }
 
         private void update_ui_group_size () {
@@ -937,6 +949,35 @@ namespace Gala {
             });
         }
 
+        private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
+            var proxy = push_modal (stage);
+
+            ulong handler = 0;
+            handler = stage.captured_event.connect ((event) => {
+                if (event.get_type () == MOTION || event.get_type () == ENTER ||
+                    event.get_type () == TOUCHPAD_HOLD || event.get_type () == TOUCH_BEGIN) {
+                    window.begin_grab_op (
+                        op,
+                        event.get_device (),
+                        event.get_event_sequence (),
+                        event.get_time ()
+#if HAS_MUTTER46
+                        , null
+#endif
+                    );
+                } else if (event.get_type () == LEAVE) {
+                    /* We get leave emitted when beginning a grab op, so we have
+                       to filter it in order to avoid disconnecting and popping twice */
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
+                pop_modal (proxy);
+                stage.disconnect (handler);
+
+                return Clutter.EVENT_PROPAGATE;
+            });
+        }
+
         /**
          * {@inheritDoc}
          */
@@ -971,7 +1012,7 @@ namespace Gala {
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time (), null);
+                        set_grab_trigger (current, KEYBOARD_MOVING);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
 #else
@@ -981,7 +1022,7 @@ namespace Gala {
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
 #if HAS_MUTTER46
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time (), null);
+                        set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
 #elif HAS_MUTTER44
                         current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
 #else
@@ -2012,12 +2053,16 @@ namespace Gala {
             var from_has_fullscreened = false;
 
             // collect all windows and put them in the appropriate containers
-            foreach (unowned Meta.WindowActor actor in display.get_window_actors ()) {
+            var slist = new GLib.SList<Meta.Window> ();
+            display.list_all_windows ().@foreach ((win) => {
+                slist.append (win);
+            });
+            foreach (unowned var window in display.sort_windows_by_stacking (slist)) {
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+
                 if (actor.is_destroyed ()) {
                     continue;
                 }
-
-                unowned var window = actor.get_meta_window ();
 
                 if (!window.showing_on_its_workspace () ||
                     move_primary_only && !window.is_on_primary_monitor () ||

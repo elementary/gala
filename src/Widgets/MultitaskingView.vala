@@ -58,7 +58,7 @@ namespace Gala {
         }
 
         construct {
-            gala_behavior_settings = new GLib.Settings ("org.pantheon.desktop.gala.behavior");
+            gala_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             style_manager = Drawing.StyleManager.get_instance ();
 
             visible = false;
@@ -86,7 +86,7 @@ namespace Gala {
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
-            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor ());
+            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor (), true, false);
             blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
             blurred_bg.add_effect (brightness_effect);
 

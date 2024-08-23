@@ -300,7 +300,7 @@ namespace Gala {
             return Environment.get_home_dir ();
         }
 
-        private static async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
+        private async bool save_image (Cairo.ImageSurface image, string filename, float scale, out string used_filename) {
             return (filename != "")
                 ? yield save_image_to_file (image, filename, scale, out used_filename)
                 : save_image_to_clipboard (image, filename, out used_filename);
@@ -342,19 +342,32 @@ namespace Gala {
             }
         }
 
-        private static bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
+        private bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
             used_filename = filename;
-
-            unowned Gdk.Display display = Gdk.Display.get_default ();
-            unowned Gtk.Clipboard clipboard = Gtk.Clipboard.get_default (display);
 
             var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
             if (screenshot == null) {
-                warning ("could not save screenshot to clipboard: null pixbuf");
+                warning ("Could not save screenshot to clipboard: null pixbuf");
                 return false;
             }
 
-            clipboard.set_image (screenshot);
+            uint8[] buffer;
+            try {
+                screenshot.save_to_buffer (out buffer, "png");
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to save image to buffer: %s", e.message);
+                return false;
+            }
+
+            try {
+                unowned var selection = wm.get_display ().get_selection ();
+                var source = new Meta.SelectionSourceMemory ("image/png", new GLib.Bytes.take (buffer));
+                selection.set_owner (Meta.SelectionType.SELECTION_CLIPBOARD, source);
+            } catch (Error e) {
+                warning ("Could not save screenshot to clipboard: failed to create new Meta.SelectionSourceMemory: %s", e.message);
+                return false;
+            }
+
             return true;
         }
 

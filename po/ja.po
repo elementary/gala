@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-18 17:28+0000\n"
-"PO-Revision-Date: 2024-07-19 17:28+0000\n"
+"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-08-21 17:26+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -109,48 +109,48 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:108
-#: data/gala.metainfo.xml.in:123
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
+#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:127
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.metainfo.xml.in:34
-msgid "Improve keyboard navigation in Multitasking View"
-msgstr "“マルチタスク画面”でのキーボード操作を改善"
-
-#: data/gala.metainfo.xml.in:35
-msgid "Change panel color at the same time as wallpaper transition"
-msgstr "壁紙の遷移と同時にパネルの色を変更するように修正"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:110
-#: data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:129
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
-#: data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:47
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "“マルチタスク画面”でのキーボード操作を改善"
+
+#: data/gala.metainfo.xml.in:48
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "壁紙の遷移と同時にパネルの色を変更するように修正"
+
+#: data/gala.metainfo.xml.in:88
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定に従うように修正"
 
-#: data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:89
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "ウィンドウ移動時、ドラッグ & ドロップの形をした適切なポインターを使用するよう"
 "に修正"
 
-#: data/gala.metainfo.xml.in:71
+#: data/gala.metainfo.xml.in:90
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "マルチタスク画面でジェスチャーが動作しなくなる可能性がある不具合を修正"
 
-#: data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:91
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "マルチモニター環境におけるダイナミックワークスペースの挙動を改善"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:113
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "“move-to-workspace”ショートカットの処理を改善"
 
@@ -176,6 +176,10 @@ msgstr ""
 msgctxt "program"
 msgid "Unknown"
 msgstr "不明なプログラム"
+
+#: src/DesktopIntegration.vala:132
+msgid "Window has already focus"
+msgstr "ウィンドウはすでにアクティブです"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -225,30 +229,34 @@ msgstr "拒否"
 msgid "Screenshots"
 msgstr "スクリーンショット"
 
-#: src/ScreenshotManager.vala:369
+#: src/ScreenshotManager.vala:382
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2318
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+msgid "Window switcher"
+msgstr "ウィンドウスイッチャー"
+
+#: src/WindowManager.vala:2361
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
 
-#: src/WindowManager.vala:2325
+#: src/WindowManager.vala:2368
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか?"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2372
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:2330
+#: src/WindowManager.vala:2373
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2369
+#: src/WindowManager.vala:2412
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"

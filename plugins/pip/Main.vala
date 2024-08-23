@@ -38,7 +38,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
         var display = wm.get_display ();
-        var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+        var settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
         display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) on_initiate);
     }
