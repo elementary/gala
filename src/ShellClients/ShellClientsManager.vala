@@ -116,7 +116,9 @@ public class Gala.ShellClientsManager : Object {
     private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
+#if HAS_MUTTER46
                 client.wayland_client.make_dock (window);
+#endif
                 break;
             }
         }
@@ -153,7 +155,7 @@ public class Gala.ShellClientsManager : Object {
         windows[window] = new PanelWindow (wm, window, side);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
-        window.unmanaged.connect_after (() => windows.remove (window));
+        window.unmanaging.connect_after (() => windows.remove (window));
     }
 
     /**
@@ -187,6 +189,8 @@ public class Gala.ShellClientsManager : Object {
         }
 
         centered_windows[window] = new CenteredWindow (wm, window);
+
+        window.unmanaging.connect_after (() => centered_windows.remove (window));
     }
 
     public bool is_positioned_window (Meta.Window window) {

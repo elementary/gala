@@ -42,6 +42,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
+                _current_icon.grab_key_focus ();
             }
 
             update_caption_text ();
@@ -69,6 +70,9 @@ public class Gala.WindowSwitcher : CanvasActor {
 #endif
         };
 
+        get_accessible ().accessible_name = _("Window switcher");
+        container.get_accessible ().accessible_role = LIST;
+
         caption = new Clutter.Text () {
             font_name = CAPTION_FONT_NAME,
             ellipsize = END,
@@ -78,6 +82,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         add_child (container);
         add_child (caption);
 
+        reactive = true;
         visible = false;
         opacity = 0;
         layout_manager = new Clutter.BoxLayout () {
@@ -355,6 +360,7 @@ public class Gala.WindowSwitcher : CanvasActor {
 
     private void add_icon (WindowSwitcherIcon icon) {
         container.add_child (icon);
+        icon.get_accessible ().accessible_parent = container.get_accessible ();
 
         icon.motion_event.connect ((_icon, event) => {
             if (current_icon != _icon && !handling_gesture) {
@@ -404,6 +410,7 @@ public class Gala.WindowSwitcher : CanvasActor {
             push_modal ();
         } else {
             wm.pop_modal (modal_proxy);
+            get_stage ().set_key_focus (null);
         }
 
         save_easing_state ();
