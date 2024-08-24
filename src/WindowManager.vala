@@ -388,7 +388,9 @@ namespace Gala {
                 return;
             }
 
-            AtkBridge.adaptor_init (0, {});
+            string[] args = {};
+            unowned string[] _args = args;
+            AtkBridge.adaptor_init (ref _args);
         }
 
         private void update_ui_group_size () {
