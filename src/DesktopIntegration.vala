@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-[DBus (name="org.pantheon.gala.DesktopIntegration")]
+[DBus (name="io.elementary.gala.DesktopIntegration")]
 public class Gala.DesktopIntegration : GLib.Object {
     public struct RunningApplication {
         string app_id;
