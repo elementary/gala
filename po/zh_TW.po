@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-08-21 17:26+0000\n"
-"PO-Revision-Date: 2024-08-07 18:17+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-09-02 22:33+0000\n"
+"Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese (Traditional) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -22,27 +22,27 @@ msgstr ""
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "變更桌布…"
 
 #: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "顯示器設定…"
 
 #: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "系統設定值…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "開啟系統設定失敗了"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "必須安裝 \"settings://\" URI 協定的處理程式。"
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
-msgstr ""
+msgstr "隱藏"
 
 #: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
@@ -70,7 +70,7 @@ msgstr "向右移動工作區"
 
 #: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
-msgstr ""
+msgstr "拍攝畫面快照"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
@@ -78,7 +78,7 @@ msgstr "關閉"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "解除鋪排"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
@@ -90,17 +90,17 @@ msgstr "最大化"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "多工作業和視窗管理"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Pantheon 的視窗與合成管理器"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
-msgstr ""
+msgstr "設計給 elementary 與 Pantheon 一同使用的視窗與合成管理器，基於 libmutter。"
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
@@ -110,23 +110,21 @@ msgstr "elementary, Inc."
 #: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
 #: data/gala.metainfo.xml.in:127
 msgid "Improvements:"
-msgstr ""
+msgstr "改善項目："
 
 #: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
 #: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
 #: data/gala.metainfo.xml.in:129
 msgid "Updated translations"
-msgstr ""
+msgstr "更新翻譯"
 
 #: data/gala.metainfo.xml.in:47
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "多工作業檢視"
+msgstr "改善多工作業檢視中的鍵盤瀏覽"
 
 #: data/gala.metainfo.xml.in:48
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr ""
+msgstr "桌布切換的同時一起變更面板顏色"
 
 #: data/gala.metainfo.xml.in:88
 msgid ""
@@ -136,19 +134,19 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:89
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "移動視窗時使用合適的拖放游標"
 
 #: data/gala.metainfo.xml.in:90
 msgid "Fix the issue when gestures in the multitasking view might stop working"
-msgstr ""
+msgstr "修正多工作業檢視中手勢可能會停止運作的問題"
 
 #: data/gala.metainfo.xml.in:91
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "改善多螢幕時的動態工作空間行為"
 
 #: data/gala.metainfo.xml.in:113
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "改善移動到工作空間快捷鍵的處理"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -170,55 +168,55 @@ msgstr "過期應用程式通知的後備桌面檔。"
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: src/DesktopIntegration.vala:132
 msgid "Window has already focus"
-msgstr ""
+msgstr "視窗已有焦點"
 
 #: src/Dialogs.vala:144
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "「%s」沒有回應"
 
 #: src/Dialogs.vala:146
 msgid "Application is not responding"
-msgstr ""
+msgstr "應用程式沒有回應"
 
 #: src/Dialogs.vala:149
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
-msgstr ""
+msgstr "您可以選擇稍候片刻等應用程式繼續進行，或是強制它完全終止。"
 
 #: src/Dialogs.vala:150
 msgid "Force Quit"
-msgstr ""
+msgstr "強制終止"
 
 #: src/Dialogs.vala:151
 msgid "Wait"
-msgstr ""
+msgstr "等待"
 
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "「%s」希望阻擋系統快捷鍵"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "有應用程式希望阻擋系統快捷鍵"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "所有系統快捷鍵都會改送給該應用程式。"
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "允許"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "拒絕"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
@@ -226,35 +224,35 @@ msgstr "螢幕快照"
 
 #: src/ScreenshotManager.vala:382
 msgid "Screenshot taken"
-msgstr ""
+msgstr "已拍攝螢幕快照"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "視窗切換器"
 
 #: src/WindowManager.vala:2361
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
+msgstr[0] "變更將會在 %i 秒後自動復原。"
 
 #: src/WindowManager.vala:2368
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "要保留新的顯示器設定嗎？"
 
 #: src/WindowManager.vala:2372
 msgid "Keep Settings"
-msgstr ""
+msgstr "保留設定"
 
 #: src/WindowManager.vala:2373
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "使用先前的設定"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2412
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "%s 的畫面快照"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
