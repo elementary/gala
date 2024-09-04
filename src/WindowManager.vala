@@ -388,7 +388,9 @@ namespace Gala {
                 return;
             }
 
-            AtkBridge.adaptor_init (0, {});
+            string[] args = {};
+            unowned string[] _args = args;
+            AtkBridge.adaptor_init (ref _args);
         }
 
         private void update_ui_group_size () {
@@ -938,8 +940,10 @@ namespace Gala {
                         op,
                         event.get_device (),
                         event.get_event_sequence (),
-                        event.get_time (),
-                        null
+                        event.get_time ()
+#if HAS_MUTTER46
+                        , null
+#endif
                     );
                 } else if (event.get_type () == LEAVE) {
                     /* We get leave emitted when beginning a grab op, so we have
