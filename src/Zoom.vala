@@ -24,7 +24,7 @@ public class Gala.Zoom : Object {
         Object (wm: wm);
 
         unowned var display = wm.get_display ();
-        var schema = new GLib.Settings (Config.SCHEMA + ".keybindings");
+        var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
         display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
         display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
@@ -115,7 +115,7 @@ public class Gala.Zoom : Object {
         // Nothing to do if zooming out of our bounds is requested
         if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
             if (play_sound) {
-                Gdk.beep ();
+                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
             }
             return;
         }

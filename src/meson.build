@@ -14,6 +14,7 @@ gala_bin_sources = files(
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
     'SessionManager.vala',
+    'WindowAttentionTracker.vala',
     'WindowGrabTracker.vala',
     'WindowListener.vala',
     'WindowManager.vala',

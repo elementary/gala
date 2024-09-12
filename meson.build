@@ -1,6 +1,6 @@
 project('gala',
     'c', 'vala',
-    version: '7.1.3',
+    version: '8.0.0',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
 )
@@ -36,7 +36,6 @@ conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
 conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', gala_version)
-conf.set_quoted('SCHEMA', 'org.pantheon.desktop.gala')
 config_h = configure_file(
     output: 'config.h',
     configuration: conf
@@ -80,6 +79,7 @@ add_project_arguments([
 glib_version_required = '2.74.0'
 gtk_version_required = '3.10.0'
 
+atk_bridge_dep = dependency('atk-bridge-2.0')
 canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
@@ -171,7 +171,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
