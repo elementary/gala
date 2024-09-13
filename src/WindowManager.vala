@@ -2164,7 +2164,7 @@ namespace Gala {
 
             // while a workspace is being switched mutter doesn't map windows
             // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect_after ((window) => {
+            switch_workspace_window_created_id = window_created.connect ((window) => {
                 if (NotificationStack.is_notification (window)) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     clutter_actor_reparent (actor, notification_group);
