@@ -799,7 +799,7 @@ namespace Gala {
                     continue;
                 }
 
-                if (window.get_data (NOTIFICATION_DATA_KEY)) {
+                if (NotificationStack.is_notification (window)) {
                     continue;
                 }
 
