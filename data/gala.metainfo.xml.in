@@ -31,10 +31,13 @@
       <description>
         <p>Improvements:</p>
         <ul>
+          <li>Fix a potential crash when moving windows between workspaces</li>
+          <li>Fix notification animation when entering multitasking view</li>
           <li>Updated translations</li>
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/wingpanel/issues/540">Struts aren't updated on DPI change</issue>
         <issue url="https://github.com/elementary/gala/issues/1052">Workspace doesn't switch automatically when invoke app from different workspace</issue>
         <issue url="https://github.com/elementary/gala/issues/1301">Make Window Switcher accessible</issue>
       </issues>
