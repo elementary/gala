@@ -28,8 +28,9 @@ public class Gala.NotificationStack : Object {
 
     private const int WIDTH = 300;
 
-    private int stack_y;
-    private int stack_width;
+    private int offset_stack_y;
+
+    private Mtk.Rectangle notification_area = { 0, 0, 0, 0 };
 
     public Meta.Display display { get; construct; }
 
@@ -46,6 +47,13 @@ public class Gala.NotificationStack : Object {
         monitor_manager.monitors_changed_internal.connect (update_stack_allocation);
         display.workareas_changed.connect (update_stack_allocation);
         update_stack_allocation ();
+
+        ShellClientsManager.get_instance ().positioned_window_created.connect ((window) => {
+            window.size_changed.connect (update_offset_y);
+            window.position_changed.connect (update_offset_y);
+            window.unmanaged.connect (update_offset_y);
+            update_offset_y ();
+        });
     }
 
     public void show_notification (Meta.WindowActor notification, bool animate)
@@ -103,7 +111,7 @@ public class Gala.NotificationStack : Object {
             notification_x_pos = 0;
         }
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
+        move_window (notification, notification_x_pos, offset_stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
         notifications.insert (0, notification);
     }
 
@@ -112,13 +120,15 @@ public class Gala.NotificationStack : Object {
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
         var scale = display.get_monitor_scale (primary);
-        stack_width = InternalUtils.scale_to_int (WIDTH + MARGIN, scale);
+        var stack_width = InternalUtils.scale_to_int (WIDTH + MARGIN, scale);
 
-        stack_y = area.y;
+        notification_area.x = area.x + area.width - stack_width;
+        notification_area.y = area.y;
+        notification_area.width = stack_width;
     }
 
     private void update_positions (bool animate, float scale, float add_y = 0.0f) {
-        var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
+        var y = offset_stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;
@@ -158,6 +168,8 @@ public class Gala.NotificationStack : Object {
 
             y += window.get_frame_rect ().height;
         }
+
+        notification_area.height = (int) y - notification_area.y;
     }
 
     public void destroy_notification (Meta.WindowActor notification, bool animate) {
@@ -167,11 +179,11 @@ public class Gala.NotificationStack : Object {
             notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
             notification.opacity = 0;
 
-            notification.x += stack_width;
+            notification.x += notification_area.width;
             notification.restore_easing_state ();
         } else {
             notification.opacity = 0;
-            notification.x += stack_width;
+            notification.x += notification_area.width;
         }
 
         var primary = display.get_primary_monitor ();
@@ -179,6 +191,36 @@ public class Gala.NotificationStack : Object {
 
         notifications.remove (notification);
         update_positions (animate, scale);
+    }
+
+    private void update_offset_y () {
+        int max_y = notification_area.y;
+        foreach (var window in display.list_all_windows ()) {
+            if (!ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                continue;
+            }
+
+            if (!window.get_frame_rect ().overlap (notification_area)) {
+                continue;
+            }
+
+            // Ignore windows that are too big to fit even a single notification on screen
+            // Conveniently this will make us ignore the fullscreen invisible wingpanel window
+            var primary = display.get_primary_monitor ();
+            var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
+            if (window.get_frame_rect ().height > area.height - notification_area.height / notifications.size) {
+                continue;
+            }
+
+            max_y = (int) Math.fmax (max_y, window.get_frame_rect ().y + window.get_frame_rect ().height);
+        }
+
+        if (max_y != offset_stack_y) {
+            offset_stack_y = max_y;
+
+            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            update_positions (true, scale);
+        }
     }
 
     /**
