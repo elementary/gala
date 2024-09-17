@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-20 20:01+0000\n"
-"PO-Revision-Date: 2024-08-11 09:16+0000\n"
+"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-08-21 17:26+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
 ">\n"
@@ -109,50 +109,50 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:73
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
+#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:127
 msgid "Improvements:"
 msgstr "Ulepszenia:"
 
-#: data/gala.metainfo.xml.in:34
-msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Poprawiono nawigację przy użyciu klawiatury w widoku wielozadaniowym"
-
-#: data/gala.metainfo.xml.in:35
-msgid "Change panel color at the same time as wallpaper transition"
-msgstr "Koloru panelu jest zmieniany w tym samym czasie co tapeta"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:79
-#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:116
-#: data/gala.metainfo.xml.in:131
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:129
 msgid "Updated translations"
 msgstr "Zaktualizowano tłumaczenia"
 
-#: data/gala.metainfo.xml.in:75
+#: data/gala.metainfo.xml.in:47
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Poprawiono nawigację przy użyciu klawiatury w widoku wielozadaniowym"
+
+#: data/gala.metainfo.xml.in:48
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Koloru panelu jest zmieniany w tym samym czasie co tapeta"
+
+#: data/gala.metainfo.xml.in:88
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Zmienianie tła oraz usypianie komputera respektuje opcję \"Zmniejsz ruch\""
 
-#: data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:89
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Użycie poprawnych wskaźników przeciągnij-i-upuść przy przenoszeniu okien"
 
-#: data/gala.metainfo.xml.in:77
+#: data/gala.metainfo.xml.in:90
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Naprawiono problem z gestami które czasami przestają działać w widoku "
 "wielozadaniowym"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:91
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Poprawa dynamicznego zachowania obszarów roboczych przy kilku monitorach"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:113
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Poprawiona obsługa skrótu „przenieś do obszaru”"
 
@@ -238,9 +238,9 @@ msgstr "Zrzut ekranu wykonany"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:2360
+#: src/WindowManager.vala:2361
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -248,20 +248,20 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:2368
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2371
+#: src/WindowManager.vala:2372
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2373
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2411
+#: src/WindowManager.vala:2412
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"

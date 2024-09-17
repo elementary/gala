@@ -799,6 +799,10 @@ namespace Gala {
                     continue;
                 }
 
+                if (NotificationStack.is_notification (window)) {
+                    continue;
+                }
+
                 if (display.get_monitor_in_fullscreen (monitor)) {
                     continue;
                 }
