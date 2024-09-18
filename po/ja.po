@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-09-18 12:00+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -116,16 +116,12 @@ msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
+msgstr "ワークスペース間でウィンドウを移動した際に起こりうるクラッシュを修正"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
-msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
+msgstr "マルチタスク画面に遷移した際の通知のアニメーションを修正"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
