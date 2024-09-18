@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-09-19 07:21+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -116,16 +116,13 @@ msgid "Improvements:"
 msgstr "Удосконалення:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Виправлено ймовірність збою під час створення знімків екрана"
+msgstr ""
+"Виправлено ймовірність збою під час переміщення вікон між робочими просторами"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
-msgstr "Виправлено положення сповіщень після зміни DPI"
+msgstr "Виправлено анімацію сповіщень після входу в багатозадачне подання"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
