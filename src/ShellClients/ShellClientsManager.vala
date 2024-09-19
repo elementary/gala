@@ -183,10 +183,6 @@ public class Gala.ShellClientsManager : Object {
         windows[window].set_hide_mode (hide_mode);
     }
 
-<<<<<<< leolost/make-modal
-    public void make_modal (Meta.Window window, bool dim) {
-        wm.modal_actor.make_modal (window, dim);
-=======
     public void make_centered (Meta.Window window) {
         if (window in centered_windows) {
             return;
@@ -195,6 +191,10 @@ public class Gala.ShellClientsManager : Object {
         centered_windows[window] = new CenteredWindow (wm, window);
 
         window.unmanaging.connect_after (() => centered_windows.remove (window));
+    }
+
+    public void make_modal (Meta.Window window, bool dim) {
+        wm.modal_actor.make_modal (window, dim);
     }
 
     public bool is_positioned_window (Meta.Window window) {
@@ -267,6 +267,5 @@ public class Gala.ShellClientsManager : Object {
                     break;
             }
         }
->>>>>>> main
     }
 }
