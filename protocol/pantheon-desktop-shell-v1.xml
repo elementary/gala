@@ -111,20 +111,20 @@
         Tell the shell to keep the surface above on all workspaces
       </description>
     </request>
-<<<<<<< leolost/make-modal
-    <request name="make_modal">
-      <description summary="requests to make a surface system modal">
-        This will block all user input outside the surface and most system shortcuts.
-      </description>
-
-      <arg name="dim" type="uint" summary="1 to dim, 0 to not dim"/>
-=======
 
     <request name="make_centered">
       <description summary="requests to keep the surface centered">
         Request to keep the surface centered. This will cause keyboard focus
         to not be granted automatically but having to be requested via focus.
       </description>
+    </request>
+
+    <request name="make_modal">
+      <description summary="requests to make a surface system modal">
+        This will block all user input outside the surface and most system shortcuts.
+      </description>
+
+      <arg name="dim" type="uint" summary="1 to dim, 0 to not dim"/>
     </request>
 
     <request name="focus">
@@ -134,7 +134,6 @@
         - in contrast to normal windows - never automatically granted
         by the compositor.
       </description>
->>>>>>> main
     </request>
   </interface>
 </protocol>
