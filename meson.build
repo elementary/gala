@@ -189,6 +189,7 @@ if get_option('documentation')
     subdir('docs')
 endif
 subdir('po')
+subdir('windowSwitcher')
 
 vapigen = find_program('vapigen', required: false)
 if vapigen.found()
