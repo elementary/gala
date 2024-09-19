@@ -9,7 +9,7 @@ public class Gala.PanelClone : Object {
     private const int ANIMATION_DURATION = 250;
 
     public WindowManager wm { get; construct; }
-    public PanelWindow panel { get; construct; }
+    public unowned PanelWindow panel { get; construct; }
 
     public Pantheon.Desktop.HideMode hide_mode {
         get {

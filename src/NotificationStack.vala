@@ -17,8 +17,8 @@
  */
 
 public class Gala.NotificationStack : Object {
-    public const string TRANSITION_ENTRY_NAME = "entry";
-    public const string TRANSITION_MOVE_STACK_ID = "move-stack";
+    private const string TRANSITION_ENTRY_NAME = "entry";
+    private const string TRANSITION_MOVE_STACK_ID = "move-stack";
 
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
@@ -206,5 +206,9 @@ public class Gala.NotificationStack : Object {
          */
         rect = window.get_buffer_rect ();
         actor.set_position (rect.x - ((actor.width - rect.width) / 2), rect.y - ((actor.height - rect.height) / 2));
+    }
+
+    public static bool is_notification (Meta.Window window) {
+        return window.window_type == NOTIFICATION || window.get_data (NOTIFICATION_DATA_KEY);
     }
 }

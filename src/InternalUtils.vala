@@ -37,7 +37,7 @@ namespace Gala {
                     rects = {rect};
                     break;
                 case InputArea.DEFAULT:
-                    var settings = new GLib.Settings (Config.SCHEMA + ".behavior");
+                    var settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
                     // if ActionType is NONE make it 0 sized
                     ushort tl_size = (settings.get_enum ("hotcorner-topleft") != ActionType.NONE ? 1 : 0);

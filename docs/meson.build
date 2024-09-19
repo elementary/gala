@@ -13,6 +13,7 @@ basic_command = [
     '--package-version', '0.0.0',
     '--driver', vala.version(),
     mutter_packages_command,
+    '--pkg', 'atk-bridge-2.0',
     '--pkg', 'gnome-desktop-3.0',
     '--pkg', 'gtk+-3.0',
     '--pkg', 'gee-0.8',

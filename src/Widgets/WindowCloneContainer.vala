@@ -51,7 +51,7 @@ namespace Gala {
          * The window that is currently selected via keyboard shortcuts. It is not
          * necessarily the same as the active window.
          */
-        private WindowClone? current_window = null;
+        private unowned WindowClone? current_window = null;
 
         public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
             Object (wm: wm, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
@@ -276,6 +276,10 @@ namespace Gala {
                     }
 
                     var window_rect = ((WindowClone) child).slot;
+
+                    if (window_rect == null) {
+                        continue;
+                    }
 
                     if (direction == LEFT) {
                         if (window_rect.x > current_rect.x) {

@@ -102,7 +102,9 @@ public class Gala.DaemonManager : GLib.Object {
                 break;
 
             case "MODAL":
+#if HAS_MUTTER46
                 daemon_client.make_dock (window);
+#endif
                 window.move_frame (false, 0, 0);
                 window.make_above ();
                 break;

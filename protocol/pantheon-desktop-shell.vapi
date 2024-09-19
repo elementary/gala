@@ -56,7 +56,12 @@ namespace Pantheon.Desktop {
         public static Wl.Interface iface;
         public Destroy destroy;
         public SetKeepAbove set_keep_above;
+<<<<<<< leolost/make-modal
         public MakeModal make_modal;
+=======
+        public MakeCentered make_centered;
+        public Focus focus;
+>>>>>>> main
     }
 
     [CCode (has_target = false, has_typedef = false)]
@@ -76,7 +81,11 @@ namespace Pantheon.Desktop {
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
+<<<<<<< leolost/make-modal
     public delegate void MakeModal (Wl.Client client, Wl.Resource resource, uint dim);
+=======
+    public delegate void MakeCentered (Wl.Client client, Wl.Resource resource);
+>>>>>>> main
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }
