@@ -35,7 +35,7 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
             setup_grabs ();
         });
 
-        Bus.watch_name (BusType.SESSION, "org.gnome.Shell", BusNameWatcherFlags.NONE, () => on_watch.begin (), () => instance = null);
+        Bus.watch_name (SESSION, "org.gnome.Shell", NONE, () => on_watch.begin (), () => instance = null);
     }
 
     private static async void on_watch () {
