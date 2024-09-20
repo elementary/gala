@@ -19,7 +19,6 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         flow_box = new Gtk.FlowBox () {
             homogeneous = true,
             selection_mode = BROWSE,
-            min_children_per_line = 10,
             column_spacing = 3,
             row_spacing = 3
         };

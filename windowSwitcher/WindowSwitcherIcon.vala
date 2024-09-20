@@ -15,7 +15,11 @@ public class WindowSwitcherIcon : Gtk.FlowBoxChild {
         var desktop_app_info = new DesktopAppInfo (app_id);
 
         var image = new Gtk.Image.from_gicon (desktop_app_info.get_icon ()) {
-            pixel_size = 64
+            pixel_size = 64,
+            margin_top = 12,
+            margin_bottom = 12,
+            margin_start = 12,
+            margin_end = 12
         };
 
         child = image;
