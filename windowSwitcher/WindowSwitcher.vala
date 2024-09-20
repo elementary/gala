@@ -125,6 +125,15 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
                     }
                 }
             }
+
+            if (n_windows == 0) {
+                get_surface ().beep ();
+                return;
+            }
+
+            if (n_windows == 1) {
+                flow_box.set_focus_child (flow_box.get_first_child ());
+            }
         } catch (Error e) {
             warning ("Failed to get windows: %s", e.message);
         }
