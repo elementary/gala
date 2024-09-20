@@ -90,8 +90,6 @@ public class Gala.WindowSwitcher : CanvasActor {
         };
 
         shadow_effect = new ShadowEffect (ShadowParamsType.WINDOW_SWITCHER) {
-            //  border_radius = InternalUtils.scale_to_int (9, scaling_factor),
-            //  shadow_opacity = 100
         };
         add_effect (shadow_effect);
 

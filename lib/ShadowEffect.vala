@@ -15,6 +15,29 @@ public class Gala.ShadowEffect : Clutter.Effect {
     private class ShadowParams {
         public string css_class;
         public Meta.ShadowParams meta_params;
+
+        private int _shadow_spread = -1;
+        public int shadow_spread {
+            get {
+                if (_shadow_spread != -1) {
+                    return _shadow_spread;
+                }
+
+                if (meta_params.radius == 0) {
+                    _shadow_spread = 0;
+                }
+
+                var d = (int) (0.5 + meta_params.radius * (0.75 * Math.sqrt (2 * Math.PI)));
+
+                _shadow_spread =  3 * (d / 2);
+
+                if (d % 2 == 0) {
+                    _shadow_spread -= 1;
+                }
+
+                return _shadow_spread;
+            }
+        }
     
         public ShadowParams (string _css_class, Meta.ShadowParams _meta_params) {
             css_class = _css_class;
@@ -29,33 +52,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
     public float opacity_multiplier { get; set; default = 1.0f; }
 
     private ShadowParams shadow_params;
-    //  private Meta.Shadow shadow;
-
-    //  private ShadowParams? shadow_params;
-
-    //  private string _css_class;
-    //  public string css_class {
-    //      get {
-    //          return _css_class;
-    //      }
-
-    //      construct set {
-    //          _css_class = value;
-    //          switch (value) {
-    //              case "workspace-switcher":
-    //                  shadow_size = 6;
-    //                  break;
-    //              case "window":
-    //                  shadow_size = 55;
-    //                  break;
-    //              default:
-    //                  shadow_size = 18;
-    //                  break;
-    //          }
-    //      }
-    //  }
-
-    //  private int shadow_size;
 
     static construct {
         Meta.ShadowParams default_meta_params = { 0, 0, 0, 4, 100 };
@@ -63,7 +59,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         all_shadow_params += default_params;
 
-        Meta.ShadowParams window_meta_params = { 0, 200, 0, 4, 100 };
+        Meta.ShadowParams window_meta_params = { 0, 0, 0, 4, 100 };
         var window_params = new ShadowParams ("window", window_meta_params);
 
         all_shadow_params += window_params;
@@ -103,13 +99,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var shadow = shadow_factory.get_shadow (window_shape, width, height, shadow_params.css_class, true);
 
         var opacity = (uint8) (shadow_params.meta_params.opacity * actor.opacity / 255.0f);
-        shadow.paint (context.get_framebuffer (), 0, 0, width, height, opacity, null, false);
+        shadow.paint (context.get_framebuffer (), -shadow_params.shadow_spread, -shadow_params.shadow_spread, width, height, opacity, null, false);
 
         actor.continue_paint (context);
     }
 
     public virtual Clutter.ActorBox get_bounding_box () {
-        var size = 0 * scale_factor;
+        var size = shadow_params.shadow_spread * scale_factor;
         var bounding_box = Clutter.ActorBox ();
 
         bounding_box.set_origin (-size, -size);

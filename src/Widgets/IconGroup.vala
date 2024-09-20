@@ -233,7 +233,6 @@ namespace Gala {
             );
 
             var shadow_effect = new ShadowEffect (ShadowParamsType.DEFAULT) {
-                //  border_radius = InternalUtils.scale_to_int (5, scale_factor),
                 scale_factor = scale_factor
             };
 
