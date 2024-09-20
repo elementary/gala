@@ -108,13 +108,13 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
         active = true;
         this.only_current = only_current;
 
+        n_windows = 0;
+
         flow_box.remove_all ();
 
         try {
             var windows = desktop_integration.get_windows ();
             var current_app_id = only_current ? get_current_app_id (windows) : null;
-
-            n_windows = 0;
             foreach (var window in windows) {
                 if (is_eligible_window (window, current_app_id)) {
                     var icon = new WindowSwitcherIcon (window.uid, (string) window.properties["title"], (string) window.properties["app-id"]);
@@ -125,17 +125,17 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
                     }
                 }
             }
-
-            if (n_windows == 0) {
-                get_surface ().beep ();
-                return;
-            }
-
-            if (n_windows == 1) {
-                flow_box.set_focus_child (flow_box.get_first_child ());
-            }
         } catch (Error e) {
             warning ("Failed to get windows: %s", e.message);
+        }
+
+        if (n_windows == 0) {
+            get_surface ().beep ();
+            return;
+        }
+
+        if (n_windows == 1) {
+            flow_box.set_focus_child (flow_box.get_first_child ());
         }
 
         update_title ();
