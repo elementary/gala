@@ -11,17 +11,34 @@ public interface DesktopIntegration : Object {
 
 public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.ExtendedBehavior {
     private DesktopIntegration? desktop_integration;
+
     private Gtk.FlowBox flow_box;
+    private Gtk.Label title_label;
 
     construct {
         flow_box = new Gtk.FlowBox () {
             homogeneous = true,
             selection_mode = BROWSE,
-            min_children_per_line = 10
+            min_children_per_line = 10,
+            column_spacing = 3,
+            row_spacing = 3
         };
 
+        title_label = new Gtk.Label (null) {
+            ellipsize = END
+        };
+
+        var box = new Gtk.Box (VERTICAL, 6) {
+            margin_top = 12,
+            margin_bottom = 12,
+            margin_end = 12,
+            margin_start = 12
+        };
+        box.append (flow_box);
+        box.append (title_label);
+
         titlebar = new Gtk.Grid () { visible = false };
-        child = flow_box;
+        child = box;
 
         child.realize.connect (() => {
             connect_to_shell ();
@@ -93,6 +110,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
             warning ("Failed to get windows: %s", e.message);
         }
 
+        update_title ();
         present ();
     }
 
@@ -121,6 +139,17 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
             }
 
             flow_box.child_focus (TAB_FORWARD);
+        }
+
+        update_title ();
+    }
+
+    private void update_title () {
+        var focus_child = flow_box.get_focus_child ();
+        if (focus_child != null && focus_child is WindowSwitcherIcon) {
+            title_label.label = ((WindowSwitcherIcon) focus_child).title;
+        } else {
+            title_label.label = null;
         }
     }
 
