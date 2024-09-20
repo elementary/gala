@@ -39,8 +39,13 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         titlebar = new Gtk.Grid () { visible = false };
         child = box;
 
-        child.realize.connect (() => {
-            connect_to_shell ();
+        child.realize.connect (connect_to_shell);
+
+        /*
+         * Since we hide our surface doesn't get destroyed.
+         * But Gala "forgets" about us so every time we present we have to keep above and center again.
+         */
+        child.map.connect (() => {
             set_keep_above ();
             make_centered ();
 
@@ -48,6 +53,8 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
             if (surface is Gdk.Toplevel) {
                 ((Gdk.Toplevel) surface).inhibit_system_shortcuts (null);
             }
+
+            update_default_size ();
         });
 
         var key_controller = new Gtk.EventControllerKey () {
@@ -111,6 +118,21 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
 
         update_title ();
         present ();
+    }
+
+    private void update_default_size () {
+        Gtk.Requisition natural;
+        child.get_preferred_size (null, out natural);
+
+        var max_width = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ()).get_geometry ().width - 50;
+
+        if (natural.width < max_width) {
+            default_width = natural.width;
+        } else {
+            default_width = max_width;
+        }
+
+        default_height = 1;
     }
 
     public void close_switcher () {
