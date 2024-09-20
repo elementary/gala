@@ -9,7 +9,7 @@ window_switcher_bin = executable(
     'io.elementary.window-switcher',
     window_switcher_sources,
     gala_resources,
-    dependencies: [config_dep, granite_dep, gtk4_dep, dependency('pantheon-wayland-1')],
+    dependencies: [config_dep, granite_dep, gtk4_dep, dependency('pantheon-wayland-1'), m_dep],
     include_directories: config_inc_dir,
     install: true,
 )

@@ -15,12 +15,15 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
     private Gtk.FlowBox flow_box;
     private Gtk.Label title_label;
 
+    private int n_windows = 0;
+
     construct {
         flow_box = new Gtk.FlowBox () {
             homogeneous = true,
-            selection_mode = BROWSE,
+            selection_mode = NONE,
             column_spacing = 3,
-            row_spacing = 3
+            row_spacing = 3,
+            activate_on_single_click = true
         };
 
         title_label = new Gtk.Label (null) {
@@ -93,6 +96,8 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         } catch (Error e) {
             warning ("Failed to get the desktop integration: %s", e.message);
         }
+
+        flow_box.child_activated.connect (() => close_switcher ());
     }
 
     public void activate_switcher () {
@@ -101,13 +106,13 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         default_height = 1;
 
         try {
-            int i = 0;
+            n_windows = 0;
             foreach (var window in desktop_integration.get_windows ()) {
                 if (is_eligible_window (window)) {
                     var icon = new WindowSwitcherIcon (window.uid, (string) window.properties["title"], (string) window.properties["app-id"]);
                     flow_box.append (icon);
 
-                    if (++i == 2) {
+                    if (++n_windows == 2) {
                         flow_box.set_focus_child (icon);
                     }
                 }
@@ -121,17 +126,18 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
     }
 
     private void update_default_size () {
-        Gtk.Requisition natural;
-        child.get_preferred_size (null, out natural);
+        Gtk.Requisition natural_size;
+        flow_box.get_first_child ().get_preferred_size (null, out natural_size);
 
-        var max_width = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ()).get_geometry ().width - 50;
+        var display_width = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ()).get_geometry ().width - 50;
 
-        if (natural.width < max_width) {
-            default_width = natural.width;
-        } else {
-            default_width = max_width;
-        }
+        var max_children = (int) display_width / (natural_size.width + 3);
+        var min_children = (int) Math.fmin (n_windows, max_children);
 
+        flow_box.min_children_per_line = min_children;
+        flow_box.max_children_per_line = max_children;
+
+        default_width = 1;
         default_height = 1;
     }
 

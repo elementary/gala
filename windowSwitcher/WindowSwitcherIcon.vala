@@ -23,5 +23,9 @@ public class WindowSwitcherIcon : Gtk.FlowBoxChild {
         };
 
         child = image;
+
+        var hover_controller = new Gtk.EventControllerMotion ();
+        hover_controller.enter.connect (() => grab_focus ());
+        add_controller (hover_controller);
     }
 }
