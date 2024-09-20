@@ -44,9 +44,20 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
             }
         });
 
-        key_controller.key_pressed.connect ((val) => {
+        key_controller.key_pressed.connect ((val, code, modifier_state) => {
             if (val == Gdk.Key.Tab) {
+                cycle (SHIFT_MASK in modifier_state);
+                return Gdk.EVENT_STOP;
+            }
+
+            if (val == Gdk.Key.Right) {
                 cycle (false);
+                return Gdk.EVENT_STOP;
+            }
+
+            if (val == Gdk.Key.Left) {
+                cycle (true);
+                return Gdk.EVENT_STOP;
             }
         });
 
@@ -98,11 +109,19 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
     }
 
     private void cycle (bool backwards) {
-        if (!(flow_box.get_focus_child ().get_next_sibling () is WindowSwitcherIcon)) {
-            flow_box.set_focus_child (flow_box.get_first_child ());
-        }
+        if (backwards) {
+            if (!(flow_box.get_focus_child ().get_prev_sibling () is WindowSwitcherIcon)) {
+                flow_box.set_focus_child (flow_box.get_last_child ());
+            }
 
-        flow_box.child_focus (TAB_FORWARD);
+            flow_box.child_focus (TAB_BACKWARD);
+        } else {
+            if (!(flow_box.get_focus_child ().get_next_sibling () is WindowSwitcherIcon)) {
+                flow_box.set_focus_child (flow_box.get_first_child ());
+            }
+
+            flow_box.child_focus (TAB_FORWARD);
+        }
     }
 
     private bool is_eligible_window (DesktopIntegration.Window window) {

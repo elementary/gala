@@ -57,14 +57,14 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
     private static Settings settings;
     private static ShellKeyGrabber? instance;
 
-    private static HashTable<uint, int> saved_action_ids;
+    private static Gee.HashSet<uint> saved_action_ids;
 
     private static WindowSwitcher window_switcher;
 
     public static void init (WindowSwitcher _window_switcher) {
         window_switcher = _window_switcher;
 
-        saved_action_ids = new HashTable<uint, int> (null, null);
+        saved_action_ids = new Gee.HashSet<uint> ();
 
         settings = new Settings ("org.gnome.desktop.wm.keybindings");
 
@@ -95,15 +95,14 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
                 mode_flags = ActionMode.NONE,
                 grab_flags = Meta.KeyBindingFlags.NONE
             };
+        }
 
-            try {
-                foreach (var id in instance.grab_accelerators (accelerators)) {
-                    saved_action_ids[id] = 1;
-                    warning ("GRABBER");
-                }
-            } catch (Error e) {
-                critical ("Couldn't grab accelerators: %s", e.message);
+        try {
+            foreach (var id in instance.grab_accelerators (accelerators)) {
+                saved_action_ids.add (id);
             }
+        } catch (Error e) {
+            critical ("Couldn't grab accelerators: %s", e.message);
         }
 
         instance.accelerator_activated.connect (on_accelerator_activated);
@@ -118,10 +117,8 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
     }
 
     private static void ungrab_keybindings () requires (instance != null) {
-        var actions = saved_action_ids.get_keys_as_array ();
-
         try {
-            instance.ungrab_accelerators (actions);
+            instance.ungrab_accelerators (saved_action_ids.to_array ());
         } catch (Error e) {
             critical ("Couldn't ungrab accelerators: %s", e.message);
         }
