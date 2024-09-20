@@ -9,13 +9,22 @@ public interface DesktopIntegration : Object {
     public abstract void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError;
 }
 
-public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.ExtendedBehavior {
+public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, PantheonWayland.ExtendedBehavior {
     private DesktopIntegration? desktop_integration;
 
     private Gtk.FlowBox flow_box;
     private Gtk.Label title_label;
 
     private int n_windows = 0;
+
+    private bool active = false;
+    private bool only_current = false;
+
+    public WindowSwitcher (Application application) {
+        Object (
+            application: application
+        );
+    }
 
     construct {
         flow_box = new Gtk.FlowBox () {
@@ -45,7 +54,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         child.realize.connect (connect_to_shell);
 
         /*
-         * Since we hide our surface doesn't get destroyed.
+         * Because we hide, our surface doesn't get destroyed.
          * But Gala "forgets" about us so every time we present we have to keep above and center again.
          */
         child.map.connect (() => {
@@ -71,25 +80,20 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         });
 
         key_controller.key_pressed.connect ((val, code, modifier_state) => {
-            if (val == Gdk.Key.Tab) {
-                cycle (SHIFT_MASK in modifier_state);
-                return Gdk.EVENT_STOP;
-            }
-
             if (val == Gdk.Key.Right) {
-                cycle (false);
+                cycle (only_current, false);
                 return Gdk.EVENT_STOP;
             }
 
             if (val == Gdk.Key.Left) {
-                cycle (true);
+                cycle (only_current, true);
                 return Gdk.EVENT_STOP;
             }
+
+            return Gdk.EVENT_PROPAGATE;
         });
 
         ((Gtk.Widget) this).add_controller (key_controller);
-
-        ShellKeyGrabber.init (this);
 
         try {
             desktop_integration = Bus.get_proxy_sync (SESSION, "org.pantheon.gala", "/org/pantheon/gala/DesktopInterface");
@@ -100,15 +104,19 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         flow_box.child_activated.connect (() => close_switcher ());
     }
 
-    public void activate_switcher () {
+    public void activate_switcher (bool only_current) {
+        active = true;
+        this.only_current = only_current;
+
         flow_box.remove_all ();
-        default_width = 1;
-        default_height = 1;
 
         try {
+            var windows = desktop_integration.get_windows ();
+            var current_app_id = only_current ? get_current_app_id (windows) : null;
+
             n_windows = 0;
-            foreach (var window in desktop_integration.get_windows ()) {
-                if (is_eligible_window (window)) {
+            foreach (var window in windows) {
+                if (is_eligible_window (window, current_app_id)) {
                     var icon = new WindowSwitcherIcon (window.uid, (string) window.properties["title"], (string) window.properties["app-id"]);
                     flow_box.append (icon);
 
@@ -151,9 +159,20 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         } catch (Error e) {
             warning ("Failed to focus window");
         }
+
+        active = false;
     }
 
-    private void cycle (bool backwards) {
+    public void cycle (bool only_current, bool backwards) {
+        if (!active) {
+            activate_switcher (only_current);
+        }
+
+        if (this.only_current != only_current) {
+            //todo: gdk beep?
+            return;
+        }
+
         if (backwards) {
             if (!(flow_box.get_focus_child ().get_prev_sibling () is WindowSwitcherIcon)) {
                 flow_box.set_focus_child (flow_box.get_last_child ());
@@ -180,11 +199,25 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
         }
     }
 
-    private bool is_eligible_window (DesktopIntegration.Window window) {
+    private bool is_eligible_window (DesktopIntegration.Window window, string? current_app_id) {
         if (!(bool) window.properties["on-active-workspace"]) {
             return false;
         }
 
+        if (current_app_id != null && (string) window.properties["app-id"] != current_app_id) {
+            return false;
+        }
+
         return true;
+    }
+
+    private string? get_current_app_id (DesktopIntegration.Window[] windows) {
+        foreach (var window in windows) {
+            if ((bool) window.properties["has-focus"]) {
+                return (string) window.properties["app-id"];
+            }
+        }
+
+        return null;
     }
 }

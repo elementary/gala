@@ -54,19 +54,18 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
     public abstract bool ungrab_accelerator (uint action) throws GLib.DBusError, GLib.IOError;
     public abstract bool ungrab_accelerators (uint[] actions) throws GLib.DBusError, GLib.IOError;
 
+    private static string[] actions;
     private static Settings settings;
+
+    private static Gee.HashMap<uint, string> saved_action_ids;
+
     private static ShellKeyGrabber? instance;
 
-    private static Gee.HashSet<uint> saved_action_ids;
+    public static void init (string[] _actions, Settings _settings) {
+        actions = _actions;
+        settings = _settings;
 
-    private static WindowSwitcher window_switcher;
-
-    public static void init (WindowSwitcher _window_switcher) {
-        window_switcher = _window_switcher;
-
-        saved_action_ids = new Gee.HashSet<uint> ();
-
-        settings = new Settings ("org.gnome.desktop.wm.keybindings");
+        saved_action_ids = new Gee.HashMap<uint, string> ();
 
         settings.changed.connect (() => {
             ungrab_keybindings ();
@@ -86,39 +85,44 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
     }
 
     private static void setup_grabs () requires (instance != null) {
-        //  var keybindings = settings.get_strv ("switch-windows");
-        string[] keybindings = {"<Alt>Tab"};
-        Accelerator[] accelerators = {};
-        for (int j = 0; j < keybindings.length; j++) {
-            accelerators += Accelerator () {
-                name = keybindings[j],
-                mode_flags = ActionMode.NONE,
-                grab_flags = Meta.KeyBindingFlags.NONE
-            };
-        }
+        foreach (var action in actions) {
+            string[] keybindings = settings.get_strv (action);
+            Accelerator[] accelerators = {};
 
-        try {
-            foreach (var id in instance.grab_accelerators (accelerators)) {
-                saved_action_ids.add (id);
+            for (int j = 0; j < keybindings.length; j++) {
+                accelerators += Accelerator () {
+                    name = keybindings[j],
+                    mode_flags = ActionMode.NONE,
+                    grab_flags = Meta.KeyBindingFlags.NONE
+                };
             }
-        } catch (Error e) {
-            critical ("Couldn't grab accelerators: %s", e.message);
-        }
 
-        instance.accelerator_activated.connect (on_accelerator_activated);
+            try {
+                foreach (var id in instance.grab_accelerators (accelerators)) {
+                    saved_action_ids.set (id, action);
+                }
+            } catch (Error e) {
+                critical ("Couldn't grab accelerators: %s", e.message);
+            }
+
+            instance.accelerator_activated.connect (on_accelerator_activated);
+        }
     }
 
     private static void on_accelerator_activated (uint action, GLib.HashTable<string, GLib.Variant> parameters_dict) {
-        if (!(action in saved_action_ids)) {
+        if (!saved_action_ids.has_key (action)) {
             return;
         }
 
-        window_switcher.activate_switcher ();
+        ((Gtk.Application) GLib.Application.get_default ()).activate_action (
+            saved_action_ids[action],
+            null
+        );
     }
 
     private static void ungrab_keybindings () requires (instance != null) {
         try {
-            instance.ungrab_accelerators (saved_action_ids.to_array ());
+            instance.ungrab_accelerators (saved_action_ids.keys.to_array ());
         } catch (Error e) {
             critical ("Couldn't ungrab accelerators: %s", e.message);
         }

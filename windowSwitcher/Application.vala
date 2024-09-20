@@ -3,7 +3,22 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- public class Gala.WindowSwitcher.Application : Gtk.Application {
+public class Gala.WindowSwitcher.Application : Gtk.Application {
+    public const string ACTION_PREFIX = "app.";
+    public const string CYCLE_FORWARD_ACTION = "switch-windows";
+    public const string CYCLE_BACKWARD_ACTION = "switch-windows-backward";
+    public const string CYCLE_CURRENT_FORWARD_ACTION = "switch-group";
+    public const string CYCLE_CURRENT_BACKWARD_ACTION = "switch-group-backward";
+
+    private const ActionEntry[] ACTIONS = {
+        {CYCLE_FORWARD_ACTION, cycle, null, null, null},
+        {CYCLE_BACKWARD_ACTION, cycle_backward, null, null, null},
+        {CYCLE_CURRENT_FORWARD_ACTION, cycle_current, null, null, null},
+        {CYCLE_CURRENT_BACKWARD_ACTION, cycle_current_backward, null, null, null}
+    };
+
+    private static Settings settings;
+
     private WindowSwitcher window_switcher;
 
     public Application () {
@@ -13,19 +28,42 @@
     public override void startup () {
         base.startup ();
 
-        var granite_settings = Granite.Settings.get_default ();
-        var gtk_settings = Gtk.Settings.get_default ();
+        settings = new Settings ("io.elementary.desktop.window-switcher");
+        settings.changed.connect (setup_accels);
+        setup_accels ();
 
-        gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
-
-        granite_settings.notify["prefers-color-scheme"].connect (() => {
-            gtk_settings.gtk_application_prefer_dark_theme = granite_settings.prefers_color_scheme == Granite.Settings.ColorScheme.DARK;
-        });
+        add_action_entries (ACTIONS, this);
 
         Granite.init ();
-        hold ();
 
-        window_switcher = new WindowSwitcher ();
+        window_switcher = new WindowSwitcher (this);
+
+        ShellKeyGrabber.init ({CYCLE_FORWARD_ACTION, CYCLE_BACKWARD_ACTION,
+            CYCLE_CURRENT_FORWARD_ACTION, CYCLE_CURRENT_BACKWARD_ACTION}, settings);
+    }
+
+    private void setup_accels () {
+        set_accels_for_action (ACTION_PREFIX + CYCLE_FORWARD_ACTION, settings.get_strv (CYCLE_FORWARD_ACTION));
+        set_accels_for_action (ACTION_PREFIX + CYCLE_BACKWARD_ACTION, settings.get_strv (CYCLE_BACKWARD_ACTION));
+        set_accels_for_action (ACTION_PREFIX + CYCLE_CURRENT_FORWARD_ACTION, settings.get_strv (CYCLE_CURRENT_FORWARD_ACTION));
+        set_accels_for_action (ACTION_PREFIX + CYCLE_CURRENT_BACKWARD_ACTION, settings.get_strv (CYCLE_CURRENT_BACKWARD_ACTION));
+    }
+
+    private void cycle () {
+        warning ("CYCLE");
+        window_switcher.cycle (false, false);
+    }
+
+    private void cycle_backward () {
+        window_switcher.cycle (false, true);
+    }
+
+    private void cycle_current () {
+        window_switcher.cycle (true, false);
+    }
+
+    private void cycle_current_backward () {
+        window_switcher.cycle (true, true);
     }
 
     public override void activate () { }
