@@ -282,11 +282,11 @@
       <summary>Switch between windows backwards.</summary>
     </key>
     <key type="as" name="switch-group">
-      <default><![CDATA[['<Alt>~']]]></default>
+      <default><![CDATA[['<Alt>grave']]]></default>
       <summary>Switch between windows of the current application.</summary>
     </key>
     <key type="as" name="switch-group-backward">
-      <default><![CDATA[['<Alt><Shift>~']]]></default>
+      <default><![CDATA[['<Alt><Shift>grave']]]></default>
       <summary>Switch between windows of the current application backwards.</summary>
     </key>
   </schema>

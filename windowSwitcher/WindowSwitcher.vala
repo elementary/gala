@@ -166,6 +166,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
     public void cycle (bool only_current, bool backwards) {
         if (!active) {
             activate_switcher (only_current);
+            return;
         }
 
         if (this.only_current != only_current) {

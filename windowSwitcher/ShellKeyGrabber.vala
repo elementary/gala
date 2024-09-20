@@ -78,7 +78,9 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
     private static async void on_watch () {
         try {
             instance = yield Bus.get_proxy (SESSION, "org.gnome.Shell", "/org/gnome/Shell");
+
             setup_grabs ();
+            instance.accelerator_activated.connect (on_accelerator_activated);
         } catch (Error e) {
             warning ("Failed to connect to bus for keyboard shortcut grabs: %s", e.message);
         }
@@ -86,12 +88,11 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
 
     private static void setup_grabs () requires (instance != null) {
         foreach (var action in actions) {
-            string[] keybindings = settings.get_strv (action);
             Accelerator[] accelerators = {};
 
-            for (int j = 0; j < keybindings.length; j++) {
+            foreach (var keybinding in settings.get_strv (action)) {
                 accelerators += Accelerator () {
-                    name = keybindings[j],
+                    name = keybinding,
                     mode_flags = ActionMode.NONE,
                     grab_flags = Meta.KeyBindingFlags.NONE
                 };
@@ -104,8 +105,6 @@ public interface Gala.WindowSwitcher.ShellKeyGrabber : GLib.Object {
             } catch (Error e) {
                 critical ("Couldn't grab accelerators: %s", e.message);
             }
-
-            instance.accelerator_activated.connect (on_accelerator_activated);
         }
     }
 

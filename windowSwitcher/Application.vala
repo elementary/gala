@@ -50,7 +50,6 @@ public class Gala.WindowSwitcher.Application : Gtk.Application {
     }
 
     private void cycle () {
-        warning ("CYCLE");
         window_switcher.cycle (false, false);
     }
 
