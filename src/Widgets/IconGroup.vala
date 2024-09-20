@@ -232,8 +232,8 @@ namespace Gala {
                 InternalUtils.scale_to_int (5, scale_factor)
             );
 
-            var shadow_effect = new ShadowEffect () {
-                border_radius = InternalUtils.scale_to_int (5, scale_factor),
+            var shadow_effect = new ShadowEffect (ShadowParamsType.DEFAULT) {
+                //  border_radius = InternalUtils.scale_to_int (5, scale_factor),
                 scale_factor = scale_factor
             };
 
@@ -245,21 +245,21 @@ namespace Gala {
                     cr.set_source_rgba (BG_COLOR, BG_COLOR, BG_COLOR, 0.8);
                 } else {
                     cr.set_source_rgba (BG_COLOR , BG_COLOR , BG_COLOR , 0.5);
-                    shadow_effect.shadow_opacity = 200;
+                    //  shadow_effect.shadow_opacity = 200;
                 }
             } else {
                 if (drag_action.dragging) {
                     cr.set_source_rgba (255, 255, 255, 0.8);
                 } else {
                     cr.set_source_rgba (255, 255, 255, 0.3);
-                    shadow_effect.shadow_opacity = 100;
+                    //  shadow_effect.shadow_opacity = 100;
                 }
             }
 
             if (drag_action.dragging) {
-                shadow_effect.css_class = "workspace-switcher-dnd";
+                //  shadow_effect.css_class = "workspace-switcher-dnd";
             } else {
-                shadow_effect.css_class = "workspace-switcher";
+                //  shadow_effect.css_class = "workspace-switcher";
             }
 
             add_effect (shadow_effect);

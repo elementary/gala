@@ -69,13 +69,13 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     [CCode (notify = false)]
-    public uint8 shadow_opacity {
+    public float shadow_opacity {
         get {
-            return shadow_effect != null ? shadow_effect.shadow_opacity : 255;
+            return shadow_effect != null ? shadow_effect.opacity_multiplier : 1.0f;
         }
         set {
             if (shadow_effect != null) {
-                shadow_effect.shadow_opacity = value;
+                shadow_effect.opacity_multiplier = value;
                 queue_redraw ();
             }
         }
@@ -235,8 +235,8 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect ("window");
-                shadow_opacity = 0;
+                shadow_effect = new ShadowEffect (ShadowParamsType.WINDOW);
+                shadow_opacity = 0.0f;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
         } else {
@@ -296,7 +296,7 @@ public class Gala.WindowClone : Clutter.Actor {
             var width = GestureTracker.animation_value (initial_width, outer_rect.width, percentage);
             var height = GestureTracker.animation_value (initial_height, outer_rect.height, percentage);
             var scale = GestureTracker.animation_value (initial_scale, target_scale, percentage);
-            var opacity = GestureTracker.animation_value (255f, 0f, percentage);
+            var opacity = GestureTracker.animation_value (1.0f, 0.0f, percentage);
 
             set_size (width, height);
             set_position (x, y);
@@ -305,7 +305,7 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (width, height, scale, false);
             place_widgets ((int)width, (int)height, scale);
 
-            shadow_opacity = (uint8) opacity;
+            shadow_opacity = opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -384,7 +384,7 @@ public class Gala.WindowClone : Clutter.Actor {
             var y = GestureTracker.animation_value (initial_y, rect.y, percentage);
             var width = GestureTracker.animation_value (initial_width, rect.width, percentage);
             var height = GestureTracker.animation_value (initial_height, rect.height, percentage);
-            var opacity = GestureTracker.animation_value (0f, 255f, percentage);
+            var opacity = GestureTracker.animation_value (0.0f, 1.0f, percentage);
 
             set_size (width, height);
             set_position (x, y);
@@ -392,7 +392,7 @@ public class Gala.WindowClone : Clutter.Actor {
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
 
-            shadow_opacity = (uint8) opacity;
+            shadow_opacity = opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -556,12 +556,12 @@ public class Gala.WindowClone : Clutter.Actor {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
                 progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
+                interval = new Clutter.Interval (typeof (float), shadow_opacity, show ? 1.0f : 0.0f)
             };
 
             add_transition ("shadow-opacity", shadow_transition);
         } else {
-            shadow_opacity = show ? 255 : 0;
+            shadow_opacity = show ? 1.0f : 0.0f;
         }
     }
 
