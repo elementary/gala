@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"POT-Creation-Date: 2024-09-17 18:30+0000\n"
 "PO-Revision-Date: 2024-08-07 18:17+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
@@ -109,49 +109,61 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:130
 msgid "Improvements:"
 msgstr "Vylepšení:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix a potential crash when taking screenshots"
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Fix notification position after changing DPI"
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Opravena pozice zobrazování upozorňování pro změně nastavení DPI"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:132
 msgid "Updated translations"
 msgstr "Aktualizované překlady"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:50
 #, fuzzy
 #| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Opraveny klávesové zkratky snímků obrazovky ve Víceúlohovém zobrazení"
 
-#: data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:51
 #, fuzzy
 #| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Aktualizovat barvu panelu po ztmavení tapety"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:91
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:92
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:93
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:94
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:116
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -239,7 +251,7 @@ msgstr "Snímky obrazovky pořízen"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2365
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -247,20 +259,20 @@ msgstr[0] "Změny budou za %i sekundu automaticky vzaty zpět."
 msgstr[1] "Změny budou za %i sekundy automaticky vzaty zpět."
 msgstr[2] "Změny budou za %i sekund automaticky vzaty zpět."
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2372
 msgid "Keep new display settings?"
 msgstr "Ponechat nová nastavení zobrazení?"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2376
 msgid "Keep Settings"
 msgstr "Ponechat nastavení"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2377
 msgid "Use Previous Settings"
 msgstr "Použít předchozí nastavení"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2416
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Snímky obrazovky pořízený %s"
@@ -345,9 +357,6 @@ msgstr "Snímky obrazovky pořízený %s"
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
 
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
-
 #~ msgid "New features:"
 #~ msgstr "Nové funkce:"
 
@@ -429,9 +438,6 @@ msgstr "Snímky obrazovky pořízený %s"
 
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr "Opraveno potenciální pádů při pořizování snímků obrazovky"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "Opravena pozice zobrazování upozorňování pro změně nastavení DPI"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""
