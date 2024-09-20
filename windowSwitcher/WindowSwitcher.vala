@@ -181,6 +181,10 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.Window, PantheonWayland.Ex
     }
 
     private bool is_eligible_window (DesktopIntegration.Window window) {
+        if (!(bool) window.properties["on-active-workspace"]) {
+            return false;
+        }
+
         return true;
     }
 }
