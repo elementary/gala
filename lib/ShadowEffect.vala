@@ -38,7 +38,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
                 return _shadow_spread;
             }
         }
-    
+
         public ShadowParams (string _css_class, Meta.ShadowParams _meta_params) {
             css_class = _css_class;
             meta_params = _meta_params;
@@ -54,22 +54,22 @@ public class Gala.ShadowEffect : Clutter.Effect {
     private ShadowParams shadow_params;
 
     static construct {
-        Meta.ShadowParams default_meta_params = { 0, 0, 0, 4, 100 };
+        Meta.ShadowParams default_meta_params = { 4, -1, 0, 3, 128 };
         var default_params = new ShadowParams ("default", default_meta_params);
 
         all_shadow_params += default_params;
 
-        Meta.ShadowParams window_meta_params = { 0, 0, 0, 4, 100 };
+        Meta.ShadowParams window_meta_params = { 4, -1, 0, 3, 128 };
         var window_params = new ShadowParams ("window", window_meta_params);
 
         all_shadow_params += window_params;
 
-        Meta.ShadowParams workspace_meta_params = { 0, 0, 0, 4, 100 };
+        Meta.ShadowParams workspace_meta_params = { 4, -1, 0, 3, 128 };
         var workspace_params = new ShadowParams ("workspace", workspace_meta_params);
 
         all_shadow_params += workspace_params;
 
-        Meta.ShadowParams window_switcher_meta_params = { 0, 0, 0, 4, 100 };
+        Meta.ShadowParams window_switcher_meta_params = { 4, -1, 0, 3, 128 };
         var window_switcher_params = new ShadowParams ("window-switcher", window_switcher_meta_params);
 
         all_shadow_params += window_switcher_params;
@@ -84,22 +84,20 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
-        var bounding_box = get_bounding_box ();
-        var x = (int) bounding_box.x1;
-        var y = (int) bounding_box.y1;
-        var width = (int) (bounding_box.x2 - bounding_box.x1);
-        var height = (int) (bounding_box.y2 - bounding_box.y1);
+        var actor_width = (int) actor.width;
+        var actor_height = (int) actor.height;
 
-        Mtk.Rectangle rectangle = { x, y, width, height };
+        Mtk.Rectangle rectangle = { 0, 0, actor_width, actor_height };
         var region = Mtk.Region.create_rectangle (rectangle);
         var window_shape = new Meta.WindowShape (region);
     
         // FIXME: obtain shadow only when size or position changes
         unowned var shadow_factory = Meta.ShadowFactory.get_default ();
-        var shadow = shadow_factory.get_shadow (window_shape, width, height, shadow_params.css_class, true);
+        var shadow = shadow_factory.get_shadow (window_shape, actor_width, actor_height, shadow_params.css_class, true);
 
-        var opacity = (uint8) (shadow_params.meta_params.opacity * actor.opacity / 255.0f);
-        shadow.paint (context.get_framebuffer (), -shadow_params.shadow_spread, -shadow_params.shadow_spread, width, height, opacity, null, false);
+        var opacity = (uint8) ((shadow_params.meta_params.opacity / 255.0f) * (actor.get_paint_opacity () / 255.0f) * opacity_multiplier * 255.0f);
+
+        shadow.paint (context.get_framebuffer (), 0, 0, actor_width, actor_height, opacity, null, false);
 
         actor.continue_paint (context);
     }
