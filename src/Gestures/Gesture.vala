@@ -34,7 +34,7 @@ namespace Gala {
         OUT = 6,
     }
 
-    public class Gesture {
+    public struct Gesture {
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;

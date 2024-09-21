@@ -33,6 +33,7 @@ gala_bin_sources = files(
     'ColorFilters/ColorblindnessCorrectionEffect.vala',
     'ColorFilters/FilterManager.vala',
     'ColorFilters/MonochromeEffect.vala',
+    'Gestures/DBusGestureProvider.vala',
     'Gestures/Gesture.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',

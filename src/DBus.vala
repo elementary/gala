@@ -30,6 +30,15 @@ public class Gala.DBus {
             () => {},
             () => warning ("Could not acquire name\n") );
 
+        Bus.own_name (BusType.SESSION, "io.elementary.desktop.wm", BusNameOwnerFlags.NONE,
+            (connection) => {
+                try {
+                    connection.register_object ("/io/elementary/desktop/wm", new DBusGestureProvider ());
+                } catch (Error e) { warning (e.message); }
+            },
+            () => {},
+            () => warning ("Could not acquire name") );
+
         Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
             (connection) => {
                 try {
