@@ -158,7 +158,7 @@ namespace Gala {
             }
         }
 
-        private BackgroundManager background;
+        private Clutter.Actor background;
         private bool opened;
 
         private uint hover_activate_timeout = 0;
@@ -178,7 +178,7 @@ namespace Gala {
             background_click_action.clicked.connect (() => {
                 selected (true);
             });
-            background = new FramedBackground (wm);
+            background = new Clutter.Clone (ShellClientsManager.get_instance ().get_background_for_monitor (primary_monitor));
             background.add_action (background_click_action);
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {

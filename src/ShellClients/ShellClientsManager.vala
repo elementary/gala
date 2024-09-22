@@ -28,6 +28,8 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
+    private Meta.Window[] background_clients;
+
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
@@ -43,6 +45,8 @@ public class Gala.ShellClientsManager : Object {
                 parse_mutter_hints (window);
             });
         }
+
+        background_clients = new Meta.Window[wm.get_display ().get_n_monitors ()];
     }
 
     private async void start_clients () {
@@ -191,6 +195,25 @@ public class Gala.ShellClientsManager : Object {
         centered_windows[window] = new CenteredWindow (wm, window);
 
         window.unmanaging.connect_after (() => centered_windows.remove (window));
+    }
+
+    public void make_background (Meta.Window window, int monitor_index) {
+        warning ("MAKE BACKGROUND");
+        foreach (var client in protocol_clients) {
+            if (client.wayland_client.owns_window (window)) {
+                client.wayland_client.make_desktop (window);
+                break;
+            }
+        }
+
+        var monitor_geom = wm.get_display ().get_monitor_geometry (monitor_index);
+        window.move_frame (false, monitor_geom.x, monitor_geom.y);
+
+        background_clients[monitor_index] = window;
+    }
+
+    public unowned Clutter.Actor get_background_for_monitor (int monitor_index) {
+        return (Clutter.Actor) background_clients[monitor_index].get_compositor_private ();
     }
 
     public bool is_positioned_window (Meta.Window window) {

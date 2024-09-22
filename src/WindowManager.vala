@@ -1977,7 +1977,7 @@ namespace Gala {
 
             // prepare wallpaper
             if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
+                unowned var background = ShellClientsManager.get_instance ().get_background_for_monitor (primary);
                 background.hide ();
                 wallpaper = new Clutter.Clone (background);
             } else {
@@ -1985,12 +1985,12 @@ namespace Gala {
                 ((BackgroundContainer) background_group).set_black_background (false);
                 wallpaper = new Clutter.Clone (background_group);
             }
-            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
+            //  wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
             tmp_actors.prepend (wallpaper);
 
             if (workspace_to != null) {
                 wallpaper_clone = new Clutter.Clone (wallpaper);
-                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
+                //  wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
                 tmp_actors.prepend (wallpaper_clone);
             }
 
@@ -2047,7 +2047,9 @@ namespace Gala {
                 if (!window.showing_on_its_workspace () ||
                     move_primary_only && !window.is_on_primary_monitor () ||
                     window == moving ||
-                    window == grabbed_window) {
+                    window == grabbed_window ||
+                    window.window_type == DESKTOP
+                ) {
 
                     continue;
                 }
@@ -2271,7 +2273,7 @@ namespace Gala {
             var primary = display.get_primary_monitor ();
             var move_primary_only = InternalUtils.workspaces_only_on_primary ();
             if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
+                unowned var background = ShellClientsManager.get_instance ().get_background_for_monitor (primary);
                 background.show ();
             } else {
                 ((BackgroundContainer) background_group).set_black_background (true);

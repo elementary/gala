@@ -5,3 +5,7 @@ args=io.elementary.wingpanel
 [io.elementary.dock]
 launch-on-x=true
 args=io.elementary.dock
+
+[io.elementary.desktop.background]
+launch-on-x=true
+args=io.elementary.desktop.background
