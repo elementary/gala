@@ -28,7 +28,7 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
-    private Meta.Window[] background_clients;
+    private BackgroundWindow[] background_windows;
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -46,7 +46,17 @@ public class Gala.ShellClientsManager : Object {
             });
         }
 
-        background_clients = new Meta.Window[wm.get_display ().get_n_monitors ()];
+        update_background_windows ();
+        wm.get_display ().get_context ().get_backend ().get_monitor_manager ().monitors_changed.connect (update_background_windows);
+    }
+
+    private void update_background_windows () {
+        var display = wm.get_display ();
+
+        background_windows = new BackgroundWindow[display.get_n_monitors ()];
+        for (int i = 0; i < background_windows.length; i++) {
+            background_windows[i] = new BackgroundWindow (display, i);
+        }
     }
 
     private async void start_clients () {
@@ -198,7 +208,11 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void make_background (Meta.Window window, int monitor_index) {
-        warning ("MAKE BACKGROUND");
+        if (monitor_index < 0 || monitor_index > background_windows.length) {
+            warning ("Given monitor index out of bounds.");
+            return;
+        }
+
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_desktop (window);
@@ -206,14 +220,20 @@ public class Gala.ShellClientsManager : Object {
             }
         }
 
-        var monitor_geom = wm.get_display ().get_monitor_geometry (monitor_index);
-        window.move_frame (false, monitor_geom.x, monitor_geom.y);
-
-        background_clients[monitor_index] = window;
+        background_windows[monitor_index].update_window (window);
     }
 
-    public unowned Clutter.Actor get_background_for_monitor (int monitor_index) {
-        return (Clutter.Actor) background_clients[monitor_index].get_compositor_private ();
+    /**
+     * This clone will be valid until Meta.MonitorManager::monitors-changed was emitted.
+     * After that the clone musn't be used. This will only return null if the monitor_index is out of bounds.
+     */
+    public Clutter.Actor? get_background_clone_for_monitor (int monitor_index) {
+        if (monitor_index < 0 || monitor_index > background_windows.length) {
+            warning ("Given monitor index out of bounds.");
+            return null;
+        }
+
+        return background_windows[monitor_index].get_background_clone ();
     }
 
     public bool is_positioned_window (Meta.Window window) {

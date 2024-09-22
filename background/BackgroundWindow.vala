@@ -22,7 +22,6 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         var monitor = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ());
 
         width_request = monitor.geometry.width;
-        warning (monitor.geometry.height.to_string ());
         height_request = monitor.geometry.height;
 
         var file = File.new_for_path ("/home/leonhard/Pictures/wallpaper.jpg");

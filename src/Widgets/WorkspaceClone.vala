@@ -19,7 +19,9 @@ namespace Gala {
     /**
      * Utility class which adds a border and a shadow to a Background
      */
-    private class FramedBackground : BackgroundManager {
+    private class FramedBackground : Clutter.Actor {
+        public WindowManager wm { get; construct; }
+
         private Cogl.Pipeline pipeline;
         private Cairo.ImageSurface cached_surface;
         private Cairo.Context cached_context;
@@ -29,10 +31,7 @@ namespace Gala {
 
         public FramedBackground (WindowManager wm) {
             Object (
-                wm: wm,
-                monitor_index: wm.get_display ().get_primary_monitor (),
-                control_position: false,
-                rounded_corners: true
+                wm: wm
             );
         }
 
@@ -45,6 +44,8 @@ namespace Gala {
             add_effect (effect);
 
             reactive = true;
+
+            add_child (ShellClientsManager.get_instance ().get_background_clone_for_monitor (primary));
         }
 
         public override void paint (Clutter.PaintContext context) {
@@ -178,7 +179,7 @@ namespace Gala {
             background_click_action.clicked.connect (() => {
                 selected (true);
             });
-            background = new Clutter.Clone (ShellClientsManager.get_instance ().get_background_for_monitor (primary_monitor));
+            background = new FramedBackground (wm);
             background.add_action (background_click_action);
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {

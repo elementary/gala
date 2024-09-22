@@ -1976,21 +1976,13 @@ namespace Gala {
             window_group.add_child (main_container);
 
             // prepare wallpaper
-            if (move_primary_only) {
-                unowned var background = ShellClientsManager.get_instance ().get_background_for_monitor (primary);
-                background.hide ();
-                wallpaper = new Clutter.Clone (background);
-            } else {
-                background_group.hide ();
-                ((BackgroundContainer) background_group).set_black_background (false);
-                wallpaper = new Clutter.Clone (background_group);
-            }
-            //  wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
+            wallpaper = ShellClientsManager.get_instance ().get_background_clone_for_monitor (primary);
+            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
             tmp_actors.prepend (wallpaper);
 
             if (workspace_to != null) {
                 wallpaper_clone = new Clutter.Clone (wallpaper);
-                //  wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
+                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
                 tmp_actors.prepend (wallpaper_clone);
             }
 
@@ -2268,17 +2260,6 @@ namespace Gala {
 
             unowned var display = get_display ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-
-            // Show the real wallpaper again
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            if (move_primary_only) {
-                unowned var background = ShellClientsManager.get_instance ().get_background_for_monitor (primary);
-                background.show ();
-            } else {
-                ((BackgroundContainer) background_group).set_black_background (true);
-                background_group.show ();
-            }
 
             for (var i = 0; i < windows.length (); i++) {
                 unowned var actor = windows.nth_data (i);
