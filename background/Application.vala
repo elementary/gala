@@ -9,6 +9,8 @@
 
     private BackgroundWindow[] windows = {};
 
+    private uint idle_id = 0;
+
     public Application () {
         Object (application_id: "io.elementary.desktop.background");
     }
@@ -27,7 +29,7 @@
         Gdk.Display.get_default ().get_monitors ().items_changed.connect (setup_background);
 
         set_background ();
-        gnome_settings.changed.connect (set_background);
+        gnome_settings.changed.connect (queue_set_background);
     }
 
     private void setup_background () {
@@ -43,16 +45,39 @@
         }
     }
 
-    private void set_background () {
-        var uri = gnome_settings.get_string ("picture-uri");
-        var file = File.new_for_uri (uri);
+    private void queue_set_background () {
+        /*
+         * We want to update only once for a series of changes (e.g. style to 0 and different primary color).
+         */
 
+        if (idle_id != 0) {
+            Source.remove (idle_id);
+        }
+
+        idle_id = Timeout.add (100, () => {
+            set_background ();
+            idle_id = 0;
+            return Source.REMOVE;
+        });
+    }
+
+    private void set_background () {
         Gdk.Paintable texture;
-        try {
-            texture = Gdk.Texture.from_file (file);
-        } catch (Error e) {
-            warning ("FAILED TO LOAD TEXTURE: %s", e.message);
-            return;
+
+        var style = gnome_settings.get_enum ("picture-options");
+        if (style != 0) {
+            var uri = gnome_settings.get_string ("picture-uri");
+            var file = File.new_for_uri (uri);
+            try {
+                texture = Gdk.Texture.from_file (file);
+            } catch (Error e) {
+                warning ("FAILED TO LOAD TEXTURE: %s", e.message);
+                return;
+            }
+        } else {
+            Gdk.RGBA color = {};
+            color.parse (gnome_settings.get_string ("primary-color"));
+            texture = new SolidColor (color);
         }
 
         foreach (var window in windows) {
@@ -61,6 +86,27 @@
     }
 
     public override void activate () { }
+
+    private class SolidColor : Object, Gdk.Paintable {
+        public Gdk.RGBA color { get; construct; }
+
+        public SolidColor (Gdk.RGBA color) {
+            Object (color: color);
+        }
+
+        public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
+            if (!(gdk_snapshot is Gtk.Snapshot)) {
+                critical ("No Gtk Snapshot provided can't render solid color");
+                return;
+            }
+
+            var snapshot = (Gtk.Snapshot) gdk_snapshot;
+
+            var rect = Graphene.Rect ().init (0, 0, (float) width, (float) height);
+
+            snapshot.append_color (color, rect);
+        }
+    }
 }
 
 public static int main (string[] args) {

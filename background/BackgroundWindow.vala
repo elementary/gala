@@ -20,7 +20,7 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
 
         map.connect (() => {
             make_background (monitor_index);
-            setup_size();
+            setup_size ();
         });
 
         present ();
@@ -34,14 +34,14 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
     }
 
     public void set_background (Gdk.Paintable paintable) {
+        warning ("SET BACKGROUND");
         var old_picture = overlay.child;
 
         var new_picture = new Gtk.Picture () {
-            content_fit = COVER
+            content_fit = COVER,
+            paintable = paintable
         };
         overlay.child = new_picture;
-
-        new_picture.paintable = paintable;
 
         if (old_picture == null) {
             return;
@@ -50,8 +50,9 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         overlay.add_overlay (old_picture);
 
         var animation = new Adw.TimedAnimation (old_picture, 1.0, 0.0, 1000, new Adw.PropertyAnimationTarget (old_picture, "opacity"));
-        animation.done.connect (() => {
-            overlay.remove_overlay (old_picture);
+        animation.done.connect ((animation) => {
+            overlay.remove_overlay (animation.widget);
+            warning ("REMOVED");
         });
         animation.play ();
     }
