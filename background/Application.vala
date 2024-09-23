@@ -4,7 +4,8 @@
  */
 
  public class Gala.Background.Application : Gtk.Application {
-    private BackgroundWindow window;
+    private BackgroundWindow[] windows = {};
+
     public Application () {
         Object (application_id: "io.elementary.desktop.background");
     }
@@ -19,7 +20,21 @@
          * until the portal launches so it blocks.
          */
 
-        window = new BackgroundWindow ();
+        setup_background ();
+        Gdk.Display.get_default ().get_monitors ().items_changed.connect (setup_background);
+    }
+
+    private void setup_background () {
+        foreach (var window in windows) {
+            window.destroy ();
+        }
+
+        windows = {};
+
+        var monitors = Gdk.Display.get_default ().get_monitors ();
+        for (int i = 0; i < monitors.get_n_items (); i++) {
+            windows += new BackgroundWindow (i);
+        }
     }
 
     public override void activate () { }

@@ -7,7 +7,7 @@ public class Gala.BackgroundWindow : Object {
     /**
      * The window that currently provides a background for this monitor.
      */
-    private Meta.Window? providing_window;
+    public Meta.Window? providing_window { get; private set; }
 
     public BackgroundWindow (Meta.Display display, int monitor_index) {
         Object (display: display, monitor_index: monitor_index);
@@ -30,33 +30,27 @@ public class Gala.BackgroundWindow : Object {
         providing_window = null;
     }
 
-    private unowned Clutter.Actor? get_background () {
-        return (Clutter.Actor) providing_window.get_compositor_private ();
-    }
-
     public Clutter.Actor get_background_clone () {
-        //todo: update on window change (e.g. crash)
-        var background_clone = new BackgroundClone ();
-        if (providing_window != null) {
-            background_clone.background_clone = new Clutter.Clone (get_background ());
-        } else {
-            Idle.add (() => {
-                if (providing_window != null) {
-                    background_clone.background_clone = new Clutter.Clone (get_background ());
-                    return Source.REMOVE;
-                }
-
-                return Source.CONTINUE;
-            });
-        }
-        return background_clone;
+        return new BackgroundClone (this);
     }
 
-    public class BackgroundClone : Clutter.Actor {
-        public Clutter.Clone background_clone {
-            set {
-                remove_all_children ();
-                add_child (value);
+    private class BackgroundClone : Clutter.Actor {
+        public BackgroundWindow background_window { get; construct; }
+
+        public BackgroundClone (BackgroundWindow background_window) {
+            Object (background_window: background_window);
+        }
+
+        construct {
+            update_clone ();
+            background_window.notify["providing-window"].connect (update_clone);
+        }
+
+        private void update_clone () {
+            remove_all_children ();
+
+            if (background_window.providing_window != null) {
+                add_child (new Clutter.Clone ((Clutter.Actor) background_window.providing_window.get_compositor_private ()));
             }
         }
     }

@@ -1,6 +1,12 @@
 
 public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.ExtendedBehavior {
+    public int monitor_index { get; construct; }
+
     private Gtk.Picture picture;
+
+    public BackgroundWindow (int monitor_index) {
+        Object (monitor_index: monitor_index);
+    }
 
     construct {
         titlebar = new Gtk.Grid () { visible = false };
@@ -11,7 +17,7 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         child.realize.connect (connect_to_shell);
 
         map.connect (() => {
-            make_background (0);
+            make_background (monitor_index);
             setup_background ();
         });
 
