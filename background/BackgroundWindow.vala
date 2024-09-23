@@ -34,7 +34,6 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
     }
 
     public void set_background (Gdk.Paintable paintable) {
-        warning ("SET BACKGROUND");
         var old_picture = overlay.child;
 
         var new_picture = new Gtk.Picture () {
@@ -52,22 +51,7 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         var animation = new Adw.TimedAnimation (old_picture, 1.0, 0.0, 1000, new Adw.PropertyAnimationTarget (old_picture, "opacity"));
         animation.done.connect ((animation) => {
             overlay.remove_overlay (animation.widget);
-            warning ("REMOVED");
         });
         animation.play ();
-    }
-
-    public override void snapshot (Gtk.Snapshot snapshot) {
-        base.snapshot (snapshot);
-
-        //  Graphene.Matrix matrix = {};
-        //  Graphene.Matrix brightness_matrix = matrix.init_scale (0.5f, 0.5f, 0.5f);
-        //  brightness_matrix.print ();
-
-        //  //  snapshot.save ();
-        //  snapshot.pop ();
-        //  //  snapshot.push_color_matrix (brightness_matrix, Graphene.Vec4.one ());
-        //  snapshot.push_opacity (0.5);
-        //  //  snapshot.restore ();
     }
 }

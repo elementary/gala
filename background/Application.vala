@@ -30,6 +30,8 @@
 
         set_background ();
         gnome_settings.changed.connect (queue_set_background);
+        elementary_settings.changed.connect (queue_set_background);
+        Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (queue_set_background);
     }
 
     private void setup_background () {
@@ -46,10 +48,7 @@
     }
 
     private void queue_set_background () {
-        /*
-         * We want to update only once for a series of changes (e.g. style to 0 and different primary color).
-         */
-
+        // We want to update only once for a series of changes (e.g. style to 0 and different primary color).
         if (idle_id != 0) {
             Source.remove (idle_id);
         }
@@ -62,26 +61,30 @@
     }
 
     private void set_background () {
-        Gdk.Paintable texture;
+        Gdk.Paintable paintable;
 
         var style = gnome_settings.get_enum ("picture-options");
         if (style != 0) {
             var uri = gnome_settings.get_string ("picture-uri");
             var file = File.new_for_uri (uri);
             try {
-                texture = Gdk.Texture.from_file (file);
+                paintable = Gdk.Texture.from_file (file);
             } catch (Error e) {
-                warning ("FAILED TO LOAD TEXTURE: %s", e.message);
+                warning ("Failed to load texture: %s", e.message);
                 return;
             }
         } else {
             Gdk.RGBA color = {};
             color.parse (gnome_settings.get_string ("primary-color"));
-            texture = new SolidColor (color);
+            paintable = new SolidColor (color);
+        }
+
+        if (elementary_settings.get_boolean ("dim-wallpaper-in-dark-style") && Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+            paintable = new DimPaintable (paintable);
         }
 
         foreach (var window in windows) {
-            window.set_background (texture);
+            window.set_background (paintable);
         }
     }
 
@@ -105,6 +108,39 @@
             var rect = Graphene.Rect ().init (0, 0, (float) width, (float) height);
 
             snapshot.append_color (color, rect);
+        }
+    }
+
+    private class DimPaintable : Object, Gdk.Paintable {
+        public Gdk.Paintable texture { get; construct; }
+
+        public DimPaintable (Gdk.Paintable texture) {
+            Object (texture: texture);
+        }
+
+        public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
+            if (!(gdk_snapshot is Gtk.Snapshot)) {
+                critical ("No Gtk Snapshot provided can't render brightness changed");
+                texture.snapshot (gdk_snapshot, width, height);
+                return;
+            }
+
+            var snapshot = (Gtk.Snapshot) gdk_snapshot;
+
+            float[] matrix_values = {
+                0.55f, 0, 0, 0,
+                0, 0.55f, 0, 0,
+                0, 0, 0.55f, 0,
+                0, 0, 0, 1,
+            };
+
+            var brightness_matrix = Graphene.Matrix ().init_from_float (matrix_values);
+
+            snapshot.push_color_matrix (brightness_matrix, Graphene.Vec4.zero ());
+
+            texture.snapshot (gdk_snapshot, width, height);
+
+            snapshot.pop ();
         }
     }
 }
