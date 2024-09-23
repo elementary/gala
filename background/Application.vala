@@ -12,9 +12,12 @@
     public override void startup () {
         base.startup ();
 
-        Granite.init ();
-
         hold ();
+
+        /**
+         * We have to be careful not to init Granite because Granite gets Settings sync but it takes a while
+         * until the portal launches so it blocks.
+         */
 
         window = new BackgroundWindow ();
     }
