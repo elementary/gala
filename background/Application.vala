@@ -4,6 +4,9 @@
  */
 
  public class Gala.Background.Application : Gtk.Application {
+    private static Settings gnome_settings = new Settings ("org.gnome.desktop.background");
+    private static Settings elementary_settings = new Settings ("io.elementary.desktop.background");
+
     private BackgroundWindow[] windows = {};
 
     public Application () {
@@ -22,6 +25,9 @@
 
         setup_background ();
         Gdk.Display.get_default ().get_monitors ().items_changed.connect (setup_background);
+
+        set_background ();
+        gnome_settings.changed.connect (set_background);
     }
 
     private void setup_background () {
@@ -34,6 +40,23 @@
         var monitors = Gdk.Display.get_default ().get_monitors ();
         for (int i = 0; i < monitors.get_n_items (); i++) {
             windows += new BackgroundWindow (i);
+        }
+    }
+
+    private void set_background () {
+        var uri = gnome_settings.get_string ("picture-uri");
+        var file = File.new_for_uri (uri);
+
+        Gdk.Paintable texture;
+        try {
+            texture = Gdk.Texture.from_file (file);
+        } catch (Error e) {
+            warning ("FAILED TO LOAD TEXTURE: %s", e.message);
+            return;
+        }
+
+        foreach (var window in windows) {
+            window.set_background (texture);
         }
     }
 

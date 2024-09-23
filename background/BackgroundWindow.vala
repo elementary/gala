@@ -2,35 +2,71 @@
 public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.ExtendedBehavior {
     public int monitor_index { get; construct; }
 
-    private Gtk.Picture picture;
+    private Gtk.Overlay overlay;
 
     public BackgroundWindow (int monitor_index) {
         Object (monitor_index: monitor_index);
     }
 
     construct {
+        overlay = new Gtk.Overlay ();
+
         titlebar = new Gtk.Grid () { visible = false };
         decorated = false;
         can_focus = false;
-        child = picture = new Gtk.Picture ();
+        child = overlay;
 
         child.realize.connect (connect_to_shell);
 
         map.connect (() => {
             make_background (monitor_index);
-            setup_background ();
+            setup_size();
         });
 
         present ();
     }
 
-    private void setup_background () {
+    private void setup_size () {
         var monitor = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ());
 
         width_request = monitor.geometry.width;
         height_request = monitor.geometry.height;
+    }
 
-        var file = File.new_for_path ("/home/leonhard/Pictures/wallpaper.jpg");
-        picture.file = file;
+    public void set_background (Gdk.Paintable paintable) {
+        var old_picture = overlay.child;
+
+        var new_picture = new Gtk.Picture () {
+            content_fit = COVER
+        };
+        overlay.child = new_picture;
+
+        new_picture.paintable = paintable;
+
+        if (old_picture == null) {
+            return;
+        }
+
+        overlay.add_overlay (old_picture);
+
+        var animation = new Adw.TimedAnimation (old_picture, 1.0, 0.0, 1000, new Adw.PropertyAnimationTarget (old_picture, "opacity"));
+        animation.done.connect (() => {
+            overlay.remove_overlay (old_picture);
+        });
+        animation.play ();
+    }
+
+    public override void snapshot (Gtk.Snapshot snapshot) {
+        base.snapshot (snapshot);
+
+        //  Graphene.Matrix matrix = {};
+        //  Graphene.Matrix brightness_matrix = matrix.init_scale (0.5f, 0.5f, 0.5f);
+        //  brightness_matrix.print ();
+
+        //  //  snapshot.save ();
+        //  snapshot.pop ();
+        //  //  snapshot.push_color_matrix (brightness_matrix, Graphene.Vec4.one ());
+        //  snapshot.push_opacity (0.5);
+        //  //  snapshot.restore ();
     }
 }
