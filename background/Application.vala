@@ -31,7 +31,8 @@
         set_background ();
         gnome_settings.changed.connect (queue_set_background);
         elementary_settings.changed.connect (queue_set_background);
-        Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (queue_set_background);
+
+        //  Granite.Settings.get_default ().notify["prefers-color-scheme"].connect (queue_set_background); //todo: other thread?
     }
 
     private void setup_background () {
@@ -64,7 +65,7 @@
         Gdk.Paintable paintable;
 
         var style = gnome_settings.get_enum ("picture-options");
-        if (style != 0) {
+        if (style != GDesktop.BackgroundStyle.NONE) {
             var uri = gnome_settings.get_string ("picture-uri");
             var file = File.new_for_uri (uri);
             try {
@@ -79,7 +80,9 @@
             paintable = new SolidColor (color);
         }
 
-        if (elementary_settings.get_boolean ("dim-wallpaper-in-dark-style") && Granite.Settings.get_default ().prefers_color_scheme == DARK) {
+        if (elementary_settings.get_boolean ("dim-wallpaper-in-dark-style")
+            //  && Granite.Settings.get_default ().prefers_color_scheme == DARK //todo: other thread?
+        ) {
             paintable = new DimPaintable (paintable);
         }
 
