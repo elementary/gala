@@ -42,11 +42,6 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
-         * {@inheritDoc}
-         */
          public Gala.ActivatableComponent workspace_view { get; protected set; }
 
         /**
@@ -226,11 +221,6 @@ namespace Gala {
             window_group = display.get_window_group ();
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
-
-            background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
-            window_group.add_child (background_group);
-            window_group.set_child_below_sibling (background_group, null);
 
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
