@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- public class Gala.Background.Application : Gtk.Application {
+public class Gala.Background.Application : Gtk.Application {
     private BackgroundManager background_manager;
 
     public Application () {

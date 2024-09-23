@@ -4,7 +4,7 @@ background_sources = files(
     'BackgroundWindow.vala',
 )
 
-background_bin = executable(
+executable(
     'io.elementary.desktop.background',
     background_sources,
     gala_resources,
