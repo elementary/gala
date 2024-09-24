@@ -1965,6 +1965,8 @@ namespace Gala {
 
             window_group.add_child (main_container);
 
+            system_background.set_black_background (false);
+
             // prepare wallpaper
             wallpaper = ShellClientsManager.get_instance ().get_background_clone_for_monitor (primary);
             wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
@@ -2250,6 +2252,8 @@ namespace Gala {
 
             unowned var display = get_display ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+
+            system_background.set_black_background (true);
 
             for (var i = 0; i < windows.length (); i++) {
                 unowned var actor = windows.nth_data (i);
