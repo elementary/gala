@@ -45,7 +45,11 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         }
 
         public ColorInformation? get_color_information (int height) {
-            return null;
+            var r = color.red * 255;
+            var g = color.green * 255;
+            var b = color.blue * 255;
+
+            return {r, g, b, (0.3 * r + 0.59 * g + 0.11 * b), 0, 0};
         }
 
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
