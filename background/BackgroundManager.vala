@@ -83,7 +83,7 @@ public class Gala.Background.BackgroundManager : Object {
         changed ();
     }
 
-    public Utils.ColorInformation? get_background_color_information (int height) throws DBusError, IOError {
+    public Background.ColorInformation? get_background_color_information (int height) throws DBusError, IOError {
         if (current_background == null) {
             return null;
         }

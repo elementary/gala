@@ -6,6 +6,15 @@
  */
 
 public interface Gala.Background.Background : Object, Gdk.Paintable {
+    public struct ColorInformation {
+        double average_red;
+        double average_green;
+        double average_blue;
+        double mean_luminance;
+        double luminance_variance;
+        double mean_acutance;
+    }
+
     public static Background get_for_color (Gdk.RGBA color) {
         return new SolidColor (color);
     }
@@ -26,7 +35,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         return new DimBackground (other);
     }
 
-    public abstract Utils.ColorInformation? get_color_information (int height);
+    public abstract ColorInformation? get_color_information (int height);
 
     private class SolidColor : Object, Gdk.Paintable, Background {
         public Gdk.RGBA color { get; construct; }
@@ -35,7 +44,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             Object (color: color);
         }
 
-        public Utils.ColorInformation? get_color_information (int height) {
+        public ColorInformation? get_color_information (int height) {
             return null;
         }
 
@@ -60,7 +69,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             Object (texture: texture);
         }
 
-        public Utils.ColorInformation? get_color_information (int height) {
+        public ColorInformation? get_color_information (int height) {
             var info = texture.get_color_information (height);
             if (info == null) {
                 return null;
@@ -108,7 +117,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             Object (texture: texture);
         }
 
-        public Utils.ColorInformation? get_color_information (int height) {
+        public ColorInformation? get_color_information (int height) {
             return Utils.get_background_color_information (texture, height);
         }
 

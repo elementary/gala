@@ -7,16 +7,7 @@ namespace Gala.Background.Utils {
     private const double SATURATION_WEIGHT = 1.5;
     private const double WEIGHT_THRESHOLD = 1.0;
 
-    public struct ColorInformation {
-        double average_red;
-        double average_green;
-        double average_blue;
-        double mean_luminance;
-        double luminance_variance;
-        double mean_acutance;
-    }
-
-    public static ColorInformation? get_background_color_information (Gdk.Texture texture, int panel_height) {
+    public static Background.ColorInformation? get_background_color_information (Gdk.Texture texture, int panel_height) {
         int width = texture.width;
         int height = int.min (texture.height, panel_height);
 
