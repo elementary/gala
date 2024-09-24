@@ -88,6 +88,10 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             return info;
         }
 
+        public override double get_intrinsic_aspect_ratio () {
+            return texture.get_intrinsic_aspect_ratio ();
+        }
+
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
             if (!(gdk_snapshot is Gtk.Snapshot)) {
                 critical ("No Gtk Snapshot provided can't render brightness changed");
@@ -125,8 +129,12 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             return Utils.get_background_color_information (texture, height);
         }
 
+        public override double get_intrinsic_aspect_ratio () {
+            return texture.get_intrinsic_aspect_ratio ();
+        }
+
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
-            texture.snapshot (gdk_snapshot, width, height);
+            texture.snapshot (gdk_snapshot, render_width, render_height);
         }
     }
 }
