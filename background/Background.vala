@@ -61,7 +61,18 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         }
 
         public Utils.ColorInformation? get_color_information (int height) {
-            return texture.get_color_information (height);
+            var info = texture.get_color_information (height);
+            if (info == null) {
+                return null;
+            }
+
+            info.average_red *= 0.55;
+            info.average_green *= 0.55;
+            info.average_blue *= 0.55;
+            info.mean_luminance *= 0.55;
+            info.luminance_variance *= 0.55;
+
+            return info;
         }
 
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {

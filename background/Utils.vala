@@ -1,3 +1,8 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 namespace Gala.Background.Utils {
     private const double SATURATION_WEIGHT = 1.5;
     private const double WEIGHT_THRESHOLD = 1.0;
@@ -12,18 +17,15 @@ namespace Gala.Background.Utils {
     }
 
     public static ColorInformation? get_background_color_information (Gdk.Texture texture, int panel_height) {
-        int x_start = 0;
-        int y_start = 0;
-
         int width = texture.width;
         int height = int.min (texture.height, panel_height);
 
         if (width <= 0 || height <= 0) {
-            warning ("Got invalid rectangle: %i, %i, %i, %i".printf (x_start, y_start, width, height));
+            warning ("Got invalid rectangle: %i, %i".printf (width, height));
             return null;
         }
 
-        double mean_acutance = 0, variance = 0, mean = 0, r_total = 0, g_total = 0, b_total = 0;
+        double mean_acutance, variance, mean, r_total, g_total, b_total = 0;
 
         var texture_width = texture.width;
         var texture_height = texture.height;
@@ -45,13 +47,13 @@ namespace Gala.Background.Utils {
          * plank's lib/Drawing/DrawingService.vala average_color()
          * http://bazaar.launchpad.net/~docky-core/plank/trunk/view/head:/lib/Drawing/DrawingService.vala
          */
-        for (int y = y_start; y < (y_start + height); y++) {
-            for (int x = x_start; x < (x_start + width); x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 int i = (y * (int)texture_width * 4) + (x * 4);
 
-                uint8 b = pixels[i];
-                uint8 g = pixels[i + 1];
-                uint8 r = pixels[i + 2];
+                uint8 r = pixels[i + 1];
+                uint8 g = pixels[i + 2];
+                uint8 b = pixels[i + 3];
 
                 pixel = (0.3 * r + 0.59 * g + 0.11 * b) ;
 
@@ -79,8 +81,8 @@ namespace Gala.Background.Utils {
             }
         }
 
-        for (int y = y_start + 1; y < (y_start + height) - 1; y++) {
-            for (int x = x_start + 1; x < (x_start + width) - 1; x++) {
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
                 var acutance =
                     (pixel_lums[y * width + x] * 4) -
                     (
