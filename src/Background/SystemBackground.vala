@@ -21,7 +21,7 @@ public class Gala.SystemBackground : GLib.Object {
     }
 
     public void set_black_background (bool black) {
-        var color = black ? Clutter.Color ().init( 0, 0, 0, 0xff) : Clutter.Color ().init (0x2e, 0x34, 0x36, 0xff);
+        var color = black ? Clutter.Color ().init ( 0, 0, 0, 0xff) : Clutter.Color ().init (0x2e, 0x34, 0x36, 0xff);
         system_background.set_color (color);
     }
 }
