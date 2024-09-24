@@ -1,6 +1,8 @@
 /*
  * Copyright 2024 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
 public class Gala.Background.Application : Gtk.Application {
@@ -21,6 +23,12 @@ public class Gala.Background.Application : Gtk.Application {
          */
 
         background_manager = new BackgroundManager ();
+
+        try {
+            get_dbus_connection ().register_object (get_dbus_object_path (), background_manager);
+        } catch (Error e) {
+            warning ("Failed to export background manager: %s", e.message);
+        }
     }
 
     public override void activate () { }

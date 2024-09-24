@@ -1,7 +1,9 @@
 background_sources = files(
     'Application.vala',
+    'Background.vala',
     'BackgroundManager.vala',
     'BackgroundWindow.vala',
+    'Utils.vala',
 )
 
 executable(
