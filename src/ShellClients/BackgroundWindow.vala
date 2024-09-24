@@ -25,10 +25,14 @@ public class Gala.BackgroundWindow : Object {
 
         providing_window = new_window;
 
+        providing_window.unmanaging.connect (on_window_unmanaging);
+
+        reposition ();
+    }
+
+    public void reposition () {
         var monitor_geom = display.get_monitor_geometry (monitor_index);
         providing_window.move_frame (false, monitor_geom.x, monitor_geom.y);
-
-        providing_window.unmanaging.connect (on_window_unmanaging);
     }
 
     private void on_window_unmanaging () {

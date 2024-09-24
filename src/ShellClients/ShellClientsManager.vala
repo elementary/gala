@@ -53,9 +53,14 @@ public class Gala.ShellClientsManager : Object {
     private void update_background_windows () {
         var display = wm.get_display ();
 
-        background_windows = new BackgroundWindow[display.get_n_monitors ()];
+        background_windows.resize (display.get_n_monitors ());
+
         for (int i = 0; i < background_windows.length; i++) {
-            background_windows[i] = new BackgroundWindow (display, i);
+            if (background_windows[i] == null) {
+                background_windows[i] = new BackgroundWindow (display, i);
+            } else {
+                background_windows[i].reposition ();
+            }
         }
     }
 
