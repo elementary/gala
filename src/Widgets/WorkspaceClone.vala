@@ -158,7 +158,7 @@ namespace Gala {
             }
         }
 
-        private BackgroundManager background;
+        private Clutter.Actor background;
         private bool opened;
 
         private uint hover_activate_timeout = 0;
@@ -307,39 +307,7 @@ namespace Gala {
          * @return The position on the X axis of this workspace.
          */
         public float multitasking_view_x () {
-            return workspace.index () * (width - InternalUtils.scale_to_int (X_OFFSET, scale_factor));
-        }
-
-        /**
-         * @return The amount of pixels the workspace is overlapped in the X axis.
-         */
-        private float current_x_overlap () {
-            var display = workspace.get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_index = manager.get_active_workspace ().index ();
-            if (workspace.index () == active_index) {
-                return 0;
-            } else {
-                var x_offset = InternalUtils.scale_to_int (X_OFFSET, scale_factor) + WindowManagerGala.WORKSPACE_GAP;
-                return (workspace.index () < active_index) ? -x_offset : x_offset;
-            }
-        }
-
-        /**
-         * Utility function to shrink a MetaRectangle on all sides for the given amount.
-         * Negative amounts will scale it instead.
-         *
-         * @param amount The amount in px to shrink.
-         */
-#if HAS_MUTTER45
-        private static inline void shrink_rectangle (ref Mtk.Rectangle rect, int amount) {
-#else
-        private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
-#endif
-            rect.x += amount;
-            rect.y += amount;
-            rect.width -= amount * 2;
-            rect.height -= amount * 2;
+            return workspace.index () * width;
         }
 
         /**
@@ -360,8 +328,6 @@ namespace Gala {
             unowned var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
-            var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
-            var target_x = multitasking_view_x ();
 
             var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
             var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
@@ -369,14 +335,10 @@ namespace Gala {
             update_size (monitor);
 
             GestureTracker.OnBegin on_animation_begin = () => {
-                x = initial_x;
                 background.set_pivot_point (0.5f, pivot_y);
             };
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
-                set_x (x);
-
                 var update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
                 background.set_scale (update_scale, update_scale);
             };
@@ -385,12 +347,6 @@ namespace Gala {
                 if (cancel_action) {
                     return;
                 }
-
-                save_easing_state ();
-                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
-                set_x (target_x);
-                restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
@@ -405,18 +361,6 @@ namespace Gala {
             } else {
                 gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
             }
-
-#if HAS_MUTTER45
-            Mtk.Rectangle area = {
-#else
-            Meta.Rectangle area = {
-#endif
-                (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
-                (int)Math.floorf (monitor.y + InternalUtils.scale_to_int (TOP_OFFSET, scale_factor)),
-                (int)Math.floorf (monitor.width * scale),
-                (int)Math.floorf (monitor.height * scale)
-            };
-            shrink_rectangle (ref area, 32);
 
             window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
             window_container.padding_left =
@@ -442,16 +386,10 @@ namespace Gala {
 
             window_container.restack_windows ();
 
-            var initial_x = is_cancel_animation ? x : multitasking_view_x ();
-            var target_x = multitasking_view_x () + current_x_overlap ();
-
             double initial_scale_x, initial_scale_y;
             background.get_scale (out initial_scale_x, out initial_scale_y);
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
-                set_x (x);
-
                 double scale_x = (double) GestureTracker.animation_value ((float) initial_scale_x, 1.0f, percentage);
                 double scale_y = (double) GestureTracker.animation_value ((float) initial_scale_y, 1.0f, percentage);
                 background.set_scale (scale_x, scale_y);
@@ -461,12 +399,6 @@ namespace Gala {
                 if (cancel_action) {
                     return;
                 }
-
-                save_easing_state ();
-                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
-                set_x (target_x);
-                restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);

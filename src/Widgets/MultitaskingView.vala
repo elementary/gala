@@ -38,7 +38,7 @@ namespace Gala {
         private List<MonitorClone> window_containers_monitors;
 
         private IconGroupContainer icon_groups;
-        private Clutter.Actor workspaces;
+        private Widget.Box workspaces;
         private Clutter.Actor dock_clones;
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
@@ -77,7 +77,9 @@ namespace Gala {
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
 
-            workspaces = new Clutter.Actor ();
+            workspaces = new Widget.Box () {
+                orientation = HORIZONTAL
+            };
 
             icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
 
@@ -207,8 +209,8 @@ namespace Gala {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
                 icon_groups.remove_group (workspace_clone.icon_group);
-                workspace_clone.destroy ();
             }
+            workspaces.remove_all_children ();
 
             unowned var manager = display.get_workspace_manager ();
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
@@ -323,6 +325,7 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+            warning ("SWITCH WORKSPACE");
             if (switching_workspace_in_progress) {
                 return;
             }
@@ -475,10 +478,10 @@ namespace Gala {
                     workspace_clone.icon_group.backdrop_opacity = 0.0f;
                 }
 
-                workspace_clone.save_easing_state ();
-                workspace_clone.set_easing_duration ((animate && wm.enable_animations) ? 200 : 0);
-                workspace_clone.x = dest_x;
-                workspace_clone.restore_easing_state ();
+                //  workspace_clone.save_easing_state ();
+                //  workspace_clone.set_easing_duration ((animate && wm.enable_animations) ? 200 : 0);
+                //  workspace_clone.x = dest_x;
+                //  workspace_clone.restore_easing_state ();
             }
 
             workspaces.save_easing_state ();
@@ -533,22 +536,22 @@ namespace Gala {
         }
 
         private void remove_workspace (int num) {
-            WorkspaceClone? workspace = null;
+            WorkspaceClone? workspace = (WorkspaceClone) workspaces.get_child_at_index (num);
 
             // FIXME is there a better way to get the removed workspace?
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            List<Meta.Workspace> existing_workspaces = null;
-            for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                existing_workspaces.append (manager.get_workspace_by_index (i));
-            }
+            //  unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+            //  List<Meta.Workspace> existing_workspaces = null;
+            //  for (int i = 0; i < manager.get_n_workspaces (); i++) {
+            //      existing_workspaces.append (manager.get_workspace_by_index (i));
+            //  }
 
-            foreach (unowned var child in workspaces.get_children ()) {
-                unowned var clone = (WorkspaceClone) child;
-                if (existing_workspaces.index (clone.workspace) < 0) {
-                    workspace = clone;
-                    break;
-                }
-            }
+            //  foreach (unowned var child in workspaces.get_children ()) {
+            //      unowned var clone = (WorkspaceClone) child;
+            //      if (existing_workspaces.index (clone.workspace) < 0) {
+            //          workspace = clone;
+            //          break;
+            //      }
+            //  }
 
             if (workspace == null) {
                 return;
@@ -561,7 +564,7 @@ namespace Gala {
                 icon_groups.remove_group (workspace.icon_group);
             }
 
-            workspace.destroy ();
+            workspaces.remove_child (workspace);
 
             update_positions (opened);
         }
@@ -706,21 +709,6 @@ namespace Gala {
                 icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
-            }
-
-            // find active workspace clone and raise it, so there are no overlaps while transitioning
-            WorkspaceClone? active_workspace = null;
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active = manager.get_active_workspace ();
-            foreach (unowned var child in workspaces.get_children ()) {
-                unowned WorkspaceClone workspace = (WorkspaceClone) child;
-                if (workspace.workspace == active) {
-                    active_workspace = workspace;
-                    break;
-                }
-            }
-            if (active_workspace != null) {
-                workspaces.set_child_above_sibling (active_workspace, null);
             }
 
             workspaces.remove_all_transitions ();
