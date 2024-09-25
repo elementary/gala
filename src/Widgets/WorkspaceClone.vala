@@ -181,9 +181,10 @@ namespace Gala {
             background = new FramedBackground (wm);
             background.add_action (background_click_action);
 
+            var scale = (float)(monitor_geometry.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor_geometry.height;
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
-                width = monitor_geometry.width,
-                height = monitor_geometry.height,
+                width = monitor_geometry.width * scale,
+                height = monitor_geometry.height * scale,
             };
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
@@ -219,6 +220,8 @@ namespace Gala {
 
             add_child (background);
             add_child (window_container);
+
+            clip_to_allocation = true;
 
             // add existing windows
             var windows = workspace.list_windows ();
@@ -292,17 +295,6 @@ namespace Gala {
                 remove_window (window);
         }
 
-#if HAS_MUTTER45
-        public void update_size (Mtk.Rectangle monitor_geometry) {
-#else
-        public void update_size (Meta.Rectangle monitor_geometry) {
-#endif
-            if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-                window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-                background.set_size (window_container.width, window_container.height);
-            }
-        }
-
         /**
          * @return The position on the X axis of this workspace.
          */
@@ -330,13 +322,6 @@ namespace Gala {
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
 
             var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
-            var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
-
-            update_size (monitor);
-
-            GestureTracker.OnBegin on_animation_begin = () => {
-                background.set_pivot_point (0.5f, pivot_y);
-            };
 
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
@@ -353,19 +338,19 @@ namespace Gala {
                 background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
+
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_size (scale * monitor.width, scale * monitor.height);
+                restore_easing_state ();
             };
 
             if (!with_gesture || !wm.enable_animations) {
-                on_animation_begin (0);
                 on_animation_end (1, false, 0);
             } else {
-                gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
+                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned)on_animation_end);
             }
-
-            window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
-            window_container.padding_left =
-                window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-            window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
 
             icon_group.redraw ();
 
@@ -405,6 +390,12 @@ namespace Gala {
                 background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
+
+                save_easing_state ();
+                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_size (1920, 1200);
+                restore_easing_state ();
             };
 
             if (!with_gesture || !wm.enable_animations) {

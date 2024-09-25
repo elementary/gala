@@ -201,7 +201,7 @@ namespace Gala {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
                 workspace_clone.scale_factor = scale;
-                workspace_clone.update_size (primary_geometry);
+                //todo Update size?
             }
         }
 
