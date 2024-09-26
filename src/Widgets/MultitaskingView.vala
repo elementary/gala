@@ -384,11 +384,11 @@ namespace Gala {
             }
 
             if (is_nudge_animation) {
-                new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, true, initial_x + nudge_gap * -relative_dir);
+                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, true, initial_x + nudge_gap * -relative_dir);
             } else {
-                new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, target_x, true);
-                new PropertyGestureTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f, true);
-                new PropertyGestureTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f, true);
+                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x, true);
+                new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f, true);
+                new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f, true);
             }
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {

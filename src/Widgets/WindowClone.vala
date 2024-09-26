@@ -288,12 +288,12 @@ public class Gala.WindowClone : Clutter.Actor {
         in_slot_animation = true;
         place_widgets (outer_rect.width, outer_rect.height, initial_scale);
 
-        new PropertyGestureTransition (this, gesture_tracker, "x", null, (float) target_x, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "y", null, (float) target_y, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "width", null, (float) outer_rect.width, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "height", null, (float) outer_rect.height, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "shadow-opacity", 255f, 0f, with_gesture);
-        new PropertyGestureTransition (window_icon, gesture_tracker, "opacity", 255f, 0f, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", 255f, 0f, with_gesture);
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255f, 0f, with_gesture);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var width = GestureTracker.animation_value (initial_width, outer_rect.width, percentage);
@@ -359,12 +359,12 @@ public class Gala.WindowClone : Clutter.Actor {
         in_slot_animation = true;
         place_widgets (rect.width, rect.height, scale);
 
-        new PropertyGestureTransition (this, gesture_tracker, "x", null, (float) rect.x, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "y", null, (float) rect.y, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "width", null, (float) rect.width, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "height", null, (float) rect.height, with_gesture);
-        new PropertyGestureTransition (this, gesture_tracker, "shadow-opacity", 0f, 255f, with_gesture);
-        new PropertyGestureTransition (window_icon, gesture_tracker, "opacity", 0f, 255f, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) rect.x, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) rect.y, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) rect.width, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) rect.height, with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", 0f, 255f, with_gesture);
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0f, 255f, with_gesture);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var width = GestureTracker.animation_value (initial_width, rect.width, percentage);

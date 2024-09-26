@@ -369,9 +369,9 @@ namespace Gala {
 
             update_size (monitor);
 
-            new PropertyGestureTransition (this, gesture_tracker, "x", initial_x, target_x, with_gesture);
-            new PropertyGestureTransition (background, gesture_tracker, "scale-x", 1.0f, (float) scale, with_gesture);
-            new PropertyGestureTransition (background, gesture_tracker, "scale-y", 1.0f, (float) scale, with_gesture);
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x, with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", 1.0f, (float) scale, with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", 1.0f, (float) scale, with_gesture);
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
@@ -415,9 +415,9 @@ namespace Gala {
             double initial_scale_x, initial_scale_y;
             background.get_scale (out initial_scale_x, out initial_scale_y);
 
-            new PropertyGestureTransition (this, gesture_tracker, "x", initial_x, target_x, with_gesture);
-            new PropertyGestureTransition (background, gesture_tracker, "scale-x", initial_scale_x, 1.0f, with_gesture);
-            new PropertyGestureTransition (background, gesture_tracker, "scale-y", initial_scale_y, 1.0f, with_gesture);
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x, with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", initial_scale_x, 1.0f, with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", initial_scale_y, 1.0f, with_gesture);
 
             window_container.close (with_gesture, is_cancel_animation);
         }

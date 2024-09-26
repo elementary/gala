@@ -1,4 +1,8 @@
-public class Gala.PropertyGestureTransition : Object {
+
+
+public class Gala.GesturePropertyTransition : Object {
+    public signal void done ();
+
     public Clutter.Actor actor { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
     public string property { get; construct; }
@@ -7,7 +11,7 @@ public class Gala.PropertyGestureTransition : Object {
     public bool with_gesture { get; construct; }
     public Value? intermediate_value { get; construct; }
 
-    public PropertyGestureTransition (
+    public GesturePropertyTransition (
         Clutter.Actor actor,
         GestureTracker gesture_tracker,
         string property,
@@ -55,6 +59,8 @@ public class Gala.PropertyGestureTransition : Object {
             actor.set_easing_duration (calculated_duration);
             actor.set_property (property, cancel_action ? from_value : to_value);
             actor.restore_easing_state ();
+
+            done ();
 
             unref ();
         };
