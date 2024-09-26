@@ -36,6 +36,7 @@ gala_bin_sources = files(
     'Gestures/Gesture.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',
+    'Gestures/PropertyGestureTransition.vala',
     'Gestures/ScrollBackend.vala',
     'Gestures/ToucheggBackend.vala',
     'HotCorners/Barrier.vala',

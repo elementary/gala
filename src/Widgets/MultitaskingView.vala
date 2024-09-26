@@ -383,6 +383,8 @@ namespace Gala {
                 target_workspace.activate (display.get_current_time ());
             }
 
+            new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, target_x, true);
+
             GestureTracker.OnUpdate on_animation_update = (percentage) => {
                 var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
                 var icon_group_opacity = GestureTracker.animation_value (0.0f, 1.0f, percentage, false);
@@ -391,7 +393,7 @@ namespace Gala {
                     x = x.clamp (initial_x - nudge_gap, initial_x + nudge_gap);
                 }
 
-                workspaces.x = x;
+                //  workspaces.x = x;
 
                 if (!is_nudge_animation) {
                     active_icon_group.backdrop_opacity = 1.0f - icon_group_opacity;
@@ -406,11 +408,11 @@ namespace Gala {
                                (uint) (AnimationDuration.NUDGE / 2) :
                                (uint) calculated_duration;
 
-                workspaces.save_easing_state ();
-                workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                workspaces.set_easing_duration (duration);
-                workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
-                workspaces.restore_easing_state ();
+                //  workspaces.save_easing_state ();
+                //  workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                //  workspaces.set_easing_duration (duration);
+                //  workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
+                //  workspaces.restore_easing_state ();
 
                 if (!is_nudge_animation) {
                     if (wm.enable_animations) {
