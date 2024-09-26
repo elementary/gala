@@ -383,59 +383,16 @@ namespace Gala {
                 target_workspace.activate (display.get_current_time ());
             }
 
-            new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, target_x, true);
-
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (initial_x, target_x, percentage, true);
-                var icon_group_opacity = GestureTracker.animation_value (0.0f, 1.0f, percentage, false);
-
-                if (is_nudge_animation) {
-                    x = x.clamp (initial_x - nudge_gap, initial_x + nudge_gap);
-                }
-
-                //  workspaces.x = x;
-
-                if (!is_nudge_animation) {
-                    active_icon_group.backdrop_opacity = 1.0f - icon_group_opacity;
-                    target_icon_group.backdrop_opacity = icon_group_opacity;
-                }
-            };
+            if (is_nudge_animation) {
+                new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, true, initial_x + nudge_gap * -relative_dir);
+            } else {
+                new PropertyGestureTransition (workspaces, workspace_gesture_tracker, "x", null, target_x, true);
+                new PropertyGestureTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f, true);
+                new PropertyGestureTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f, true);
+            }
 
             GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
                 switching_workspace_with_gesture = false;
-
-                var duration = is_nudge_animation ?
-                               (uint) (AnimationDuration.NUDGE / 2) :
-                               (uint) calculated_duration;
-
-                //  workspaces.save_easing_state ();
-                //  workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                //  workspaces.set_easing_duration (duration);
-                //  workspaces.x = (is_nudge_animation || cancel_action) ? initial_x : target_x;
-                //  workspaces.restore_easing_state ();
-
-                if (!is_nudge_animation) {
-                    if (wm.enable_animations) {
-                        var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                            duration = duration,
-                            remove_on_complete = true
-                        };
-                        active_transition.set_from_value (active_icon_group.backdrop_opacity);
-                        active_transition.set_to_value (cancel_action ? 1.0f : 0.0f);
-                        active_icon_group.add_transition ("backdrop-opacity", active_transition);
-
-                        var target_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
-                            duration = duration,
-                            remove_on_complete = true
-                        };
-                        target_transition.set_from_value (target_icon_group.backdrop_opacity);
-                        target_transition.set_to_value (cancel_action ? 0.0f : 1.0f);
-                        target_icon_group.add_transition ("backdrop-opacity", target_transition);
-                    } else {
-                        active_icon_group.backdrop_opacity = cancel_action ? 1.0f : 0.0f;
-                        target_icon_group.backdrop_opacity = cancel_action ? 0.0f : 1.0f;
-                    }
-                }
 
                 if (is_nudge_animation || cancel_action) {
                     active_workspace.activate (display.get_current_time ());
@@ -445,7 +402,7 @@ namespace Gala {
             if (!wm.enable_animations) {
                 on_animation_end (1, false, 0);
             } else {
-                workspace_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+                workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
         }
 

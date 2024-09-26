@@ -5,6 +5,7 @@ public class Gala.PropertyGestureTransition : Object {
     public Value? from_value { get; construct; }
     public Value to_value { get; construct; }
     public bool with_gesture { get; construct; }
+    public Value? intermediate_value { get; construct; }
 
     public PropertyGestureTransition (
         Clutter.Actor actor,
@@ -12,7 +13,8 @@ public class Gala.PropertyGestureTransition : Object {
         string property,
         Value? from_value,
         Value to_value,
-        bool with_gesture
+        bool with_gesture,
+        Value? intermediate_value = null
     ) {
         Object (
             actor: actor,
@@ -20,7 +22,8 @@ public class Gala.PropertyGestureTransition : Object {
             property: property,
             from_value: from_value,
             to_value: to_value,
-            with_gesture: with_gesture
+            with_gesture: with_gesture,
+            intermediate_value: intermediate_value
         );
     }
 
@@ -38,18 +41,18 @@ public class Gala.PropertyGestureTransition : Object {
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var animation_value = GestureTracker.animation_value (value_to_float (from_value), value_to_float (to_value), percentage);
+            var animation_value = GestureTracker.animation_value (value_to_float (from_value), value_to_float (intermediate_value ?? to_value), percentage);
             actor.set_property (property, value_from_float (animation_value));
         };
 
-        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
+        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
             if (cancel_action) {
                 return;
             }
 
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            actor.set_easing_duration (500);
+            actor.set_easing_duration (calculated_duration);
             actor.set_property (property, cancel_action ? from_value : to_value);
             actor.restore_easing_state ();
 
@@ -60,7 +63,7 @@ public class Gala.PropertyGestureTransition : Object {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
-            on_animation_end (1, false, 0);
+            on_animation_end (1, false, gesture_tracker.min_animation_duration);
         }
     }
 
