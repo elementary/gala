@@ -1,15 +1,17 @@
 
 
+
 public class Gala.GesturePropertyTransition : Object {
+
     public signal void done ();
 
     public Clutter.Actor actor { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
     public string property { get; construct; }
-    public Value? from_value { get; construct; }
-    public Value to_value { get; construct; }
-    public bool with_gesture { get; construct; }
+    public Value? from_value { get; construct set; }
+    public Value to_value { get; construct set; }
     public Value? intermediate_value { get; construct; }
+    public bool reversed { get; construct set; default = false; }
 
     public GesturePropertyTransition (
         Clutter.Actor actor,
@@ -17,7 +19,6 @@ public class Gala.GesturePropertyTransition : Object {
         string property,
         Value? from_value,
         Value to_value,
-        bool with_gesture,
         Value? intermediate_value = null
     ) {
         Object (
@@ -26,21 +27,25 @@ public class Gala.GesturePropertyTransition : Object {
             property: property,
             from_value: from_value,
             to_value: to_value,
-            with_gesture: with_gesture,
             intermediate_value: intermediate_value
         );
     }
 
-    construct {
-        ref ();
-
+    public void start (bool with_gesture) {
         if (from_value == null) {
-            Value current_value;
+            Value current_value = {};
             actor.get_property (property, ref current_value);
             from_value = current_value;
+
+            ulong done_handler = 0;
+            done_handler = done.connect (() => {
+                from_value = null;
+                disconnect (done_handler);
+            });
         }
 
         GestureTracker.OnBegin on_animation_begin = () => {
+            ref ();
             actor.set_property (property, from_value);
         };
 
@@ -60,9 +65,16 @@ public class Gala.GesturePropertyTransition : Object {
             actor.set_property (property, cancel_action ? from_value : to_value);
             actor.restore_easing_state ();
 
-            done ();
-
-            unref ();
+            unowned var transition = actor.get_transition (property);
+            if (transition == null) {
+                done ();
+                unref ();
+            } else {
+                transition.stopped.connect (() => {
+                    done ();
+                    unref ();
+                });
+            }
         };
 
         if (with_gesture) {
