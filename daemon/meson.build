@@ -1,7 +1,6 @@
 gala_daemon_sources = files(
     'Main.vala',
     'DBus.vala',
-    'MonitorLabel.vala',
     'Window.vala',
     'WindowMenu.vala',
 )

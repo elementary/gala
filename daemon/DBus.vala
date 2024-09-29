@@ -44,15 +44,6 @@ public interface Gala.WMDBus : GLib.Object {
     public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
 }
 
-public struct Gala.Daemon.MonitorLabelInfo {
-    public int monitor;
-    public string label;
-    public string background_color;
-    public string text_color;
-    public int x;
-    public int y;
-}
-
 [DBus (name = "org.pantheon.gala.daemon")]
 public class Gala.Daemon.DBus : GLib.Object {
     private const string DBUS_NAME = "org.pantheon.gala";
@@ -69,8 +60,6 @@ public class Gala.Daemon.DBus : GLib.Object {
     private Window window;
     private WindowMenu? window_menu;
     private Gtk.PopoverMenu background_menu;
-
-    private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
@@ -180,23 +169,6 @@ public class Gala.Daemon.DBus : GLib.Object {
             menu.popup ();
             return Source.REMOVE;
         });
-    }
-
-    public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
-        hide_monitor_labels ();
-
-        monitor_labels = new List<MonitorLabel> ();
-        foreach (var info in label_infos) {
-            var label = new MonitorLabel (info);
-            monitor_labels.append (label);
-            label.present ();
-        }
-    }
-
-    public void hide_monitor_labels () throws GLib.DBusError, GLib.IOError {
-        foreach (var monitor_label in monitor_labels) {
-            monitor_label.close ();
-        }
     }
 
     private static void action_launch (SimpleAction action, Variant? variant) {
