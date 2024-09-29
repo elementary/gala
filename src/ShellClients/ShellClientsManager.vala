@@ -193,6 +193,25 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after (() => centered_windows.remove (window));
     }
 
+    public void make_monitor_label (Meta.Window window, int monitor_index) {
+        unowned var display = wm.get_display ();
+
+        if (monitor_index < 0 || monitor_index > display.get_n_monitors ()) {
+            warning ("Invalid moitor index provided: %d", monitor_index);
+            return;
+        }
+
+        window.make_above ();
+
+        var monitor_geometry = display.get_monitor_geometry (monitor_index);
+
+        ulong handler_id = 0;
+        handler_id = window.shown.connect (() => {
+            window.move_frame (false, monitor_geometry.x + 12, monitor_geometry.y + 12);
+            window.disconnect (handler_id);
+        });
+    }
+
     public bool is_positioned_window (Meta.Window window) {
         bool positioned = (window in centered_windows) || (window in windows);
         window.foreach_ancestor ((ancestor) => {
