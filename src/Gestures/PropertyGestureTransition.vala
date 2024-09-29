@@ -2,16 +2,42 @@
 
 
 public class Gala.GesturePropertyTransition : Object {
-
+    /**
+     * Emitted when all animations are finished that is when the property has reached the target value
+     * either via gesture or via easing or combined.
+     */
     public signal void done ();
 
+    /**
+     * The actor whose property will be animated.
+     */
     public Clutter.Actor actor { get; construct; }
+
     public GestureTracker gesture_tracker { get; construct; }
+
+    /**
+     * The property that will be animated. To be properly animated it has to be marked as
+     * animatable in the Clutter documentation and should be numeric.
+     */
     public string property { get; construct; }
+
+    /**
+     * The starting value of the animation or null to use the current value. The value
+     * has to be of the same type as the property.
+     */
     public Value? from_value { get; construct set; }
+
+    /**
+     * The value to animate to. It has to be of the same type as the property.
+     */
     public Value to_value { get; construct set; }
+
+    /**
+     * If not null this can be used to have an intermediate step before animating back to the origin.
+     * Therefore using this makes mostly sense if {@link to_value} equals {@link from_value}.
+     * This is mostly used for the nudge animations when trying to switch workspaces where there isn't one anymore.
+     */
     public Value? intermediate_value { get; construct; }
-    public bool reversed { get; construct set; default = false; }
 
     public GesturePropertyTransition (
         Clutter.Actor actor,
@@ -31,10 +57,16 @@ public class Gala.GesturePropertyTransition : Object {
         );
     }
 
+    /**
+     * Starts animating the property from {@link from_value} to {@link to_value}. If with_gesture is true
+     * it will connect to the gesture trackers signals and animate according to the input finishing with an easing
+     * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
+     */
     public void start (bool with_gesture) {
+        Value current_value = {};
+        actor.get_property (property, ref current_value);
+
         if (from_value == null) {
-            Value current_value = {};
-            actor.get_property (property, ref current_value);
             from_value = current_value;
 
             ulong done_handler = 0;
@@ -42,6 +74,14 @@ public class Gala.GesturePropertyTransition : Object {
                 from_value = null;
                 disconnect (done_handler);
             });
+        } else if (from_value.type () != current_value.type ()) {
+            warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
+            return;
+        }
+
+        if (current_value.type () != to_value.type ()) {
+            warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
+            return;
         }
 
         GestureTracker.OnBegin on_animation_begin = () => {
@@ -81,7 +121,22 @@ public class Gala.GesturePropertyTransition : Object {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
-            on_animation_end (1, false, gesture_tracker.min_animation_duration);
+            if (intermediate_value != null) {
+                actor.save_easing_state ();
+                actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+                actor.set_easing_duration (gesture_tracker.min_animation_duration / 2);
+                actor.set_property (property, intermediate_value);
+                actor.restore_easing_state ();
+
+                unowned var transition = actor.get_transition (property);
+                if (transition == null) {
+                    on_animation_end (1, false, gesture_tracker.min_animation_duration / 2);
+                } else {
+                    transition.stopped.connect (() => on_animation_end (1, false, gesture_tracker.min_animation_duration / 2));
+                }
+            } else {
+                on_animation_end (1, false, gesture_tracker.min_animation_duration);
+            }
         }
     }
 
@@ -96,6 +151,10 @@ public class Gala.GesturePropertyTransition : Object {
 
         if (val.holds (typeof (uint))) {
             return (float) val.get_uint ();
+        }
+
+        if (val.holds (typeof (int))) {
+            return (float) val.get_int ();
         }
 
         critical ("Non numeric property specified");
