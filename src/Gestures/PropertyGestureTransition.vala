@@ -57,12 +57,19 @@ public class Gala.GesturePropertyTransition : Object {
         );
     }
 
+    construct {
+        done.connect (unref);
+    }
+
     /**
      * Starts animating the property from {@link from_value} to {@link to_value}. If with_gesture is true
      * it will connect to the gesture trackers signals and animate according to the input finishing with an easing
      * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
+     * #this will keep itself alive until the animation finishes so it is safe to immediatly unref it after creation and calling start.
      */
     public void start (bool with_gesture) {
+        ref ();
+
         Value current_value = {};
         actor.get_property (property, ref current_value);
 
@@ -76,16 +83,17 @@ public class Gala.GesturePropertyTransition : Object {
             });
         } else if (from_value.type () != current_value.type ()) {
             warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
+            done ();
             return;
         }
 
         if (current_value.type () != to_value.type ()) {
             warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
+            done ();
             return;
         }
 
         GestureTracker.OnBegin on_animation_begin = () => {
-            ref ();
             actor.set_property (property, from_value);
         };
 
@@ -108,12 +116,8 @@ public class Gala.GesturePropertyTransition : Object {
             unowned var transition = actor.get_transition (property);
             if (transition == null) {
                 done ();
-                unref ();
             } else {
-                transition.stopped.connect (() => {
-                    done ();
-                    unref ();
-                });
+                transition.stopped.connect (() => done ());
             }
         };
 
@@ -130,9 +134,9 @@ public class Gala.GesturePropertyTransition : Object {
 
                 unowned var transition = actor.get_transition (property);
                 if (transition == null) {
-                    on_animation_end (1, false, gesture_tracker.min_animation_duration / 2);
+                    on_animation_end (1, false, gesture_tracker.min_animation_duration);
                 } else {
-                    transition.stopped.connect (() => on_animation_end (1, false, gesture_tracker.min_animation_duration / 2));
+                    transition.stopped.connect (() => on_animation_end (1, false, gesture_tracker.min_animation_duration));
                 }
             } else {
                 on_animation_end (1, false, gesture_tracker.min_animation_duration);
@@ -141,20 +145,9 @@ public class Gala.GesturePropertyTransition : Object {
     }
 
     private float value_to_float (Value val) {
-        if (val.holds (typeof (float))) {
-            return val.get_float ();
-        }
-
-        if (val.holds (typeof (double))) {
-            return (float) val.get_double ();
-        }
-
-        if (val.holds (typeof (uint))) {
-            return (float) val.get_uint ();
-        }
-
-        if (val.holds (typeof (int))) {
-            return (float) val.get_int ();
+        Value float_val = Value (typeof (float));
+        if (val.transform (ref float_val)) {
+            return float_val.get_float ();
         }
 
         critical ("Non numeric property specified");
@@ -162,8 +155,15 @@ public class Gala.GesturePropertyTransition : Object {
     }
 
     private Value value_from_float (float f) {
+        var float_val = Value (typeof (float));
+        float_val.set_float (f);
+
         var val = Value (from_value.type ());
-        val.set_float (f);
+
+        if (!float_val.transform (ref val)) {
+            warning ("Failed to transform float to give type");
+        }
+
         return val;
     }
 }

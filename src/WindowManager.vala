@@ -643,69 +643,13 @@ namespace Gala {
                 dest *= -1;
             }
 
-            var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureTracker.animation_value (0.0f, dest, percentage, true).clamp (-nudge_gap, nudge_gap);
-                out_group.x = x_out;
-                wallpaper.x = x_out;
-            };
-
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
-                out_group.save_easing_state ();
-                out_group.set_easing_mode (animation_mode);
-                out_group.set_easing_duration (AnimationDuration.NUDGE / 2);
-
-                wallpaper.save_easing_state ();
-                wallpaper.set_easing_mode (animation_mode);
-                wallpaper.set_easing_duration (AnimationDuration.NUDGE / 2);
-
-                out_group.x = 0.0f;
-                out_group.restore_easing_state ();
-
-                wallpaper.x = 0.0f;
-                wallpaper.restore_easing_state ();
-
-                unowned var transition = out_group.get_transition ("x");
-                transition.completed.connect (() => {
-                    switch_workspace_animation_finished (direction, false, true);
-                    animating_switch_workspace = false;
-                });
-            };
-
-            if (!switch_workspace_with_gesture) {
-                double[] keyframes = { 0.5 };
-                GLib.Value[] x = { dest };
-
-                var out_group_nudge = new Clutter.KeyframeTransition ("translation-x") {
-                    duration = AnimationDuration.NUDGE,
-                    remove_on_complete = true,
-                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
-                };
-                out_group_nudge.set_from_value (0.0f);
-                out_group_nudge.set_to_value (0.0f);
-                out_group_nudge.set_key_frames (keyframes);
-                out_group_nudge.set_values (x);
-                out_group.add_transition ("nudge", out_group_nudge);
-
-                var wallpaper_nudge = new Clutter.KeyframeTransition ("translation-x") {
-                    duration = AnimationDuration.NUDGE,
-                    remove_on_complete = true,
-                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
-                };
-                wallpaper_nudge.set_from_value (0.0f);
-                wallpaper_nudge.set_to_value (0.0f);
-                wallpaper_nudge.set_key_frames (keyframes);
-                wallpaper_nudge.set_values (x);
-                wallpaper.add_transition ("nudge", wallpaper_nudge);
-
-                wallpaper_nudge.completed.connect (() => {
-                    switch_workspace_animation_finished (direction, false, true);
-                    animating_switch_workspace = false;
-                });
-            } else {
-                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
-            }
+            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, 0f, dest).start (switch_workspace_with_gesture);
+            var transition = new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, 0f, dest);
+            transition.done.connect (() => {
+                switch_workspace_animation_finished (direction, false, true);
+                animating_switch_workspace = false;
+            });
+            transition.start (switch_workspace_with_gesture);
         }
 
         private void update_input_area () {
