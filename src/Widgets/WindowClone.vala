@@ -357,6 +357,8 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
         place_widgets (rect.width, rect.height, scale);
 
+        set_window_icon_position (initial_width, initial_height, scale);
+
         new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
