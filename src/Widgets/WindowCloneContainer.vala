@@ -169,7 +169,7 @@ namespace Gala {
          * Recalculate the tiling positions of the windows and animate them to
          * the resulting spots.
          */
-        public void reflow (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void reflow (bool with_gesture = false, bool is_cancel_animation = false, bool opening = false) {
             if (!opened) {
                 return;
             }
@@ -208,7 +208,7 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned var clone = (WindowClone) tilable.id;
-                clone.take_slot (tilable.rect, with_gesture, is_cancel_animation);
+                clone.take_slot (tilable.rect, opening, with_gesture, is_cancel_animation);
             }
         }
 
@@ -395,15 +395,7 @@ namespace Gala {
                 current_window = null;
             }
 
-            // make sure our windows are where they belong in case they were moved
-            // while were closed.
-            if (gesture_tracker == null || !is_cancel_animation) {
-                foreach (var window in get_children ()) {
-                    ((WindowClone) window).transition_to_original_state (false, with_gesture, is_cancel_animation);
-                }
-            }
-
-            reflow (with_gesture, is_cancel_animation);
+            reflow (with_gesture, is_cancel_animation, true);
         }
 
         /**
@@ -418,7 +410,7 @@ namespace Gala {
             opened = false;
 
             foreach (var window in get_children ()) {
-                ((WindowClone) window).transition_to_original_state (true, with_gesture, is_cancel_animation);
+                ((WindowClone) window).transition_to_original_state (with_gesture, is_cancel_animation);
             }
         }
     }
