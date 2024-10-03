@@ -134,7 +134,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         }
 
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
-            texture.snapshot (gdk_snapshot, render_width, render_height);
+            texture.snapshot (gdk_snapshot, width, height);
         }
     }
 }

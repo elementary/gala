@@ -4,6 +4,58 @@
  */
 
 namespace Gala.Background.Utils {
+    public enum ColorScheme {
+        NO_PREFERENCE,
+        DARK,
+        LIGHT
+    }
+
+    public delegate void OnStyleChange (ColorScheme new_style);
+
+    [DBus (name = "org.freedesktop.Accounts")]
+    private interface Accounts : Object {
+        public abstract string find_user_by_name (string name) throws IOError, DBusError;
+    }
+
+    [DBus (name = "io.elementary.pantheon.AccountsService")]
+    private interface AccountsService : DBusProxy {
+        public abstract int prefers_color_scheme { get; set; }
+        public abstract int prefers_accent_color { get; set; }
+    }
+
+    private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
+    private const string FDO_ACCOUNTS_PATH = "/org/freedesktop/Accounts";
+
+    private static AccountsService? accounts_service_proxy;
+
+    public static void init_color_scheme_watcher (OnStyleChange style_change_callback) {
+        try {
+            var accounts = Bus.get_proxy_sync<Accounts> (SYSTEM, FDO_ACCOUNTS_NAME, FDO_ACCOUNTS_PATH);
+
+            var path = accounts.find_user_by_name (Environment.get_user_name ());
+
+            accounts_service_proxy = Bus.get_proxy_sync<AccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
+        } catch {
+            warning ("Could not connect to AccountsService. Default style will be used");
+            return;
+        }
+
+        accounts_service_proxy.g_properties_changed.connect ((changed, invalid) => {
+            var value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
+            if (value != null) {
+                style_change_callback (value.get_int32 ());
+            }
+        });
+    }
+
+    public static ColorScheme get_color_scheme () {
+        if (accounts_service_proxy != null) {
+            return accounts_service_proxy.prefers_color_scheme;
+        }
+
+        return LIGHT;
+    }
+
     private const double SATURATION_WEIGHT = 1.5;
     private const double WEIGHT_THRESHOLD = 1.0;
 
