@@ -19,7 +19,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         return new SolidColor (color);
     }
 
-    public static Background? get_for_file (File file) {
+    public static Background? get_for_file (File file, GDesktop.BackgroundStyle style) {
         Gdk.Texture texture;
         try {
             texture = Gdk.Texture.from_file (file);
@@ -28,7 +28,7 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             return null;
         }
 
-        return new ImageBackground (texture);
+        return new ImageBackground (texture, style);
     }
 
     public static Background get_dimmed (Background other) {
@@ -120,9 +120,10 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
 
     private class ImageBackground : Object, Gdk.Paintable, Background {
         public Gdk.Texture texture { get; construct; }
+        public GDesktop.BackgroundStyle style { get; construct; }
 
-        public ImageBackground (Gdk.Texture texture) {
-            Object (texture: texture);
+        public ImageBackground (Gdk.Texture texture, GDesktop.BackgroundStyle style) {
+            Object (texture: texture, style: style);
         }
 
         public ColorInformation? get_color_information (int height) {
@@ -134,7 +135,26 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
         }
 
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
-            texture.snapshot (gdk_snapshot, width, height);
+            var snapshot = (Gtk.Snapshot) gdk_snapshot;
+
+            switch (style) {
+                case ZOOM:
+                    var x_scale = (float) width / texture.get_width ();
+                    var y_scale = (float) height / texture.get_height ();
+                    if (x_scale > y_scale) {
+                        snapshot.scale (x_scale, x_scale);
+                        snapshot.translate ({0, (float) (height - texture.get_height () * y_scale) / 2});
+                    } else {
+                        snapshot.scale (y_scale, y_scale);
+                        snapshot.translate ({(float) (width - texture.get_width () * x_scale) / 2, 0});
+                    }
+                    texture.snapshot (snapshot, texture.get_width (), texture.get_height ());
+                    break;
+
+                default:
+                    texture.snapshot (gdk_snapshot, width, height);
+                    break;
+            }
         }
     }
 }

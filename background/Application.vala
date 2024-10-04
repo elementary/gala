@@ -25,11 +25,6 @@ public class Gala.Background.Application : Gtk.Application {
             Gtk.Settings.get_default ().gtk_application_prefer_dark_theme = scheme == DARK;
         });
 
-        /*
-         * We have to be careful not to init Granite because Granite gets Settings sync but it takes a while
-         * until the portal launches so it blocks.
-         */
-
         background_manager = new BackgroundManager ();
 
         try {

@@ -59,7 +59,7 @@ public class Gala.Background.BackgroundManager : Object {
         if (style != GDesktop.BackgroundStyle.NONE) {
             var uri = gnome_settings.get_string ("picture-uri");
             var file = File.new_for_uri (uri);
-            current_background = Background.get_for_file (file);
+            current_background = Background.get_for_file (file, style);
         } else {
             Gdk.RGBA color = {};
             color.parse (gnome_settings.get_string ("primary-color"));
