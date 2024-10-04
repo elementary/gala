@@ -18,6 +18,14 @@ public class Gala.Background.Application : Gtk.Application {
         hold ();
 
         /*
+         * We can't use Granite for the color scheme since it connects to the portal which only becomes available
+         * some time after we are already showing.
+         */
+        Utils.init_color_scheme_watcher ((scheme) => {
+            Gtk.Settings.get_default ().gtk_application_prefer_dark_theme = scheme == DARK;
+        });
+
+        /*
          * We have to be careful not to init Granite because Granite gets Settings sync but it takes a while
          * until the portal launches so it blocks.
          */

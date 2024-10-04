@@ -18,18 +18,14 @@ public class Gala.Background.BackgroundManager : Object {
     private uint idle_id = 0;
 
     construct {
-        /*
-         * We can't use Granite for the color scheme since it connects to the portal which only becomes available
-         * some time after we are already showing.
-         */
-        Utils.init_color_scheme_watcher (queue_set_background);
-
         setup_background ();
         Gdk.Display.get_default ().get_monitors ().items_changed.connect (setup_background);
 
         set_background ();
         gnome_settings.changed.connect (queue_set_background);
         elementary_settings.changed.connect (queue_set_background);
+
+        Gtk.Settings.get_default ().notify["gtk-application-prefer-dark-theme"].connect (queue_set_background);
     }
 
     private void setup_background () {
@@ -75,7 +71,7 @@ public class Gala.Background.BackgroundManager : Object {
         }
 
         if (elementary_settings.get_boolean ("dim-wallpaper-in-dark-style")
-            && Utils.get_color_scheme () == DARK
+            && Gtk.Settings.get_default ().gtk_application_prefer_dark_theme
         ) {
             current_background = Background.get_dimmed (current_background);
         }

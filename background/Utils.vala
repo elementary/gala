@@ -20,7 +20,6 @@ namespace Gala.Background.Utils {
     [DBus (name = "io.elementary.pantheon.AccountsService")]
     private interface AccountsService : DBusProxy {
         public abstract int prefers_color_scheme { get; set; }
-        public abstract int prefers_accent_color { get; set; }
     }
 
     private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
@@ -40,20 +39,14 @@ namespace Gala.Background.Utils {
             return;
         }
 
+        style_change_callback (accounts_service_proxy.prefers_color_scheme);
+
         accounts_service_proxy.g_properties_changed.connect ((changed, invalid) => {
             var value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
             if (value != null) {
                 style_change_callback (value.get_int32 ());
             }
         });
-    }
-
-    public static ColorScheme get_color_scheme () {
-        if (accounts_service_proxy != null) {
-            return accounts_service_proxy.prefers_color_scheme;
-        }
-
-        return LIGHT;
     }
 
     private const double SATURATION_WEIGHT = 1.5;
