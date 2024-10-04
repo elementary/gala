@@ -130,10 +130,6 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
             return Utils.get_background_color_information (texture, height);
         }
 
-        public override double get_intrinsic_aspect_ratio () {
-            return texture.get_intrinsic_aspect_ratio ();
-        }
-
         public void snapshot (Gdk.Snapshot gdk_snapshot, double width, double height) {
             var snapshot = (Gtk.Snapshot) gdk_snapshot;
 
@@ -142,11 +138,11 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
                     var x_scale = (float) width / texture.get_width ();
                     var y_scale = (float) height / texture.get_height ();
                     if (x_scale > y_scale) {
+                        snapshot.translate ({0, (float) (height - texture.get_height () * x_scale) / 2});
                         snapshot.scale (x_scale, x_scale);
-                        snapshot.translate ({0, (float) (height - texture.get_height () * y_scale) / 2});
                     } else {
+                        snapshot.translate ({(float) (width - (texture.get_width () * y_scale)) / 2, 0});
                         snapshot.scale (y_scale, y_scale);
-                        snapshot.translate ({(float) (width - texture.get_width () * x_scale) / 2, 0});
                     }
                     texture.snapshot (snapshot, texture.get_width (), texture.get_height ());
                     break;
