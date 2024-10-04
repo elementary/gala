@@ -135,16 +135,21 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
 
             switch (style) {
                 case ZOOM:
-                    var x_scale = (float) width / texture.get_width ();
-                    var y_scale = (float) height / texture.get_height ();
+                    var x_scale = (float) width / texture.width;
+                    var y_scale = (float) height / texture.height;
                     if (x_scale > y_scale) {
-                        snapshot.translate ({0, (float) (height - texture.get_height () * x_scale) / 2});
+                        snapshot.translate ({0, (float) (height - texture.width * x_scale) / 2});
                         snapshot.scale (x_scale, x_scale);
                     } else {
-                        snapshot.translate ({(float) (width - (texture.get_width () * y_scale)) / 2, 0});
+                        snapshot.translate ({(float) (width - (texture.width * y_scale)) / 2, 0});
                         snapshot.scale (y_scale, y_scale);
                     }
-                    texture.snapshot (snapshot, texture.get_width (), texture.get_height ());
+                    texture.snapshot (snapshot, texture.width, texture.height);
+                    break;
+
+                case CENTERED:
+                    snapshot.translate ({(float) (width - texture.width) / 2, (float) (height - texture.height) / 2});
+                    texture.snapshot (snapshot, texture.width, texture.height);
                     break;
 
                 default:
