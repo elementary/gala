@@ -135,21 +135,23 @@ public interface Gala.Background.Background : Object, Gdk.Paintable {
 
             switch (style) {
                 case ZOOM:
+                    /* We scale according to the bigger scale factor. Therefore the texture will be pushed off screen
+                     * in the other direction so center it in that direction. */
                     var x_scale = (float) width / texture.width;
                     var y_scale = (float) height / texture.height;
                     if (x_scale > y_scale) {
-                        snapshot.translate ({0, (float) (height - texture.width * x_scale) / 2});
+                        snapshot.translate ({0, (float) (height - texture.height * x_scale) / 2}); // Center it vertically
                         snapshot.scale (x_scale, x_scale);
                     } else {
-                        snapshot.translate ({(float) (width - (texture.width * y_scale)) / 2, 0});
+                        snapshot.translate ({(float) (width - (texture.width * y_scale)) / 2, 0}); // Center it horizontally
                         snapshot.scale (y_scale, y_scale);
                     }
                     texture.snapshot (snapshot, texture.width, texture.height);
                     break;
 
                 case CENTERED:
-                    snapshot.translate ({(float) (width - texture.width) / 2, (float) (height - texture.height) / 2});
-                    texture.snapshot (snapshot, texture.width, texture.height);
+                    snapshot.translate ({(float) (width - texture.width) / 2, (float) (height - texture.height) / 2}); // Center it
+                    texture.snapshot (snapshot, texture.width, texture.height); // Draw at original texture size
                     break;
 
                 default:
