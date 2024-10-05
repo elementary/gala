@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-09-02 22:33+0000\n"
+"PO-Revision-Date: 2024-09-19 10:09+0000\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese (Traditional) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hant/>\n"
@@ -115,11 +115,11 @@ msgstr "改善項目："
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr ""
+msgstr "修正在工作區之間移動視窗時可能發生的崩潰"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fix notification animation when entering multitasking view"
-msgstr ""
+msgstr "修正進入多工作業檢視時的通知動畫"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
@@ -139,7 +139,7 @@ msgstr "桌布切換的同時一起變更面板顏色"
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
-msgstr ""
+msgstr "變更桌布以及睡眠時遵循「減少動態效果」選項"
 
 #: data/gala.metainfo.xml.in:92
 msgid "Use appropriate drag-and-drop pointers when moving windows"
@@ -229,11 +229,11 @@ msgstr "拒絕"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
-msgstr "螢幕快照"
+msgstr "畫面快照"
 
 #: src/ScreenshotManager.vala:382
 msgid "Screenshot taken"
-msgstr "已拍攝螢幕快照"
+msgstr "已拍攝畫面快照"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
