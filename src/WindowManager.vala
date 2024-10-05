@@ -410,7 +410,9 @@ namespace Gala {
                 return;
             }
 
-            AtkBridge.adaptor_init (0, {});
+            string[] args = {};
+            unowned string[] _args = args;
+            AtkBridge.adaptor_init (ref _args);
         }
 
         private void update_ui_group_size () {
@@ -1118,7 +1120,7 @@ namespace Gala {
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
             switch (menu) {
                 case Meta.WindowMenuType.WM:
-                    if (window.get_window_type () == Meta.WindowType.NOTIFICATION) {
+                    if (NotificationStack.is_notification (window)) {
                         return;
                     }
 
@@ -1548,7 +1550,7 @@ namespace Gala {
 
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
-            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
+            if (NotificationStack.is_notification (window)) {
                 clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor, enable_animations);
 
@@ -1676,7 +1678,7 @@ namespace Gala {
 
             actor.remove_all_transitions ();
 
-            if (window.get_data (NOTIFICATION_DATA_KEY) || window.window_type == NOTIFICATION) {
+            if (NotificationStack.is_notification (window)) {
                 if (enable_animations) {
                     destroying.add (actor);
                 }
@@ -2074,7 +2076,7 @@ namespace Gala {
 
                 if (window.on_all_workspaces) {
                     // notifications use their own group and are always on top
-                    if (window.window_type == NOTIFICATION) {
+                    if (NotificationStack.is_notification (window)) {
                         continue;
                     }
 
@@ -2185,7 +2187,7 @@ namespace Gala {
             // while a workspace is being switched mutter doesn't map windows
             // TODO: currently only notifications are handled here, other windows should be too
             switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (window.window_type == Meta.WindowType.NOTIFICATION) {
+                if (NotificationStack.is_notification (window)) {
                     unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                     clutter_actor_reparent (actor, notification_group);
                     notification_stack.show_notification (actor, enable_animations);

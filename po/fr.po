@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
-"PO-Revision-Date: 2024-07-23 15:16+0000\n"
+"POT-Creation-Date: 2024-09-17 18:30+0000\n"
+"PO-Revision-Date: 2024-08-27 08:16+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
 ">\n"
@@ -109,29 +109,43 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:130
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix a potential crash when taking screenshots"
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+"Correction d'un plantage potentiel lors de la prise de captures d'écran"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Fix notification position after changing DPI"
+msgid "Fix notification animation when entering multitasking view"
+msgstr ""
+"Correction de la position des notifications après la modification du DPI"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:132
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:50
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Amélioration de la navigation au clavier dans la vue multitâche"
 
-#: data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:51
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Met à jour la couleur du panneau en même temps que la transition du fond "
 "d'écran"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:91
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -139,24 +153,24 @@ msgstr ""
 "Le changement du fond d'écran ou la mise en veille respectent l'option "
 "« Réduire le mouvement »"
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:92
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Utilisation des pointeurs de glisser-déposer lors du déplacement des fenêtres"
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:93
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Correction d'un problème où les gestes dans la vue multitâche peuvent cesser "
 "de fonctionner"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:94
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Amélioration du comportement des espaces de travail dynamiques sur plusieurs "
 "écrans"
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:116
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Amélioration de la gestion du raccourci « déplacer vers l'espace de travail »"
@@ -187,7 +201,7 @@ msgstr "Inconnu"
 
 #: src/DesktopIntegration.vala:132
 msgid "Window has already focus"
-msgstr ""
+msgstr "La fenêtre est déjà au premier plan"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -245,9 +259,9 @@ msgstr "Captures d'écran effectuée"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Sélecteur de fenêtre"
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2365
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -255,20 +269,20 @@ msgstr[0] "Les modifications seront automatiquement annulées après %i seconde.
 msgstr[1] ""
 "Les modifications seront automatiquement annulées après %i secondes."
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2372
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2376
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2377
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2416
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captures d'écran de %s"
@@ -377,10 +391,6 @@ msgstr "Captures d'écran de %s"
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
 
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr ""
-#~ "Correction d'un plantage potentiel lors de la prise de captures d'écran"
-
 #~ msgid "New features:"
 #~ msgstr "Nouvelles fonctionnalités :"
 
@@ -470,10 +480,6 @@ msgstr "Captures d'écran de %s"
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr ""
 #~ "Correction de plantages potentiels lors de la prise de captures d'écran"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr ""
-#~ "Correction de la position des notifications après la modification du DPI"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

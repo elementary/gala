@@ -55,6 +55,7 @@ public class Gala.PanelWindow : Object {
 
         var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => update_anchor (anchor));
+        monitor_manager.monitors_changed_internal.connect (() => update_anchor (anchor));
 
         var workspace_manager = wm.get_display ().get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
