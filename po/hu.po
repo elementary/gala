@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-08-21 17:26+0000\n"
+"PO-Revision-Date: 2024-10-03 23:16+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -117,16 +117,13 @@ msgid "Improvements:"
 msgstr "Fejlesztések:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Egy esetleges összeomlás javítva képernyőkép készítésekor"
+msgstr ""
+"Egy esetleges összeomlás javítva videók munkaterületek közti mozgatásakor"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
-msgstr "DPI-állítás utáni értesítéshelyzet javítva"
+msgstr "Értesítési felület megnyitása utáni értesítéshelyzet javítva"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
