@@ -20,6 +20,12 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
+    /**
+     * This will be emitted when a window requests to be positioned via the protocol methods
+     * or if a window that's a transient of a positioned window was created.
+     */
+    public signal void positioned_window_created (Meta.Window window);
+
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -43,6 +49,12 @@ public class Gala.ShellClientsManager : Object {
                 parse_mutter_hints (window);
             });
         }
+
+        wm.get_display ().window_created.connect ((window) => {
+            if (is_positioned_window (window)) {
+                positioned_window_created (window);
+            }
+        });
     }
 
     private async void start_clients () {
@@ -156,6 +168,8 @@ public class Gala.ShellClientsManager : Object {
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after (() => windows.remove (window));
+
+        positioned_window_created (window);
     }
 
     /**
@@ -191,6 +205,8 @@ public class Gala.ShellClientsManager : Object {
         centered_windows[window] = new CenteredWindow (wm, window);
 
         window.unmanaging.connect_after (() => centered_windows.remove (window));
+
+        positioned_window_created (window);
     }
 
     public bool is_positioned_window (Meta.Window window) {
