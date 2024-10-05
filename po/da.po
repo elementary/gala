@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"POT-Creation-Date: 2024-09-17 18:30+0000\n"
 "PO-Revision-Date: 2020-08-25 13:13+0000\n"
 "Last-Translator: Kaj Printz Madsen <kajprintz@gmail.com>\n"
 "Language-Team: Danish <https://l10n.elementary.io/projects/desktop/gala/da/"
@@ -112,47 +112,59 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Incorporated."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:130
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr "Ret potentielt nedbrud når man tager skærmbilleder"
+
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Fix notification position after changing DPI"
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Ret notifikations position efter ændring af DPI"
+
+#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:132
 msgid "Updated translations"
 msgstr "Opdaterede oversættelser"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:50
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Multitask Oversigt"
 
-#: data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:51
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:91
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:92
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:93
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:94
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:116
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -240,31 +252,31 @@ msgstr "Skærmbilleder"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2365
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2372
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Skærmindstillinger…"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2376
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Systemindstillinger…"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2377
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2416
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
@@ -296,11 +308,6 @@ msgstr "Skærmbilleder"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
-
-#, fuzzy
-#~| msgid "Fix potential crash when taking screenshots"
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "Ret potentielt nedbrud når man tager skærmbilleder"
 
 #, fuzzy
 #~| msgid "Fix potential crash when taking screenshots"
@@ -354,9 +361,6 @@ msgstr "Skærmbilleder"
 
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr "Ret potentielt nedbrud når man tager skærmbilleder"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "Ret notifikations position efter ændring af DPI"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr "Ret animationer for flyttelse og maksimering af flise vinduer"
