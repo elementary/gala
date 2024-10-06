@@ -77,6 +77,8 @@ namespace Gala {
          */
         private Zoom? zoom = null;
 
+        private Clutter.Actor fade_in_screen;
+
         private Clutter.Actor? tile_preview;
 
         private Meta.Window? moving; //place for the window that is being moved over
@@ -147,7 +149,16 @@ namespace Gala {
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
-            show_stage ();
+            prepare_stage ();
+
+            ulong changed_handler = 0;
+            changed_handler = ((BackgroundContainer) background_group).changed.connect (() => {
+                background_group.disconnect (changed_handler);
+                changed_handler = 0;
+
+                // Wait for Wingpanel animation 
+                Timeout.add_once (300, show_stage);
+            });
 
             init_a11y ();
 
@@ -159,7 +170,7 @@ namespace Gala {
             });
         }
 
-        private void show_stage () {
+        private void prepare_stage () {
             unowned Meta.Display display = get_display ();
 
             screen_shield = new ScreenShield (this);
@@ -228,7 +239,7 @@ namespace Gala {
             ui_group.add_child (window_group);
 
             background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
+            ((BackgroundContainer) background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
@@ -352,6 +363,15 @@ namespace Gala {
 
                 ui_group.add_child (screen_shield);
 
+                int width, height;
+                display.get_size (out width, out height);
+                fade_in_screen = new Clutter.Actor () {
+                    width = width,
+                    height = height,
+                    background_color = Clutter.Color.from_rgba (0, 0, 0, 255),
+                };
+                stage.add_child (fade_in_screen);
+
                 display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                     if (window_overview.is_opened ()) {
                         window_overview.close ();
@@ -367,18 +387,20 @@ namespace Gala {
 
             update_input_area ();
 
-
-            display.window_created.connect ((window) => window_created (window));
-
             stage.show ();
 
-            Idle.add (() => {
+            display.window_created.connect ((window) => window_created (window));
+        }
+
+        private void show_stage () requires (fade_in_screen.visible) {
+            fade_in_screen.visible = false;
+
+            Idle.add_once (() => {
                 // let the session manager move to the next phase
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-                display.get_context ().notify_ready ();
-                return GLib.Source.REMOVE;
+                get_display ().get_context ().notify_ready ();
             });
         }
 
