@@ -17,12 +17,15 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
     // the sizes of the textures often repeat, especially for the background actor
     // so we keep a cache to avoid creating the same texture all over again.
-    private static Gee.HashMap<string,Shadow> shadow_cache;
-    // Delay the style context creation at render stage as Gtk need to access
-    // the current display.
+    private static Gee.HashMap<string, Shadow> shadow_cache;
+
+    // Sometimes we use a shadow in only one place and rapidly switch between two shadows
+    // In order to not drop them and create them all over again we wait 5 seconds before finally dropping a shadow.
+    private static Gee.HashMap<string, uint> shadows_marked_for_dropping;
 
     static construct {
-        shadow_cache = new Gee.HashMap<string,Shadow> ();
+        shadow_cache = new Gee.HashMap<string, Shadow> ();
+        shadows_marked_for_dropping = new Gee.HashMap<string, uint> ();
     }
 
     private string _css_class;
@@ -80,9 +83,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
             decrement_shadow_users (old_key);
         }
 
-        Shadow? shadow = null;
-        if ((shadow = shadow_cache.@get (current_key)) != null) {
-            shadow.users++;
+        var shadow = shadow_cache.@get (current_key);
+        if (shadow != null) {
+            increment_shadow_users (current_key);
             return shadow.texture;
         }
 
@@ -126,18 +129,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private void decrement_shadow_users (string key) {
-        var shadow = shadow_cache.@get (key);
-
-        if (shadow == null) {
-            return;
-        }
-
-        if (--shadow.users == 0) {
-            shadow_cache.unset (key);
-        }
-    }
-
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
         var bounding_box = get_bounding_box ();
         var width = (int) (bounding_box.x2 - bounding_box.x1);
@@ -159,7 +150,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         actor.continue_paint (context);
     }
 
-    public virtual Clutter.ActorBox get_bounding_box () {
+    private Clutter.ActorBox get_bounding_box () {
         var size = shadow_size * scale_factor;
         var bounding_box = Clutter.ActorBox ();
 
@@ -183,5 +174,40 @@ public class Gala.ShadowEffect : Clutter.Effect {
         volume.set_origin (origin);
 
         return true;
+    }
+
+    private static void increment_shadow_users (string key) {
+        var shadow = shadow_cache.@get (key);
+
+        if (shadow == null) {
+            return;
+        }
+
+        shadow.users++;
+
+        uint timeout_id;
+        if (shadows_marked_for_dropping.unset (key, out timeout_id)) {
+            Source.remove (timeout_id);
+        }
+    }
+
+    private static void decrement_shadow_users (string key) {
+        var shadow = shadow_cache.@get (key);
+
+        if (shadow == null) {
+            return;
+        }
+
+        if (--shadow.users == 0) {
+            queue_shadow_drop (key);
+        }
+    }
+
+    private static void queue_shadow_drop (string key) {
+        shadows_marked_for_dropping[key] = Timeout.add_seconds (5, () => {
+            shadow_cache.unset (key);
+            shadows_marked_for_dropping.unset (key);
+            return Source.REMOVE;
+        });
     }
 }
