@@ -51,6 +51,7 @@ gala_bin_sources = files(
     'Widgets/DwellClickTimer.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
+    'Widgets/ModalActor.vala',
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',

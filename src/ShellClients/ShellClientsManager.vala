@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
@@ -20,7 +20,7 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -28,7 +28,7 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
-    private ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 
@@ -191,6 +191,10 @@ public class Gala.ShellClientsManager : Object {
         centered_windows[window] = new CenteredWindow (wm, window);
 
         window.unmanaging.connect_after (() => centered_windows.remove (window));
+    }
+
+    public void make_modal (Meta.Window window, bool dim) {
+        wm.modal_actor.make_modal (window, dim);
     }
 
     public bool is_positioned_window (Meta.Window window) {
