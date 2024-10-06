@@ -29,6 +29,19 @@ public class Gala.WindowIcon : Clutter.Actor {
     }
 
     construct {
+        /**
+         * Sometimes a WindowIcon is constructed on Meta.Display::window_created.
+         * In this case it can happen that we don't have any info about the app yet so we can't get the
+         * correct icon. Therefore we check whether the info becomes available at some point
+         * and if it does we try to get a new icon.
+         */
+        window.notify["wm-class"].connect (reload_icon);
+        window.notify["gtk-application-id"].connect (reload_icon);
+
+        reload_icon ();
+    }
+
+    private void reload_icon () {
         width = icon_size * scale;
         height = icon_size * scale;
 

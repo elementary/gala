@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-08-07 18:17+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2024-09-24 11:24+0000\n"
+"Last-Translator: Daniel Hejduk <danielhejduk@disroot.org>\n"
 "Language-Team: Czech <https://l10n.elementary.io/projects/desktop/gala/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -116,10 +116,8 @@ msgid "Improvements:"
 msgstr "Vylepšení:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Opraveny potenciální pády při pořizování snímků obrazovky"
+msgstr "Opraveny potenciální pády při pohybování oken mezi pracovištěma"
 
 #: data/gala.metainfo.xml.in:35
 #, fuzzy

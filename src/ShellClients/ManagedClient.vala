@@ -48,7 +48,7 @@ public class Gala.ManagedClient : Object {
     }
 
     private async void start_wayland () {
-        var subprocess_launcher = new GLib.SubprocessLauncher (STDERR_PIPE | STDOUT_PIPE);
+        var subprocess_launcher = new GLib.SubprocessLauncher (INHERIT_FDS);
         try {
 #if HAS_MUTTER44
             wayland_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-07-21 06:16+0000\n"
+"PO-Revision-Date: 2024-09-29 02:16+0000\n"
 "Last-Translator: David Hewitt <davidmhewitt@gmail.com>\n"
 "Language-Team: English (United Kingdom) <https://l10n.elementary.io/projects/"
 "desktop/gala/en_GB/>\n"
@@ -115,16 +115,12 @@ msgid "Improvements:"
 msgstr "Improvements:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Fix a potential crash when taking screenshots"
+msgstr "Fix a potential crash when moving windows between workspaces"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
-msgstr "Fix notification position after changing DPI"
+msgstr "Fix notification animation when entering multitasking view"
 
 #: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
@@ -189,7 +185,7 @@ msgstr "Unknown"
 
 #: src/DesktopIntegration.vala:132
 msgid "Window has already focus"
-msgstr ""
+msgstr "Window has already focus"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -247,7 +243,7 @@ msgstr "Screenshot taken"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Window switcher"
 
 #: src/WindowManager.vala:2365
 #, c-format

@@ -18,9 +18,9 @@ jobs:
         version: [stable, unstable, development-target]
         include:
           - version: stable
-            mutter_pkg: libmutter-10-dev
+            mutter_pkg: libmutter-14-dev
           - version: unstable
-            mutter_pkg: libmutter-10-dev
+            mutter_pkg: libmutter-14-dev
           - version: development-target
             mutter_pkg: libmutter-14-dev
     container:

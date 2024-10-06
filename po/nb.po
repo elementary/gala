@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-09-18 12:00+0000\n"
+"PO-Revision-Date: 2024-09-19 07:21+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -185,11 +185,12 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Ukjent"
 
 #: src/DesktopIntegration.vala:132
+#, fuzzy
 msgid "Window has already focus"
-msgstr ""
+msgstr "Vinduet har allerede fokus"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -219,15 +220,15 @@ msgstr "Vent"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "«%s» ønsker å ta over for systemsnarveier:"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Et program ønsker å ta over for systemsnarveier"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Alle systemsnarveier vil bli videresendt til programmet."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
@@ -235,7 +236,7 @@ msgstr "Tillat"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Nekt"
 
 #: src/ScreenshotManager.vala:290
 msgid "Screenshots"
@@ -247,7 +248,7 @@ msgstr "Skjermavbildning utført"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Vindusbytter"
 
 #: src/WindowManager.vala:2365
 #, c-format
