@@ -61,7 +61,10 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         can_focus = false;
         child = overlay;
 
-        child.realize.connect (connect_to_shell);
+        child.realize.connect (() => {
+            connect_to_shell ();
+            get_surface ().notify["scale"].connect (setup_size);
+        });
 
         map.connect (() => {
             make_background (monitor_index);
@@ -89,9 +92,16 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
 
     private void setup_size () {
         var monitor = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ());
+        var geom = monitor.get_geometry ();
 
-        width_request = monitor.geometry.width;
-        height_request = monitor.geometry.height;
+        /* First convert into physical size of the monitor */
+        geom.width = (int) (geom.width * monitor.scale);
+        geom.height = (int) (geom.height * monitor.scale);
+
+        /* Then convert into logical size as per surface scale. We do this because
+         * for some reason surface scale doesn't have to equal monitor scale */
+        default_width = width_request = (int) (geom.width / get_surface ().scale);
+        default_height = height_request = (int) (geom.height / get_surface ().scale);
     }
 
     public void set_background (Gdk.Paintable paintable) {
