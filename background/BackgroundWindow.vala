@@ -63,12 +63,17 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
 
         child.realize.connect (() => {
             connect_to_shell ();
-            get_surface ().notify["scale"].connect (setup_size);
+            get_surface ().notify["scale"].connect (update_size);
         });
 
         map.connect (() => {
-            make_background (monitor_index);
-            setup_size ();
+            if (get_surface () is Gdk.Wayland.Surface) {
+                make_background (monitor_index);
+            } else {
+                make_background_x11 ();
+            }
+
+            update_size ();
         });
 
         var gesture = new Gtk.GestureClick () {
@@ -90,7 +95,7 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         present ();
     }
 
-    private void setup_size () {
+    private void update_size () {
         var monitor = Gdk.Display.get_default ().get_monitor_at_surface (get_surface ());
         var geom = monitor.get_geometry ();
 
@@ -124,6 +129,26 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
             overlay.remove_overlay (animation.widget);
         });
         animation.play ();
+    }
+
+    private void make_background_x11 () {
+        var monitor = (Gdk.X11.Monitor) Gdk.Display.get_default ().get_monitors ().get_item (monitor_index);
+
+        var geom = monitor.geometry;
+
+        unowned var xdisplay = ((Gdk.X11.Display) display).get_xdisplay ();
+
+        unowned var x_window = ((Gdk.X11.Surface) get_surface ()).get_xid ();
+
+        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
+        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DESKTOP", false);
+
+        // (X.Atom) 4 is XA_ATOM
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+
+        xdisplay.move_window (x_window, geom.x, geom.y);
     }
 
     private static void action_launch (SimpleAction action, Variant? variant) {
