@@ -33,6 +33,7 @@ gala_bin_sources = files(
     'ColorFilters/ColorblindnessCorrectionEffect.vala',
     'ColorFilters/FilterManager.vala',
     'ColorFilters/MonochromeEffect.vala',
+    'Gestures/DBusGestureProvider.vala',
     'Gestures/Gesture.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',
@@ -63,8 +64,6 @@ gala_bin_sources = files(
     'Widgets/WindowCloneContainer.vala',
     'Widgets/WindowIconActor.vala',
     'Widgets/WindowOverview.vala',
-    'Widgets/WindowSwitcher/WindowSwitcher.vala',
-    'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
 )

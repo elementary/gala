@@ -36,7 +36,6 @@ namespace Gala {
             return _regions;
         }
 
-        public string? window_switcher_provider { get; private set; default = null; }
         public string? window_overview_provider { get; private set; default = null; }
         public string? workspace_view_provider { get; private set; default = null; }
 
@@ -154,13 +153,6 @@ namespace Gala {
                         return false;
                     }
                     window_overview_provider = name;
-                    return true;
-                case PluginFunction.WINDOW_SWITCHER:
-                    if (window_switcher_provider != null) {
-                        warning (message, window_switcher_provider, name, "window switcher");
-                        return false;
-                    }
-                    window_switcher_provider = name;
                     return true;
                 default:
                     break;
