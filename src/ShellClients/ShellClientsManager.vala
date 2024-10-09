@@ -229,8 +229,9 @@ public class Gala.ShellClientsManager : Object {
     }
 
     /**
-     * This clone will be valid until Meta.MonitorManager::monitors-changed was emitted.
-     * After that the clone musn't be used. This will only return null if the monitor_index is out of bounds.
+     * This clone will be valid until monitor_index goes out of bounds (i.e. enough monitors were disconnected
+     * so that the number of monitors <= monitor_index). After that the clone musn't be used.
+     * This will only return null if the monitor_index is out of bounds.
      */
     public Clutter.Actor? get_background_clone_for_monitor (int monitor_index) {
         if (monitor_index < 0 || monitor_index > background_windows.length) {
@@ -305,6 +306,15 @@ public class Gala.ShellClientsManager : Object {
 
                 case "centered":
                     make_centered (window);
+                    break;
+
+                case "monitor-index":
+                    int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
+                    if (int.try_parse (val, out parsed)) {
+                        make_background (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as monitor index", val);
+                    }
                     break;
 
                 default:

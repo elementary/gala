@@ -132,13 +132,9 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
     }
 
     private void make_background_x11 () {
-        var monitor = (Gdk.X11.Monitor) Gdk.Display.get_default ().get_monitors ().get_item (monitor_index);
-
-        var geom = monitor.geometry;
-
         unowned var xdisplay = ((Gdk.X11.Display) display).get_xdisplay ();
 
-        unowned var x_window = ((Gdk.X11.Surface) get_surface ()).get_xid ();
+        unowned var xwindow = ((Gdk.X11.Surface) get_surface ()).get_xid ();
 
         var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
         var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DESKTOP", false);
@@ -146,9 +142,13 @@ public class Gala.Background.BackgroundWindow : Gtk.Window, PantheonWayland.Exte
         // (X.Atom) 4 is XA_ATOM
         // 32 is format
         // 0 means replace
-        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+        xdisplay.change_property (xwindow, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
 
-        xdisplay.move_window (x_window, geom.x, geom.y);
+        var mutter_prop = xdisplay.intern_atom ("_MUTTER_HINTS", false);
+
+        var mutter_prop_value = "monitor-index=%d".printf (monitor_index);
+
+        xdisplay.change_property (xwindow, mutter_prop, X.XA_STRING, 8, 0, (uchar[]) mutter_prop_value, mutter_prop_value.length);
     }
 
     private static void action_launch (SimpleAction action, Variant? variant) {
