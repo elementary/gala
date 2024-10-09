@@ -32,7 +32,7 @@ namespace Gala {
         public GestureTracker gesture_tracker { get; construct; }
 
         private WindowCloneContainer window_container;
-        private BackgroundManager background;
+        private Clutter.Actor background;
 
         public MonitorClone (WindowManager wm, Meta.Display display, int monitor, GestureTracker gesture_tracker) {
             Object (wm: wm, display: display, monitor: monitor, gesture_tracker: gesture_tracker);
@@ -41,7 +41,7 @@ namespace Gala {
         construct {
             reactive = true;
 
-            background = new BackgroundManager (wm, monitor, false);
+            background = ShellClientsManager.get_instance ().get_background_clone_for_monitor (monitor);
 
             var scale = display.get_monitor_scale (monitor);
 

@@ -28,6 +28,8 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
 
+    private BackgroundWindow[] background_windows;
+
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
@@ -42,6 +44,23 @@ public class Gala.ShellClientsManager : Object {
                 window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
                 parse_mutter_hints (window);
             });
+        }
+
+        update_background_windows ();
+        wm.get_display ().get_context ().get_backend ().get_monitor_manager ().monitors_changed.connect (update_background_windows);
+    }
+
+    private void update_background_windows () {
+        var display = wm.get_display ();
+
+        background_windows.resize (display.get_n_monitors ());
+
+        for (int i = 0; i < background_windows.length; i++) {
+            if (background_windows[i] == null) {
+                background_windows[i] = new BackgroundWindow (display, i);
+            } else {
+                background_windows[i].reposition ();
+            }
         }
     }
 
@@ -193,6 +212,36 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after (() => centered_windows.remove (window));
     }
 
+    public void make_background (Meta.Window window, int monitor_index) {
+        if (monitor_index < 0 || monitor_index > background_windows.length) {
+            warning ("Given monitor index out of bounds.");
+            return;
+        }
+
+        foreach (var client in protocol_clients) {
+            if (client.wayland_client.owns_window (window)) {
+                client.wayland_client.make_desktop (window);
+                break;
+            }
+        }
+
+        background_windows[monitor_index].update_window (window);
+    }
+
+    /**
+     * This clone will be valid until monitor_index goes out of bounds (i.e. enough monitors were disconnected
+     * so that the number of monitors <= monitor_index). After that the clone musn't be used.
+     * This will only return null if the monitor_index is out of bounds.
+     */
+    public Clutter.Actor? get_background_clone_for_monitor (int monitor_index) {
+        if (monitor_index < 0 || monitor_index > background_windows.length) {
+            warning ("Given monitor index out of bounds.");
+            return null;
+        }
+
+        return background_windows[monitor_index].get_background_clone ();
+    }
+
     public bool is_positioned_window (Meta.Window window) {
         bool positioned = (window in centered_windows) || (window in windows);
         window.foreach_ancestor ((ancestor) => {
@@ -257,6 +306,15 @@ public class Gala.ShellClientsManager : Object {
 
                 case "centered":
                     make_centered (window);
+                    break;
+
+                case "monitor-index":
+                    int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
+                    if (int.try_parse (val, out parsed)) {
+                        make_background (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as monitor index", val);
+                    }
                     break;
 
                 default:
