@@ -10,6 +10,8 @@
  * with easing without a gesture. Respects the enable animation setting.
  */
 public class Gala.GesturePropertyTransition : Object {
+    public delegate void DoneCallback ();
+
     /**
      * Emitted when all animations are finished that is when the property has reached the target value
      * either via gesture or via easing or combined.
@@ -74,9 +76,19 @@ public class Gala.GesturePropertyTransition : Object {
      * it will connect to the gesture trackers signals and animate according to the input finishing with an easing
      * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
      * #this will keep itself alive until the animation finishes so it is safe to immediatly unref it after creation and calling start.
+     *
+     * @param done_callback a callback for when the transition finishes. It is guaranteed to be called exactly once.
      */
-    public void start (bool with_gesture) {
+    public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
         ref ();
+
+        if (done_callback != null) {
+            ulong done_callback_handler = 0;
+            done_callback_handler = done.connect (() => {
+                done_callback ();
+                disconnect (done_callback_handler);
+            });
+        }
 
         Value current_value = {};
         actor.get_property (property, ref current_value);

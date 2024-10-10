@@ -644,12 +644,10 @@ namespace Gala {
             }
 
             new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, 0f, dest).start (switch_workspace_with_gesture);
-            var transition = new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, 0f, dest);
-            transition.done.connect (() => {
+            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, 0f, dest).start (switch_workspace_with_gesture, () => {
                 switch_workspace_animation_finished (direction, false, true);
                 animating_switch_workspace = false;
             });
-            transition.start (switch_workspace_with_gesture);
         }
 
         private void update_input_area () {

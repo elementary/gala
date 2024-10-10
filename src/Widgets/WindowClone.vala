@@ -291,9 +291,7 @@ public class Gala.WindowClone : Clutter.Actor {
         new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start (with_gesture);
-        var opacity_transition = new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u);
-        opacity_transition.start (with_gesture);
-        opacity_transition.done.connect (() => {
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (with_gesture, () => {
             in_slot_animation = false;
             place_widgets (outer_rect.width, outer_rect.height, target_scale);
         });
@@ -364,9 +362,7 @@ public class Gala.WindowClone : Clutter.Actor {
         new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
-        var opacity_transition = new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u);
-        opacity_transition.start (with_gesture);
-        opacity_transition.done.connect (() => {
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
             in_slot_animation = false;
             place_widgets (rect.width, rect.height, scale);
         });
