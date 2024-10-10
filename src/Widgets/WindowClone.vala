@@ -434,11 +434,6 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    /**
-     * Except for the texture clone and the highlight all children are placed
-     * according to their given allocations. The first two are placed in a way
-     * that compensates for invisible borders of the texture.
-     */
     public override void allocate (Clutter.ActorBox box) {
         var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
         var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
@@ -453,23 +448,12 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone.set_scale (scale_factor, scale_factor);
+
+        // Compensate for invisible borders of the texture
         clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
                             (input_rect.y - outer_rect.y) * scale_factor);
 
         base.allocate (box);
-
-        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
-        float window_title_height, window_title_nat_width;
-        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
-
-        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
-
-        float window_title_x = (box.get_width () - window_title_width) / 2;
-        float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
-
-        var window_title_alloc = Clutter.ActorBox ();
-        window_title_alloc.init_rect (window_title_x, window_title_y, window_title_width, window_title_height);
-        window_title.allocate (window_title_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -488,6 +472,19 @@ public class Gala.WindowClone : Clutter.Actor {
         var close_button_alloc = Clutter.ActorBox ();
         close_button_alloc.init_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
         close_button.allocate (close_button_alloc);
+
+        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
+        float window_title_height, window_title_nat_width;
+        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+
+        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
+
+        float window_title_x = (box.get_width () - window_title_width) / 2;
+        float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+
+        var window_title_alloc = Clutter.ActorBox ();
+        window_title_alloc.init_rect (window_title_x, window_title_y, window_title_width, window_title_height);
+        window_title.allocate (window_title_alloc);
     }
 
 #if HAS_MUTTER45
