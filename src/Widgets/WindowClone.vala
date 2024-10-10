@@ -9,7 +9,6 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : Clutter.Actor {
-    private const int CLOSE_WINDOW_ICON_SIZE = 36;
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -144,6 +143,9 @@ public class Gala.WindowClone : Clutter.Actor {
         reallocate ();
 
         load_clone ();
+
+        window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
+        window_title.set_text (window.get_title () ?? "");
     }
 
     ~WindowClone () {
@@ -288,7 +290,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         active = false;
         in_slot_animation = true;
-        place_widgets (outer_rect.width, outer_rect.height, initial_scale);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var x = GestureTracker.animation_value (initial_x, target_x, percentage);
@@ -303,7 +304,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
             window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
-            place_widgets ((int)width, (int)height, scale);
 
             shadow_opacity = (uint8) opacity;
         };
@@ -343,11 +343,9 @@ public class Gala.WindowClone : Clutter.Actor {
             if (transition != null) {
                 transition.completed.connect (() => {
                     in_slot_animation = false;
-                    place_widgets (outer_rect.width, outer_rect.height, target_scale);
                 });
             } else {
                 in_slot_animation = false;
-                place_widgets (outer_rect.width, outer_rect.height, target_scale);
             }
         };
 
@@ -377,7 +375,6 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
 
         in_slot_animation = true;
-        place_widgets (rect.width, rect.height, scale);
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var x = GestureTracker.animation_value (initial_x, rect.x, percentage);
@@ -424,11 +421,9 @@ public class Gala.WindowClone : Clutter.Actor {
             if (transition != null) {
                 transition.completed.connect (() => {
                     in_slot_animation = false;
-                    place_widgets (rect.width, rect.height, scale);
                 });
             } else {
                 in_slot_animation = false;
-                place_widgets (rect.width, rect.height, scale);
             }
         };
 
@@ -445,11 +440,29 @@ public class Gala.WindowClone : Clutter.Actor {
      * that compensates for invisible borders of the texture.
      */
     public override void allocate (Clutter.ActorBox box) {
-        base.allocate (box);
-
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = width / outer_rect.width;
+
+        if (clone == null || (drag_action != null && drag_action.dragging)) {
+            base.allocate (box);
+            return;
+        }
+
+        clone.set_scale (scale_factor, scale_factor);
+        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
+                            (input_rect.y - outer_rect.y) * scale_factor);
+
+        var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
+        var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
+
+        window_title.set_max_width (box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
+
+        var x = (int)Math.round ((box.get_width () - window_title.width) / 2);
+        var y = (int)Math.round (box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title.height / 2) - InternalUtils.scale_to_int (18, monitor_scale));
+        window_title.set_position (x, y);
+
+        base.allocate (box);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -459,13 +472,15 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         active_shape.allocate (shape_alloc);
 
-        if (clone == null || (drag_action != null && drag_action.dragging)) {
-            return;
-        }
+        float close_button_width, close_button_height;
+        close_button.get_preferred_size (null, null, out close_button_width, out close_button_height);
 
-        clone.set_scale (scale_factor, scale_factor);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
-                            (input_rect.y - outer_rect.y) * scale_factor);
+        var close_button_x = is_close_button_on_left () ?
+            -close_button_width * 0.5f : box.get_width () - close_button_width * 0.5f;
+
+        var close_button_alloc = Clutter.ActorBox ();
+        close_button_alloc.init_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
+        close_button.allocate (close_button_alloc);
     }
 
 #if HAS_MUTTER45
@@ -522,28 +537,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.restore_easing_state ();
 
         return Clutter.EVENT_PROPAGATE;
-    }
-
-    /**
-     * Place the widgets, that is the close button and the WindowIcon of the window,
-     * at their positions inside the actor for a given width and height.
-     */
-    public void place_widgets (int dest_width, int dest_height, float scale_factor) {
-        var close_button_size = InternalUtils.scale_to_int (CLOSE_WINDOW_ICON_SIZE, scale_factor);
-        close_button.set_size (close_button_size, close_button_size);
-
-        close_button.y = -close_button.height * 0.33f;
-        close_button.x = is_close_button_on_left () ?
-            -close_button.width * 0.5f :
-            dest_width - close_button.width * 0.5f;
-
-        bool show = has_pointer && !in_slot_animation;
-        close_button.opacity = show ? 255 : 0;
-        window_title.opacity = close_button.opacity;
-
-        window_title.set_text (window.get_title () ?? "");
-        window_title.set_max_width (dest_width - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, scale_factor));
-        set_window_title_position (dest_width, dest_height, scale_factor);
     }
 
     private void toggle_shadow (bool show) {
@@ -844,12 +837,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         window_icon.set_size (size, size);
         window_icon.set_position (x, y);
-    }
-
-    private void set_window_title_position (float window_width, float window_height, float scale_factor) {
-        var x = (int)Math.round ((window_width - window_title.width) / 2);
-        var y = (int)Math.round (window_height - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, scale_factor) * 0.75f - (window_title.height / 2) - InternalUtils.scale_to_int (18, scale_factor));
-        window_title.set_position (x, y);
     }
 
     private static bool is_close_button_on_left () {
