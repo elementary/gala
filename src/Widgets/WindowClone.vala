@@ -437,31 +437,34 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public override void allocate (Clutter.ActorBox box) {
-        var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
-        var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
-
-        var input_rect = window.get_buffer_rect ();
-        var outer_rect = window.get_frame_rect ();
-        var scale_factor = width / outer_rect.width;
+        base.allocate (box);
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
-            base.allocate (box);
             return;
         }
 
-        clone.set_scale (scale_factor, scale_factor);
+        var input_rect = window.get_buffer_rect ();
+        var outer_rect = window.get_frame_rect ();
+        var clone_scale_factor = width / outer_rect.width;
+
+        clone.set_scale (clone_scale_factor, clone_scale_factor);
+
+        float clone_width, clone_height;
+        clone.get_preferred_size (null, null, out clone_width, out clone_height);
 
         // Compensate for invisible borders of the texture
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
-                            (input_rect.y - outer_rect.y) * scale_factor);
+        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
+        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
 
-        base.allocate (box);
+        var clone_alloc = Clutter.ActorBox ();
+        clone_alloc.init_rect (clone_x, clone_y, clone_width, clone_height);
+        clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
             -ACTIVE_SHAPE_SIZE,
-            outer_rect.width * scale_factor + ACTIVE_SHAPE_SIZE,
-            outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
+            box.get_width () + ACTIVE_SHAPE_SIZE,
+            box.get_height () + ACTIVE_SHAPE_SIZE
         };
         active_shape.allocate (shape_alloc);
 
@@ -474,6 +477,9 @@ public class Gala.WindowClone : Clutter.Actor {
         var close_button_alloc = Clutter.ActorBox ();
         close_button_alloc.init_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
         close_button.allocate (close_button_alloc);
+
+        var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
+        var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
 
         float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
         float window_title_height, window_title_nat_width;
