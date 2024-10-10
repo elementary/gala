@@ -485,7 +485,7 @@ public class Gala.WindowClone : Clutter.Actor {
         float window_title_height, window_title_nat_width;
         window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
 
-        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
+        var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
         float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
