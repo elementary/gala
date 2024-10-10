@@ -440,6 +440,9 @@ public class Gala.WindowClone : Clutter.Actor {
      * that compensates for invisible borders of the texture.
      */
     public override void allocate (Clutter.ActorBox box) {
+        var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
+        var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
+
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
         var scale_factor = width / outer_rect.width;
@@ -453,16 +456,20 @@ public class Gala.WindowClone : Clutter.Actor {
         clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
                             (input_rect.y - outer_rect.y) * scale_factor);
 
-        var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
-        var monitor_scale = wm.get_display ().get_monitor_scale (monitor_index);
-
-        window_title.set_max_width (box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
-
-        var x = (int)Math.round ((box.get_width () - window_title.width) / 2);
-        var y = (int)Math.round (box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title.height / 2) - InternalUtils.scale_to_int (18, monitor_scale));
-        window_title.set_position (x, y);
-
         base.allocate (box);
+
+        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
+        float window_title_height, window_title_nat_width;
+        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+
+        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
+
+        float window_title_x = (box.get_width () - window_title_width) / 2;
+        float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+
+        var window_title_alloc = Clutter.ActorBox ();
+        window_title_alloc.init_rect (window_title_x, window_title_y, window_title_width, window_title_height);
+        window_title.allocate (window_title_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
