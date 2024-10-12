@@ -9,47 +9,20 @@ public class Gala.CenteredWindow : Object {
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
-    private uint idle_move_id = 0;
+    private WindowPositioner window_positioner;
 
     public CenteredWindow (WindowManager wm, Meta.Window window) {
         Object (wm: wm, window: window);
     }
 
     construct {
-        window.size_changed.connect (position_window);
-        window.stick ();
+        window_positioner = new WindowPositioner (window, wm, (ref x, ref y) => {
+            unowned var display = wm.get_display ();
+            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+            var window_rect = window.get_frame_rect ();
 
-        var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => position_window ());
-
-        position_window ();
-
-        window.shown.connect (() => window.focus (wm.get_display ().get_current_time ()));
-
-        window.unmanaging.connect (() => {
-            if (idle_move_id != 0) {
-                Source.remove (idle_move_id);
-            }
-        });
-    }
-
-    private void position_window () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var window_rect = window.get_frame_rect ();
-
-        var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
-        var y = monitor_geom.y + (monitor_geom.height - window_rect.height) / 2;
-
-        if (idle_move_id != 0) {
-            Source.remove (idle_move_id);
-        }
-
-        idle_move_id = Idle.add (() => {
-            window.move_frame (false, x, y);
-
-            idle_move_id = 0;
-            return Source.REMOVE;
+            x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
+            y = monitor_geom.y + (monitor_geom.height - window_rect.height) / 2;
         });
     }
 }
