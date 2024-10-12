@@ -18,7 +18,7 @@ public class Gala.WindowPositioner : Object {
     public WindowPositioner (Meta.Window window, WindowManager wm, owned PositionFunc position_func) {
         Object (window: window, wm: wm);
 
-        this.position_func = position_func;
+        this.position_func = (owned) position_func;
     }
 
     construct {

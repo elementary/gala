@@ -25,9 +25,8 @@ public class Gala.ShellClientsManager : Object {
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
-    private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
-    private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_labels = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -145,18 +144,18 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
-        if (window in windows) {
-            windows[window].update_anchor (side);
+        if (window in panel_windows) {
+            panel_windows[window].update_anchor (side);
             return;
         }
 
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, side);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
-        window.unmanaging.connect_after (() => windows.remove (window));
+        window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
     }
 
     /**
@@ -167,50 +166,65 @@ public class Gala.ShellClientsManager : Object {
      * TODO: Maybe use for strut only?
      */
     public void set_size (Meta.Window window, int width, int height) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before size.");
             return;
         }
 
-        windows[window].set_size (width, height);
+        panel_windows[window].set_size (width, height);
     }
 
     public void set_hide_mode (Meta.Window window, Pantheon.Desktop.HideMode hide_mode) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before hide mode.");
             return;
         }
 
-        windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].set_hide_mode (hide_mode);
     }
 
-    public void make_centered (Meta.Window window) {
-        if (window in centered_windows) {
-            return;
-        }
+    public void make_centered (Meta.Window window) requires (!is_positioned_window (window)) {
+        positioned_windows[window] = new WindowPositioner (window, wm, (ref x, ref y) => {
+            unowned var display = wm.get_display ();
+            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+            var window_rect = window.get_frame_rect ();
 
-        centered_windows[window] = new CenteredWindow (wm, window);
+            x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
+            y = monitor_geom.y + (monitor_geom.height - window_rect.height) / 2;
+        });
 
-        window.unmanaging.connect_after (() => centered_windows.remove (window));
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
     public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_positioned_window (window)) {
-        unowned var display = wm.get_display ();
-
-        if (monitor_index < 0 || monitor_index > display.get_n_monitors ()) {
+        if (monitor_index < 0 || monitor_index > wm.get_display ().get_n_monitors ()) {
             warning ("Invalid monitor index provided: %d", monitor_index);
             return;
         }
 
-        monitor_labels[window] = new MonitorLabelWindow (wm, window, monitor_index);
+        window.make_above ();
 
-        window.unmanaging.connect_after ((_window) => monitor_labels.remove (_window));
+        positioned_windows[window] = new WindowPositioner (window, wm, (ref x, ref y) => {
+            unowned var display = wm.get_display ();
+
+            if (monitor_index >= display.get_n_monitors ()) {
+                critical ("Monitor index %d of monitor label window %s went out of bounds", monitor_index, window.title ?? "Unnamed");
+                return;
+            }
+
+            var monitor_geom = display.get_monitor_geometry (monitor_index);
+
+            x = monitor_geom.x + 12;
+            y = monitor_geom.y + 12;
+        });
+
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
     public bool is_positioned_window (Meta.Window window) {
-        bool positioned = (window in centered_windows) || (window in windows) || (window in monitor_labels);
+        bool positioned = (window in positioned_windows) || (window in panel_windows);
         window.foreach_ancestor ((ancestor) => {
-            if (ancestor in centered_windows || ancestor in windows) {
+            if (ancestor in positioned_windows || ancestor in panel_windows) {
                 positioned = true;
             }
 
