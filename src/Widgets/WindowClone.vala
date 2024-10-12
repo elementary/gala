@@ -456,8 +456,7 @@ public class Gala.WindowClone : Clutter.Actor {
         float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
         float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
 
-        var clone_alloc = Clutter.ActorBox ();
-        clone_alloc.init_rect (clone_x, clone_y, clone_width, clone_height);
+        var clone_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, clone_width, clone_height);
         clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
@@ -466,6 +465,7 @@ public class Gala.WindowClone : Clutter.Actor {
             box.get_width () + ACTIVE_SHAPE_SIZE,
             box.get_height () + ACTIVE_SHAPE_SIZE
         };
+        Clutter.ActorBox.clamp_to_pixel (ref shape_alloc);
         active_shape.allocate (shape_alloc);
 
         float close_button_width, close_button_height;
@@ -474,8 +474,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var close_button_x = is_close_button_on_left () ?
             -close_button_width * 0.5f : box.get_width () - close_button_width * 0.5f;
 
-        var close_button_alloc = Clutter.ActorBox ();
-        close_button_alloc.init_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
+        var close_button_alloc = InternalUtils.actor_box_from_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
         close_button.allocate (close_button_alloc);
 
         var monitor_index = wm.get_display ().get_monitor_index_for_rect ({ (int) box.get_x (), (int) box.get_y (), (int) box.get_width (), (int) box.get_height ()});
@@ -490,8 +489,7 @@ public class Gala.WindowClone : Clutter.Actor {
         float window_title_x = (box.get_width () - window_title_width) / 2;
         float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
 
-        var window_title_alloc = Clutter.ActorBox ();
-        window_title_alloc.init_rect (window_title_x, window_title_y, window_title_width, window_title_height);
+        var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
     }
 
