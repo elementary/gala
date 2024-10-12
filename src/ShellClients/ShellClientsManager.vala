@@ -183,7 +183,7 @@ public class Gala.ShellClientsManager : Object {
         panel_windows[window].set_hide_mode (hide_mode);
     }
 
-    public void make_centered (Meta.Window window) requires (!is_positioned_window (window)) {
+    public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
         positioned_windows[window] = new WindowPositioner (window, wm, (ref x, ref y) => {
             unowned var display = wm.get_display ();
             var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
@@ -196,7 +196,7 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_positioned_window (window)) {
+    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_itself_positioned (window)) {
         if (monitor_index < 0 || monitor_index > wm.get_display ().get_n_monitors ()) {
             warning ("Invalid monitor index provided: %d", monitor_index);
             return;
@@ -221,8 +221,12 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
+    private bool is_itself_positioned (Meta.Window window) {
+        return (window in positioned_windows) || (window in panel_windows);
+    }
+
     public bool is_positioned_window (Meta.Window window) {
-        bool positioned = (window in positioned_windows) || (window in panel_windows);
+        bool positioned = is_itself_positioned (window);
         window.foreach_ancestor ((ancestor) => {
             if (ancestor in positioned_windows || ancestor in panel_windows) {
                 positioned = true;
