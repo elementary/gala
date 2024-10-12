@@ -27,6 +27,7 @@ public class Gala.ShellClientsManager : Object {
 
     private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
+    private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_labels = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -193,27 +194,21 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after (() => centered_windows.remove (window));
     }
 
-    public void make_monitor_label (Meta.Window window, int monitor_index) {
+    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_positioned_window (window)) {
         unowned var display = wm.get_display ();
 
         if (monitor_index < 0 || monitor_index > display.get_n_monitors ()) {
-            warning ("Invalid moitor index provided: %d", monitor_index);
+            warning ("Invalid monitor index provided: %d", monitor_index);
             return;
         }
 
-        window.make_above ();
+        monitor_labels[window] = new MonitorLabelWindow (wm, window, monitor_index);
 
-        var monitor_geometry = display.get_monitor_geometry (monitor_index);
-
-        ulong handler_id = 0;
-        handler_id = window.shown.connect (() => {
-            window.move_frame (false, monitor_geometry.x + 12, monitor_geometry.y + 12);
-            window.disconnect (handler_id);
-        });
+        window.unmanaging.connect_after ((_window) => monitor_labels.remove (_window));
     }
 
     public bool is_positioned_window (Meta.Window window) {
-        bool positioned = (window in centered_windows) || (window in windows);
+        bool positioned = (window in centered_windows) || (window in windows) || (window in monitor_labels);
         window.foreach_ancestor ((ancestor) => {
             if (ancestor in centered_windows || ancestor in windows) {
                 positioned = true;
