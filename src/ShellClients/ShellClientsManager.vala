@@ -204,7 +204,7 @@ public class Gala.ShellClientsManager : Object {
     public bool is_positioned_window (Meta.Window window) {
         bool positioned = is_itself_positioned (window);
         window.foreach_ancestor ((ancestor) => {
-            if (ancestor in positioned_windows || ancestor in panel_windows) {
+            if (is_itself_positioned (ancestor)) {
                 positioned = true;
             }
 
