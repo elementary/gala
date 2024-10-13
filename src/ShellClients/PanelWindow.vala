@@ -209,7 +209,6 @@ public class Gala.PanelWindow : Object {
     private void setup_barrier () {
         var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
 
         switch (anchor) {
             case TOP:
