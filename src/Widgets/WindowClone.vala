@@ -190,10 +190,10 @@ public class Gala.WindowClone : Clutter.Actor {
     private void load_clone (bool was_waiting = false) {
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null)
-                    load_clone (true);
-                return Source.REMOVE;
+            ulong shown_handler = 0;
+            shown_handler = window.shown.connect (() => {
+                load_clone (true);
+                window.disconnect (shown_handler);
             });
 
             return;
