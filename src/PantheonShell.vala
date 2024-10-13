@@ -68,6 +68,7 @@ namespace Gala {
             destroy_extended_behavior_surface,
             set_keep_above,
             make_centered,
+            make_modal,
             focus_extended_behavior,
         };
 
@@ -357,6 +358,23 @@ namespace Gala {
         }
 
         ShellClientsManager.get_instance ().make_centered (window);
+    }
+
+    internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            warning ("Window tried to make modal but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to make modal but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_modal (window, dim == 1);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {
