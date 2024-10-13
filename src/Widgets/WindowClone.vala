@@ -117,7 +117,7 @@ public class Gala.WindowClone : Clutter.Actor {
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
-                actor_clicked (action.get_button ());
+                actor_clicked (action.get_button (), CONTROL_MASK in action.get_state ());
             });
 
             add_action (click_action);
@@ -612,13 +612,17 @@ public class Gala.WindowClone : Clutter.Actor {
         destroy ();
     }
 
-    private void actor_clicked (uint32 button) {
+    private void actor_clicked (uint32 button, bool control_modifier) {
         switch (button) {
             case Clutter.Button.PRIMARY:
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window (wm.get_display ().get_current_time ());
+                if (control_modifier) {
+                    window.kill ();
+                } else {
+                    close_window (wm.get_display ().get_current_time ());
+                }
                 break;
         }
     }
