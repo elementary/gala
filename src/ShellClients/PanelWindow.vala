@@ -6,8 +6,6 @@
  */
 
 public class Gala.PanelWindow : Object {
-    private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
-
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
@@ -212,15 +210,14 @@ public class Gala.PanelWindow : Object {
         var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
-        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
 
         switch (anchor) {
             case TOP:
-                setup_barrier_top (monitor_geom, offset);
+                setup_barrier_top (monitor_geom);
                 break;
 
             case BOTTOM:
-                setup_barrier_bottom (monitor_geom, offset);
+                setup_barrier_bottom (monitor_geom);
                 break;
 
             default:
@@ -230,15 +227,15 @@ public class Gala.PanelWindow : Object {
     }
 
 #if HAS_MUTTER45
-    private void setup_barrier_top (Mtk.Rectangle monitor_geom, int offset) {
+    private void setup_barrier_top (Mtk.Rectangle monitor_geom) {
 #else
-    private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
+    private void setup_barrier_top (Meta.Rectangle monitor_geom) {
 #endif
         barrier = new Barrier (
             wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
+            monitor_geom.x,
             monitor_geom.y,
-            monitor_geom.x + monitor_geom.width - offset,
+            monitor_geom.x + monitor_geom.width,
             monitor_geom.y,
             POSITIVE_Y,
             0,
@@ -251,15 +248,15 @@ public class Gala.PanelWindow : Object {
     }
 
 #if HAS_MUTTER45
-    private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
+    private void setup_barrier_bottom (Mtk.Rectangle monitor_geom) {
 #else
-    private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
+    private void setup_barrier_bottom (Meta.Rectangle monitor_geom) {
 #endif
         barrier = new Barrier (
             wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
+            monitor_geom.x,
             monitor_geom.y + monitor_geom.height,
-            monitor_geom.x + monitor_geom.width - offset,
+            monitor_geom.x + monitor_geom.width,
             monitor_geom.y + monitor_geom.height,
             NEGATIVE_Y,
             0,
