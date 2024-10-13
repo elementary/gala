@@ -175,10 +175,12 @@ public class Gala.HideTracker : Object {
     }
 
     private void toggle_display (bool should_hide) {
+        unowned var window_actor = (Meta.WindowActor ) panel.window.get_compositor_private ();
+
 #if HAS_MUTTER45
-        hovered = panel.window.has_pointer ();
+        hovered = panel.window.has_pointer () && window_actor.visible;
 #else
-        hovered = window_has_pointer ();
+        hovered = window_has_pointer () && window_actor.visible;
 #endif
 
         if (should_hide && !hovered) {
