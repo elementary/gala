@@ -114,6 +114,9 @@ namespace Gala {
             var height = InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
             var backdrop_opacity_int = (uint8) (BACKDROP_ABSOLUTE_OPACITY * backdrop_opacity);
 
+#if HAS_MUTTER47
+//FIXME: TODO!
+#else
             Cogl.VertexP2T2C4 vertices[4];
             vertices[0] = { x, y + height, 0, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
@@ -123,6 +126,7 @@ namespace Gala {
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
             var pipeline = new Cogl.Pipeline (context.get_framebuffer ().get_context ());
             primitive.draw (context.get_framebuffer (), pipeline);
+#endif
             base.paint (context);
         }
 
