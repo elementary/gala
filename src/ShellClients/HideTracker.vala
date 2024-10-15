@@ -15,6 +15,8 @@ public class Gala.HideTracker : Object {
     public unowned PanelWindow panel { get; construct; }
     public Pantheon.Desktop.HideMode hide_mode { get; set; default = NEVER; }
 
+    private Clutter.PanAction pan_action;
+
     private bool hovered = false;
 
     private bool overlap = false;
@@ -60,6 +62,15 @@ public class Gala.HideTracker : Object {
         });
 
         display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
+
+        pan_action = new Clutter.PanAction () {
+            n_touch_points = 1,
+            pan_axis = X_AXIS
+        };
+        pan_action.gesture_begin.connect (check_valid_gesture);
+        pan_action.pan.connect (on_pan);
+
+        display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
     }
 
     //Can be removed with mutter > 45
@@ -184,7 +195,7 @@ public class Gala.HideTracker : Object {
         hovered = window_has_pointer () && window_actor.visible;
 #endif
 
-        if (should_hide && !hovered) {
+        if (should_hide && !hovered && !panel.window.has_focus ()) {
             // Don't hide if we have transients, e.g. an open popover, dialog, etc.
             var has_transients = false;
             panel.window.foreach_transient (() => {
@@ -200,5 +211,34 @@ public class Gala.HideTracker : Object {
         } else {
             show ();
         }
+    }
+
+    private bool check_valid_gesture () {
+        if (panel.anchor != BOTTOM) {
+            debug ("Swipe to reveal is currently only supported for bottom anchors");
+            return false;
+        }
+
+        float y;
+        pan_action.get_press_coords (0, null, out y);
+
+        var monitor_geom = display.get_monitor_geometry (panel.window.get_monitor ());
+        if ((y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool on_pan () {
+        float delta_y;
+        pan_action.get_motion_delta (0, null, out delta_y);
+
+        if (delta_y < 0) { // Only allow swipes upwards
+            panel.window.focus (pan_action.get_last_event (0).get_time ());
+            show ();
+        }
+
+        return false;
     }
 }
