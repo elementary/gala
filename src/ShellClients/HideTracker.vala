@@ -177,6 +177,7 @@ public class Gala.HideTracker : Object {
     private void toggle_display (bool should_hide) {
         unowned var window_actor = (Meta.WindowActor) panel.window.get_compositor_private ();
 
+        // Window actor receives pointer events while hidden on X11: https://github.com/elementary/gala/issues/2083
 #if HAS_MUTTER45
         hovered = panel.window.has_pointer () && window_actor.visible;
 #else
