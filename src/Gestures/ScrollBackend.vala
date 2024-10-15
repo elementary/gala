@@ -26,7 +26,7 @@ public class Gala.ScrollBackend : Object {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);

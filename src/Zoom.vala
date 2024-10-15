@@ -61,18 +61,21 @@ public class Gala.Zoom : Object {
         zoom (-SHORTCUT_DELTA, true, wm.enable_animations);
     }
 
-    private void on_gesture_detected (Gesture gesture) {
+    private bool on_gesture_detected (Gesture gesture) {
         if (gesture.type != Clutter.EventType.TOUCHPAD_PINCH ||
             (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
         ) {
-            return;
+            return false;
         }
 
         if ((gesture.fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
             (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
         ) {
             zoom_with_gesture (gesture.direction);
+            return true;
         }
+
+        return false;
     }
 
     private void zoom_with_gesture (GestureDirection direction) {

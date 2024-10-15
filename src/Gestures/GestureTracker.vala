@@ -71,8 +71,10 @@ public class Gala.GestureTracker : Object {
      * If the receiving code needs to handle this gesture, it should call to connect_handlers to
      * start receiving updates.
      * @param gesture Information about the gesture.
+     * @return true if the gesture will be handled false otherwise. If false is returned the other
+     * signals may still be emitted but aren't guaranteed to be.
      */
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -99,6 +101,11 @@ public class Gala.GestureTracker : Object {
      * Backend used if enable_touchpad is called.
      */
     private ToucheggBackend touchpad_backend;
+
+    /**
+     * Pan backend used if enable_pan is called.
+     */
+    private PanBackend pan_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -135,6 +142,18 @@ public class Gala.GestureTracker : Object {
         touchpad_backend.on_begin.connect (gesture_begin);
         touchpad_backend.on_update.connect (gesture_update);
         touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    /**
+     * Allow to receive pan gestures.
+     * @param actor Clutter actor that will receive the events.
+     */
+    public void enable_pan (Clutter.Actor actor) {
+        pan_backend = new PanBackend (actor);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     /**
@@ -201,10 +220,12 @@ public class Gala.GestureTracker : Object {
         return value;
     }
 
-    private void gesture_detected (Gesture gesture) {
+    private bool gesture_detected (Gesture gesture) {
         if (enabled) {
-            on_gesture_detected (gesture);
+            return on_gesture_detected (gesture);
         }
+
+        return false;
     }
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {

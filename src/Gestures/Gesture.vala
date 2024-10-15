@@ -39,5 +39,7 @@ namespace Gala {
         public GestureDirection direction;
         public int fingers;
         public Clutter.InputDeviceType performed_on_device_type;
+        public float start_x;
+        public float start_y;
     }
 }
