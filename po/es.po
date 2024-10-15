@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
+"POT-Creation-Date: 2024-10-15 19:33+0000\n"
 "PO-Revision-Date: 2024-09-18 12:00+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
-"\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,41 +109,41 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
 msgid "Improvements:"
 msgstr "Mejoras:"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
+msgid "Updated translations"
+msgstr "Traducciones actualizadas"
+
+#: data/gala.metainfo.xml.in:49
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Se corrigió una posible falla grave al mover ventanas entre espacios de "
 "trabajo"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:50
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Se corrigió la animación de las notificaciones al entrar a la Vista "
 "Multitarea"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
-msgid "Updated translations"
-msgstr "Traducciones actualizadas"
-
-#: data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Se mejoró la navegación con el teclado en la Vista Multitarea"
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:66
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Ahora se cambia el color del panel al mismo tiempo que cuando se atenúa el "
 "fondo de escritorio"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:106
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -151,23 +151,23 @@ msgstr ""
 "Al cambiar el fondo de escritorio o poner en reposo el escritorio, ahora "
 "respeta la opción «Reducir el movimiento»"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:107
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Se usan los iconos de puntero apropiados para las acciones de arrastrar y "
 "soltar"
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:108
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Se corrigió un problema donde los gestos en la Vista Multitarea podrían "
 "dejar de funcionar"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:109
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Se mejoraron las áreas de trabajo dinámicas con múltiples monitores"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Se mejoró el funcionamiento del atajo de «mover al área de trabajo»"
 
@@ -194,7 +194,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "La ventana ya está enfocada"
 
