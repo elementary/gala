@@ -21,10 +21,12 @@
  */
 public class Gala.GestureSettings : Object {
     private static GLib.Settings gala_settings;
+    private static GLib.Settings animation_settings;
     private static GLib.Settings touchpad_settings;
 
     static construct {
         gala_settings = new GLib.Settings ("io.elementary.desktop.wm.gestures");
+        animation_settings = new GLib.Settings ("io.elementary.desktop.wm.animations");
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
     }
 
@@ -32,6 +34,10 @@ public class Gala.GestureSettings : Object {
         return (device_type == Clutter.InputDeviceType.TOUCHSCREEN_DEVICE)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
+    }
+
+    public bool is_animation_enabled () {
+        return animation_settings.get_boolean ("enable-animations");
     }
 
     public Meta.MotionDirection? get_direction (Gesture gesture) {
