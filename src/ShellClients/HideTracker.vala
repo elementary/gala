@@ -9,11 +9,13 @@ public class Gala.HideTracker : Object {
     private const uint UPDATE_TIMEOUT = 200;
 
     public signal void hide ();
-    public signal void show ();
+    public signal void show (GestureTracker? with_gesture_tracker);
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
     public Pantheon.Desktop.HideMode hide_mode { get; set; default = NEVER; }
+
+    private GestureTracker gesture_tracker;
 
     private bool hovered = false;
 
@@ -60,6 +62,12 @@ public class Gala.HideTracker : Object {
         });
 
         display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
+
+        var size = new Utils.Size.actor_tracking ((Clutter.Actor) panel.window.get_compositor_private ());
+
+        gesture_tracker = new GestureTracker (PanelClone.ANIMATION_DURATION, PanelClone.ANIMATION_DURATION);
+        gesture_tracker.enable_pan (display.get_stage (), size);
+        gesture_tracker.on_gesture_detected.connect (check_valid_gesture);
     }
 
     //Can be removed with mutter > 45
@@ -181,7 +189,7 @@ public class Gala.HideTracker : Object {
         hovered = window_has_pointer ();
 #endif
 
-        if (should_hide && !hovered) {
+        if (should_hide && !hovered && !panel.window.has_focus ()) {
             // Don't hide if we have transients, e.g. an open popover, dialog, etc.
             var has_transients = false;
             panel.window.foreach_transient (() => {
@@ -195,7 +203,24 @@ public class Gala.HideTracker : Object {
 
             hide ();
         } else {
-            show ();
+            show (null);
         }
+    }
+
+    private bool check_valid_gesture (Gesture gesture) {
+        warning ("DETECTED");
+        if (panel.anchor != BOTTOM) {
+            debug ("Swipe to reveal is currently only supported for bottom anchors");
+            return false;
+        }
+
+        var monitor_geom = display.get_monitor_geometry (panel.window.get_monitor ());
+        if ((gesture.origin_y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
+            show (gesture_tracker);
+            panel.window.focus (Gdk.CURRENT_TIME);
+            return true;
+        }
+
+        return false;
     }
 }

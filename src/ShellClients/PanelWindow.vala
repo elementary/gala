@@ -19,7 +19,7 @@ public class Gala.PanelWindow : Object {
 
     private Barrier? barrier;
 
-    private PanelClone clone;
+    public PanelClone clone;
 
     private uint idle_move_id = 0;
 
@@ -247,7 +247,7 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (clone.show);
+        barrier.trigger.connect (() => clone.show ());
     }
 
 #if HAS_MUTTER45
@@ -268,6 +268,6 @@ public class Gala.PanelWindow : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (clone.show);
+        barrier.trigger.connect (() => clone.show ());
     }
 }

@@ -6,7 +6,7 @@
  */
 
 public class Gala.PanelClone : Object {
-    private const int ANIMATION_DURATION = 250;
+    public const int ANIMATION_DURATION = 250;
 
     public WindowManager wm { get; construct; }
     public unowned PanelWindow panel { get; construct; }
@@ -32,7 +32,7 @@ public class Gala.PanelClone : Object {
 
     public bool panel_hidden { get; private set; default = true; }
 
-    private SafeWindowClone clone;
+    public SafeWindowClone clone;
     private Meta.WindowActor actor;
 
     private HideTracker? hide_tracker;
@@ -111,9 +111,11 @@ public class Gala.PanelClone : Object {
     }
 
     private void hide () {
-        if (panel_hidden) {
+        if (panel_hidden || animating) {
             return;
         }
+
+        animating = true;
 
         panel_hidden = true;
 
@@ -129,25 +131,51 @@ public class Gala.PanelClone : Object {
         clone.set_easing_duration (get_animation_duration ());
         clone.y = calculate_clone_y (true);
         clone.restore_easing_state ();
+
+        animating = false;
     }
 
-    public void show () {
-        if (!panel_hidden) {
+    private bool animating = false;
+    public void show (GestureTracker? with_gesture_tracker = null) {
+        if (!panel_hidden || animating) {
             return;
         }
 
-        var animation_duration = get_animation_duration ();
+        animating = true;
 
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (animation_duration);
-        clone.y = calculate_clone_y (false);
-        clone.restore_easing_state ();
+        var initial_y = clone.y;
+        var target_y = calculate_clone_y (false);
 
-        Timeout.add (animation_duration, () => {
-            clone.visible = false;
-            panel_hidden = false;
-            return Source.REMOVE;
-        });
+        GestureTracker.OnUpdate on_update = (percentage) => {
+            var value = GestureTracker.animation_value (initial_y, target_y, percentage, true);
+            clone.y = value;
+        };
+
+        GestureTracker.OnEnd on_end = (percentage, cancel_action, calculated_duration) => {
+            if (cancel_action) {
+                animating = false;
+                hide ();
+                return;
+            }
+
+            clone.save_easing_state ();
+            clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+            clone.set_easing_duration (calculated_duration);
+            clone.y = calculate_clone_y (false);
+            clone.restore_easing_state ();
+
+            Timeout.add (calculated_duration, () => {
+                clone.visible = false;
+                panel_hidden = false;
+                animating = false;
+                return Source.REMOVE;
+            });
+        };
+
+        if (with_gesture_tracker != null) {
+            with_gesture_tracker.connect_handlers (null, (owned) on_update, (owned) on_end);
+        } else {
+            on_end (1, false, get_animation_duration ());
+        }
     }
 }
