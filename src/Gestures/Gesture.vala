@@ -35,6 +35,8 @@ namespace Gala {
     }
 
     public class Gesture {
+        public const float INVALID_COORD = float.MAX;
+
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;
@@ -42,14 +44,14 @@ namespace Gala {
 
         /**
          * The x coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set.
+         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
          */
-        public float origin_x;
+        public float origin_x = INVALID_COORD;
 
         /**
          * The y coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set.
+         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
          */
-        public float origin_y;
+        public float origin_y = INVALID_COORD;
     }
 }
