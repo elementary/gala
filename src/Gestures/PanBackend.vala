@@ -25,6 +25,13 @@ public class Gala.PanBackend : Object {
     private float origin_x;
     private float origin_y;
 
+    private float current_x;
+    private float current_y;
+
+    private float last_x_coord;
+    private float last_y_coord;
+    private uint last_n_points;
+
     private float travel_distance;
 
     public PanBackend (Clutter.Actor actor, owned GetTravelDistance get_travel_distance_func) {
@@ -54,8 +61,8 @@ public class Gala.PanBackend : Object {
         float x_coord, y_coord;
         pan_action.get_press_coords (0, out x_coord, out y_coord);
 
-        origin_x = x_coord;
-        origin_y = y_coord;
+        origin_x = current_x = x_coord;
+        origin_y = current_y = y_coord;
 
         var handled = on_gesture_detected (build_gesture ());
 
@@ -71,9 +78,9 @@ public class Gala.PanBackend : Object {
     }
 
     private void on_gesture_end () {
-        float x_coord, y_coord;
-        pan_action.get_motion_coords (0, out x_coord, out y_coord);
-        on_end (calculate_percentage (x_coord, y_coord), pan_action.get_last_event (0).get_time ());
+        update_coords ();
+
+        on_end (calculate_percentage (), pan_action.get_last_event (0).get_time ());
 
         direction = GestureDirection.UNKNOWN;
     }
@@ -81,15 +88,28 @@ public class Gala.PanBackend : Object {
     private bool on_pan (Clutter.PanAction pan_action, Clutter.Actor actor, bool interpolate) {
         uint64 time = pan_action.get_last_event (0).get_time ();
 
-        float x_coord, y_coord;
-        pan_action.get_motion_coords (0, out x_coord, out y_coord);
+        update_coords ();
 
-        on_update (calculate_percentage (x_coord, y_coord), time);
+        on_update (calculate_percentage (), time);
 
         return true;
     }
 
-    private double calculate_percentage (float current_x, float current_y) {
+    private void update_coords () {
+        float x, y;
+        pan_action.get_motion_coords (0, out x, out y);
+
+        if (pan_action.get_n_current_points () == last_n_points) {
+            current_x += x - last_x_coord;
+            current_y += y - last_y_coord;
+        }
+
+        last_x_coord = x;
+        last_y_coord = y;
+        last_n_points = pan_action.get_n_current_points ();
+    }
+
+    private double calculate_percentage () {
         float current, origin;
         if (pan_axis == X_AXIS) {
             current = direction == RIGHT ? float.max (current_x, origin_x) : float.min (current_x, origin_x);
