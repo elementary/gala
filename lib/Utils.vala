@@ -40,6 +40,22 @@ namespace Gala {
                 width = actor.width;
                 height = actor.height;
             }
+
+            private Meta.Display? display;
+
+            public Size.primary_monitor_tracking (Meta.Display _display) {
+                display = _display;
+
+                set_size_from_monitor (display, display.get_primary_monitor ());
+                display.get_context ().get_backend ().get_monitor_manager ().monitors_changed.connect (() =>
+                    set_size_from_monitor (display, display.get_primary_monitor ()));
+            }
+
+            public void set_size_from_monitor (Meta.Display display, int monitor_index) {
+                var rect = display.get_monitor_geometry (monitor_index);
+                width = rect.width;
+                height = rect.height;
+            }
         }
 
         private struct CachedIcon {

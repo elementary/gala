@@ -184,6 +184,9 @@ namespace Gala {
             screensaver.active_changed.connect (update_input_area);
 
             stage = display.get_stage () as Clutter.Stage;
+
+            gesture_tracker.enable_pan (stage, new Utils.Size.primary_monitor_tracking (display));
+
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
             stage.background_color = Clutter.Color.from_string (color);
