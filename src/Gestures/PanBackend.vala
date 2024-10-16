@@ -1,3 +1,10 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Authored by: Leonhard Kargl <leo.kargl@proton.me>
+ */
+
 public class Gala.PanBackend : Object {
     public signal bool on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
