@@ -6,13 +6,16 @@
  */
 
 public class Gala.PanBackend : Object {
+    public delegate float GetTravelDistance ();
+
     public signal bool on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);
 
     public Clutter.Actor actor { get; construct; }
-    public Utils.Size? travel_distances { get; construct; }
+
+    private GetTravelDistance get_travel_distance_func;
 
     private Clutter.PanAxis pan_axis;
     private Clutter.PanAction pan_action;
@@ -22,8 +25,12 @@ public class Gala.PanBackend : Object {
     private float origin_x;
     private float origin_y;
 
-    public PanBackend (Clutter.Actor actor, Utils.Size? travel_distances) {
-        Object (actor: actor, travel_distances: travel_distances);
+    private float travel_distance;
+
+    public PanBackend (Clutter.Actor actor, owned GetTravelDistance get_travel_distance_func) {
+        Object (actor: actor);
+
+        this.get_travel_distance_func = (owned) get_travel_distance_func;
     }
 
     construct {
@@ -36,6 +43,11 @@ public class Gala.PanBackend : Object {
         pan_action.gesture_begin.connect (on_gesture_begin);
         pan_action.pan.connect (on_pan);
         pan_action.gesture_end.connect (on_gesture_end);
+        pan_action.gesture_cancel.connect (on_gesture_end);
+    }
+
+    ~PanBackend () {
+        actor.remove_action (pan_action);
     }
 
     private bool on_gesture_begin () {
@@ -50,6 +62,8 @@ public class Gala.PanBackend : Object {
         if (!handled) {
             return false;
         }
+
+        travel_distance = get_travel_distance_func ();
 
         on_begin (0, pan_action.get_last_event (0).get_time ());
 
@@ -76,18 +90,16 @@ public class Gala.PanBackend : Object {
     }
 
     private double calculate_percentage (float current_x, float current_y) {
-        float current, origin, size;
+        float current, origin;
         if (pan_axis == X_AXIS) {
             current = direction == RIGHT ? float.max (current_x, origin_x) : float.min (current_x, origin_x);
             origin = origin_x;
-            size = travel_distances != null ? travel_distances.width : actor.width;
         } else {
             current = direction == DOWN ? float.max (current_y, origin_y) : float.min (current_y, origin_y);
             origin = origin_y;
-            size = travel_distances != null ? travel_distances.height : actor.height;
         }
 
-        return (current - origin).abs () / size;
+        return (current - origin).abs () / travel_distance;
     }
 
     private Gesture build_gesture () {

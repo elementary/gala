@@ -154,8 +154,8 @@ public class Gala.GestureTracker : Object {
      * (height for {@link GestureDirection.UP} or DOWN, width for LEFT or RIGHT). If set to null the size of the
      * actor will be used. If the values change those changes will apply.
      */
-    public void enable_pan (Clutter.Actor actor, Utils.Size? travel_distances) {
-        pan_backend = new PanBackend (actor, travel_distances);
+    public void enable_pan (Clutter.Actor actor, owned PanBackend.GetTravelDistance travel_distance_func) {
+        pan_backend = new PanBackend (actor, (owned) travel_distance_func);
         pan_backend.on_gesture_detected.connect (gesture_detected);
         pan_backend.on_begin.connect ((percentage, time) => {
             gesture_begin (percentage, time);

@@ -185,7 +185,7 @@ namespace Gala {
 
             stage = display.get_stage () as Clutter.Stage;
 
-            gesture_tracker.enable_pan (stage, new Utils.Size.primary_monitor_tracking (display));
+            gesture_tracker.enable_pan (stage, () => InternalUtils.travel_distance_from_primary (get_display (), HORIZONTAL));
 
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
