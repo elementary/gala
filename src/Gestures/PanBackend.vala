@@ -99,7 +99,7 @@ public class Gala.PanBackend : Object {
             type = Clutter.EventType.TOUCHPAD_SWIPE,
             direction = direction,
             fingers = (int) pan_action.get_n_current_points (),
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHSCREEN_DEVICE,
             origin_x = origin_x,
             origin_y = origin_y
         };
