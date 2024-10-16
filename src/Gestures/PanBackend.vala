@@ -50,11 +50,11 @@ public class Gala.PanBackend : Object {
     }
 
     private void on_gesture_end () {
-        direction = GestureDirection.UNKNOWN;
-
         float x_coord, y_coord;
         pan_action.get_motion_coords (0, out x_coord, out y_coord);
         on_end (calculate_percentage (x_coord, y_coord), pan_action.get_last_event (0).get_time ());
+
+        direction = GestureDirection.UNKNOWN;
     }
 
     private bool on_pan (Clutter.PanAction pan_action, Clutter.Actor actor, bool interpolate) {
@@ -71,11 +71,11 @@ public class Gala.PanBackend : Object {
     private double calculate_percentage (float current_x, float current_y) {
         float current, origin, size;
         if (pan_axis == X_AXIS) {
-            current = current_x;
+            current = direction == RIGHT ? float.max (current_x, origin_x) : float.min (current_x, origin_x);
             origin = origin_x;
             size = travel_distances != null ? travel_distances.width : actor.width;
         } else {
-            current = current_y;
+            current = direction == DOWN ? float.max (current_y, origin_y) : float.min (current_y, origin_y);
             origin = origin_y;
             size = travel_distances != null ? travel_distances.height : actor.height;
         }
