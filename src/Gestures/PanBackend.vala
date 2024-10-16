@@ -12,8 +12,8 @@ public class Gala.PanBackend : Object {
 
     private GestureDirection direction;
 
-    private float start_val_x;
-    private float start_val_y;
+    private float origin_x;
+    private float origin_y;
 
     public PanBackend (Clutter.Actor actor) {
         Object (actor: actor);
@@ -35,8 +35,8 @@ public class Gala.PanBackend : Object {
         float x_coord, y_coord;
         pan_action.get_press_coords (0, out x_coord, out y_coord);
 
-        start_val_x = x_coord;
-        start_val_y = y_coord;
+        origin_x = x_coord;
+        origin_y = y_coord;
 
         var handled = on_gesture_detected (build_gesture ());
 
@@ -68,17 +68,17 @@ public class Gala.PanBackend : Object {
         return true;
     }
 
-    private double calculate_percentage (double current_val_x, double current_val_y) {
-        double current_val, start_val;
+    private double calculate_percentage (float current_x, float current_y) {
+        float current, origin;
         if (pan_axis == X_AXIS) {
-            current_val = current_val_x;
-            start_val = start_val_x;
+            current = current_x;
+            origin = origin_x;
         } else {
-            current_val = current_val_y;
-            start_val = start_val_y;
+            current = current_y;
+            origin = origin_y;
         }
 
-        return (current_val - start_val).abs () / actor.get_width ();
+        return (current - origin).abs () / actor.get_width ();
     }
 
     private Gesture build_gesture () {
@@ -98,8 +98,8 @@ public class Gala.PanBackend : Object {
             direction = direction,
             fingers = (int) pan_action.get_n_current_points (),
             performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
-            start_x = start_val_x,
-            start_y = start_val_y
+            origin_x = origin_x,
+            origin_y = origin_y
         };
     }
 }
