@@ -290,24 +290,28 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
-        private void on_multitasking_gesture_detected (Gesture gesture) {
+        private bool on_multitasking_gesture_detected (Gesture gesture) {
             if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
                 (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
                 (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
             ) {
-                return;
+                return false;
             }
 
             if (gesture.direction == GestureDirection.UP && !opened) {
                 toggle (true, false);
+                return true;
             } else if (gesture.direction == GestureDirection.DOWN && opened) {
                 toggle (true, false);
+                return true;
             }
+
+            return false;
         }
 
-        private void on_workspace_gesture_detected (Gesture gesture) {
+        private bool on_workspace_gesture_detected (Gesture gesture) {
             if (!opened) {
-                return;
+                return false;
             }
 
             var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
@@ -319,7 +323,10 @@ namespace Gala {
             if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
+                return true;
             }
+
+            return false;
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {

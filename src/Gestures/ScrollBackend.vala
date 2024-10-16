@@ -26,7 +26,7 @@ public class Gala.ScrollBackend : Object {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);
@@ -80,7 +80,9 @@ public class Gala.ScrollBackend : Object {
 
         if (!started) {
             if (delta_x != 0 || delta_y != 0) {
-                Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+                float origin_x, origin_y;
+                event.get_coords (out origin_x, out origin_y);
+                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation);
                 started = true;
                 direction = gesture.direction;
                 on_gesture_detected (gesture);
@@ -114,7 +116,7 @@ public class Gala.ScrollBackend : Object {
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
     }
 
-    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
+    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -126,7 +128,9 @@ public class Gala.ScrollBackend : Object {
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
+            origin_x = origin_x,
+            origin_y = origin_y
         };
     }
 

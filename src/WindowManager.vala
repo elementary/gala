@@ -539,14 +539,14 @@ namespace Gala {
             }
         }
 
-        private void on_gesture_detected (Gesture gesture) {
+        private bool on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
-                return;
+                return false;
             }
 
             if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
                 (gesture.direction != GestureDirection.LEFT && gesture.direction != GestureDirection.RIGHT)) {
-                return;
+                return false;
             }
 
             unowned var display = get_display ();
@@ -569,7 +569,7 @@ namespace Gala {
             if (switch_workspace_with_gesture) {
                 var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_to_next_workspace (direction, display.get_current_time ());
-                return;
+                return true;
             }
 
             switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
@@ -584,13 +584,16 @@ namespace Gala {
                 }
 
                 switch_to_next_workspace (direction, display.get_current_time ());
-                return;
+                return true;
             }
 
             var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
             if (switch_windows && !window_switcher.opened) {
                 window_switcher.handle_gesture (gesture.direction);
+                return true;
             }
+
+            return false;
         }
 
         /**
