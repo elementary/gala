@@ -21,7 +21,7 @@
  * See: [[https://github.com/JoseExposito/touchegg]]
  */
 public class Gala.ToucheggBackend : Object {
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);

@@ -71,8 +71,10 @@ public class Gala.GestureTracker : Object {
      * If the receiving code needs to handle this gesture, it should call to connect_handlers to
      * start receiving updates.
      * @param gesture Information about the gesture.
+     * @return true if the gesture will be handled false otherwise. If false is returned the other
+     * signals may still be emitted but aren't guaranteed to be.
      */
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -99,6 +101,11 @@ public class Gala.GestureTracker : Object {
      * Backend used if enable_touchpad is called.
      */
     private ToucheggBackend touchpad_backend;
+
+    /**
+     * Pan backend used if enable_pan is called.
+     */
+    private PanBackend pan_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -135,6 +142,24 @@ public class Gala.GestureTracker : Object {
         touchpad_backend.on_begin.connect (gesture_begin);
         touchpad_backend.on_update.connect (gesture_update);
         touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    /**
+     * Allow to receive pan gestures.
+     * @param actor Clutter actor that will receive the events.
+     * @param travel_distances {@link Utils.Size} with width and height. The given size wil be
+     * used to calculate the percentage. It should be set to the amount something will travel (e.g.
+     * when moving an actor) based on the gesture to allow exact finger tracking. It can also be used
+     * to calculate the raw pixels the finger travelled at a given time with percentage * corresponding distance
+     * (height for {@link GestureDirection.UP} or DOWN, width for LEFT or RIGHT). If set to null the size of the
+     * actor will be used. If the values change those changes will apply.
+     */
+    public void enable_pan (Clutter.Actor actor, Utils.Size? travel_distances) {
+        pan_backend = new PanBackend (actor, travel_distances);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     /**
@@ -201,10 +226,12 @@ public class Gala.GestureTracker : Object {
         return value;
     }
 
-    private void gesture_detected (Gesture gesture) {
+    private bool gesture_detected (Gesture gesture) {
         if (enabled) {
-            on_gesture_detected (gesture);
+            return on_gesture_detected (gesture);
         }
+
+        return false;
     }
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
