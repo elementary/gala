@@ -26,6 +26,8 @@ public class Gala.ToucheggBackend : Object {
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);
 
+    public bool ignore_touchscreen { get; set; default = false; }
+
     /**
      * Gesture type as returned by the daemon.
      */
@@ -196,6 +198,10 @@ public class Gala.ToucheggBackend : Object {
 
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
+
+        if (ignore_touchscreen && performed_on_device_type == TOUCHSCREEN) {
+            return;
+        }
 
         var delta = percentage * DELTA_MULTIPLIER;
 

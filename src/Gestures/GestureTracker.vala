@@ -100,7 +100,7 @@ public class Gala.GestureTracker : Object {
     /**
      * Backend used if enable_touchpad is called.
      */
-    private ToucheggBackend touchpad_backend;
+    private ToucheggBackend? touchpad_backend;
 
     /**
      * Pan backend used if enable_pan is called.
@@ -157,9 +157,19 @@ public class Gala.GestureTracker : Object {
     public void enable_pan (Clutter.Actor actor, Utils.Size? travel_distances) {
         pan_backend = new PanBackend (actor, travel_distances);
         pan_backend.on_gesture_detected.connect (gesture_detected);
-        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_begin.connect ((percentage, time) => {
+            gesture_begin (percentage, time);
+            if (touchpad_backend != null) {
+                touchpad_backend.ignore_touchscreen = true;
+            }
+        });
         pan_backend.on_update.connect (gesture_update);
-        pan_backend.on_end.connect (gesture_end);
+        pan_backend.on_end.connect ((percentage, time) => {
+            gesture_end (percentage, time);
+            if (touchpad_backend != null) {
+                touchpad_backend.ignore_touchscreen = false;
+            }
+        });
     }
 
     /**
