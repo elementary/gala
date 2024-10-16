@@ -147,9 +147,15 @@ public class Gala.GestureTracker : Object {
     /**
      * Allow to receive pan gestures.
      * @param actor Clutter actor that will receive the events.
+     * @param travel_distances {@link Utils.Size} with width and height. The given size wil be
+     * used to calculate the percentage. It should be set to the amount something will travel (e.g.
+     * when moving an actor) based on the gesture to allow exact finger tracking. It can also be used
+     * to calculate the raw pixels the finger travelled at a given time with percentage * corresponding distance
+     * (height for {@link GestureDirection.UP} or DOWN, width for LEFT or RIGHT). If set to null the size of the
+     * actor will be used. If the values change those changes will apply.
      */
-    public void enable_pan (Clutter.Actor actor) {
-        pan_backend = new PanBackend (actor);
+    public void enable_pan (Clutter.Actor actor, Utils.Size? travel_distances) {
+        pan_backend = new PanBackend (actor, travel_distances);
         pan_backend.on_gesture_detected.connect (gesture_detected);
         pan_backend.on_begin.connect (gesture_begin);
         pan_backend.on_update.connect (gesture_update);

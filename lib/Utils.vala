@@ -17,6 +17,31 @@
 
 namespace Gala {
     public class Utils {
+        /**
+         * Represents a size as an object in order for it to be updatable.
+         * Additionally it has some utilities like {@link Gala.Utils.Size.actor_tracking}.
+         */
+        public class Size {
+            public float width;
+            public float height;
+
+            public Size (float width, float height) {
+                this.width = width;
+                this.height = height;
+            }
+
+            /**
+             * Constructs a new size that will keep in sync with the width and height of an actor.
+             */
+            public Size.actor_tracking (Clutter.Actor actor) {
+                actor.notify["width"].connect ((obj, pspec) => width = ((Clutter.Actor) obj).width);
+                actor.notify["height"].connect ((obj, pspec) => height = ((Clutter.Actor) obj).height);
+
+                width = actor.width;
+                height = actor.height;
+            }
+        }
+
         private struct CachedIcon {
             public Gdk.Pixbuf icon;
             public int icon_size;

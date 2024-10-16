@@ -5,7 +5,7 @@ public class Gala.PanBackend : Object {
     public signal void on_end (double delta, uint64 time);
 
     public Clutter.Actor actor { get; construct; }
-    public GestureSettings settings { get; construct; }
+    public Utils.Size? travel_distances { get; construct; }
 
     private Clutter.PanAxis pan_axis;
     private Clutter.PanAction pan_action;
@@ -15,8 +15,8 @@ public class Gala.PanBackend : Object {
     private float origin_x;
     private float origin_y;
 
-    public PanBackend (Clutter.Actor actor) {
-        Object (actor: actor);
+    public PanBackend (Clutter.Actor actor, Utils.Size? travel_distances) {
+        Object (actor: actor, travel_distances: travel_distances);
     }
 
     construct {
@@ -69,16 +69,18 @@ public class Gala.PanBackend : Object {
     }
 
     private double calculate_percentage (float current_x, float current_y) {
-        float current, origin;
+        float current, origin, size;
         if (pan_axis == X_AXIS) {
             current = current_x;
             origin = origin_x;
+            size = travel_distances != null ? travel_distances.width : actor.width;
         } else {
             current = current_y;
             origin = origin_y;
+            size = travel_distances != null ? travel_distances.height : actor.height;
         }
 
-        return (current - origin).abs () / actor.get_width ();
+        return (current - origin).abs () / size;
     }
 
     private Gesture build_gesture () {
