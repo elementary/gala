@@ -119,6 +119,15 @@
       </description>
     </request>
 
+    <request name="make_monitor_label">
+      <description summary="makes the surface a monitor label for the given monitor">
+        Request to make the surface a monitor label for the given monitor. The surface will be placed
+        in the top left corner of the monitor and will be kept above other surfaces.
+      </description>
+
+      <arg name="monitor_index" type="int" summary="the index of the monitor this surface should label"/>
+    </request>
+
     <request name="focus">
       <description summary="request keyboard focus">
         Request keyboard focus, taking it away from any other window.
