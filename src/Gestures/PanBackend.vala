@@ -78,24 +78,17 @@ public class Gala.PanBackend : Object {
     }
 
     private void on_gesture_end () {
-        update_coords ();
-
-        on_end (calculate_percentage (), pan_action.get_last_event (0).get_time ());
+        on_end (calculate_percentage (), Gdk.CURRENT_TIME);
 
         direction = GestureDirection.UNKNOWN;
+        last_n_points = 0;
+        last_x_coord = 0;
+        last_y_coord = 0;
     }
 
     private bool on_pan (Clutter.PanAction pan_action, Clutter.Actor actor, bool interpolate) {
         uint64 time = pan_action.get_last_event (0).get_time ();
 
-        update_coords ();
-
-        on_update (calculate_percentage (), time);
-
-        return true;
-    }
-
-    private void update_coords () {
         float x, y;
         pan_action.get_motion_coords (0, out x, out y);
 
@@ -107,6 +100,10 @@ public class Gala.PanBackend : Object {
         last_x_coord = x;
         last_y_coord = y;
         last_n_points = pan_action.get_n_current_points ();
+
+        on_update (calculate_percentage (), time);
+
+        return true;
     }
 
     private double calculate_percentage () {
