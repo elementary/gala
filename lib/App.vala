@@ -158,8 +158,8 @@ public class Gala.App : GLib.Object {
         return windows.data;
     }
 
-    public GLib.SList<Posix.pid_t?> get_pids () {
-        var results = new GLib.SList<Posix.pid_t?> ();
+    public GLib.SList<pid_t?> get_pids () {
+        var results = new GLib.SList<pid_t?> ();
         foreach (unowned var window in windows) {
             var pid = window.get_pid ();
             if (pid < 1) {
