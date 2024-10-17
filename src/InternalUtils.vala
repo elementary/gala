@@ -336,5 +336,14 @@ namespace Gala {
                 return { 0, 0, (int) screen_width, (int) screen_height };
             }
         }
+
+        public static float travel_distance_from_primary (Meta.Display display, Clutter.Orientation orientation) {
+            var geom = display.get_monitor_geometry (display.get_primary_monitor ());
+            if (orientation == HORIZONTAL) {
+                return geom.width;
+            } else {
+                return geom.height;
+            }
+        }
     }
 }

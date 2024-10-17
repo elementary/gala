@@ -53,6 +53,8 @@ namespace Gala {
             }
         }
 
+        private float workspaces_travel_distance;
+
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
@@ -70,10 +72,12 @@ namespace Gala {
 
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker.enable_pan (display.get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
+            workspace_gesture_tracker.enable_pan (this, () => workspaces_travel_distance);
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
 
@@ -90,16 +94,17 @@ namespace Gala {
             blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
             blurred_bg.add_effect (brightness_effect);
 
-            add_child (blurred_bg);
-
             // Create a child container that will be sized to fit the primary monitor, to contain the "main"
             // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
             // stage as it contains MonitorClones for each monitor.
-            primary_monitor_container = new Clutter.Actor ();
+            primary_monitor_container = new Clutter.Actor () {
+                reactive = true
+            };
+            primary_monitor_container.add_child (blurred_bg);
             primary_monitor_container.add_child (icon_groups);
             primary_monitor_container.add_child (workspaces);
+            primary_monitor_container.add_child (dock_clones);
             add_child (primary_monitor_container);
-            add_child (dock_clones);
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -290,24 +295,29 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
-        private void on_multitasking_gesture_detected (Gesture gesture) {
+        private bool on_multitasking_gesture_detected (Gesture gesture) {
             if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
                 (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
                 (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
             ) {
-                return;
+                return false;
             }
 
             if (gesture.direction == GestureDirection.UP && !opened) {
                 toggle (true, false);
+                return true;
             } else if (gesture.direction == GestureDirection.DOWN && opened) {
                 toggle (true, false);
+                return true;
             }
+
+            return false;
         }
 
-        private void on_workspace_gesture_detected (Gesture gesture) {
+        private bool on_workspace_gesture_detected (Gesture gesture) {
+            warning ("DETECTED");
             if (!opened) {
-                return;
+                return false;
             }
 
             var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
@@ -319,7 +329,11 @@ namespace Gala {
             if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
                 var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
                 switch_workspace_with_gesture (direction);
+                warning ("GO");
+                return true;
             }
+
+            return false;
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
@@ -362,6 +376,8 @@ namespace Gala {
                     }
                 }
             }
+
+            workspaces_travel_distance = (initial_x - target_x).abs ();
 
             if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
                 active_icon_group.remove_transition ("backdrop-opacity");
@@ -692,9 +708,6 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal (this);
-                modal_proxy.set_keybinding_filter (keybinding_filter);
-
                 wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
@@ -764,6 +777,12 @@ namespace Gala {
                         dock_clones.destroy_all_children ();
 
                         wm.pop_modal (modal_proxy);
+
+                        multitasking_gesture_tracker.enable_pan (wm.get_display ().get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
+                    } else {
+                        modal_proxy = wm.push_modal (this);
+                        modal_proxy.set_keybinding_filter (keybinding_filter);
+                        multitasking_gesture_tracker.enable_pan (primary_monitor_container, () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
                     }
 
                     animating = false;
