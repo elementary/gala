@@ -16,6 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+public interface Gala.GestureBackend : Object {
+    public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
+    public signal void on_begin (double delta, uint64 time);
+    public signal void on_update (double delta, uint64 time);
+    public signal void on_end (double delta, uint64 time);
+
+    public virtual void prepare_gesture_handling () { }
+}
+
 /**
  * Allow to use multi-touch gestures from different sources (backends).
  * Usage:
@@ -68,11 +77,24 @@ public class Gala.GestureTracker : Object {
 
     /**
      * Emitted when a new gesture is detected.
-     * If the receiving code needs to handle this gesture, it should call to connect_handlers to
-     * start receiving updates.
+     * This should only be used to determine whether the gesture should be handled. This shouldn't
+     * do any preparations instead those should be done in {@link on_gesture_handled}. This is because
+     * the backend might have to do some preparations itself before you are allowed to do some to avoid
+     * conflicts.
      * @param gesture Information about the gesture.
+     * @return true if the gesture will be handled false otherwise. If false is returned the other
+     * signals may still be emitted but aren't guaranteed to be.
      */
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
+
+    /**
+     * Emitted if true was returned form {@link on_gesture_detected}. This should
+     * be used to do any preparations for gesture handling and to call {@link connect_handlers} to
+     * start receiving updates.
+     * @param gesture the same gesture as in {@link on_gesture_detected}
+     * @param timestamp the timestamp of the event that initiated the gesture or {@link Meta.CURRENT_TIME}.
+     */
+    public signal void on_gesture_handled (Gesture gesture, uint32 timestamp);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -98,7 +120,12 @@ public class Gala.GestureTracker : Object {
     /**
      * Backend used if enable_touchpad is called.
      */
-    private ToucheggBackend touchpad_backend;
+    private ToucheggBackend? touchpad_backend;
+
+    /**
+     * Pan backend used if enable_pan is called.
+     */
+    private PanBackend pan_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -135,6 +162,22 @@ public class Gala.GestureTracker : Object {
         touchpad_backend.on_begin.connect (gesture_begin);
         touchpad_backend.on_update.connect (gesture_update);
         touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    /**
+     * Allow to receive pan gestures.
+     * @param actor Clutter actor that will receive the events.
+     * @param travel_distance_func this will be called if a gesture is detected and true is returned from {@link on_gesture_detected}.
+     * The returned distance wil be used to calculate the percentage. It should be set to the amount something will travel (e.g.
+     * when moving an actor) based on the gesture to allow exact finger tracking. It can also be used
+     * to calculate the raw pixels the finger travelled at a given time with percentage * distance.
+     */
+    public void enable_pan (WindowManager wm, Clutter.Actor actor, owned PanBackend.GetTravelDistance travel_distance_func) {
+        pan_backend = new PanBackend (wm, actor, (owned) travel_distance_func);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     /**
@@ -201,10 +244,14 @@ public class Gala.GestureTracker : Object {
         return value;
     }
 
-    private void gesture_detected (Gesture gesture) {
-        if (enabled) {
-            on_gesture_detected (gesture);
+    private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
+        if (enabled && on_gesture_detected (gesture)) {
+            backend.prepare_gesture_handling ();
+            on_gesture_handled (gesture, timestamp);
+            return true;
         }
+
+        return false;
     }
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
