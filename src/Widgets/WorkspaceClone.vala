@@ -180,6 +180,13 @@ namespace Gala {
             });
             background = new FramedBackground (wm);
             background.add_action (background_click_action);
+            // For some reason the click action doesn't respond to button releases anymore
+            // once the background was touched. This should hopefully be fixed with the
+            // new Clutter.Gestures that are being introduced upstream
+            background.button_release_event.connect (() => {
+                selected (true);
+                return Clutter.EVENT_STOP;
+            });
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
                 width = monitor_geometry.width,

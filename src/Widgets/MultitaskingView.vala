@@ -53,6 +53,8 @@ namespace Gala {
             }
         }
 
+        private float workspaces_travel_distance;
+
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
@@ -70,11 +72,13 @@ namespace Gala {
 
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker.enable_pan (wm, display.get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
             multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
+            workspace_gesture_tracker.enable_pan (wm, this, () => workspaces_travel_distance);
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
             workspace_gesture_tracker.on_gesture_handled.connect ((gesture, timestamp) => {
@@ -312,7 +316,8 @@ namespace Gala {
                 return false;
             }
 
-            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE) {
+            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE ||
+                gesture.type == TOUCHPAD_SWIPE && gesture.fingers == 1 && (gesture.direction == RIGHT || gesture.direction == LEFT)) {
                 return true;
             }
 
@@ -359,6 +364,8 @@ namespace Gala {
                     }
                 }
             }
+
+            workspaces_travel_distance = (initial_x - target_x).abs ();
 
             if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
                 active_icon_group.remove_transition ("backdrop-opacity");
@@ -689,9 +696,6 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal (this);
-                modal_proxy.set_keybinding_filter (keybinding_filter);
-
                 wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
@@ -761,6 +765,13 @@ namespace Gala {
                         dock_clones.destroy_all_children ();
 
                         wm.pop_modal (modal_proxy);
+
+                        multitasking_gesture_tracker.enable_pan (wm, wm.get_display ().get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
+                    } else {
+                        modal_proxy = wm.push_modal (this);
+                        modal_proxy.set_keybinding_filter (keybinding_filter);
+                        // We now have to listen to events on this because it's now modal i.e. the stage doesn't get the events anymore
+                        multitasking_gesture_tracker.enable_pan (wm, this, () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
                     }
 
                     animating = false;
