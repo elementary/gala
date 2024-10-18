@@ -855,16 +855,16 @@ namespace Gala {
 
             modal_stack.offer_head (proxy);
 
+            proxy.grab = stage.grab (actor);
+
             // modal already active
             if (modal_stack.size >= 2)
                 return proxy;
 
-            unowned Meta.Display display = get_display ();
-
             update_input_area ();
-            proxy.grab = stage.grab (actor);
 
             if (modal_stack.size == 1) {
+                unowned Meta.Display display = get_display ();
                 display.disable_unredirect ();
             }
 
