@@ -120,7 +120,12 @@ public class Gala.GestureTracker : Object {
     /**
      * Backend used if enable_touchpad is called.
      */
-    private ToucheggBackend touchpad_backend;
+    private ToucheggBackend? touchpad_backend;
+
+    /**
+     * Pan backend used if enable_pan is called.
+     */
+    private PanBackend pan_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -157,6 +162,22 @@ public class Gala.GestureTracker : Object {
         touchpad_backend.on_begin.connect (gesture_begin);
         touchpad_backend.on_update.connect (gesture_update);
         touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    /**
+     * Allow to receive pan gestures.
+     * @param actor Clutter actor that will receive the events.
+     * @param travel_distance_func this will be called if a gesture is detected and true is returned from {@link on_gesture_detected}.
+     * The returned distance wil be used to calculate the percentage. It should be set to the amount something will travel (e.g.
+     * when moving an actor) based on the gesture to allow exact finger tracking. It can also be used
+     * to calculate the raw pixels the finger travelled at a given time with percentage * distance.
+     */
+    public void enable_pan (WindowManager wm, Clutter.Actor actor, owned PanBackend.GetTravelDistance travel_distance_func) {
+        pan_backend = new PanBackend (wm, actor, (owned) travel_distance_func);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     /**
