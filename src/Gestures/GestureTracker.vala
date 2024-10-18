@@ -16,6 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+public interface Gala.GestureBackend : Object {
+    public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
+    public signal void on_begin (double delta, uint64 time);
+    public signal void on_update (double delta, uint64 time);
+    public signal void on_end (double delta, uint64 time);
+
+    public virtual void prepare_gesture_handling () { }
+}
+
 /**
  * Allow to use multi-touch gestures from different sources (backends).
  * Usage:
@@ -68,11 +77,24 @@ public class Gala.GestureTracker : Object {
 
     /**
      * Emitted when a new gesture is detected.
-     * If the receiving code needs to handle this gesture, it should call to connect_handlers to
-     * start receiving updates.
+     * This should only be used to determine whether the gesture should be handled. This shouldn't
+     * do any preparations instead those should be done in {@link on_gesture_handled}. This is because
+     * the backend might have to do some preparations itself before you are allowed to do some to avoid
+     * conflicts.
      * @param gesture Information about the gesture.
+     * @return true if the gesture will be handled false otherwise. If false is returned the other
+     * signals may still be emitted but aren't guaranteed to be.
      */
-    public signal void on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (Gesture gesture);
+
+    /**
+     * Emitted if true was returned form {@link on_gesture_detected}. This should
+     * be used to do any preparations for gesture handling and to call {@link connect_handlers} to
+     * start receiving updates.
+     * @param gesture the same gesture as in {@link on_gesture_detected}
+     * @param timestamp the timestamp of the event that initiated the gesture or {@link Meta.CURRENT_TIME}.
+     */
+    public signal void on_gesture_handled (Gesture gesture, uint32 timestamp);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -201,10 +223,14 @@ public class Gala.GestureTracker : Object {
         return value;
     }
 
-    private void gesture_detected (Gesture gesture) {
-        if (enabled) {
-            on_gesture_detected (gesture);
+    private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
+        if (enabled && on_gesture_detected (gesture)) {
+            backend.prepare_gesture_handling ();
+            on_gesture_handled (gesture, timestamp);
+            return true;
         }
+
+        return false;
     }
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
