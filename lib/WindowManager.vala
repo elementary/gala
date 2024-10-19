@@ -114,11 +114,6 @@ namespace Gala {
         public abstract Clutter.Actor top_window_group { get; protected set; }
 
         /**
-         * The background group is a container for the background actors forming the wallpaper
-         */
-        public abstract Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
          * View that allows to see and manage all your windows and desktops.
          */
         public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
