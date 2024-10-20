@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
+"POT-Creation-Date: 2024-10-15 19:33+0000\n"
 "PO-Revision-Date: 2024-08-27 08:16+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
@@ -109,43 +109,43 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
+msgid "Updated translations"
+msgstr "Mise à jour des traductions"
+
+#: data/gala.metainfo.xml.in:49
 #, fuzzy
 #| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Correction d'un plantage potentiel lors de la prise de captures d'écran"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:50
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Correction de la position des notifications après la modification du DPI"
 
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
-msgid "Updated translations"
-msgstr "Mise à jour des traductions"
-
-#: data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Amélioration de la navigation au clavier dans la vue multitâche"
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:66
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Met à jour la couleur du panneau en même temps que la transition du fond "
 "d'écran"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:106
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -153,24 +153,24 @@ msgstr ""
 "Le changement du fond d'écran ou la mise en veille respectent l'option "
 "« Réduire le mouvement »"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:107
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Utilisation des pointeurs de glisser-déposer lors du déplacement des fenêtres"
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:108
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Correction d'un problème où les gestes dans la vue multitâche peuvent cesser "
 "de fonctionner"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:109
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Amélioration du comportement des espaces de travail dynamiques sur plusieurs "
 "écrans"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Amélioration de la gestion du raccourci « déplacer vers l'espace de travail »"
@@ -199,7 +199,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "La fenêtre est déjà au premier plan"
 

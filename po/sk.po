@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
+"POT-Creation-Date: 2024-10-15 19:33+0000\n"
 "PO-Revision-Date: 2024-10-05 18:16+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
-"Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/>"
-"\n"
+"Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
+">\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,35 +109,36 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
 msgid "Improvements:"
 msgstr "Vylepšenia:"
 
-#: data/gala.metainfo.xml.in:34
-msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Opravený potenciálny pád pri pohybovaní okien medzi pracovnými plochami"
-
-#: data/gala.metainfo.xml.in:35
-msgid "Fix notification animation when entering multitasking view"
-msgstr "Opravená animácia oznámení pri prechode do zobrazenia úloh"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
 msgid "Updated translations"
 msgstr "Aktualizované preklady"
 
+#: data/gala.metainfo.xml.in:49
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+"Opravený potenciálny pád pri pohybovaní okien medzi pracovnými plochami"
+
 #: data/gala.metainfo.xml.in:50
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Opravená animácia oznámení pri prechode do zobrazenia úloh"
+
+#: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Zlepšenie ovládania klávesnicou v Zobrazení úloh"
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:66
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Zmeniť farbu panelu v ten istý čas ako pri prechode tapety"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:106
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -145,20 +146,20 @@ msgstr ""
 "Zmena tapety alebo prechod do režimu spánku rešpektuje možnosť „Obmedziť "
 "animácie“"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:107
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Používať vhodné „drag-and-drop“ ukazovatele pri presúvaní okien"
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:108
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "Oprava chyby, kedy mohli prestať fungovať gestá v zobrazení úloh"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:109
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Zlepšenie správania dynamických pracovných priestorov pre viaceré monitory"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Zlepšenie spracovania skratky presunu na pracovnú plochu"
 
@@ -185,7 +186,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Neznáme"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "Okno je už zamerané"
 
