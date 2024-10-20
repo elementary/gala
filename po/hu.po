@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-08-21 17:26+0000\n"
+"POT-Creation-Date: 2024-10-15 19:33+0000\n"
+"PO-Revision-Date: 2024-10-03 23:16+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -110,39 +110,36 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
 msgid "Improvements:"
 msgstr "Fejlesztések:"
 
-#: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fix a potential crash when taking screenshots"
-msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Egy esetleges összeomlás javítva képernyőkép készítésekor"
-
-#: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix notification position after changing DPI"
-msgid "Fix notification animation when entering multitasking view"
-msgstr "DPI-állítás utáni értesítéshelyzet javítva"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
 msgid "Updated translations"
 msgstr "Frissített fordítások"
 
+#: data/gala.metainfo.xml.in:49
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+"Egy esetleges összeomlás javítva videók munkaterületek közti mozgatásakor"
+
 #: data/gala.metainfo.xml.in:50
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Értesítési felület megnyitása utáni értesítéshelyzet javítva"
+
+#: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Billentyűzettel való navigáció javítva többfeladatos nézetben"
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:66
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Az állapotsor színének frissítése a háttérkép átmenetével egyidőben"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:106
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -150,21 +147,21 @@ msgstr ""
 "A háttérkép cseréje vagy az alvó módba váltás tiszteletben tartja a "
 "\"Kevesebb mozgás\" beállítást"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:107
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "A megfelelő mutatók használata ablakok mozgatásakor"
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:108
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Egy hiba javítása, aminek következtében a többfeladatos nézetben nem "
 "működtek a gesztusok"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:109
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "A dinamikus munkaterületek viselkedésének javítása több monitorral"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Az áthelyezés munkaterületre funkció kezelhetőségének javítása után két "
@@ -193,7 +190,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "Az ablak már fókuszban van"
 
