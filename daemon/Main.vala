@@ -5,7 +5,7 @@
 
 public class Gala.Daemon.Application : Gtk.Application {
     public Application () {
-        Object (application_id: "org.pantheon.gala.daemon");
+        Object (application_id: "io.elementary.gala.daemon");
     }
 
     public override void startup () {
