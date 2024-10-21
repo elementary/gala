@@ -229,7 +229,7 @@ namespace Gala {
 
                         // release has happened within bounds of actor
                         if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-                            actor_clicked (event.get_button ());
+                            actor_clicked (event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY);
                         }
 
                         if (clicked) {
