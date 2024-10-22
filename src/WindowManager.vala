@@ -2058,8 +2058,8 @@ namespace Gala {
                         continue;
                     }
 
-                    windows.prepend (actor);
-                    parents.prepend (actor.get_parent ());
+                    windows.append (actor);
+                    parents.append (actor.get_parent ());
 
                     clutter_actor_reparent (actor, static_windows);
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
