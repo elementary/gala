@@ -63,6 +63,10 @@ public class Gala.PanelClone : Object {
             }
         });
 
+        // Make sure the actor is visible once it's focused FIXME: better event not only focused
+        // https://github.com/elementary/gala/issues/2080
+        panel.window.focused.connect (update_visible);
+
         update_visible ();
         update_clone_position ();
 
