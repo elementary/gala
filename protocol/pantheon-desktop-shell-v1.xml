@@ -127,5 +127,13 @@
         by the compositor.
       </description>
     </request>
+
+    <request name="make_background">
+      <description summary="set panel hide mode">
+        Tell the shell when to hide the panel.
+      </description>
+
+      <arg name="monitor_index" type="int" summary="monitor index"/>
+    </request>
   </interface>
 </protocol>

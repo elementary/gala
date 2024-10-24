@@ -86,7 +86,7 @@ namespace Gala {
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
-            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor (), true, false);
+            var blurred_bg = ShellClientsManager.get_instance ().get_background_clone_for_monitor (display.get_primary_monitor ());
             blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
             blurred_bg.add_effect (brightness_effect);
 
@@ -695,7 +695,6 @@ namespace Gala {
                 modal_proxy = wm.push_modal (this);
                 modal_proxy.set_keybinding_filter (keybinding_filter);
 
-                wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
                 show ();
@@ -757,7 +756,6 @@ namespace Gala {
 
                         hide ();
 
-                        wm.background_group.show ();
                         wm.window_group.show ();
                         wm.top_window_group.show ();
 
