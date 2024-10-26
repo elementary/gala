@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-10-15 19:33+0000\n"
-"PO-Revision-Date: 2024-10-26 19:33+0000\n"
-"Last-Translator: Gustavo Silva <g.costasalles@gmail.com>\n"
+"PO-Revision-Date: 2024-10-26 22:46+0000\n"
+"Last-Translator: Diogo Pessoa <diogopessoabr@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -126,7 +126,7 @@ msgstr "Corrige uma potencial falha ao mover janelas entre espaços de trabalho"
 
 #: data/gala.metainfo.xml.in:50
 msgid "Fix notification animation when entering multitasking view"
-msgstr "Corrige animação de notificação quando entra na visão multitarefas"
+msgstr "Corrige animação de notificação ao entrar na visão multitarefa"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
