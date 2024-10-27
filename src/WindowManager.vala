@@ -42,11 +42,6 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
-         * {@inheritDoc}
-         */
          public Gala.ActivatableComponent workspace_view { get; protected set; }
 
         /**
@@ -226,11 +221,6 @@ namespace Gala {
             window_group = display.get_window_group ();
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
-
-            background_group = new BackgroundContainer (this);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
-            window_group.add_child (background_group);
-            window_group.set_child_below_sibling (background_group, null);
 
             top_window_group = display.get_top_window_group ();
             stage.remove_child (top_window_group);
@@ -1975,16 +1965,10 @@ namespace Gala {
 
             window_group.add_child (main_container);
 
+            system_background.set_black_background (false);
+
             // prepare wallpaper
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
-                background.hide ();
-                wallpaper = new Clutter.Clone (background);
-            } else {
-                background_group.hide ();
-                ((BackgroundContainer) background_group).set_black_background (false);
-                wallpaper = new Clutter.Clone (background_group);
-            }
+            wallpaper = ShellClientsManager.get_instance ().get_background_clone_for_monitor (primary);
             wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
             tmp_actors.prepend (wallpaper);
 
@@ -2047,7 +2031,9 @@ namespace Gala {
                 if (!window.showing_on_its_workspace () ||
                     move_primary_only && !window.is_on_primary_monitor () ||
                     window == moving ||
-                    window == grabbed_window) {
+                    window == grabbed_window ||
+                    window.window_type == DESKTOP
+                ) {
 
                     continue;
                 }
@@ -2267,16 +2253,7 @@ namespace Gala {
             unowned var display = get_display ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
-            // Show the real wallpaper again
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
-                background.show ();
-            } else {
-                ((BackgroundContainer) background_group).set_black_background (true);
-                background_group.show ();
-            }
+            system_background.set_black_background (true);
 
             for (var i = 0; i < windows.length (); i++) {
                 unowned var actor = windows.nth_data (i);
