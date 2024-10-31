@@ -222,23 +222,23 @@ public class Gala.HideTracker : Object {
     }
 
     private void trigger_hide () {
-            // Don't hide if we have transients, e.g. an open popover, dialog, etc.
-            var has_transients = false;
-            panel.window.foreach_transient (() => {
-                has_transients = true;
-                return false;
-            });
+        // Don't hide if we have transients, e.g. an open popover, dialog, etc.
+        var has_transients = false;
+        panel.window.foreach_transient (() => {
+            has_transients = true;
+            return false;
+        });
 
-            if (has_transients) {
-                reset_hide_timeout ();
+        if (has_transients) {
+            reset_hide_timeout ();
 
-                return;
-            }
+            return;
+        }
 
-            hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
-                hide ();
-                hide_timeout_id = 0;
-            });
+        hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
+            hide ();
+            hide_timeout_id = 0;
+        });
     }
 
     private void reset_hide_timeout () {
