@@ -299,7 +299,7 @@ namespace Gala {
                     }
 
                     return Clutter.EVENT_STOP;
-    
+
                 case EventType.MOTION:
                 case EventType.TOUCH_UPDATE:
                     if (!is_valid_touch_event (event)) {
