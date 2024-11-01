@@ -263,7 +263,7 @@ namespace Gala {
         }
 
         public void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!wm.enable_animations) {
+            if (!AnimationsSettings.get_enable_animations ()) {
                 return;
             }
 
@@ -413,7 +413,7 @@ namespace Gala {
                 workspaces.restore_easing_state ();
 
                 if (!is_nudge_animation) {
-                    if (wm.enable_animations) {
+                    if (AnimationsSettings.get_enable_animations ()) {
                         var active_transition = new Clutter.PropertyTransition ("backdrop-opacity") {
                             duration = duration,
                             remove_on_complete = true
@@ -440,7 +440,7 @@ namespace Gala {
                 }
             };
 
-            if (!wm.enable_animations) {
+            if (!AnimationsSettings.get_enable_animations ()) {
                 on_animation_end (1, false, 0);
             } else {
                 workspace_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -476,14 +476,14 @@ namespace Gala {
                 }
 
                 workspace_clone.save_easing_state ();
-                workspace_clone.set_easing_duration ((animate && wm.enable_animations) ? 200 : 0);
+                workspace_clone.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? 200 : 0);
                 workspace_clone.x = dest_x;
                 workspace_clone.restore_easing_state ();
             }
 
             workspaces.save_easing_state ();
             workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            workspaces.set_easing_duration ((animate && wm.enable_animations) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
+            workspaces.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
             workspaces.x = -active_x;
             workspaces.restore_easing_state ();
 
@@ -668,7 +668,7 @@ namespace Gala {
             }
 
             // we don't want to handle cancel animation when animation are off
-            if (is_cancel_animation && !wm.enable_animations) {
+            if (is_cancel_animation && !AnimationsSettings.get_enable_animations ()) {
                 return;
             }
 
@@ -840,12 +840,12 @@ namespace Gala {
 
                     clone.save_easing_state ();
                     clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    clone.set_easing_duration ((!is_cancel_animation && wm.enable_animations) ? ANIMATION_DURATION : 0);
+                    clone.set_easing_duration ((!is_cancel_animation && AnimationsSettings.get_enable_animations ()) ? ANIMATION_DURATION : 0);
                     clone.y = target_y;
                     clone.restore_easing_state ();
                 };
 
-                if (!with_gesture || !wm.enable_animations) {
+                if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
                     on_animation_end (1, false, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -871,12 +871,12 @@ namespace Gala {
 
                     dock.save_easing_state ();
                     dock.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    dock.set_easing_duration (wm.enable_animations ? ANIMATION_DURATION : 0);
+                    dock.set_easing_duration (AnimationsSettings.get_enable_animations () ? ANIMATION_DURATION : 0);
                     dock.y = target_y;
                     dock.restore_easing_state ();
                 };
 
-                if (!with_gesture || !wm.enable_animations) {
+                if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
                     on_animation_end (1, false, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
