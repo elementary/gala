@@ -79,7 +79,7 @@ namespace Gala {
 
             workspaces = new Clutter.Actor ();
 
-            icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
+            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
             dock_clones = new Clutter.Actor ();
 
