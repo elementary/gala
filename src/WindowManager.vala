@@ -337,7 +337,7 @@ namespace Gala {
                 notification_group = new Clutter.Actor ();
                 ui_group.add_child (notification_group);
 
-                pointer_locator = new PointerLocator (this);
+                pointer_locator = new PointerLocator (display);
                 ui_group.add_child (pointer_locator);
                 ui_group.add_child (new DwellClickTimer (this));
 
