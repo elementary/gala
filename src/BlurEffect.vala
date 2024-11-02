@@ -223,8 +223,8 @@ public class Gala.BlurEffect : Clutter.Effect {
 
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 
-        actor_framebuffer = null;
-        actor_texture = null;
+        background_framebuffer = null;
+        background_texture = null;
 
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
