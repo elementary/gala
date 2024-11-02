@@ -146,13 +146,13 @@ public class Gala.PanelWindow : Object {
     }
 
     public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
+        clone.hide_mode = hide_mode;
+
         if (hide_mode == NEVER) {
             make_exclusive ();
         } else {
             unmake_exclusive ();
         }
-
-        clone.hide_mode = hide_mode;
     }
 
     private void make_exclusive () {
