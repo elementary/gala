@@ -184,7 +184,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
-        positioned_windows[window] = new WindowPositioner (wm, window, CENTER);
+        positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
