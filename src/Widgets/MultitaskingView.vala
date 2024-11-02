@@ -180,7 +180,7 @@ namespace Gala {
                         continue;
                     }
 
-                    var monitor_clone = new MonitorClone (wm, display, monitor, multitasking_gesture_tracker);
+                    var monitor_clone = new MonitorClone (display, monitor, multitasking_gesture_tracker);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
