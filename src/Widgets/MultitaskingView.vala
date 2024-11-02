@@ -518,7 +518,7 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
 
-            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
             workspaces.insert_child_at_index (workspace, num);
             icon_groups.add_group (workspace.icon_group);
 

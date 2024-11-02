@@ -139,7 +139,6 @@ namespace Gala {
          */
         public signal void selected (bool close_view);
 
-        public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
@@ -163,8 +162,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
-            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
+        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
+            Object (workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
 
         construct {
