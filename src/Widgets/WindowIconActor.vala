@@ -147,7 +147,7 @@ namespace Gala {
 
             new_icon.save_easing_state ();
             new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            new_icon.set_easing_duration (AnimationsSettings.get_enable_animations () ? 500 : 0);
+            new_icon.set_easing_duration (AnimationsSettings.get_animation_duration (500));
             new_icon.restore_easing_state ();
 
             if (icon == null) {

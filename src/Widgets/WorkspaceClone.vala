@@ -388,13 +388,13 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0);
+                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
             };
@@ -464,13 +464,13 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0);
+                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
             };
