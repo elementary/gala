@@ -143,7 +143,7 @@ namespace Gala {
          *                  the group.
          */
         public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
-            var new_window = new WindowIconActor (wm, window);
+            var new_window = new WindowIconActor (window);
             new_window.set_position (32, 32);
             new_window.temporary = temporary;
 
