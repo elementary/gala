@@ -63,6 +63,10 @@ public class Gala.PanelClone : Object {
             }
         });
 
+        // Make sure the actor is visible once it's focused FIXME: better event not only focused
+        // https://github.com/elementary/gala/issues/2080
+        panel.window.focused.connect (update_visible);
+
         update_visible ();
         update_clone_position ();
 
@@ -77,6 +81,12 @@ public class Gala.PanelClone : Object {
 
     private void update_visible () {
         actor.visible = !panel_hidden;
+
+        if (actor.visible && !wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ())) {
+            // The actor has just been revealed, make sure it's at the top
+            // https://github.com/elementary/gala/issues/2080
+            actor.get_parent ().set_child_above_sibling (actor, null);
+        }
     }
 
     private void update_clone_position () {
@@ -106,7 +116,7 @@ public class Gala.PanelClone : Object {
 
     private int get_animation_duration () {
         var fullscreen = wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ());
-        var should_animate = wm.enable_animations && !wm.workspace_view.is_opened () && !fullscreen;
+        var should_animate = AnimationsSettings.get_enable_animations () && !wm.workspace_view.is_opened () && !fullscreen;
         return should_animate ? ANIMATION_DURATION : 0;
     }
 
