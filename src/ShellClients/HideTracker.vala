@@ -200,7 +200,7 @@ public class Gala.HideTracker : Object {
             case ALWAYS:
                 toggle_display (true);
                 break;
-            
+
             default:
                 warning ("HideTracker: unsupported hide mode.");
                 break;
