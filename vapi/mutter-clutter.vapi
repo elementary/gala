@@ -6595,13 +6595,21 @@ namespace Clutter {
 	[Compact]
 	public class PaintContext {
 		public void destroy ();
+		public Clutter.ColorState get_color_state ();
+		public Clutter.Frame get_frame ();
 		public unowned Cogl.Framebuffer get_framebuffer ();
+		public Clutter.PaintFlag get_paint_flags ();
 #if HAS_MUTTER46
 		public unowned Mtk.Region get_redraw_clip ();
 #else
 		public unowned Cairo.Region get_redraw_clip ();
 #endif
+		public Clutter.ColorState get_target_color_state ();
+		public Clutter.StageView? get_stage_view ();
+		public static PaintContext new_for_framebuffer (Cogl.Framebuffer framebuffer, Mtk.Region redraw_clip, Clutter.PaintFlag paint_flags, Clutter.ColorState color_state);
+		public void pop_color_state ();
 		public void pop_framebuffer ();
+		public void push_color_state (Clutter.ColorState color_state);
 		public void push_framebuffer (Cogl.Framebuffer framebuffer);
 		public unowned Clutter.PaintContext @ref ();
 		public void unref ();
@@ -7134,7 +7142,7 @@ namespace Clutter {
 #endif
 		public unowned Cogl.Framebuffer get_framebuffer ();
 #if HAS_MUTTER45	
-		public void get_layout (Mtk.Rectangle rect);
+		public void get_layout (ref Mtk.Rectangle rect);
 #else
 		public void get_layout (Cairo.RectangleInt rect);
 #endif

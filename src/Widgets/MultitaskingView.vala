@@ -87,7 +87,7 @@ namespace Gala {
             update_brightness_effect ();
 
             var blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
-            blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+            blurred_bg.add_effect (new BlurEffect (blurred_bg, BlurMode.BLUR_ACTOR, 18));
             blurred_bg.add_effect (brightness_effect);
 
             add_child (blurred_bg);
