@@ -195,7 +195,14 @@ public class Gala.BlurEffect : Clutter.Effect {
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
 
-        actor_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
+        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
+
+        try {
+            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
+        } catch (GLib.Error e) {
+            warning (e.message);
+            return false;
+        }
 
         actor_pipeline.set_layer_texture (0, actor_texture);
 
@@ -220,11 +227,17 @@ public class Gala.BlurEffect : Clutter.Effect {
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
 
-        background_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
+        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
+
+        try {
+            background_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
+        } catch (GLib.Error e) {
+            warning (e.message);
+            return false;
+        }
 
         background_pipeline.set_layer_texture (0, background_texture);
 
-        
         background_framebuffer = (Cogl.Framebuffer) new Cogl.Offscreen.with_texture (background_texture);
 
         setup_projection_matrix (background_framebuffer, new_width, new_height);
