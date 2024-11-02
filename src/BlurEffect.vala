@@ -216,13 +216,15 @@ public class Gala.BlurEffect : Clutter.Effect {
     private bool update_background_fbo (int width, int height) {
         if (texture_width == width &&
             texture_height == height &&
-            background_framebuffer != null) {
+            background_framebuffer != null
+        ) {
             return true;
         }
 
-        //  return update_fbo (&self->background_fb, width, height, 1.0);
-
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
+
+        actor_framebuffer = null;
+        actor_texture = null;
 
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
