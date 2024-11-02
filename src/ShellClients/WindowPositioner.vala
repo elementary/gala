@@ -26,7 +26,7 @@ public class Gala.WindowPositioner : Object {
         window.position_changed.connect (position_window);
         window.shown.connect (position_window);
 
-        var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (position_window);
         monitor_manager.monitors_changed_internal.connect (position_window);
     }
