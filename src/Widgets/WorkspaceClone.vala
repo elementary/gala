@@ -181,7 +181,7 @@ namespace Gala {
             background = new FramedBackground (display);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
+            window_container = new WindowCloneContainer (display, gesture_tracker, scale_factor) {
                 width = monitor_geometry.width,
                 height = monitor_geometry.height,
             };

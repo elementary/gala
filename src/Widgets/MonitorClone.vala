@@ -45,7 +45,7 @@ namespace Gala {
 
             var scale = display.get_monitor_scale (monitor);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker, scale);
+            window_container = new WindowCloneContainer (display, gesture_tracker, scale);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 
             display.window_entered_monitor.connect (window_entered);
