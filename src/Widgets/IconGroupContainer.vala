@@ -62,7 +62,7 @@ namespace Gala {
 
             insert_child_at_index (group, index * 2);
 
-            var thumb = new WorkspaceInsertThumb (wm, index, scale_factor);
+            var thumb = new WorkspaceInsertThumb (index, scale_factor);
             thumb.notify["expanded"].connect_after (expanded_changed);
             insert_child_at_index (thumb, index * 2);
 
