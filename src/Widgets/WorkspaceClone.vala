@@ -27,10 +27,10 @@ namespace Gala {
         private int last_width;
         private int last_height;
 
-        public FramedBackground (WindowManager wm) {
+        public FramedBackground (Meta.Display display) {
             Object (
-                wm: wm,
-                monitor_index: wm.get_display ().get_primary_monitor (),
+                display: display,
+                monitor_index: display.get_primary_monitor (),
                 control_position: false,
                 rounded_corners: true
             );
@@ -38,8 +38,8 @@ namespace Gala {
 
         construct {
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-            var primary = wm.get_display ().get_primary_monitor ();
-            var monitor_geom = wm.get_display ().get_monitor_geometry (primary);
+            var primary = display.get_primary_monitor ();
+            var monitor_geom = display.get_monitor_geometry (primary);
 
             var effect = new ShadowEffect ("workspace");
             add_effect (effect);
@@ -178,7 +178,7 @@ namespace Gala {
             background_click_action.clicked.connect (() => {
                 selected (true);
             });
-            background = new FramedBackground (wm);
+            background = new FramedBackground (display);
             background.add_action (background_click_action);
 
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {

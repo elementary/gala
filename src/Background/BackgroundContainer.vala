@@ -60,7 +60,7 @@ namespace Gala {
             destroy_all_children ();
 
             for (var i = 0; i < wm.get_display ().get_n_monitors (); i++) {
-                var background = new BackgroundManager (wm, i);
+                var background = new BackgroundManager (wm.get_display (), i);
 
                 add_child (background);
 
