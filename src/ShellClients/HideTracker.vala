@@ -24,10 +24,7 @@ public class Gala.HideTracker : Object {
         set {
             _hide_mode = value;
 
-            destroy_barrier ();
-            if (hide_mode != NEVER) {
-                setup_barrier ();
-            }
+            setup_barrier ();
         }
     }
 
@@ -182,10 +179,6 @@ public class Gala.HideTracker : Object {
 
     private void update_hidden () {
         switch (hide_mode) {
-            case NEVER:
-                toggle_display (false);
-                break;
-
             case MAXIMIZED_FOCUS_WINDOW:
                 toggle_display (focus_maximized_overlap);
                 break;
@@ -200,6 +193,10 @@ public class Gala.HideTracker : Object {
 
             case ALWAYS:
                 toggle_display (true);
+                break;
+            
+            default:
+                warning ("HideTracker: unsupported hide mode.");
                 break;
         }
     }
@@ -280,10 +277,6 @@ public class Gala.HideTracker : Object {
         }
 
         return false;
-    }
-
-    private void destroy_barrier () {
-        barrier = null;
     }
 
     private void setup_barrier () {
