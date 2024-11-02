@@ -47,6 +47,12 @@ public class Gala.HideTracker : Object {
         Object (display: display, panel: panel);
     }
 
+    ~HideTracker () {
+        if (hide_timeout_id != 0) {
+            Source.remove (hide_timeout_id);
+        }
+    }
+
     construct {
         // Can't be local otherwise we get a memory leak :(
         // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
