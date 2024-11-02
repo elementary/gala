@@ -81,7 +81,7 @@ namespace Gala {
 
             var windows_ordered = InternalUtils.sort_windows (display, windows);
 
-            var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
+            var new_window = new WindowClone (display, window, gesture_tracker, monitor_scale, overview_mode);
 
             new_window.selected.connect ((clone) => window_selected (clone.window));
             new_window.destroy.connect ((_new_window) => {
