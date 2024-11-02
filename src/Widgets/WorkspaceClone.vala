@@ -188,7 +188,7 @@ namespace Gala {
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
 
-            icon_group = new IconGroup (wm, workspace, scale_factor);
+            icon_group = new IconGroup (display, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
