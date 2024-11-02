@@ -216,40 +216,6 @@ namespace Gala {
 
                     return Clutter.EVENT_STOP;
 
-                case EventType.BUTTON_RELEASE:
-                case EventType.TOUCH_END:
-                    if (!is_valid_touch_event (event)) {
-                        return Clutter.EVENT_PROPAGATE;
-                    }
-
-                    if (!dragging) {
-                        float x, y, ex, ey;
-                        event.get_coords (out ex, out ey);
-                        actor.get_transformed_position (out x, out y);
-
-                        // release has happened within bounds of actor
-                        if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-                            actor_clicked (event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY);
-                        }
-
-                        if (clicked) {
-                            ungrab_actor ();
-                            clicked = false;
-                        }
-
-                        return Clutter.EVENT_STOP;
-                    } else if (dragging) {
-                        if (hovered != null) {
-                            finish ();
-                            hovered = null;
-                        } else {
-                            cancel ();
-                        }
-
-                        return Clutter.EVENT_STOP;
-                    }
-                    break;
-
                 default:
                     break;
             }
@@ -298,7 +264,42 @@ namespace Gala {
                     if (event.get_key_symbol () == Key.Escape) {
                         cancel ();
                     }
-                    break;
+
+                    return Clutter.EVENT_STOP;
+
+                case EventType.BUTTON_RELEASE:
+                case EventType.TOUCH_END:
+                    if (!is_valid_touch_event (event)) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
+                    if (dragging) {
+                        if (hovered != null) {
+                            finish ();
+                            hovered = null;
+                        } else {
+                            cancel ();
+                        }
+
+                        return Clutter.EVENT_STOP;
+                    }
+
+                    float x, y, ex, ey;
+                    event.get_coords (out ex, out ey);
+                    actor.get_transformed_position (out x, out y);
+
+                    // release has happened within bounds of actor
+                    if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                        actor_clicked (event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY);
+                    }
+
+                    if (clicked) {
+                        ungrab_actor ();
+                        clicked = false;
+                    }
+
+                    return Clutter.EVENT_STOP;
+
                 case EventType.MOTION:
                 case EventType.TOUCH_UPDATE:
                     if (!is_valid_touch_event (event)) {
@@ -338,6 +339,7 @@ namespace Gala {
                             }
                         }
                         return Clutter.EVENT_STOP;
+
                     } else if (dragging) {
                         handle.x -= last_x - x;
                         handle.y -= last_y - y;
@@ -468,11 +470,11 @@ namespace Gala {
             var type = event.get_type ();
 
             return (
+                Meta.Util.is_wayland_compositor () ||
                 type != Clutter.EventType.TOUCH_BEGIN &&
                 type != Clutter.EventType.TOUCH_CANCEL &&
                 type != Clutter.EventType.TOUCH_END &&
-                type != Clutter.EventType.TOUCH_UPDATE ||
-                Meta.Util.is_wayland_compositor ()
+                type != Clutter.EventType.TOUCH_UPDATE
             );
         }
     }
