@@ -47,7 +47,7 @@ public class Gala.WindowClone : Clutter.Actor {
     public bool active {
         set {
             active_shape.save_easing_state ();
-            active_shape.set_easing_duration (wm.enable_animations ? FADE_ANIMATION_DURATION : 0);
+            active_shape.set_easing_duration (AnimationsSettings.get_enable_animations () ? FADE_ANIMATION_DURATION : 0);
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
         }
@@ -313,7 +313,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = (animate && wm.enable_animations) ? MultitaskingView.ANIMATION_DURATION : 0;
+            var duration = (animate && AnimationsSettings.get_enable_animations ()) ? MultitaskingView.ANIMATION_DURATION : 0;
 
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
@@ -351,7 +351,7 @@ public class Gala.WindowClone : Clutter.Actor {
             }
         };
 
-        if (!animate || gesture_tracker == null || !with_gesture || !wm.enable_animations) {
+        if (!animate || gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
             on_animation_end (1, false, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -400,7 +400,7 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+            var duration = AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0;
 
             save_easing_state ();
             set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
@@ -432,7 +432,7 @@ public class Gala.WindowClone : Clutter.Actor {
             }
         };
 
-        if (gesture_tracker == null || !with_gesture || !wm.enable_animations) {
+        if (gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
             on_animation_end (1, false, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -485,7 +485,7 @@ public class Gala.WindowClone : Clutter.Actor {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+        var duration = AnimationsSettings.get_enable_animations () ? FADE_ANIMATION_DURATION : 0;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
@@ -507,7 +507,7 @@ public class Gala.WindowClone : Clutter.Actor {
 #else
     public override bool leave_event (Clutter.CrossingEvent event) {
 #endif
-        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+        var duration = AnimationsSettings.get_enable_animations () ? FADE_ANIMATION_DURATION : 0;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
@@ -551,7 +551,7 @@ public class Gala.WindowClone : Clutter.Actor {
             remove_transition ("shadow-opacity");
         }
 
-        if (wm.enable_animations) {
+        if (AnimationsSettings.get_enable_animations ()) {
             var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
@@ -643,7 +643,7 @@ public class Gala.WindowClone : Clutter.Actor {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
-        var duration = wm.enable_animations ? FADE_ANIMATION_DURATION : 0;
+        var duration = AnimationsSettings.get_enable_animations () ? FADE_ANIMATION_DURATION : 0;
 
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
@@ -702,7 +702,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         var duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = wm.enable_animations ? duration : 0;
+        duration = AnimationsSettings.get_enable_animations () ? duration : 0;
 
         window_icon.save_easing_state ();
 
@@ -810,7 +810,7 @@ public class Gala.WindowClone : Clutter.Actor {
         get_parent ().remove_child (this);
         prev_parent.insert_child_at_index (this, prev_index);
 
-        var duration = wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0;
+        var duration = AnimationsSettings.get_enable_animations () ? MultitaskingView.ANIMATION_DURATION : 0;
 
         clone.set_pivot_point (0.0f, 0.0f);
         clone.save_easing_state ();
