@@ -213,7 +213,7 @@ public class Gala.BlurEffect : Clutter.Effect {
         return true;
     }
 
-    private bool update_background_fbo (int width, int height) {
+    private bool update_background_fbo (int width, int height, float downscale_factor) {
         if (texture_width == width &&
             texture_height == height &&
             background_framebuffer != null
@@ -256,7 +256,7 @@ public class Gala.BlurEffect : Clutter.Effect {
         var updated = update_actor_fbo (width, height, downscale_factor) && update_general_fbo (width, height, downscale_factor);
 
         if (mode == BlurMode.BLUR_BACKGROUND) {
-            updated = updated && update_background_fbo (width, height);
+            updated = updated && update_background_fbo (width, height, downscale_factor);
         }
 
         texture_width = width;
