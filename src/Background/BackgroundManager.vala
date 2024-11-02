@@ -61,7 +61,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             return;
         }
 
-        if (animate && wm.enable_animations) {
+        if (animate && AnimationsSettings.get_enable_animations ()) {
             var transition = new Clutter.PropertyTransition ("opacity");
             transition.set_from_value (255);
             transition.set_to_value (0);

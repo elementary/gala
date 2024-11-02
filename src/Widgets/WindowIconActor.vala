@@ -65,7 +65,7 @@ namespace Gala {
             set {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
-                } else if (!_temporary && value && wm.enable_animations) {
+                } else if (!_temporary && value && AnimationsSettings.get_enable_animations ()) {
                     var transition = new Clutter.TransitionGroup () {
                         duration = 800,
                         auto_reverse = true,
@@ -147,7 +147,7 @@ namespace Gala {
 
             new_icon.save_easing_state ();
             new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            new_icon.set_easing_duration (wm.enable_animations ? 500 : 0);
+            new_icon.set_easing_duration (AnimationsSettings.get_enable_animations () ? 500 : 0);
             new_icon.restore_easing_state ();
 
             if (icon == null) {

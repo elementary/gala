@@ -84,7 +84,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     private new void transform (bool expand) {
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        set_easing_duration (wm.enable_animations ? 200 : 0);
+        set_easing_duration (AnimationsSettings.get_enable_animations () ? 200 : 0);
 
         if (!expand) {
             remove_transition ("pulse");
@@ -102,7 +102,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     }
 
     private void add_pulse_animation () {
-        if (!wm.enable_animations) {
+        if (!AnimationsSettings.get_enable_animations ()) {
             return;
         }
 
