@@ -339,7 +339,7 @@ namespace Gala {
 
                 pointer_locator = new PointerLocator (display);
                 ui_group.add_child (pointer_locator);
-                ui_group.add_child (new DwellClickTimer (this));
+                ui_group.add_child (new DwellClickTimer (display));
 
                 ui_group.add_child (screen_shield);
 
