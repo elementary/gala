@@ -157,7 +157,7 @@ namespace Gala {
             screensaver = new ScreenSaverManager (screen_shield);
 
             DBus.init (this);
-            DBusAccelerator.init (this);
+            DBusAccelerator.init (display);
             MediaFeedback.init ();
 
             WindowListener.init (display);
