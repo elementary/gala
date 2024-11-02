@@ -405,7 +405,7 @@ public class Gala.BlurEffect : Clutter.Effect {
             if (mode == BlurMode.BLUR_ACTOR) {
                 paint_actor_offscreen (blur_node, flags);
             } else {
-                paint_background (blur_node, paint_context, actor_box);
+                //  paint_background (blur_node, paint_context, actor_box);
             }
         } else {
             /* Use the cached pipeline if no repaint is needed */
