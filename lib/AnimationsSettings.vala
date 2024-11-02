@@ -26,7 +26,7 @@ namespace AnimationsSettings {
     /**
      * Utility that returns the given duration or 0 if animations are disabled.
      */
-    public inline uint get_animation_duration (uint duration) {
-        return enable_animations ? duration : 0;
+    public uint get_animation_duration (uint duration) {
+        return get_enable_animations () ? duration : 0;
     }
 }
