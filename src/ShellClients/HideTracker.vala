@@ -144,7 +144,7 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
-            if (!panel.get_custom_window_rect ().overlap (window.get_frame_rect ())) {
+            if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
 

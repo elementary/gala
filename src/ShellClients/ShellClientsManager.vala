@@ -143,16 +143,16 @@ public class Gala.ShellClientsManager : Object {
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
 
-    public void set_anchor (Meta.Window window, Meta.Side side) {
+    public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
-            panel_windows[window].update_anchor (side);
+            panel_windows[window].anchor = anchor;
             return;
         }
 
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        panel_windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, anchor);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
@@ -226,8 +226,8 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    int parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
-                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 15) {
+                    int parsed; // Will be used as Pantheon.Desktop.Anchor which is a 4 value enum so check bounds for that
+                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 3) {
                         set_anchor (window, parsed);
                     } else {
                         warning ("Failed to parse %s as anchor", val);
