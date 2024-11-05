@@ -229,6 +229,9 @@ public class Gala.ShellClientsManager : Object {
                     int parsed; // Will be used as Pantheon.Desktop.Anchor which is a 4 value enum so check bounds for that
                     if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 3) {
                         set_anchor (window, parsed);
+                        // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
+                        // but on X the window was already shown when we get here so we have to call again to instantly apply it.
+                        set_anchor (window, parsed);
                     } else {
                         warning ("Failed to parse %s as anchor", val);
                     }
