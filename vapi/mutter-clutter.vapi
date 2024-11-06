@@ -7142,7 +7142,7 @@ namespace Clutter {
 #endif
 		public unowned Cogl.Framebuffer get_framebuffer ();
 #if HAS_MUTTER45	
-		public void get_layout (ref Mtk.Rectangle rect);
+		public void get_layout (Mtk.Rectangle rect);
 #else
 		public void get_layout (Cairo.RectangleInt rect);
 #endif

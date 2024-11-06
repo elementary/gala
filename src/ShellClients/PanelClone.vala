@@ -47,10 +47,10 @@ public class Gala.PanelClone : Object {
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
 
-        Timeout.add_once (5000, () => {
-            clone.add_effect (new BlurEffect (clone, BlurMode.BLUR_BACKGROUND, 18));
-            //  actor.add_effect (new BlurEffect (actor, BlurMode.BLUR_BACKGROUND, 18));
-        });
+        clone.add_effect (new BlurEffect (clone, BlurMode.BLUR_BACKGROUND, 18));
+        actor.add_effect (new BlurEffect (actor, BlurMode.BLUR_ACTOR, 18));
+        //  Timeout.add_once (5000, () => {
+        //  });
 
         // WindowActor position and Window position aren't necessarily the same.
         // The clone needs the actor position

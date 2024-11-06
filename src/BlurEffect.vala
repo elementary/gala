@@ -40,6 +40,7 @@ public class Gala.BlurEffect : Clutter.Effect {
     }
 
     construct {
+        warning ("CREATING");
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 
         actor_pipeline = new Cogl.Pipeline (ctx);
@@ -69,37 +70,38 @@ public class Gala.BlurEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox update_actor_box (Clutter.PaintContext paint_context) {
+        warning ("UPDATING ACTOR BOX");
         Clutter.ActorBox actor_box;
 
-        if (mode == BlurMode.BLUR_ACTOR) {
+        //  if (mode == BlurMode.BLUR_ACTOR) {
             actor_box = actor.get_allocation_box ();
-        } else {
-            var stage_view = paint_context.get_stage_view ();
+        //  } else {
+        //      var stage_view = paint_context.get_stage_view ();
 
-            float origin_x, origin_y, width, height;
-            actor.get_transformed_position (out origin_x, out origin_y);
-            actor.get_transformed_size (out width, out height);
+        //      float origin_x, origin_y, width, height;
+        //      actor.get_transformed_position (out origin_x, out origin_y);
+        //      actor.get_transformed_size (out width, out height);
 
-            var box_scale_factor = 1.0f;
-            if (stage_view != null) {
-                Mtk.Rectangle stage_view_layout = {};
+        //      var box_scale_factor = 1.0f;
+        //      if (stage_view != null) {
+        //          Mtk.Rectangle stage_view_layout = {};
 
-                box_scale_factor = stage_view.get_scale ();
-                stage_view.get_layout (ref stage_view_layout);
+        //          box_scale_factor = stage_view.get_scale ();
+        //          stage_view.get_layout (stage_view_layout);
 
-                origin_x -= stage_view_layout.x;
-                origin_y -= stage_view_layout.y;
-            } else {
-                /* If we're drawing off stage, just assume scale = 1, this won't work
-                * with stage-view scaling though.
-                */
-            }
+        //          origin_x -= stage_view_layout.x;
+        //          origin_y -= stage_view_layout.y;
+        //      } else {
+        //          /* If we're drawing off stage, just assume scale = 1, this won't work
+        //          * with stage-view scaling though.
+        //          */
+        //      }
 
-            actor_box = Clutter.ActorBox ();
-            actor_box.set_origin (origin_x, origin_y);
-            actor_box.set_size (width, height);
-            actor_box.scale (box_scale_factor);
-        }
+        //      actor_box = Clutter.ActorBox ();
+        //      actor_box.set_origin (origin_x, origin_y);
+        //      actor_box.set_size (width, height);
+        //      actor_box.scale (box_scale_factor);
+        //  }
 
         Clutter.ActorBox.clamp_to_pixel (ref actor_box);
 
@@ -206,7 +208,7 @@ public class Gala.BlurEffect : Clutter.Effect {
 
         actor_pipeline.set_layer_texture (0, actor_texture);
 
-        actor_framebuffer = (Cogl.Framebuffer) new Cogl.Offscreen.with_texture (actor_texture);
+        actor_framebuffer = new Cogl.Offscreen.with_texture (actor_texture);
 
         setup_projection_matrix (actor_framebuffer, new_width, new_height);
 
@@ -240,14 +242,18 @@ public class Gala.BlurEffect : Clutter.Effect {
 
         background_pipeline.set_layer_texture (0, background_texture);
 
-        background_framebuffer = (Cogl.Framebuffer) new Cogl.Offscreen.with_texture (background_texture);
+        background_framebuffer = new Cogl.Offscreen.with_texture (background_texture);
 
         setup_projection_matrix (background_framebuffer, new_width, new_height);
+
+        warning ("CREATED FRAMEBUFFER");
 
         return true;
     }
 
     private bool update_framebuffers (Clutter.PaintContext paint_context, Clutter.ActorBox actor_box) {
+        warning ("UPDATING FBOS");
+
         var width = (int) actor_box.get_width ();
         var height = (int) actor_box.get_height ();
 
@@ -267,6 +273,7 @@ public class Gala.BlurEffect : Clutter.Effect {
     }
 
     private Clutter.PaintNode create_blur_nodes (Clutter.PaintNode node) {
+        warning ("CREATING BLUR NODES");
         float width, height;
         actor.get_size (out width, out height);
 
@@ -294,6 +301,7 @@ public class Gala.BlurEffect : Clutter.Effect {
 
 
     private void paint_background (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.ActorBox actor_box) {
+        warning ("PAINTING BG");
         float transformed_x, transformed_y, transformed_width, transformed_height;
 
         actor_box.get_origin (out transformed_x, out transformed_y);
@@ -346,9 +354,7 @@ public class Gala.BlurEffect : Clutter.Effect {
 
             actor_painted = true;
         } else {
-            Clutter.PaintNode pipeline_node = null;
-
-            pipeline_node = new Clutter.PipelineNode (actor_pipeline);
+            var pipeline_node = new Clutter.PipelineNode (actor_pipeline);
             node.add_child (pipeline_node);
             pipeline_node.add_rectangle ({
                 0.0f,
@@ -386,11 +392,6 @@ public class Gala.BlurEffect : Clutter.Effect {
             return;
         }
 
-        var paint_opacity = 255;
-        if (mode == BlurMode.BLUR_ACTOR) {
-            paint_opacity = actor.get_paint_opacity ();
-        }
-
         if (needs_repaint (flags)) {
             var actor_box = update_actor_box (paint_context);
 
@@ -405,7 +406,7 @@ public class Gala.BlurEffect : Clutter.Effect {
             if (mode == BlurMode.BLUR_ACTOR) {
                 paint_actor_offscreen (blur_node, flags);
             } else {
-                //  paint_background (blur_node, paint_context, actor_box);
+                paint_background (blur_node, paint_context, actor_box);
             }
         } else {
             /* Use the cached pipeline if no repaint is needed */
