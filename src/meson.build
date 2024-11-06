@@ -1,5 +1,4 @@
 gala_bin_sources = files(
-    'BlurEffect.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DaemonManager.vala',
@@ -30,6 +29,8 @@ gala_bin_sources = files(
     'Background/BackgroundManager.vala',
     'Background/BackgroundSource.vala',
     'Background/SystemBackground.vala',
+    'Blur/ActorBlurEffect.vala',
+    'Blur/BackgroundBlurEffect.vala',
     'ColorFilters/ColorblindnessCorrectionEffect.vala',
     'ColorFilters/FilterManager.vala',
     'ColorFilters/MonochromeEffect.vala',
