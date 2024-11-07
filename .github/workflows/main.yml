@@ -31,7 +31,7 @@ jobs:
     - name: Install Dependencies
       run: |
         apt update
-        apt install -y gettext gsettings-desktop-schemas-devel libatk-bridge2.0-devel libcanberra-devel libclutter-1.0-devel libgee-0.8-devel libglib2.0-devel libgnome-desktop-3-devel libgranite-devel libgtk-3-devel mutter-devel libxml2-utils libsqlite3-devel meson valac valadoc
+        apt install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libcanberra-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-3-dev libgranite-dev libgtk-3-dev libmutter-15-dev libxml2-utils libsqlite3-dev meson valac valadoc
     - name: Build
       env:
         DESTDIR: out
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: |
-          dnf install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libcanberra-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-3-dev libgranite-dev libgtk-3-dev libmutter-15-dev libxml2-utils libsqlite3-dev meson valac valadoc
+          dnf install -y gettext gsettings-desktop-schemas-devel libatk-bridge2.0-devel libcanberra-devel libclutter-1.0-devel libgee-0.8-devel libglib2.0-devel libgnome-desktop-3-devel libgranite-devel libgtk-3-devel mutter-devel libxml2-utils libsqlite3-devel meson valac valadoc
       - name: Build
         env:
           DESTDIR: out
