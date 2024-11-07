@@ -47,11 +47,6 @@ public class Gala.PanelClone : Object {
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
 
-        Timeout.add_once (5000, () => {
-            //  actor.add_effect (new BlurEffect (actor, BlurMode.BLUR_BACKGROUND, 18));
-            clone.add_effect (new BackgroundBlurEffect (clone, 18));
-        });
-
         // WindowActor position and Window position aren't necessarily the same.
         // The clone needs the actor position
         actor.notify["x"].connect (update_clone_position);
@@ -121,6 +116,10 @@ public class Gala.PanelClone : Object {
     }
 
     private int get_animation_duration () {
+        if (panel.window == null) {
+            return 0;
+        }
+ 
         var fullscreen = wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ());
         var should_animate = AnimationsSettings.get_enable_animations () && !wm.workspace_view.is_opened () && !fullscreen;
         return should_animate ? ANIMATION_DURATION : 0;
@@ -165,5 +164,13 @@ public class Gala.PanelClone : Object {
             panel_hidden = false;
             return Source.REMOVE;
         });
+    }
+
+    public void add_blur (uint border_radius) {
+        clone.add_effect_with_name ("background-blur", new BackgroundBlurEffect (clone, 18));
+    }
+
+    public void remove_blur () {
+        clone.remove_effect_by_name ("background-blur");
     }
 }

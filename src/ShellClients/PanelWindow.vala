@@ -270,4 +270,24 @@ public class Gala.PanelWindow : Object {
 
         barrier.trigger.connect (clone.show);
     }
+
+    public void add_blur (uint border_radius) {
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (actor == null) {
+            critical ("PanelWindow: window actor is null, cannot add blur");
+        }
+
+        actor.add_effect_with_name ("background-blur", new BackgroundBlurEffect (actor, 18));
+        clone.add_blur (border_radius);
+    }
+
+    public void remove_blur () {
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (actor == null) {
+            critical ("PanelWindow: window actor is null, cannot remove blur");
+        }
+
+        actor.remove_effect_by_name ("background-blur");
+        clone.remove_blur ();
+    }
 }

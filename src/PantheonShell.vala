@@ -58,6 +58,8 @@ namespace Gala {
             focus_panel,
             set_size,
             set_hide_mode,
+            add_blur,
+            remove_blur,
         };
 
         wayland_pantheon_widget_interface = {
@@ -327,6 +329,40 @@ namespace Gala {
         }
 
         ShellClientsManager.get_instance ().set_hide_mode (window, hide_mode);
+    }
+
+    internal static void add_blur (Wl.Client client, Wl.Resource resource, uint border_radius) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to set hide mode but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set hide mode but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().add_blur (window, border_radius);
+    }
+
+    internal static void remove_blur (Wl.Client client, Wl.Resource resource) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to set hide mode but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set hide mode but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().remove_blur (window);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

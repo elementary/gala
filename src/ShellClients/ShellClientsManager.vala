@@ -183,6 +183,24 @@ public class Gala.ShellClientsManager : Object {
         panel_windows[window].set_hide_mode (hide_mode);
     }
 
+    public void add_blur (Meta.Window window, uint border_radius) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before adding blur.");
+            return;
+        }
+
+        panel_windows[window].add_blur (border_radius);
+    }
+
+    public void remove_blur (Meta.Window window) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before removing blur.");
+            return;
+        }
+
+        panel_windows[window].remove_blur ();
+    }
+
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
         positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
 

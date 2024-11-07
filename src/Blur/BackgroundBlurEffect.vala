@@ -204,6 +204,10 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var width = (int) actor_box.get_width ();
         var height = (int) actor_box.get_height ();
 
+        if (width <= 0 || height <= 0) {
+            return false;
+        }
+
         var downscale_factor = calculate_downscale_factor (width, height, radius);
 
         var updated = (
@@ -263,6 +267,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         /* Blit node */
         unowned var src = paint_context.get_framebuffer ();
+        unowned var src = Background
         var blit_node = new Clutter.BlitNode (src);
         background_node.add_child (blit_node);
         blit_node.add_blit_rectangle ((int) transformed_x, (int) transformed_y, 0, 0, (int) transformed_width, (int) transformed_height);

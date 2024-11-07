@@ -98,6 +98,20 @@
 
       <arg name="hide_mode" type="uint" enum="hide_mode" summary="hide mode"/>
     </request>
+
+    <request name="add_blur">
+      <description summary="add blur">
+        Add background blur to a window and its clones.
+      </description>
+
+      <arg name="border_radius" type="uint" summary="radius of rounded corners of blur"/>
+    </request>
+
+    <request name="remove_blur">
+      <description summary="disable blur">
+        Remove background blur from a window and its clones.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
