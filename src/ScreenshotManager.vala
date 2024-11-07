@@ -400,10 +400,7 @@ namespace Gala {
 
             image = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_width, image_height);
 
-            var paint_flags = Clutter.PaintFlag.NO_CURSORS;
-            if (include_cursor) {
-                paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
-            }
+            var paint_flags = include_cursor ? Clutter.PaintFlag.FORCE_CURSORS : Clutter.PaintFlag.NO_CURSORS;
 
             try {
                 if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {

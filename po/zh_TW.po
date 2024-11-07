@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
-"PO-Revision-Date: 2024-09-19 10:09+0000\n"
+"POT-Creation-Date: 2024-10-15 19:33+0000\n"
+"PO-Revision-Date: 2024-11-06 11:20+0000\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese (Traditional) <https://l10n.elementary.io/projects/"
 "desktop/gala/zh_Hant/>\n"
@@ -107,55 +107,55 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
 msgid "Improvements:"
 msgstr "改善項目："
 
-#: data/gala.metainfo.xml.in:34
-msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "修正在工作區之間移動視窗時可能發生的崩潰"
-
-#: data/gala.metainfo.xml.in:35
-msgid "Fix notification animation when entering multitasking view"
-msgstr "修正進入多工作業檢視時的通知動畫"
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
 msgid "Updated translations"
 msgstr "更新翻譯"
 
+#: data/gala.metainfo.xml.in:49
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr "修正在工作區之間移動視窗時可能發生的崩潰"
+
 #: data/gala.metainfo.xml.in:50
+msgid "Fix notification animation when entering multitasking view"
+msgstr "修正進入多工作業檢視時的通知動畫"
+
+#: data/gala.metainfo.xml.in:65
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "改善多工作業檢視中的鍵盤瀏覽"
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:66
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "桌布切換的同時一起變更面板顏色"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:106
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr "變更桌布以及睡眠時遵循「減少動態效果」選項"
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:107
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "移動視窗時使用合適的拖放游標"
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:108
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "修正多工作業檢視中手勢可能會停止運作的問題"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:109
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr "改善多螢幕時的動態工作空間行為"
+msgstr "改善多螢幕時的動態工作區行為"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:131
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr "改善移動到工作空間快捷鍵的處理"
+msgstr "改善「移動到工作區」快捷鍵的處理"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -179,7 +179,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "未知"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "視窗已有焦點"
 

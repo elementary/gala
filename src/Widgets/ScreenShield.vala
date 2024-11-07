@@ -340,7 +340,7 @@ namespace Gala {
             grab_key_focus ();
             modal_proxy = wm.push_modal (this);
 
-            if (wm.enable_animations && animate) {
+            if (AnimationsSettings.get_enable_animations () && animate) {
                 animate_and_lock (animation_time);
             } else {
                 _set_active (true);

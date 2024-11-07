@@ -27,10 +27,10 @@ namespace Gala {
         private int last_width;
         private int last_height;
 
-        public FramedBackground (WindowManager wm) {
+        public FramedBackground (Meta.Display display) {
             Object (
-                wm: wm,
-                monitor_index: wm.get_display ().get_primary_monitor (),
+                display: display,
+                monitor_index: display.get_primary_monitor (),
                 control_position: false,
                 rounded_corners: true
             );
@@ -38,8 +38,8 @@ namespace Gala {
 
         construct {
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-            var primary = wm.get_display ().get_primary_monitor ();
-            var monitor_geom = wm.get_display ().get_monitor_geometry (primary);
+            var primary = display.get_primary_monitor ();
+            var monitor_geom = display.get_monitor_geometry (primary);
 
             var effect = new ShadowEffect ("workspace");
             add_effect (effect);
@@ -139,7 +139,6 @@ namespace Gala {
          */
         public signal void selected (bool close_view);
 
-        public WindowManager wm { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
@@ -163,8 +162,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
-            Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
+        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
+            Object (workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
         }
 
         construct {
@@ -178,17 +177,17 @@ namespace Gala {
             background_click_action.clicked.connect (() => {
                 selected (true);
             });
-            background = new FramedBackground (wm);
+            background = new FramedBackground (display);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (wm, gesture_tracker, scale_factor) {
+            window_container = new WindowCloneContainer (display, gesture_tracker, scale_factor) {
                 width = monitor_geometry.width,
                 height = monitor_geometry.height,
             };
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
 
-            icon_group = new IconGroup (wm, workspace, scale_factor);
+            icon_group = new IconGroup (display, workspace, scale_factor);
             icon_group.selected.connect (() => selected (true));
 
             var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
@@ -388,18 +387,18 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 background.set_scale (scale, scale);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture || !wm.enable_animations) {
+            if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
                 on_animation_begin (0);
                 on_animation_end (1, false, 0);
             } else {
@@ -464,18 +463,18 @@ namespace Gala {
 
                 save_easing_state ();
                 set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 set_x (target_x);
                 restore_easing_state ();
 
                 background.save_easing_state ();
                 background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (wm.enable_animations ? MultitaskingView.ANIMATION_DURATION : 0);
+                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
                 background.set_scale (1, 1);
                 background.restore_easing_state ();
             };
 
-            if (!with_gesture || !wm.enable_animations) {
+            if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
                 on_animation_end (1, false, 0);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
