@@ -40,6 +40,24 @@ jobs:
         ninja -C build
         ninja -C build install
 
+  fedora:
+    runs-on: ubuntu-latest
+
+    container:
+      image: fedora:latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          dnf install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libcanberra-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-3-dev libgranite-dev libgtk-3-dev libmutter-15-dev libxml2-utils libsqlite3-dev meson valac valadoc
+      - name: Build
+        env:
+          DESTDIR: out
+        run: |
+          meson build
+          ninja -C build install
+
   lint:
 
     runs-on: ubuntu-latest
