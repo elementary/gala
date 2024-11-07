@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: |
-          dnf install -y gettext gsettings-desktop-schemas-devel libatk-bridge2.0-devel libcanberra-devel libclutter-1.0-devel libgee-0.8-devel libglib2.0-devel libgnome-desktop-3-devel libgranite-devel libgtk-3-devel mutter-devel libxml2-utils libsqlite3-devel meson valac valadoc
+          dnf install -y gettext gsettings-desktop-schemas-devel libatk-bridge2.0-devel libcanberra-devel clutter-devel libgee-devel libglib2.0-devel libgnome-devel granite-devel gtk3-devel mutter-devel xml2 sqlite-devel meson valac valadoc
       - name: Build
         env:
           DESTDIR: out
