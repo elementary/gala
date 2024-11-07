@@ -277,7 +277,7 @@ public class Gala.PanelWindow : Object {
             critical ("PanelWindow: window actor is null, cannot add blur");
         }
 
-        actor.add_effect_with_name ("background-blur", new BackgroundBlurEffect (actor, 18));
+        actor.add_effect_with_name ("background-blur", new BackgroundBlurEffect (18));
         clone.add_blur (border_radius);
     }
 

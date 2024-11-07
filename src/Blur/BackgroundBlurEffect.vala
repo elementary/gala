@@ -6,8 +6,7 @@
 public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private const float MIN_DOWNSCALE_SIZE = 256.0f;
     private const float MAX_RADIUS = 12.0f;
-    
-    public new Clutter.Actor actor { get; construct; }
+
     public float radius { get; construct; }
 
     private bool actor_painted = false;
@@ -29,8 +28,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private Cogl.Pipeline background_pipeline;
     private Cogl.Texture background_texture;
 
-    public BackgroundBlurEffect (Clutter.Actor actor, float radius) {
-        Object (actor: actor, radius: radius);
+    public BackgroundBlurEffect (float radius) {
+        Object (radius: radius);
     }
 
     construct {
@@ -267,7 +266,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         /* Blit node */
         unowned var src = paint_context.get_framebuffer ();
-        unowned var src = Background
         var blit_node = new Clutter.BlitNode (src);
         background_node.add_child (blit_node);
         blit_node.add_blit_rectangle ((int) transformed_x, (int) transformed_y, 0, 0, (int) transformed_width, (int) transformed_height);

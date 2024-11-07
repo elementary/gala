@@ -167,7 +167,7 @@ public class Gala.PanelClone : Object {
     }
 
     public void add_blur (uint border_radius) {
-        clone.add_effect_with_name ("background-blur", new BackgroundBlurEffect (clone, 18));
+        clone.add_effect_with_name ("background-blur", new BackgroundBlurEffect (18));
     }
 
     public void remove_blur () {
