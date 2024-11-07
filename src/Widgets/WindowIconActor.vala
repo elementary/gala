@@ -23,7 +23,6 @@ namespace Gala {
      */
     public class WindowIconActor : Clutter.Actor {
         public Meta.Window window { get; construct; }
-        public WindowManager wm { get; construct; }
 
         private float cur_icon_scale = 1.0f;
         private float desired_icon_scale = 1.0f;
@@ -102,8 +101,8 @@ namespace Gala {
         private WindowIcon? icon = null;
         private WindowIcon? old_icon = null;
 
-        public WindowIconActor (WindowManager wm, Meta.Window window) {
-            Object (wm: wm, window: window);
+        public WindowIconActor (Meta.Window window) {
+            Object (window: window);
         }
 
         construct {

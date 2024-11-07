@@ -39,12 +39,12 @@ namespace Gala {
         private GLib.Settings interface_settings;
         private Cairo.ImageSurface surface;
 
-        public weak WindowManager wm { get; construct; }
+        public Meta.Display display { get; construct; }
 
         public double angle { get; set; }
 
-        public DwellClickTimer (WindowManager wm) {
-            Object (wm: wm);
+        public DwellClickTimer (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
@@ -69,7 +69,6 @@ namespace Gala {
             seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
 
             seat.ptr_a11y_timeout_started.connect ((device, type, timeout) => {
-                unowned var display = wm.get_display ();
                 var scale = display.get_monitor_scale (display.get_current_monitor ());
                 update_cursor_size (scale);
 

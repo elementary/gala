@@ -157,7 +157,7 @@ namespace Gala {
             screensaver = new ScreenSaverManager (screen_shield);
 
             DBus.init (this);
-            DBusAccelerator.init (this);
+            DBusAccelerator.init (display);
             MediaFeedback.init ();
 
             WindowListener.init (display);
@@ -218,7 +218,7 @@ namespace Gala {
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
-            background_group = new BackgroundContainer (this);
+            background_group = new BackgroundContainer (display);
             ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
@@ -337,9 +337,9 @@ namespace Gala {
                 notification_group = new Clutter.Actor ();
                 ui_group.add_child (notification_group);
 
-                pointer_locator = new PointerLocator (this);
+                pointer_locator = new PointerLocator (display);
                 ui_group.add_child (pointer_locator);
-                ui_group.add_child (new DwellClickTimer (this));
+                ui_group.add_child (new DwellClickTimer (display));
 
                 ui_group.add_child (screen_shield);
 

@@ -7,8 +7,6 @@
 public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public const int EXPAND_DELAY = 300;
 
-    public WindowManager wm { get; construct; }
-
     public int workspace_index { get; construct set; }
     public bool expanded { get; set; default = false; }
     public int delay { get; set; default = EXPAND_DELAY; }
@@ -27,8 +25,8 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
 
     private uint expand_timeout = 0;
 
-    public WorkspaceInsertThumb (WindowManager wm, int workspace_index, float scale) {
-        Object (wm: wm, workspace_index: workspace_index, scale_factor: scale);
+    public WorkspaceInsertThumb (int workspace_index, float scale) {
+        Object (workspace_index: workspace_index, scale_factor: scale);
 
         reallocate ();
         opacity = 0;

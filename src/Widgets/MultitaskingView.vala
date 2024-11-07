@@ -79,14 +79,14 @@ namespace Gala {
 
             workspaces = new Clutter.Actor ();
 
-            icon_groups = new IconGroupContainer (wm, display.get_monitor_scale (display.get_primary_monitor ()));
+            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
             dock_clones = new Clutter.Actor ();
 
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
-            var blurred_bg = new BackgroundManager (wm, display.get_primary_monitor (), true, false);
+            var blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
             blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
             blurred_bg.add_effect (brightness_effect);
 
@@ -180,7 +180,7 @@ namespace Gala {
                         continue;
                     }
 
-                    var monitor_clone = new MonitorClone (wm, display, monitor, multitasking_gesture_tracker);
+                    var monitor_clone = new MonitorClone (display, monitor, multitasking_gesture_tracker);
                     monitor_clone.window_selected.connect (window_selected);
                     monitor_clone.visible = opened;
 
@@ -518,7 +518,7 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
 
-            var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
+            var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), multitasking_gesture_tracker, scale);
             workspaces.insert_child_at_index (workspace, num);
             icon_groups.add_group (workspace.icon_group);
 
