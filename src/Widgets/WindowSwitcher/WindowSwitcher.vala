@@ -414,7 +414,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         }
 
         save_easing_state ();
-        set_easing_duration (AnimationsSettings.get_enable_animations () ? ANIMATION_DURATION : 0);
+        set_easing_duration (AnimationsSettings.get_animation_duration (ANIMATION_DURATION));
         opacity = show ? 255 : 0;
         restore_easing_state ();
     }
