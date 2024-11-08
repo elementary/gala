@@ -177,7 +177,11 @@ namespace Gala {
             stage = display.get_stage () as Clutter.Stage;
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
+#if HAS_MUTTER47
+            stage.background_color = Cogl.Color.from_string (color);
+#else
             stage.background_color = Clutter.Color.from_string (color);
+#endif
 
             unowned var laters = display.get_compositor ().get_laters ();
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
