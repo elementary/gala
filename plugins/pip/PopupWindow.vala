@@ -142,7 +142,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
 
         save_easing_state ();
-        set_easing_duration (AnimationsSettings.get_enable_animations () ? 200 : 0);
+        set_easing_duration (AnimationsSettings.get_animation_duration (200));
         opacity = 255;
         restore_easing_state ();
     }
@@ -150,7 +150,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     public override void hide () {
         opacity = 255;
 
-        var duration = AnimationsSettings.get_enable_animations () ? 200 : 0;
+        var duration = AnimationsSettings.get_animation_duration (200);
         save_easing_state ();
         set_easing_duration (duration);
         opacity = 0;
@@ -172,7 +172,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 #else
     public override bool enter_event (Clutter.CrossingEvent event) {
 #endif
-        var duration = AnimationsSettings.get_enable_animations () ? 300 : 0;
+        var duration = AnimationsSettings.get_animation_duration (300);
 
         close_button.save_easing_state ();
         close_button.set_easing_duration (duration);
@@ -192,7 +192,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 #else
     public override bool leave_event (Clutter.CrossingEvent event) {
 #endif
-        var duration = AnimationsSettings.get_enable_animations () ? 300 : 0;
+        var duration = AnimationsSettings.get_animation_duration (300);
 
         close_button.save_easing_state ();
         close_button.set_easing_duration (duration);
@@ -314,7 +314,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private void on_close_click_clicked () {
-        var duration = AnimationsSettings.get_enable_animations () ? FADE_OUT_TIMEOUT : 0;
+        var duration = AnimationsSettings.get_animation_duration (FADE_OUT_TIMEOUT);
 
         save_easing_state ();
         set_easing_duration (duration);
@@ -448,7 +448,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         var screen_limit_start_y = SCREEN_MARGIN + monitor_y;
         var screen_limit_end_y = monitor_height + monitor_y - SCREEN_MARGIN - height;
 
-        var duration = AnimationsSettings.get_enable_animations () ? 300 : 0;
+        var duration = AnimationsSettings.get_animation_duration (300);
 
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
@@ -461,7 +461,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private bool place_window_off_screen () {
         off_screen = false;
 
-        var duration = AnimationsSettings.get_enable_animations () ? 300 : 0;
+        var duration = AnimationsSettings.get_animation_duration (300);
 
         save_easing_state ();
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);

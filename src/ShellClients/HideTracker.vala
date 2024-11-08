@@ -155,7 +155,7 @@ public class Gala.HideTracker : Object {
             }
 
             focus_overlap = true;
-            focus_maximized_overlap = window.get_maximized () == BOTH;
+            focus_maximized_overlap = VERTICAL in window.get_maximized ();
         }
 
         update_hidden ();

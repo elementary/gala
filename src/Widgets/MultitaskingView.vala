@@ -871,7 +871,7 @@ namespace Gala {
 
                     dock.save_easing_state ();
                     dock.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    dock.set_easing_duration (AnimationsSettings.get_enable_animations () ? ANIMATION_DURATION : 0);
+                    dock.set_easing_duration (AnimationsSettings.get_animation_duration (ANIMATION_DURATION));
                     dock.y = target_y;
                     dock.restore_easing_state ();
                 };

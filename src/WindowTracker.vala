@@ -52,7 +52,7 @@ public class Gala.WindowTracker : GLib.Object {
         return get_app_from_id (id);
     }
 
-    private static unowned Gala.App? get_app_from_pid (Posix.pid_t pid) {
+    private static unowned Gala.App? get_app_from_pid (pid_t pid) {
         var running_apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned Gala.App app in running_apps) {
             var app_pids = app.get_pids ();
