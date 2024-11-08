@@ -40,19 +40,19 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox update_actor_box (Clutter.PaintContext paint_context) {
-        var stage_view = paint_context.get_stage_view ();
+        unowned var stage_view = paint_context.get_stage_view ();
 
         float origin_x, origin_y, width, height;
         actor.get_transformed_position (out origin_x, out origin_y);
         actor.get_transformed_size (out width, out height);
-  
+
         var box_scale_factor = 1.0f;
         if (stage_view != null) {
             box_scale_factor = stage_view.get_scale ();
 
             Mtk.Rectangle stage_view_layout = {};
             stage_view.get_layout (ref stage_view_layout);
-  
+
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
         } else {
@@ -65,8 +65,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         
         actor_box.set_origin (origin_x, origin_y);
         actor_box.set_size (width, height);
-  
         actor_box.scale (box_scale_factor);
+
         Clutter.ActorBox.clamp_to_pixel (ref actor_box);
 
         return actor_box;
@@ -224,20 +224,21 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         actor_box.get_origin (out transformed_x, out transformed_y);
         actor_box.get_size (out transformed_width, out transformed_height);
 
-        /* Background layer node */
-        var background_node = new Clutter.LayerNode.to_framebuffer (background_framebuffer, background_pipeline);
-        node.add_child (background_node);
-        background_node.add_rectangle ({
-            0.0f,
-            0.0f,
-            texture_width / downscale_factor,
-            texture_height / downscale_factor
-        });
+        //  /* Background layer node */
+        //  var background_node = new Clutter.LayerNode.to_framebuffer (background_framebuffer, background_pipeline);
+        //  node.add_child (background_node);
+        //  background_node.add_rectangle ({
+        //      0.0f,
+        //      0.0f,
+        //      texture_width / downscale_factor,
+        //      texture_height / downscale_factor
+        //  });
 
         /* Blit node */
         unowned var src = paint_context.get_framebuffer ();
         var blit_node = new Clutter.BlitNode (src);
-        background_node.add_child (blit_node);
+        //  background_node.add_child (blit_node);
+        node.add_child (blit_node);
         blit_node.add_blit_rectangle ((int) transformed_x, (int) transformed_y, 0, 0, (int) transformed_width, (int) transformed_height);
     }
 

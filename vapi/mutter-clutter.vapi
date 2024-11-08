@@ -6347,7 +6347,7 @@ namespace Clutter {
 		public unowned Cairo.Region get_redraw_clip ();
 #endif
 		public Clutter.ColorState get_target_color_state ();
-		public Clutter.StageView? get_stage_view ();
+		public unowned Clutter.StageView? get_stage_view ();
 		public static PaintContext new_for_framebuffer (Cogl.Framebuffer framebuffer, Mtk.Region redraw_clip, Clutter.PaintFlag paint_flags, Clutter.ColorState color_state);
 		public void pop_color_state ();
 		public void pop_framebuffer ();
