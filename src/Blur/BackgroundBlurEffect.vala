@@ -13,10 +13,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int texture_height;
     private float downscale_factor;
 
-    private Cogl.Framebuffer actor_framebuffer;
-    private Cogl.Pipeline actor_pipeline;
-    private Cogl.Texture actor_texture;
-
     private Cogl.Framebuffer framebuffer;
     private Cogl.Pipeline pipeline;
     private Cogl.Texture texture;
@@ -32,11 +28,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     construct {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 
-        actor_pipeline = new Cogl.Pipeline (ctx);
-        actor_pipeline.set_layer_null_texture (0);
-        actor_pipeline.set_layer_filters (0, Cogl.PipelineFilter.LINEAR, Cogl.PipelineFilter.LINEAR);
-        actor_pipeline.set_layer_wrap_mode (0, Cogl.PipelineWrapMode.CLAMP_TO_EDGE);
-
         pipeline = new Cogl.Pipeline (ctx);
         pipeline.set_layer_null_texture (0);
         pipeline.set_layer_filters (0, Cogl.PipelineFilter.LINEAR, Cogl.PipelineFilter.LINEAR);
@@ -49,7 +40,33 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox update_actor_box (Clutter.PaintContext paint_context) {
-        var actor_box = actor.get_allocation_box ();
+        var stage_view = paint_context.get_stage_view ();
+
+        float origin_x, origin_y, width, height;
+        actor.get_transformed_position (out origin_x, out origin_y);
+        actor.get_transformed_size (out width, out height);
+  
+        var box_scale_factor = 1.0f;
+        if (stage_view != null) {
+            box_scale_factor = stage_view.get_scale ();
+
+            Mtk.Rectangle stage_view_layout = {};
+            stage_view.get_layout (ref stage_view_layout);
+  
+            origin_x -= stage_view_layout.x;
+            origin_y -= stage_view_layout.y;
+        } else {
+            /* If we're drawing off stage, just assume scale = 1, this won't work
+             * with stage-view scaling though.
+             */
+        }
+
+        var actor_box = Clutter.ActorBox () { x1 = 0, x2 = 0, y1 = 0, y2 = 0 };
+        
+        actor_box.set_origin (origin_x, origin_y);
+        actor_box.set_size (width, height);
+  
+        actor_box.scale (box_scale_factor);
         Clutter.ActorBox.clamp_to_pixel (ref actor_box);
 
         return actor_box;
@@ -124,42 +141,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         return true;
     }
 
-    private bool update_actor_fbo (int width, int height, float downscale_factor) {
-        if (
-            texture_width == width &&
-            texture_height == height &&
-            this.downscale_factor == downscale_factor &&
-            actor_framebuffer != null
-        ) {
-            return true;
-        }
-
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-
-        actor_framebuffer = null;
-        actor_texture = null;
-
-        var new_width = (int) Math.floorf (width / downscale_factor);
-        var new_height = (int) Math.floorf (height / downscale_factor);
-
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
-
-        try {
-            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
-        } catch (GLib.Error e) {
-            warning (e.message);
-            return false;
-        }
-
-        actor_pipeline.set_layer_texture (0, actor_texture);
-
-        actor_framebuffer = new Cogl.Offscreen.with_texture (actor_texture);
-
-        setup_projection_matrix (actor_framebuffer, new_width, new_height);
-
-        return true;
-    }
-
     private bool update_background_fbo (int width, int height, float downscale_factor) {
         if (texture_width == width &&
             texture_height == height &&
@@ -205,7 +186,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var downscale_factor = calculate_downscale_factor (width, height, radius);
 
         var updated = (
-            update_actor_fbo (width, height, downscale_factor) &&
             update_general_fbo (width, height, downscale_factor) &&
             update_background_fbo (width, height, downscale_factor)
         );
@@ -232,10 +212,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         );
         general_node.add_child (blur_node);
         blur_node.add_rectangle ({
-            0.0f,
-            0.0f,
-            texture.get_width (),
-            texture.get_height ()
+            0.0f, 0.0f, width, height
         });
 
         return blur_node;
@@ -270,6 +247,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     public override void paint_node (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags) {
+        warning ("Painiting node");
+
         if (radius <= 0) {
             // fallback to drawing actor
             add_actor_node (node);
@@ -288,5 +267,12 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         paint_background (blur_node, paint_context, actor_box);
         add_actor_node (node);
+    }
+
+    public override bool modify_paint_volume (Clutter.PaintVolume volume) {
+        volume.set_width (actor.width);
+        volume.set_height (actor.height);
+
+        return true;
     }
 }

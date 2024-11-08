@@ -6,7 +6,7 @@
  */
 
 public class Gala.PanelClone : Object {
-    private const int ANIMATION_DURATION = 250;
+    private const int ANIMATION_DURATION = 2500;
 
     public WindowManager wm { get; construct; }
     public unowned PanelWindow panel { get; construct; }
