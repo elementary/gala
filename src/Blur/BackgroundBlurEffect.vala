@@ -9,9 +9,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     public float radius { get; construct; }
 
-    private bool actor_painted = false;
-    private bool blur_applied = false;
-
     private int texture_width;
     private int texture_height;
     private float downscale_factor;
@@ -137,8 +134,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             return true;
         }
 
-        actor_painted = false;
-
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 
         actor_framebuffer = null;
@@ -242,8 +237,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             texture.get_width (),
             texture.get_height ()
         });
-
-        blur_applied = true;
 
         return blur_node;
     }
