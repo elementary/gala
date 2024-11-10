@@ -2,22 +2,6 @@
 
 [CCode (cprefix = "CoglPango", gir_namespace = "CoglPango", gir_version = "6", lower_case_cprefix = "cogl_pango_")]
 namespace CoglPango {
-	[CCode (cheader_filename = "cogl-pango.h")]
-	public interface FontMap : Pango.CairoFontMap, GLib.Object {
-		[Version (since = "1.0")]
-		public void clear_glyph_cache ();
-		public Pango.Context create_context ();
-		[Version (since = "1.0")]
-		public unowned Pango.Renderer get_renderer ();
-		[Version (since = "1.0")]
-		public bool get_use_mipmapping ();
-		[Version (since = "1.14")]
-		public static Pango.FontMap @new ();
-		[Version (since = "1.14")]
-		public void set_resolution (double dpi);
-		[Version (since = "1.0")]
-		public void set_use_mipmapping (bool value);
-	}
 	[CCode (cheader_filename = "cogl-pango.h", type_id = "cogl_pango_renderer_get_type ()")]
 	public class Renderer : Pango.Renderer {
 		[CCode (has_construct_function = false)]
@@ -26,6 +10,25 @@ namespace CoglPango {
 		public Cogl.Context context { construct; }
 	}
 	[CCode (cheader_filename = "cogl-pango.h")]
-	[Version (since = "1.0")]
+	public interface FontMap : Pango.CairoFontMap, GLib.Object {
+#if !HAS_MUTTER47
+		public void clear_glyph_cache ();
+#endif
+		public Pango.Context create_context ();
+		public unowned Pango.Renderer get_renderer ();
+#if !HAS_MUTTER47
+		public bool get_use_mipmapping ();
+#endif
+		public static Pango.FontMap @new ();
+		public void set_resolution (double dpi);
+#if !HAS_MUTTER47
+		public void set_use_mipmapping (bool value);
+#endif
+	}
+#if HAS_MUTTER47
+	[CCode (cheader_filename = "cogl-pango.h", instance_pos = 1.9)]
+	public delegate void PipelineSetup (Cogl.Pipeline pipeline);
+#endif
+	[CCode (cheader_filename = "cogl-pango.h")]
 	public static void ensure_glyph_cache_for_layout (Pango.Layout layout);
 }
