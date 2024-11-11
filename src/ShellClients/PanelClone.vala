@@ -141,7 +141,7 @@ public class Gala.PanelClone : Object {
         clone.restore_easing_state ();
     }
 
-    public void show () {
+    private void show () {
         if (!panel_hidden) {
             return;
         }
