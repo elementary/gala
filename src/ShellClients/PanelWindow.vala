@@ -69,6 +69,11 @@ public class Gala.PanelWindow : Object {
 
         if (height > 0) {
             window_rect.height = height;
+
+            if (anchor == BOTTOM) {
+                var geom = wm.get_display ().get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
         }
 
         return window_rect;
@@ -92,7 +97,7 @@ public class Gala.PanelWindow : Object {
     private void position_window () {
         var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var window_rect = get_custom_window_rect ();
+        var window_rect = window.get_frame_rect ();
 
         switch (anchor) {
             case TOP:
