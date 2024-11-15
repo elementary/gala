@@ -226,8 +226,27 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    int parsed; // Will be used as Pantheon.Desktop.Anchor which is a 4 value enum so check bounds for that
-                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 3) {
+                    int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
+                    if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
+                        //FIXME: Next major release change dock and wingpanel calls to get rid of this
+                        Pantheon.Desktop.Anchor parsed = TOP;
+                        switch ((Meta.Side) meta_side_parsed) {
+                            case BOTTOM:
+                                parsed = BOTTOM;
+                                break;
+
+                            case LEFT:
+                                parsed = LEFT;
+                                break;
+
+                            case RIGHT:
+                                parsed = RIGHT;
+                                break;
+
+                            default:
+                                break;
+                        }
+
                         set_anchor (window, parsed);
                         // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
                         // but on X the window was already shown when we get here so we have to call again to instantly apply it.
