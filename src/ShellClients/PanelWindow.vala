@@ -37,9 +37,6 @@ public class Gala.PanelWindow : Object {
 
         var display = wm.get_display ();
 
-        var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => set_hide_mode (clone.hide_mode)); //Make sure barriers are still on the primary monitor
-
         var workspace_manager = display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
@@ -49,10 +46,7 @@ public class Gala.PanelWindow : Object {
 
         window_positioner = new WindowPositioner (display, window, WindowPositioner.Position.from_anchor (anchor));
 
-        notify["anchor"].connect (() => {
-            window_positioner.position = WindowPositioner.Position.from_anchor (anchor);
-            set_hide_mode (clone.hide_mode); // Resetup barriers etc., TODO: replace with update_strut once barriers are handled in hidetracker
-        });
+        notify["anchor"].connect (() => window_positioner.position = WindowPositioner.Position.from_anchor (anchor));
     }
 
 #if HAS_MUTTER45
