@@ -166,6 +166,7 @@ namespace Gala {
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
             WindowAttentionTracker.init (display);
+            PinManager.init (display);
 
             notification_stack = new NotificationStack (display);
 
@@ -182,12 +183,6 @@ namespace Gala {
 #else
             stage.background_color = Clutter.Color.from_string (color);
 #endif
-
-            unowned var laters = display.get_compositor ().get_laters ();
-            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                WorkspaceManager.init (this);
-                return false;
-            });
 
             /* our layer structure:
              * stage
@@ -294,6 +289,7 @@ namespace Gala {
 
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
+            unowned var laters = display.get_compositor ().get_laters ();
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
                 unowned string xdg_session_type = Environment.get_variable ("XDG_SESSION_TYPE");
                 if (xdg_session_type == "x11") {

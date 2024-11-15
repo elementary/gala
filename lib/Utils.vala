@@ -282,7 +282,7 @@ namespace Gala {
                     || window.window_type == Meta.WindowType.DIALOG
                     || window.window_type == Meta.WindowType.MODAL_DIALOG)
                     && (!on_primary || (on_primary && window.is_on_primary_monitor ()))) {
-                    n ++;
+                    n++;
                 }
             }
 

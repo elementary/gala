@@ -87,9 +87,6 @@ namespace Gala {
          * @param new_window A window that should be moved to the new workspace
          */
         public static void insert_workspace_with_window (int index, Meta.Window new_window) {
-            unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
-            workspace_manager.freeze_remove ();
-
             new_window.change_workspace_by_index (index, false);
 
             unowned List<Meta.WindowActor> actors = new_window.get_display ().get_window_actors ();
@@ -107,8 +104,6 @@ namespace Gala {
                     window.change_workspace_by_index (current_index + 1, true);
                 }
             }
-
-            workspace_manager.thaw_remove ();
         }
 
         // Code ported from KWin present windows effect

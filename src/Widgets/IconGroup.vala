@@ -76,6 +76,15 @@ namespace Gala {
 
             add_child (icon_container);
 
+            var pin_click_action = new Clutter.ClickAction ();
+            pin_click_action.clicked.connect (() => {
+                pin ();
+            });
+
+            var pin_button = Utils.create_resize_button (1.0f);
+            pin_button.add_action (pin_click_action);
+            add_child (pin_button);
+
             resize ();
 #if HAS_MUTTER46
             icon_container.child_removed.connect_after (redraw);
@@ -90,6 +99,12 @@ namespace Gala {
 #else
             icon_container.actor_removed.disconnect (redraw);
 #endif
+        }
+
+        private void pin () {
+            warning ("PIN");
+
+            PinManager.get_default ().pin_workspace (workspace);
         }
 
         private void resize () {
