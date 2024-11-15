@@ -25,7 +25,7 @@ namespace Gala {
 
         private const double BACKGROUND_OPACITY = 0.7;
 
-        public weak WindowManager wm { get; construct; }
+        public Meta.Display display { get; construct; }
 
         private float scaling_factor = 1.0f;
         private int surface_width = WIDTH_PX;
@@ -37,8 +37,8 @@ namespace Gala {
         private Cairo.Pattern stroke_color;
         private Cairo.Pattern fill_color;
 
-        public PointerLocator (WindowManager wm) {
-            Object (wm: wm);
+        public PointerLocator (Meta.Display display) {
+            Object (display: display);
         }
 
         construct {
@@ -144,7 +144,6 @@ namespace Gala {
             stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
             fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
-            unowned var display = wm.get_display ();
             unowned var tracker = display.get_cursor_tracker ();
             Graphene.Point coords = {};
             tracker.get_pointer (out coords, null);

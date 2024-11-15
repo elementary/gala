@@ -28,7 +28,7 @@ namespace Gala {
         public int padding_right { get; set; default = 12; }
         public int padding_bottom { get; set; default = 12; }
 
-        public WindowManager wm { get; construct; }
+        public Meta.Display display { get; construct; }
         public GestureTracker? gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
@@ -53,8 +53,8 @@ namespace Gala {
          */
         private unowned WindowClone? current_window = null;
 
-        public WindowCloneContainer (WindowManager wm, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
-            Object (wm: wm, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
+        public WindowCloneContainer (Meta.Display display, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+            Object (display: display, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
         }
 
         private void reallocate () {
@@ -70,8 +70,6 @@ namespace Gala {
          * @param window The window for which to create the WindowClone for
          */
         public void add_window (Meta.Window window) {
-            unowned Meta.Display display = window.get_display ();
-
             var windows = new List<Meta.Window> ();
             foreach (unowned var child in get_children ()) {
                 unowned var clone = (WindowClone) child;
@@ -81,7 +79,7 @@ namespace Gala {
 
             var windows_ordered = InternalUtils.sort_windows (display, windows);
 
-            var new_window = new WindowClone (wm, window, gesture_tracker, monitor_scale, overview_mode);
+            var new_window = new WindowClone (display, window, gesture_tracker, monitor_scale, overview_mode);
 
             new_window.selected.connect ((clone) => window_selected (clone.window));
             new_window.destroy.connect ((_new_window) => {
@@ -149,7 +147,7 @@ namespace Gala {
                 windows.prepend (((WindowClone) child).window);
             }
 
-            var windows_ordered = InternalUtils.sort_windows (wm.get_display (), windows);
+            var windows_ordered = InternalUtils.sort_windows (display, windows);
             windows_ordered.reverse ();
 
             var i = 0;

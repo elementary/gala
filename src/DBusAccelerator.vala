@@ -75,22 +75,23 @@ namespace Gala {
         private static DBusAccelerator? instance;
 
         [DBus (visible = false)]
-        public static unowned DBusAccelerator init (WindowManager wm) {
-            if (instance == null)
-                instance = new DBusAccelerator (wm);
+        public static unowned DBusAccelerator init (Meta.Display display) {
+            if (instance == null) {
+                instance = new DBusAccelerator (display);
+            }
 
             return instance;
         }
 
         public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
-        private WindowManager wm;
+        private Meta.Display display;
         private GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
 
-        private DBusAccelerator (WindowManager _wm) {
-            wm = _wm;
+        private DBusAccelerator (Meta.Display _display) {
+            display = _display;
             grabbed_accelerators = new HashTable<unowned string, GrabbedAccelerator> (str_hash, str_equal);
-            wm.get_display ().accelerator_activated.connect (on_accelerator_activated);
+            display.accelerator_activated.connect (on_accelerator_activated);
         }
 
         private void on_accelerator_activated (uint action, Clutter.InputDevice device, uint timestamp) {
@@ -115,7 +116,7 @@ namespace Gala {
                 return found_accel.action;
             }
 
-            uint action = wm.get_display ().grab_accelerator (accelerator, grab_flags);
+            uint action = display.grab_accelerator (accelerator, grab_flags);
             if (action != Meta.KeyBindingFlags.NONE) {
                 var accel = new GrabbedAccelerator ();
                 accel.action = action;
@@ -141,7 +142,7 @@ namespace Gala {
         public bool ungrab_accelerator (uint action) throws GLib.DBusError, GLib.IOError {
             foreach (unowned GrabbedAccelerator accel in grabbed_accelerators.get_values ()) {
                 if (accel.action == action) {
-                    bool ret = wm.get_display ().ungrab_accelerator (action);
+                    bool ret = display.ungrab_accelerator (action);
                     grabbed_accelerators.remove (accel.name);
                     return ret;
                 }

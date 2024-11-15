@@ -116,7 +116,7 @@ public class Gala.PanelClone : Object {
 
     private int get_animation_duration () {
         var fullscreen = wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ());
-        var should_animate = wm.enable_animations && !wm.workspace_view.is_opened () && !fullscreen;
+        var should_animate = AnimationsSettings.get_enable_animations () && !wm.workspace_view.is_opened () && !fullscreen;
         return should_animate ? ANIMATION_DURATION : 0;
     }
 
@@ -141,7 +141,7 @@ public class Gala.PanelClone : Object {
         clone.restore_easing_state ();
     }
 
-    public void show () {
+    private void show () {
         if (!panel_hidden) {
             return;
         }

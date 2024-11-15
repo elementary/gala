@@ -33,7 +33,7 @@ public class Gala.DBus {
         Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
             (connection) => {
                 try {
-                    connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm));
+                    connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm.get_display ()));
                     connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
                 } catch (Error e) { warning (e.message); }
             },

@@ -71,8 +71,12 @@ namespace Gala {
             }
 
             unowned Meta.X11Display x11display = display.get_x11_display ();
+#if HAS_MUTTER47
+            x11display.set_stage_input_region (rects);
+#else
             var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
             x11display.set_stage_input_region (xregion);
+#endif
         }
 
         /**

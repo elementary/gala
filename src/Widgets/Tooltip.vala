@@ -14,7 +14,11 @@ public class Gala.Tooltip : CanvasActor {
     private Clutter.Text text_actor;
 
     construct {
+#if HAS_MUTTER47
+        Cogl.Color text_color = {
+#else
         Clutter.Color text_color = {
+#endif
             (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.red * uint8.MAX,
             (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.green * uint8.MAX,
             (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.blue * uint8.MAX,
