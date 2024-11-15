@@ -133,7 +133,11 @@ namespace Gala {
                 return Clutter.EVENT_STOP;
             });
 
+#if HAS_MUTTER47
+            background_color = Cogl.Color.from_string ("black");
+#else
             background_color = Clutter.Color.from_string ("black");
+#endif
 
             expand_to_screen_size ();
 
