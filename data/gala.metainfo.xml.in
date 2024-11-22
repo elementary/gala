@@ -27,7 +27,7 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-    <release version="8.0.2" date="2024-10-15" urgency="medium">
+    <release version="8.0.3" date="2024-11-20" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>
@@ -35,6 +35,22 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/dock/issues/300">Slight timeout before hiding dock again</issue>
+        <issue url="https://github.com/elementary/dock/issues/309">Dock doesn't disappear with two tiled maximised windows</issue>
+        <issue url="https://github.com/elementary/gala/issues/1960">Multitasking view doesn't respond to touchscreen events</issue>
+        <issue url="https://github.com/elementary/gala/issues/2064">Multitasking view on wayland gets stuck grabbing window</issue>
+      </issues>
+    </release>
+
+    <release version="8.0.2" date="2024-10-24" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/1737">Cursor only visible in window screenshots</issue>
         <issue url="https://github.com/elementary/gala/issues/1898">wayland: opening windows when overview is opened breaks a lot</issue>
         <issue url="https://github.com/elementary/gala/issues/2053">Window renders black</issue>
         <issue url="https://github.com/elementary/gala/issues/2067">Terminal and System Settings have generic icon in multitasking view on Wayland</issue>

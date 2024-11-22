@@ -65,7 +65,9 @@ namespace Gala {
             var flash_actor = new Clutter.Actor ();
             flash_actor.set_size (width, height);
             flash_actor.set_position (x, y);
-#if HAS_MUTTER46
+#if HAS_MUTTER47
+            flash_actor.set_background_color (Cogl.Color.from_string ("white"));
+#elif HAS_MUTTER46
             flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
 #else
             flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
@@ -151,8 +153,12 @@ namespace Gala {
             window_actor.get_position (out actor_x, out actor_y);
 
             var rect = window.get_frame_rect ();
+#if HAS_MUTTER45
+            if (!include_frame) {
+#if else
             if ((include_frame && window.is_client_decorated ()) ||
                 (!include_frame && !window.is_client_decorated ())) {
+#endif
                 rect = window.frame_rect_to_client_rect (rect);
             }
 
@@ -394,10 +400,7 @@ namespace Gala {
 
             image = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_width, image_height);
 
-            var paint_flags = Clutter.PaintFlag.NO_CURSORS;
-            if (include_cursor) {
-                paint_flags |= Clutter.PaintFlag.FORCE_CURSORS;
-            }
+            var paint_flags = include_cursor ? Clutter.PaintFlag.FORCE_CURSORS : Clutter.PaintFlag.NO_CURSORS;
 
             try {
                 if (GLib.ByteOrder.HOST == GLib.ByteOrder.LITTLE_ENDIAN) {
