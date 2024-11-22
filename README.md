@@ -18,7 +18,7 @@ You'll need the following dependencies:
 * libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
 * libxml2-utils
 * meson (>= 0.59.0)
-* valac (>= 0.46.0)
+* valac (>= 0.56.17)
 
 Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
 
