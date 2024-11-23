@@ -4,7 +4,7 @@
  */
 
 /* This class is used to workaround https://github.com/elementary/gala/issues/2101 */
-public class Gala.DummyActor : GLib.Object {
+public class Gala.DelegateActor : GLib.Object {
     public const int OUT_OF_BOUNDS = 1000000;
 
     public Meta.WindowActor actor { get; construct; }
@@ -17,14 +17,13 @@ public class Gala.DummyActor : GLib.Object {
     public int actual_x { get; private set; default = 0; }
     public int actual_y { get; private set; default = 0; }
 
-    public DummyActor (Meta.WindowActor actor) {
+    public DelegateActor (Meta.WindowActor actor) {
         Object (actor: actor);
     }
 
     construct {
         actor.meta_window.position_changed.connect ((_window) => {
             var rect = _window.get_frame_rect ();
-            warning ("Position changed %d %d", rect.x, rect.y);
 
             if (rect.x != OUT_OF_BOUNDS) {
                 actual_x = rect.x;
