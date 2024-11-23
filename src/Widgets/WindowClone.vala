@@ -476,8 +476,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var close_button_alloc = InternalUtils.actor_box_from_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
         close_button.allocate (close_button_alloc);
 
-        var rect = Graphene.Rect ().init (box.get_x (), box.get_y (), box.get_width (), box.get_height ());
-        get_parent ().get_relative_transformation_matrix (get_stage ()).transform_rect (rect);
+        var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
 
