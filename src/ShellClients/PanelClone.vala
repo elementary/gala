@@ -48,8 +48,8 @@ public class Gala.PanelClone : Object {
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
         // WindowActor position and Window position aren't necessarily the same.
         // The clone needs the actor position
-        actor.notify["x"].connect (update_clone_position);
-        actor.notify["y"].connect (update_clone_position);
+        panel.dummy_actor.notify["x"].connect (update_clone_position);
+        panel.dummy_actor.notify["y"].connect (update_clone_position);
         // Actor visibility might be changed by something else e.g. workspace switch
         // but we want to keep it in sync with us
         actor.notify["visible"].connect (update_visible);
@@ -97,7 +97,7 @@ public class Gala.PanelClone : Object {
         switch (panel.anchor) {
             case TOP:
             case BOTTOM:
-                return actor.x;
+                return panel.dummy_actor.x;
             default:
                 return 0;
         }
@@ -106,9 +106,9 @@ public class Gala.PanelClone : Object {
     private float calculate_clone_y (bool hidden) {
         switch (panel.anchor) {
             case TOP:
-                return hidden ? actor.y - actor.height : actor.y;
+                return hidden ? panel.dummy_actor.y - actor.height : panel.dummy_actor.y;
             case BOTTOM:
-                return hidden ? actor.y + actor.height : actor.y;
+                return hidden ? panel.dummy_actor.y + actor.height : panel.dummy_actor.y;
             default:
                 return 0;
         }
@@ -127,6 +127,10 @@ public class Gala.PanelClone : Object {
 
         panel_hidden = true;
 
+        if (!Meta.Util.is_wayland_compositor ()) {
+            panel.window.move_frame (false, DummyActor.OUT_OF_BOUNDS, DummyActor.OUT_OF_BOUNDS);
+        }
+
         if (panel.anchor != TOP && panel.anchor != BOTTOM) {
             warning ("Animated hide not supported for side yet.");
             return;
@@ -144,6 +148,10 @@ public class Gala.PanelClone : Object {
     private void show () {
         if (!panel_hidden) {
             return;
+        }
+
+        if (!Meta.Util.is_wayland_compositor ()) {
+            panel.window.move_frame (false, panel.dummy_actor.actual_x, panel.dummy_actor.actual_y);
         }
 
         var animation_duration = get_animation_duration ();
