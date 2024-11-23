@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-10-15 19:33+0000\n"
+"POT-Creation-Date: 2024-11-23 16:06+0000\n"
 "PO-Revision-Date: 2024-09-19 07:21+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
@@ -103,53 +103,61 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary בע״מ"
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
-#: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:104
-#: data/gala.metainfo.xml.in:129 data/gala.metainfo.xml.in:145
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
 msgid "Improvements:"
 msgstr "שיפורים:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:51
-#: data/gala.metainfo.xml.in:67 data/gala.metainfo.xml.in:110
-#: data/gala.metainfo.xml.in:132 data/gala.metainfo.xml.in:147
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
 msgid "Updated translations"
 msgstr "התרגומים עודכנו"
 
-#: data/gala.metainfo.xml.in:49
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Improve window shadows for legacy apps"
+msgid "Improved shadows performance"
+msgstr "שיפור צלליות חלונות ליישומים מיושנים"
+
+#: data/gala.metainfo.xml.in:78
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "תוקנה קריסה שיכלה לקרות בעת העברת חלונות בין סביבות עבודה"
 
-#: data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:79
 msgid "Fix notification animation when entering multitasking view"
 msgstr "תוקנה הנפשת ההתראות בכניסה לתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:94
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "שיפור ניווט המקלדת בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:95
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "החלפת צבע הלוח יחד עם מעבר תמונת הרקע"
 
-#: data/gala.metainfo.xml.in:106
+#: data/gala.metainfo.xml.in:135
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr "החלפת טפט או שינה מכבדים את האפשרות „צמצום תנועה”"
 
-#: data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:136
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
-#: data/gala.metainfo.xml.in:108
+#: data/gala.metainfo.xml.in:137
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "תוקנה תקלה שמחוות בתצוגת ריבוי משימות מפסיקות לעבוד"
 
-#: data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:138
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "שיפור התנהגות מרחבי עבודה דינמיים עם ריבוי צגים"
 
-#: data/gala.metainfo.xml.in:131
+#: data/gala.metainfo.xml.in:160
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "שיפור הטיפול בקיצור הדרך להעברה למרחב עבודה"
 
@@ -225,11 +233,11 @@ msgstr "לאפשר"
 msgid "Deny"
 msgstr "לסרב"
 
-#: src/ScreenshotManager.vala:290
+#: src/ScreenshotManager.vala:296
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/ScreenshotManager.vala:382
+#: src/ScreenshotManager.vala:388
 msgid "Screenshot taken"
 msgstr "המסך צולם"
 
@@ -237,27 +245,27 @@ msgstr "המסך צולם"
 msgid "Window switcher"
 msgstr "בורר חלונות"
 
-#: src/WindowManager.vala:2365
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "השינויים יוחזרו לקדמותם אוטומטית לאחר שנייה."
 msgstr[1] "השינויים יוחזרו לקדמותם אוטומטית לאחר %i שניות."
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
 msgstr "לשמור את הגדרות התצוגה החדשות?"
 
-#: src/WindowManager.vala:2376
+#: src/WindowManager.vala:2366
 msgid "Keep Settings"
 msgstr "לשמור את ההגדרות"
 
-#: src/WindowManager.vala:2377
+#: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
 msgstr "להשתמש בהגדרות הקודמות"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2416
+#: src/WindowManager.vala:2406
 #, c-format
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ־%s"
@@ -414,9 +422,6 @@ msgstr "צילום מסך מ־%s"
 
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "הצגת קיצורי מקלדת בתפריטי כותרת"
-
-#~ msgid "Improve window shadows for legacy apps"
-#~ msgstr "שיפור צלליות חלונות ליישומים מיושנים"
 
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
