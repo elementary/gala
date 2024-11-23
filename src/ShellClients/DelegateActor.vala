@@ -8,7 +8,7 @@ public class Gala.DelegateActor : GLib.Object {
     public const int OUT_OF_BOUNDS = 1000000;
 
     public Meta.WindowActor actor { get; construct; }
-    
+
     /* Current window actor position or position before the window was moved out of bounds */
     public float x { get; private set; default = 0.0f; }
     public float y { get; private set; default = 0.0f; }
