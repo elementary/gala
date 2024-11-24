@@ -144,6 +144,10 @@
       <default><![CDATA[['Print']]]></default>
       <summary>Take a screenshot</summary>
     </key>
+    <key name="interactive-screenshot" type="as">
+      <default><![CDATA[['<Super>Print']]]></default>
+      <summary>Launch the interactive screenshot tool</summary>
+    </key>
     <key name="window-screenshot" type="as">
       <default><![CDATA[['<Alt>Print']]]></default>
       <summary>Take a screenshot of a window</summary>
