@@ -152,7 +152,13 @@ public class Gala.HideTracker : Object {
         });
     }
 
-    private void update_overlap () {
+    /**
+     * Immediately updates the overlap. Usually {@link schedule_update} should be used instead which
+     * internally calls this but throttles it since it's a somewhat expensive operation.
+     * On very rare use cases however it is required to update immediately. In that case you can call
+     * this directly.
+     */
+    public void update_overlap () {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;

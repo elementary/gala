@@ -20,6 +20,8 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
+    public bool is_waiting { get; private set; default = true; } // On session start wait a bit for a synchronized and smooth reveal
+
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -27,6 +29,8 @@ public class Gala.ShellClientsManager : Object {
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
+
+    private uint currently_starting_panels = 0;
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -149,6 +153,8 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
+        currently_starting_panels++;
+
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
@@ -205,6 +211,18 @@ public class Gala.ShellClientsManager : Object {
         });
 
         return positioned;
+    }
+
+    //Called by the WM once it has initialized
+    public void notify_stage_ready () {
+        Timeout.add_seconds_once (5, () => is_waiting = false); // Failsafe if a client stalls to still show the others
+    }
+
+    // Called by the {@link PanelClone} when the window it manages is ready.
+    public void notify_client_ready () {
+        currently_starting_panels--;
+
+        is_waiting &= currently_starting_panels > 0;
     }
 
     //X11 only

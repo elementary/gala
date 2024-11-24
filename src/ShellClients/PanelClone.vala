@@ -9,7 +9,7 @@ public class Gala.PanelClone : Object {
     private const int ANIMATION_DURATION = 250;
 
     public WindowManager wm { get; construct; }
-    public unowned PanelWindow panel { get; construct; }
+    public unowned PanelWindow? panel { get; construct; }
 
     public Pantheon.Desktop.HideMode hide_mode {
         get {
@@ -34,6 +34,8 @@ public class Gala.PanelClone : Object {
 
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
+
+    private bool window_ready = false;
 
     private HideTracker? hide_tracker;
 
@@ -67,16 +69,38 @@ public class Gala.PanelClone : Object {
         // https://github.com/elementary/gala/issues/2080
         panel.window.focused.connect (update_visible);
 
+        panel.window.unmanaging.connect (() => panel = null);
+
         update_visible ();
         update_clone_position ();
 
-        Idle.add_once (() => {
-            if (hide_mode == NEVER) {
-                show ();
-            } else {
-                hide_tracker.schedule_update ();
-            }
-        });
+        if (Meta.Util.is_wayland_compositor ()) {
+            // We want to wait for the window to be actually shown before revealing and then still a bit
+            // more since at the beginning it might be doing some relayouting (e.g. the dock only knows
+            // its size after it got a dbus connection to gala) which disrupts the animation.
+            panel.window.shown.connect (() => Timeout.add (100, () => {
+                if (panel == null) {
+                    return Source.REMOVE; // The window was unmanaged while we were waiting
+                }
+
+                window_ready = true;
+                // In the best case we are ready before the manager stops waiting so the on_ready usually
+                // doesn't do anything. However if the client stalls for some reason or it crashed and has now
+                // been restarted it will show immediately.
+                on_ready ();
+
+                ShellClientsManager.get_instance ().notify_client_ready ();
+
+                return Source.REMOVE;
+            }));
+        } else {
+            // On X the window was already shown when it requests being a panel so just mark it ready
+            window_ready = true;
+            on_ready ();
+            ShellClientsManager.get_instance ().notify_client_ready ();
+        }
+
+        ShellClientsManager.get_instance ().notify["is-waiting"].connect (on_ready);
     }
 
     private void update_visible () {
@@ -146,7 +170,7 @@ public class Gala.PanelClone : Object {
     }
 
     private void show () {
-        if (!panel_hidden) {
+        if (!panel_hidden || !window_ready || ShellClientsManager.get_instance ().is_waiting) {
             return;
         }
 
@@ -169,6 +193,14 @@ public class Gala.PanelClone : Object {
         } else {
             clone.visible = false;
             panel_hidden = false;
+        }
+    }
+
+    private void on_ready () {
+        if (hide_mode == NEVER) {
+            show ();
+        } else {
+            hide_tracker.update_overlap ();
         }
     }
 }
