@@ -204,7 +204,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone = new Clutter.Clone (actor);
-        clone.set_content_scaling_filters (TRINLINEAR, TRILINEAR);
+        clone.set_content_scaling_filters (TRILINEAR, TRILINEAR);
         add_child (clone);
 
         set_child_below_sibling (active_shape, clone);
