@@ -17,8 +17,8 @@
  */
 
 public class Gala.NotificationStack : Object {
-    public const string TRANSITION_ENTRY_NAME = "entry";
-    public const string TRANSITION_MOVE_STACK_ID = "move-stack";
+    private const string TRANSITION_ENTRY_NAME = "entry";
+    private const string TRANSITION_MOVE_STACK_ID = "move-stack";
 
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
@@ -48,7 +48,7 @@ public class Gala.NotificationStack : Object {
         update_stack_allocation ();
     }
 
-    public void show_notification (Meta.WindowActor notification, bool animate)
+    public void show_notification (Meta.WindowActor notification)
         requires (notification != null && !notification.is_destroyed () && !notifications.contains (notification)) {
 
         notification.set_pivot_point (0.5f, 0.5f);
@@ -62,7 +62,7 @@ public class Gala.NotificationStack : Object {
         var window_rect = window.get_frame_rect ();
         window.stick ();
 
-        if (animate) {
+        if (AnimationsSettings.get_enable_animations ()) {
             // Don't flicker at the beginning of the animation
             notification.opacity = 0;
             notification.rotation_angle_x = 90;
@@ -96,7 +96,7 @@ public class Gala.NotificationStack : Object {
          * by shifting all current notifications by height
          * and then add it to the notifications list.
          */
-        update_positions (animate, scale, window_rect.height);
+        update_positions (scale, window_rect.height);
 
         int notification_x_pos = area.x + area.width - window_rect.width;
         if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
@@ -117,7 +117,7 @@ public class Gala.NotificationStack : Object {
         stack_y = area.y;
     }
 
-    private void update_positions (bool animate, float scale, float add_y = 0.0f) {
+    private void update_positions (float scale, float add_y = 0.0f) {
         var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
@@ -131,7 +131,7 @@ public class Gala.NotificationStack : Object {
                 continue;
             }
 
-            if (animate) {
+            if (AnimationsSettings.get_enable_animations ()) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
                 actor.set_easing_duration (200);
@@ -140,7 +140,7 @@ public class Gala.NotificationStack : Object {
 
             move_window (actor, -1, (int)y);
 
-            if (animate) {
+            if (AnimationsSettings.get_enable_animations ()) {
                 actor.restore_easing_state ();
             }
 
@@ -160,8 +160,8 @@ public class Gala.NotificationStack : Object {
         }
     }
 
-    public void destroy_notification (Meta.WindowActor notification, bool animate) {
-        if (animate) {
+    public void destroy_notification (Meta.WindowActor notification) {
+        if (AnimationsSettings.get_enable_animations ()) {
             notification.save_easing_state ();
             notification.set_easing_duration (100);
             notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
@@ -178,7 +178,7 @@ public class Gala.NotificationStack : Object {
         var scale = display.get_monitor_scale (primary);
 
         notifications.remove (notification);
-        update_positions (animate, scale);
+        update_positions (scale);
     }
 
     /**
@@ -206,5 +206,9 @@ public class Gala.NotificationStack : Object {
          */
         rect = window.get_buffer_rect ();
         actor.set_position (rect.x - ((actor.width - rect.width) / 2), rect.y - ((actor.height - rect.height) / 2));
+    }
+
+    public static bool is_notification (Meta.Window window) {
+        return window.window_type == NOTIFICATION || window.get_data (NOTIFICATION_DATA_KEY);
     }
 }

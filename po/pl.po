@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
-"PO-Revision-Date: 2024-08-21 17:26+0000\n"
+"POT-Creation-Date: 2024-11-23 16:06+0000\n"
+"PO-Revision-Date: 2024-09-23 10:39+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
 ">\n"
@@ -109,50 +109,70 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
 msgid "Improvements:"
 msgstr "Ulepszenia:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
 msgid "Updated translations"
 msgstr "Zaktualizowano tłumaczenia"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Improve window shadows for legacy apps"
+msgid "Improved shadows performance"
+msgstr "Popraw cienie okien dla przestarzałych aplikacji"
+
+#: data/gala.metainfo.xml.in:78
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+"Naprawiono potencjalny crash podczas przenoszenia okien między obszarami "
+"roboczymi"
+
+#: data/gala.metainfo.xml.in:79
+msgid "Fix notification animation when entering multitasking view"
+msgstr ""
+"Naprawiono animację powiadomienia podczas wchodzenia do widoku "
+"wielozadaniowego"
+
+#: data/gala.metainfo.xml.in:94
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Poprawiono nawigację przy użyciu klawiatury w widoku wielozadaniowym"
 
-#: data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:95
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Koloru panelu jest zmieniany w tym samym czasie co tapeta"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:135
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Zmienianie tła oraz usypianie komputera respektuje opcję \"Zmniejsz ruch\""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:136
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Użycie poprawnych wskaźników przeciągnij-i-upuść przy przenoszeniu okien"
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:137
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Naprawiono problem z gestami które czasami przestają działać w widoku "
 "wielozadaniowym"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:138
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Poprawa dynamicznego zachowania obszarów roboczych przy kilku monitorach"
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:160
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Poprawiona obsługa skrótu „przenieś do obszaru”"
 
@@ -178,7 +198,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Nieznane"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr "Okno ma już fokus"
 
@@ -228,11 +248,11 @@ msgstr "Zezwól"
 msgid "Deny"
 msgstr "Odmów"
 
-#: src/ScreenshotManager.vala:290
+#: src/ScreenshotManager.vala:296
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
 
-#: src/ScreenshotManager.vala:382
+#: src/ScreenshotManager.vala:388
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
@@ -240,7 +260,7 @@ msgstr "Zrzut ekranu wykonany"
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -248,20 +268,20 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2366
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2406
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
@@ -364,9 +384,6 @@ msgstr "Zrzut ekranu z %s"
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
 
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "Naprawiono potencjalny crash podczas robienia zrzutu ekranu"
-
 #~ msgid "New features:"
 #~ msgstr "Nowe funkcje:"
 
@@ -441,14 +458,8 @@ msgstr "Zrzut ekranu z %s"
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Pokaż skróty klawiszowe w menu HeaderBar"
 
-#~ msgid "Improve window shadows for legacy apps"
-#~ msgstr "Popraw cienie okien dla przestarzałych aplikacji"
-
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr "Napraw możliwą awarię przy robieniu zrzutów ekranu"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "Napraw pozycję powiadomień po zmianie DPI"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
-"PO-Revision-Date: 2023-05-18 20:06+0000\n"
-"Last-Translator: Özgür Baskin <queeup@zoho.com>\n"
+"POT-Creation-Date: 2024-11-23 16:06+0000\n"
+"PO-Revision-Date: 2024-09-21 10:16+0000\n"
+"Last-Translator: Sinan Decron <sinanveyasinan@gmail.com>\n"
 "Language-Team: Turkish <https://l10n.elementary.io/projects/desktop/gala/tr/"
 ">\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -33,14 +33,12 @@ msgid "System Settings…"
 msgstr "Sistem Ayarları…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "Sistem Ayarları…"
+msgstr "Sistem Ayarları açılamadı"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "“settings://” URI şeması için bir işleyici yüklenmelidir."
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
@@ -110,49 +108,69 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
 msgid "Improvements:"
 msgstr "İyileştirmeler:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
 msgid "Updated translations"
 msgstr "Çeviriler güncellendi"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:35
 #, fuzzy
-#| msgid "Multitasking View"
-msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Çoklu Görev Görünümü"
+#| msgid "Improve window shadows for legacy apps"
+msgid "Improved shadows performance"
+msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
 
-#: data/gala.metainfo.xml.in:48
-msgid "Change panel color at the same time as wallpaper transition"
+#: data/gala.metainfo.xml.in:78
+msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
+"Çalışma alanları arasında pencereleri taşırken oluşabilecek bir çökme hatası "
+"düzeltildi"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:79
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Çoklu görev görünümüne girildiğinde bildirim animasyonunu düzeltildi"
+
+#: data/gala.metainfo.xml.in:94
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Çoklu Görev Görünümünde klavye gezintisini iyileştirildi"
+
+#: data/gala.metainfo.xml.in:95
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Duvar kağıdı geçişiyle aynı anda panel rengini değiştir"
+
+#: data/gala.metainfo.xml.in:135
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Duvar kağıdını değiştirmek veya uyku moduna geçmek \"Hareketi Azalt\" "
+"seçeneğini dikkate alır"
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:136
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Pencereleri taşırken uygun sürükle ve bırak işaretçilerini kullan"
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:137
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Çoklu görev görünümünde hareketlerin çalışmayı durdurabileceği sorun "
+"düzeltildi"
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:138
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Birden fazla monitörle dinamik çalışma alanı davranışını iyileştirildi"
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:160
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Çalışma alanına taşıma kısayolunun kullanımını iyileştirildi"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -175,11 +193,11 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Bilinmeyen"
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
-msgstr ""
+msgstr "Pencere zaten odaklanmış durumda"
 
 #: src/Dialogs.vala:144
 #, c-format
@@ -209,57 +227,57 @@ msgstr "Bekle"
 #: src/Dialogs.vala:217
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” sistem kısayollarını engellemek istiyor"
 
 #: src/Dialogs.vala:219
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Bir uygulama sistem kısayollarını engellemek istiyor"
 
 #: src/Dialogs.vala:222
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Tüm sistem kısayolları uygulamaya yönlendirilecektir."
 
 #: src/Dialogs.vala:223
 msgid "Allow"
-msgstr ""
+msgstr "İzin ver"
 
 #: src/Dialogs.vala:224
 msgid "Deny"
-msgstr ""
+msgstr "Reddet"
 
-#: src/ScreenshotManager.vala:290
+#: src/ScreenshotManager.vala:296
 msgid "Screenshots"
 msgstr "Ekran Görüntüleri"
 
-#: src/ScreenshotManager.vala:382
+#: src/ScreenshotManager.vala:388
 msgid "Screenshot taken"
 msgstr "Ekran görüntüsüsü alındı"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Pencere değiştirici"
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
 msgstr[1] "Değişiklikler %i saniye sonra otomatik olarak geri alınır."
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
 msgstr "Yeni görüntü ayarları korunsun mu?"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2366
 msgid "Keep Settings"
 msgstr "Ayarları Koru"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
 msgstr "Önceki Ayarları Kullan"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2406
 #, c-format
 msgid "Screenshot from %s"
 msgstr "%s ekran görüntüsü"
@@ -343,9 +361,6 @@ msgstr "%s ekran görüntüsü"
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
 
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "Ekran görüntüsü alırken olası bir çökme düzeltildi"
-
 #~ msgid "New features:"
 #~ msgstr "Yeni özellikler:"
 
@@ -420,14 +435,8 @@ msgstr "%s ekran görüntüsü"
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Üst Bilgi Çubuğu menülerinde klavye kısayollarını göster"
 
-#~ msgid "Improve window shadows for legacy apps"
-#~ msgstr "Eski uygulamalar için pencere gölgeleri iyileştirildi"
-
 #~ msgid "Fix potential crash when taking screenshots"
 #~ msgstr "Ekran görüntüsü alırken olası çökmeler düzeltildi"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "DPI değiştirdikten sonraki bildirim konumu düzeltildi"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr "Döşenmiş pencerelerin taşıma ve büyütme animasyonları düzeltildi"

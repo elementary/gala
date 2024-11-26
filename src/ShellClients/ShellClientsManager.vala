@@ -25,8 +25,8 @@ public class Gala.ShellClientsManager : Object {
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
-    private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, CenteredWindow> centered_windows = new GLib.HashTable<Meta.Window, CenteredWindow> (null, null);
+    private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -144,18 +144,18 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void set_anchor (Meta.Window window, Meta.Side side) {
-        if (window in windows) {
-            windows[window].update_anchor (side);
+        if (window in panel_windows) {
+            panel_windows[window].update_anchor (side);
             return;
         }
 
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, side);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
-        window.unmanaging.connect_after (() => windows.remove (window));
+        window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
     }
 
     /**
@@ -166,37 +166,38 @@ public class Gala.ShellClientsManager : Object {
      * TODO: Maybe use for strut only?
      */
     public void set_size (Meta.Window window, int width, int height) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before size.");
             return;
         }
 
-        windows[window].set_size (width, height);
+        panel_windows[window].set_size (width, height);
     }
 
     public void set_hide_mode (Meta.Window window, Pantheon.Desktop.HideMode hide_mode) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before hide mode.");
             return;
         }
 
-        windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].set_hide_mode (hide_mode);
     }
 
-    public void make_centered (Meta.Window window) {
-        if (window in centered_windows) {
-            return;
-        }
+    public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
+        positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
 
-        centered_windows[window] = new CenteredWindow (wm, window);
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
 
-        window.unmanaging.connect_after (() => centered_windows.remove (window));
+    private bool is_itself_positioned (Meta.Window window) {
+        return (window in positioned_windows) || (window in panel_windows);
     }
 
     public bool is_positioned_window (Meta.Window window) {
-        bool positioned = (window in centered_windows) || (window in windows);
+        bool positioned = is_itself_positioned (window);
         window.foreach_ancestor ((ancestor) => {
-            if (ancestor in centered_windows || ancestor in windows) {
+            if (is_itself_positioned (ancestor)) {
                 positioned = true;
             }
 

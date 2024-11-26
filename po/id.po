@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-08-21 17:26+0000\n"
+"POT-Creation-Date: 2024-11-23 16:06+0000\n"
 "PO-Revision-Date: 2023-05-20 17:07+0000\n"
 "Last-Translator: Faisal Rachmadin <frachmadin@users.noreply.l10n.elementary."
 "io>\n"
@@ -111,50 +111,66 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:111
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
 msgid "Improvements:"
 msgstr "Peningkatan:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:129
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
 msgid "Updated translations"
 msgstr "Terjemahan yang diperbarui"
 
-#: data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:35
+#, fuzzy
+#| msgid "Improve multitasking view animation performance"
+msgid "Improved shadows performance"
+msgstr "Meningkatkan performa animasi tampilan multi tugas"
+
+#: data/gala.metainfo.xml.in:78
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:79
+msgid "Fix notification animation when entering multitasking view"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:94
 #, fuzzy
 #| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 "Perbaiki pintasan papan ketik tangkapan layar saat dalam Tampilan Multi Tugas"
 
-#: data/gala.metainfo.xml.in:48
+#: data/gala.metainfo.xml.in:95
 #, fuzzy
 #| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Perbarui warna panel setelah meredupkan latar belakang"
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:135
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:136
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:137
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:138
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:113
+#: data/gala.metainfo.xml.in:160
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -180,7 +196,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr ""
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr ""
 
@@ -230,11 +246,11 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/ScreenshotManager.vala:290
+#: src/ScreenshotManager.vala:296
 msgid "Screenshots"
 msgstr "Tangkapan Layar"
 
-#: src/ScreenshotManager.vala:382
+#: src/ScreenshotManager.vala:388
 msgid "Screenshot taken"
 msgstr "Tangkapan Layar diambil"
 
@@ -242,26 +258,26 @@ msgstr "Tangkapan Layar diambil"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2361
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Perubahan akan kembali secara otomatis setelah %i detik."
 
-#: src/WindowManager.vala:2368
+#: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
 msgstr "Pertahankan pengaturan tampilan baru?"
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2366
 msgid "Keep Settings"
 msgstr "Pertahankan Pengaturan"
 
-#: src/WindowManager.vala:2373
+#: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
 msgstr "Gunakan Pengaturan Sebelumnya"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2412
+#: src/WindowManager.vala:2406
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Tangkapan layar dari %s"
@@ -300,9 +316,6 @@ msgstr "Tangkapan layar dari %s"
 
 #~ msgid "Fix awkward two-finger scroll in multitasking view"
 #~ msgstr "Memperbaiki gulir dua jari yang aneh dalam tampilan multi tugas"
-
-#~ msgid "Improve multitasking view animation performance"
-#~ msgstr "Meningkatkan performa animasi tampilan multi tugas"
 
 #~ msgid "Fixes:"
 #~ msgstr "Perbaikan:"

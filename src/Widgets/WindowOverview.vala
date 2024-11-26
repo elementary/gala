@@ -76,8 +76,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK
-                    || window.window_type == Meta.WindowType.NOTIFICATION) {
+                if (window.window_type == Meta.WindowType.DOCK || NotificationStack.is_notification (window) ) {
                     continue;
                 }
 
@@ -124,7 +123,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            window_clone_container = new WindowCloneContainer (wm, null, scale, true) {
+            window_clone_container = new WindowCloneContainer (display, null, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -204,8 +203,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         if (!visible) {
             return;
         }
-        if (window.window_type == Meta.WindowType.DOCK
-            || window.window_type == Meta.WindowType.NOTIFICATION) {
+        if (window.window_type == Meta.WindowType.DOCK || NotificationStack.is_notification (window)) {
             return;
         }
         if (window.window_type != Meta.WindowType.NORMAL &&
