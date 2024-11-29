@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-09-18 12:00+0000\n"
+"PO-Revision-Date: 2024-11-28 12:16+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -124,10 +124,8 @@ msgid "Updated translations"
 msgstr "翻訳の更新"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
-msgstr "レガシーなアプリのウィンドウの影を改善"
+msgstr "影のパフォーマンスを改善"
 
 #: data/gala.metainfo.xml.in:78
 msgid "Fix a potential crash when moving windows between workspaces"
