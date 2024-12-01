@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-09-19 07:21+0000\n"
+"PO-Revision-Date: 2024-11-27 02:16+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -124,10 +124,8 @@ msgid "Updated translations"
 msgstr "Оновлені переклади"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
-msgstr "Покращення тіней вікон для застарілих програм"
+msgstr "Покращення швидкості показу тіней"
 
 #: data/gala.metainfo.xml.in:78
 msgid "Fix a potential crash when moving windows between workspaces"
