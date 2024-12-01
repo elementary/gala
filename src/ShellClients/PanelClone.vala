@@ -146,18 +146,21 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        var animation_duration = get_animation_duration ();
-
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (animation_duration);
+        clone.set_easing_duration (get_animation_duration ());
         clone.y = calculate_clone_y (false);
         clone.restore_easing_state ();
 
-        Timeout.add (animation_duration, () => {
+        unowned var y_transition = clone.get_transition ("y");
+        if (y_transition != null) {
+            y_transition.completed.connect (() => {
+                clone.visible = false;
+                panel_hidden = false;
+            });
+        } else {
             clone.visible = false;
             panel_hidden = false;
-            return Source.REMOVE;
-        });
+        }
     }
 }
