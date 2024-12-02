@@ -48,8 +48,8 @@ public class Gala.PanelClone : Object {
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
         // WindowActor position and Window position aren't necessarily the same.
         // The clone needs the actor position
-        actor.notify["x"].connect (update_clone_position);
-        actor.notify["y"].connect (update_clone_position);
+        panel.delegate_actor.notify["x"].connect (update_clone_position);
+        panel.delegate_actor.notify["y"].connect (update_clone_position);
         // Actor visibility might be changed by something else e.g. workspace switch
         // but we want to keep it in sync with us
         actor.notify["visible"].connect (update_visible);
@@ -97,7 +97,7 @@ public class Gala.PanelClone : Object {
         switch (panel.anchor) {
             case TOP:
             case BOTTOM:
-                return actor.x;
+                return panel.delegate_actor.x;
             default:
                 return 0;
         }
@@ -106,9 +106,9 @@ public class Gala.PanelClone : Object {
     private float calculate_clone_y (bool hidden) {
         switch (panel.anchor) {
             case TOP:
-                return hidden ? actor.y - actor.height : actor.y;
+                return hidden ? panel.delegate_actor.y - actor.height : panel.delegate_actor.y;
             case BOTTOM:
-                return hidden ? actor.y + actor.height : actor.y;
+                return hidden ? panel.delegate_actor.y + actor.height : panel.delegate_actor.y;
             default:
                 return 0;
         }
@@ -126,6 +126,10 @@ public class Gala.PanelClone : Object {
         }
 
         panel_hidden = true;
+
+        if (!Meta.Util.is_wayland_compositor ()) {
+            panel.window.move_frame (false, DelegateActor.OUT_OF_BOUNDS, DelegateActor.OUT_OF_BOUNDS);
+        }
 
         if (panel.anchor != TOP && panel.anchor != BOTTOM) {
             warning ("Animated hide not supported for side yet.");
@@ -146,18 +150,25 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        var animation_duration = get_animation_duration ();
+        if (!Meta.Util.is_wayland_compositor ()) {
+            panel.window.move_frame (false, panel.delegate_actor.actual_x, panel.delegate_actor.actual_y);
+        }
 
         clone.save_easing_state ();
         clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (animation_duration);
+        clone.set_easing_duration (get_animation_duration ());
         clone.y = calculate_clone_y (false);
         clone.restore_easing_state ();
 
-        Timeout.add (animation_duration, () => {
+        unowned var y_transition = clone.get_transition ("y");
+        if (y_transition != null) {
+            y_transition.completed.connect (() => {
+                clone.visible = false;
+                panel_hidden = false;
+            });
+        } else {
             clone.visible = false;
             panel_hidden = false;
-            return Source.REMOVE;
-        });
+        }
     }
 }

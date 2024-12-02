@@ -36,6 +36,7 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/2101">Dock interacts with the mouse even with the window overlapping</issue>
       </issues>
     </release>
 
