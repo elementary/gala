@@ -51,6 +51,10 @@ public class Gala.HideTracker : Object {
         if (hide_timeout_id != 0) {
             Source.remove (hide_timeout_id);
         }
+
+        if (update_timeout_id != 0) {
+            Source.remove (update_timeout_id);
+        }
     }
 
     construct {
