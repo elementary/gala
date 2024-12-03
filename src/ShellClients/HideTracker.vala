@@ -51,6 +51,10 @@ public class Gala.HideTracker : Object {
         if (hide_timeout_id != 0) {
             Source.remove (hide_timeout_id);
         }
+
+        if (update_timeout_id != 0) {
+            Source.remove (update_timeout_id);
+        }
     }
 
     construct {
@@ -95,7 +99,7 @@ public class Gala.HideTracker : Object {
         display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
     }
 
-    //Can be removed with mutter > 45
+#if !HAS_MUTTER45
     private bool window_has_pointer () {
         var cursor_tracker = display.get_cursor_tracker ();
         Graphene.Point pointer_pos;
@@ -114,6 +118,7 @@ public class Gala.HideTracker : Object {
         };
         return graphene_window_rect.contains_point (pointer_pos);
     }
+#endif
 
     private void track_focus_window (Meta.Window? window) {
         if (window == null) {

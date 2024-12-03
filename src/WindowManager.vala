@@ -1308,6 +1308,8 @@ namespace Gala {
                 case Meta.SizeChange.UNFULLSCREEN:
                     handle_fullscreen_window (window, which_change_local);
                     break;
+                default:
+                    break;
             }
 
             size_change_completed (actor);
