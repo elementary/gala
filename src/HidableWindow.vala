@@ -22,7 +22,7 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     construct {
-        return_if_fail (window == null);
+        return_if_fail (window != null);
 
         var rect = window.get_frame_rect ();
         actual_x = rect.x;
@@ -44,9 +44,9 @@ public class Gala.HidableWindow : GLib.Object {
             actual_x = rect.x;
 
             Idle.add_once (() => {
-                return_if_fail (window == null);
+                return_if_fail (window != null);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                return_if_fail (actor == null);
+                return_if_fail (actor != null);
                 x = actor.x;
             });
         }
@@ -55,9 +55,9 @@ public class Gala.HidableWindow : GLib.Object {
             actual_y = rect.y;
 
             Idle.add_once (() => {
-                return_if_fail (window == null);
+                return_if_fail (window != null);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                return_if_fail (actor == null);
+                return_if_fail (actor != null);
                 y = actor.y;
             });
         }
@@ -86,7 +86,10 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     public Mtk.Rectangle get_frame_rect () {
-        return_val_if_fail (window == null, Mtk.Rectangle (0, 0, 0, 0));
+        if (window == null) {
+            Mtk.Rectangle null_rect = { 0, 0, 0, 0 };
+            return null_rect;
+        }
 
         var window_rect = window.get_frame_rect ();
         window_rect.x = actual_x;
