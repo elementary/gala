@@ -22,8 +22,6 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     construct {
-        return_if_fail (window != null);
-
         var rect = window.get_frame_rect ();
         actual_x = rect.x;
         actual_y = rect.y;
