@@ -35,7 +35,11 @@ public class Gala.HidableWindow : GLib.Object {
         window.position_changed.connect (on_window_position_changed);
     }
 
-    private void on_window_position_changed (Meta.Window _window) {
+    private void on_window_position_changed (Meta.Window? _window) {
+        if (_window == null) {
+            return;
+        }
+
         var rect = _window.get_frame_rect ();
 
         if (rect.x != OUT_OF_BOUNDS) {
