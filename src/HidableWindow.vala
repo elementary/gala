@@ -35,26 +35,23 @@ public class Gala.HidableWindow : GLib.Object {
         window.position_changed.connect (on_window_position_changed);
     }
 
-    private void on_window_position_changed (Meta.Window? _window) {
-        if (_window == null) {
-            return;
-        }
-
-        var rect = _window.get_frame_rect ();
+    private void on_window_position_changed () {
+        var rect = window.get_frame_rect ();
 
         if (rect.x != OUT_OF_BOUNDS) {
             actual_x = rect.x;
             Idle.add_once (() => {
-                unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                 if (actor != null) {
                     x = actor.x;
                 }
             });
         }
+
         if (rect.y != OUT_OF_BOUNDS) {
             actual_y = rect.y;
             Idle.add_once (() => {
-                unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
                 if (actor != null) {
                     y = actor.y;
                 }
@@ -63,27 +60,23 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     public void hide_window () {
-        if (Meta.Util.is_wayland_compositor ()) {
-            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
-            if (actor == null) {
-                return;
-            }
+        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+        if (actor != null) {
+            actor.visible = false;;
+        }
 
-            actor.visible = false;
-        } else {
+        if (!Meta.Util.is_wayland_compositor ()) {
             window.move_frame (false, HidableWindow.OUT_OF_BOUNDS, HidableWindow.OUT_OF_BOUNDS);
         }
     }
 
     public void show_window () {
-        if (Meta.Util.is_wayland_compositor ()) {
-            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
-            if (actor == null) {
-                return;
-            }
-
+        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+        if (actor != null) {
             actor.visible = true;
-        } else {
+        }
+
+        if (!Meta.Util.is_wayland_compositor ()) {
             window.move_frame (false, actual_x, actual_y);
         }
     }
