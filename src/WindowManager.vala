@@ -255,6 +255,7 @@ namespace Gala {
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
             display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("interactive-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
@@ -517,6 +518,9 @@ namespace Gala {
             switch (binding.get_name ()) {
                 case "screenshot":
                     screenshot_screen.begin ();
+                    break;
+                case "interactive-screenshot":
+                    launch_action ("interactive-screenshot-action");
                     break;
                 case "area-screenshot":
                     screenshot_area.begin ();
