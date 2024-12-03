@@ -518,11 +518,7 @@ namespace Gala {
                     screenshot_screen.begin ();
                     break;
                 case "interactive-screenshot":
-                    try {
-                        Process.spawn_command_line_async ("io.elementary.screenshot");
-                    } catch (Error e) {
-                        warning ("Failed to launch interactive screenshot: %s", e.message);
-                    }
+                    launch_action ("interactive-screenshot-action");
                     break;
                 case "area-screenshot":
                     screenshot_area.begin ();

@@ -76,6 +76,11 @@
       <summary></summary>
       <description></description>
     </key>
+    <key type="s" name="interactive-screenshot-action">
+      <default>'flatpak run io.elementary.screenshot'</default>
+      <summary>Interactive screenshot action</summary>
+      <description>Sets the command to run when the interactive-screenshot keybinding is pressed.</description>
+    </key>
     <key type="b" name="move-maximized-workspace">
       <default>false</default>
       <summary>Automatically move maximized windows to a new workspace</summary>
