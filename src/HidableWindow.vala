@@ -62,7 +62,7 @@ public class Gala.HidableWindow : GLib.Object {
     public void hide_window () {
         unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
         if (actor != null) {
-            actor.visible = false;;
+            actor.visible = false;
         }
 
         if (!Meta.Util.is_wayland_compositor ()) {
