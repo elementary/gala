@@ -159,6 +159,7 @@ namespace Gala {
 #endif
         }
 
+#if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
             try {
                 var session_bus = GLib.Bus.get_sync (GLib.BusType.SESSION);
@@ -185,6 +186,7 @@ namespace Gala {
                 critical (e.message);
             }
         }
+#endif
 
         private void show_stage () {
             unowned Meta.Display display = get_display ();
