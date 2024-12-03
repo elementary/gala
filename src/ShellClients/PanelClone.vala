@@ -80,7 +80,11 @@ public class Gala.PanelClone : Object {
     }
 
     private void update_visible () {
-        actor.visible = !panel_hidden;
+        if (panel_hidden) {
+            panel.hidable_window.hide_window ();
+        } else {
+            panel.hidable_window.show_window ();
+        }
 
         if (actor.visible && !wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ())) {
             // The actor has just been revealed, make sure it's at the top
