@@ -1,0 +1,81 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
+ */
+
+/* Hides windows on both X11 and Wayland */
+public class Gala.HidableWindow : GLib.Object {
+    private const int OUT_OF_BOUNDS = 1000000;
+
+    public Meta.Window window { get; construct; }
+
+    /* Current window actor position or position before the window was moved out of bounds */
+    public float x { get; private set; default = 0.0f; }
+    public float y { get; private set; default = 0.0f; }
+
+    /* Current window position or position before it was moved out of bounds */
+    private int actual_x { get; private set; default = 0; }
+    private int actual_y { get; private set; default = 0; }
+
+    public HidableWindow (Meta.Window window) {
+        Object (window: window);
+    }
+
+    construct {
+        window.position_changed.connect ((_window) => {
+            var rect = _window.get_frame_rect ();
+            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+
+            if (actor == null) {
+                return;
+            }
+
+            if (rect.x != OUT_OF_BOUNDS) {
+                actual_x = rect.x;
+                Idle.add_once (() => {
+                    x = actor.x;
+                });
+            }
+            if (rect.y != OUT_OF_BOUNDS) {
+                actual_y = rect.y;
+                Idle.add_once (() => {
+                    y = actor.y;
+                });
+            }
+        });
+    }
+
+    public void hide_window () {
+        if (Meta.Util.is_wayland_compositor ()) {
+            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+            if (actor == null) {
+                return;
+            }
+
+            actor.visible = false;
+        } else {
+            window.move_frame (false, HidableWindow.OUT_OF_BOUNDS, HidableWindow.OUT_OF_BOUNDS);
+        }
+    }
+
+    public void show_window () {
+        if (Meta.Util.is_wayland_compositor ()) {
+            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+            if (actor == null) {
+                return;
+            }
+
+            actor.visible = true;
+        } else {
+            window.move_frame (false, actual_x, actual_y);
+        }
+    }
+
+    public Mtk.Rectangle get_frame_rect () {
+        var window_rect = window.get_frame_rect ();
+        window_rect.x = actual_x;
+        window_rect.y = actual_y;
+
+        return window_rect;
+    }
+}
