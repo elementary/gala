@@ -22,27 +22,40 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     construct {
-        window.position_changed.connect ((_window) => {
-            var rect = _window.get_frame_rect ();
-            unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+        var rect = window.get_frame_rect ();
+        actual_x = rect.x;
+        actual_y = rect.y;
 
-            if (actor == null) {
-                return;
-            }
+        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+        if (actor != null) {
+            x = actor.x;
+            y = actor.y;
+        }
 
-            if (rect.x != OUT_OF_BOUNDS) {
-                actual_x = rect.x;
-                Idle.add_once (() => {
+        window.position_changed.connect (on_window_position_changed);
+    }
+
+    private void on_window_position_changed (Meta.Window _window) {
+        var rect = _window.get_frame_rect ();
+
+        if (rect.x != OUT_OF_BOUNDS) {
+            actual_x = rect.x;
+            Idle.add_once (() => {
+                unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+                if (actor != null) {
                     x = actor.x;
-                });
-            }
-            if (rect.y != OUT_OF_BOUNDS) {
-                actual_y = rect.y;
-                Idle.add_once (() => {
+                }
+            });
+        }
+        if (rect.y != OUT_OF_BOUNDS) {
+            actual_y = rect.y;
+            Idle.add_once (() => {
+                unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+                if (actor != null) {
                     y = actor.y;
-                });
-            }
-        });
+                }
+            });
+        }
     }
 
     public void hide_window () {
