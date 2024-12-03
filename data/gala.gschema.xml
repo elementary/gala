@@ -62,7 +62,7 @@
       </description>
     </key>
     <key type="s" name="panel-main-menu-action">
-      <default>''</default>
+      <default>'io.elementary.wingpanel --toggle-indicator=app-launcher'</default>
       <summary>Panel main menu action</summary>
       <description>Sets the command to run when the panel-main-menu keybinding is pressed.</description>
     </key>
@@ -72,7 +72,7 @@
       <description></description>
     </key>
     <key type="s" name="overlay-action">
-      <default>''</default>
+      <default>'io.elementary.wingpanel --toggle-indicator=app-launcher'</default>
       <summary></summary>
       <description></description>
     </key>
