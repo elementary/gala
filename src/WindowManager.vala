@@ -410,10 +410,12 @@ namespace Gala {
         private void launch_action (string action_key) {
             try {
                 var action = behavior_settings.get_string (action_key);
-                if (action != null && action != "") {
+                if (action != null) {
                     Process.spawn_command_line_async (action);
                 }
-            } catch (Error e) { warning (e.message); }
+            } catch (Error e) {
+                warning (e.message);
+            }
         }
 
         private void on_monitors_changed () {
@@ -1045,13 +1047,7 @@ namespace Gala {
                         current.@delete (Gtk.get_current_event_time ());
                     break;
                 case ActionType.OPEN_LAUNCHER:
-                    try {
-                        Process.spawn_command_line_async (
-                            behavior_settings.get_string ("panel-main-menu-action")
-                        );
-                    } catch (Error e) {
-                        warning (e.message);
-                    }
+                    launch_action ("panel-main-menu-action");
                     break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null) {
