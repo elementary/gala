@@ -86,6 +86,8 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     public Mtk.Rectangle get_frame_rect () {
+        return_val_if_fail (window == null, Mtk.Rectangle (0, 0, 0, 0));
+
         var window_rect = window.get_frame_rect ();
         window_rect.x = actual_x;
         window_rect.y = actual_y;
