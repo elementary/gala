@@ -22,11 +22,13 @@ public class Gala.HidableWindow : GLib.Object {
     }
 
     construct {
+        return_if_fail (window == null);
+
         var rect = window.get_frame_rect ();
         actual_x = rect.x;
         actual_y = rect.y;
 
-        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor != null) {
             x = actor.x;
             y = actor.y;
@@ -35,32 +37,34 @@ public class Gala.HidableWindow : GLib.Object {
         window.position_changed.connect (on_window_position_changed);
     }
 
-    private void on_window_position_changed () {
+    private void on_window_position_changed () requires (window != null) {
         var rect = window.get_frame_rect ();
 
         if (rect.x != OUT_OF_BOUNDS) {
             actual_x = rect.x;
+
             Idle.add_once (() => {
+                return_if_fail (window == null);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (actor != null) {
-                    x = actor.x;
-                }
+                return_if_fail (actor == null);
+                x = actor.x;
             });
         }
 
         if (rect.y != OUT_OF_BOUNDS) {
             actual_y = rect.y;
+
             Idle.add_once (() => {
+                return_if_fail (window == null);
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (actor != null) {
-                    y = actor.y;
-                }
+                return_if_fail (actor == null);
+                y = actor.y;
             });
         }
     }
 
-    public void hide_window () {
-        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+    public void hide_window () requires (window != null) {
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor != null) {
             actor.visible = false;
         }
@@ -70,8 +74,8 @@ public class Gala.HidableWindow : GLib.Object {
         }
     }
 
-    public void show_window () {
-        unowned var actor = (Meta.WindowActor) _window.get_compositor_private ();
+    public void show_window () requires (window != null) {
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor != null) {
             actor.visible = true;
         }
