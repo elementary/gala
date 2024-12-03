@@ -67,7 +67,6 @@
         <issue url="https://github.com/elementary/gala/issues/1898">wayland: opening windows when overview is opened breaks a lot</issue>
         <issue url="https://github.com/elementary/gala/issues/2053">Window renders black</issue>
         <issue url="https://github.com/elementary/gala/issues/2067">Terminal and System Settings have generic icon in multitasking view on Wayland</issue>
-        <issue url="https://github.com/elementary/gala/issues/2083">Autohide is too sensitive</issue>
         <issue url="https://github.com/elementary/dock/issues/78">Touch support - getting the dock to display when hidden</issue>
       </issues>
     </release>
