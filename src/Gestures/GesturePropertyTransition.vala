@@ -129,7 +129,7 @@ public class Gala.GesturePropertyTransition : Object {
 
             actor.save_easing_state ();
             actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            actor.set_easing_duration (gesture_tracker.settings.is_animation_enabled () ? calculated_duration : 0);
+            actor.set_easing_duration (AnimationsSettings.get_enable_animations () ? calculated_duration : 0);
             actor.set_property (property, cancel_action ? from_value : to_value);
             actor.restore_easing_state ();
 
@@ -141,14 +141,14 @@ public class Gala.GesturePropertyTransition : Object {
             }
         };
 
-        if (with_gesture && gesture_tracker.settings.is_animation_enabled ()) {
+        if (with_gesture && AnimationsSettings.get_enable_animations ()) {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
             if (intermediate_value != null) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                actor.set_easing_duration (gesture_tracker.settings.is_animation_enabled () ? gesture_tracker.min_animation_duration : 0);
+                actor.set_easing_duration (AnimationsSettings.get_enable_animations () ? gesture_tracker.min_animation_duration : 0);
                 actor.set_property (property, intermediate_value);
                 actor.restore_easing_state ();
 
