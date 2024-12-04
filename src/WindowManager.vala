@@ -163,7 +163,7 @@ namespace Gala {
         private async void start_x11_services (GLib.Task task) {
             try {
                 var session_bus = GLib.Bus.get_sync (GLib.BusType.SESSION);
-                session_bus.call.begin (
+                yield session_bus.call (
                     "org.freedesktop.systemd1",
                     "/org/freedesktop/systemd1",
                     "org.freedesktop.systemd1.Manager",
@@ -171,19 +171,12 @@ namespace Gala {
                     new GLib.Variant ("(ss)", "gnome-session-x11-services-ready.target", "fail"),
                     new GLib.VariantType ("(o)"),
                     GLib.DBusCallFlags.NONE,
-                    -1,
-                    null,
-                    (obj, res) => {
-                        task.return_boolean (true);
-                        try {
-                            session_bus.call.end (res);
-                        } catch (Error e) {
-                            critical (e.message);
-                        }
-                    }
+                    -1
                 );
             } catch (Error e) {
                 critical (e.message);
+            } finally {
+                task.return_boolean (true);
             }
         }
 #endif
