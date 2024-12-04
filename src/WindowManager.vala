@@ -162,7 +162,7 @@ namespace Gala {
 #if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
             try {
-                var session_bus = GLib.Bus.get_sync (GLib.BusType.SESSION);
+                var session_bus = yield GLib.Bus.@get (GLib.BusType.SESSION);
                 yield session_bus.call (
                     "org.freedesktop.systemd1",
                     "/org/freedesktop/systemd1",
