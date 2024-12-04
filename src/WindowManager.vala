@@ -148,7 +148,38 @@ namespace Gala {
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
+
+#if WITH_SYSTEMD
+            if (Meta.Util.is_wayland_compositor ()) {
+                display.init_xserver.connect ((task) => {
+                    start_x11_services.begin (task);
+                    return true;
+                });
+            }
+#endif
         }
+
+#if WITH_SYSTEMD
+        private async void start_x11_services (GLib.Task task) {
+            try {
+                var session_bus = yield GLib.Bus.@get (GLib.BusType.SESSION);
+                yield session_bus.call (
+                    "org.freedesktop.systemd1",
+                    "/org/freedesktop/systemd1",
+                    "org.freedesktop.systemd1.Manager",
+                    "StartUnit",
+                    new GLib.Variant ("(ss)", "gnome-session-x11-services-ready.target", "fail"),
+                    new GLib.VariantType ("(o)"),
+                    GLib.DBusCallFlags.NONE,
+                    -1
+                );
+            } catch (Error e) {
+                critical (e.message);
+            } finally {
+                task.return_boolean (true);
+            }
+        }
+#endif
 
         private void show_stage () {
             unowned Meta.Display display = get_display ();
