@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-09-23 10:39+0000\n"
+"PO-Revision-Date: 2024-12-03 18:16+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
-">\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
+"\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -124,10 +124,8 @@ msgid "Updated translations"
 msgstr "Zaktualizowano tłumaczenia"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
-msgstr "Popraw cienie okien dla przestarzałych aplikacji"
+msgstr "Poprawiona wydajność cieni"
 
 #: data/gala.metainfo.xml.in:78
 msgid "Fix a potential crash when moving windows between workspaces"

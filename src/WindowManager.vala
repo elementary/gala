@@ -148,7 +148,38 @@ namespace Gala {
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
+
+#if WITH_SYSTEMD
+            if (Meta.Util.is_wayland_compositor ()) {
+                display.init_xserver.connect ((task) => {
+                    start_x11_services.begin (task);
+                    return true;
+                });
+            }
+#endif
         }
+
+#if WITH_SYSTEMD
+        private async void start_x11_services (GLib.Task task) {
+            try {
+                var session_bus = yield GLib.Bus.@get (GLib.BusType.SESSION);
+                yield session_bus.call (
+                    "org.freedesktop.systemd1",
+                    "/org/freedesktop/systemd1",
+                    "org.freedesktop.systemd1.Manager",
+                    "StartUnit",
+                    new GLib.Variant ("(ss)", "gnome-session-x11-services-ready.target", "fail"),
+                    new GLib.VariantType ("(o)"),
+                    GLib.DBusCallFlags.NONE,
+                    -1
+                );
+            } catch (Error e) {
+                critical (e.message);
+            } finally {
+                task.return_boolean (true);
+            }
+        }
+#endif
 
         private void show_stage () {
             unowned Meta.Display display = get_display ();
@@ -255,6 +286,7 @@ namespace Gala {
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
             display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
+            display.add_keybinding ("interactive-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
@@ -295,8 +327,7 @@ namespace Gala {
             // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
             // is initialized, so we hold this stuff off until we're ready to draw
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                unowned string xdg_session_type = Environment.get_variable ("XDG_SESSION_TYPE");
-                if (xdg_session_type == "x11") {
+                if (!Meta.Util.is_wayland_compositor ()) {
                     string[] args = {};
                     unowned string[] _args = args;
                     Gtk.init (ref _args);
@@ -410,10 +441,12 @@ namespace Gala {
         private void launch_action (string action_key) {
             try {
                 var action = behavior_settings.get_string (action_key);
-                if (action != null && action != "") {
+                if (action != null) {
                     Process.spawn_command_line_async (action);
                 }
-            } catch (Error e) { warning (e.message); }
+            } catch (Error e) {
+                warning (e.message);
+            }
         }
 
         private void on_monitors_changed () {
@@ -515,6 +548,9 @@ namespace Gala {
             switch (binding.get_name ()) {
                 case "screenshot":
                     screenshot_screen.begin ();
+                    break;
+                case "interactive-screenshot":
+                    launch_action ("interactive-screenshot-action");
                     break;
                 case "area-screenshot":
                     screenshot_area.begin ();
@@ -987,13 +1023,7 @@ namespace Gala {
                         current.@delete (Gtk.get_current_event_time ());
                     break;
                 case ActionType.OPEN_LAUNCHER:
-                    try {
-                        Process.spawn_command_line_async (
-                            behavior_settings.get_string ("panel-main-menu-action")
-                        );
-                    } catch (Error e) {
-                        warning (e.message);
-                    }
+                    launch_action ("panel-main-menu-action");
                     break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null) {
@@ -1241,6 +1271,8 @@ namespace Gala {
                 case Meta.SizeChange.FULLSCREEN:
                 case Meta.SizeChange.UNFULLSCREEN:
                     handle_fullscreen_window (window, which_change_local);
+                    break;
+                default:
                     break;
             }
 
