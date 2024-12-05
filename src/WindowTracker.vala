@@ -85,13 +85,15 @@ public class Gala.WindowTracker : GLib.Object {
             var stat_dis = new DataInputStream (stat_file.read ());
             var stats = stat_dis.read_line (null).split (" ");
 
-            if (stats.length < 3) {
+            if (stats.length < 4) {
                 warning ("WindowTracker.get_app_from_pid: stat file has wrong format");
+                return null;
             }
 
             int parent_pid;
             if (!int.try_parse (stats[3], out parent_pid, null, 10)) {
                 warning ("WindowTracker.get_app_from_pid: stat file doesn't have parent pid");
+                return null;
             }
 
             if (parent_pid == pid || pid < 1) {
