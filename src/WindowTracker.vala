@@ -78,7 +78,7 @@ public class Gala.WindowTracker : GLib.Object {
                 }
             }
 
-            // this particular process's doesn't have corresponding desktop file
+            // this particular process doesn't have corresponding desktop file
             // but maybe parent process has it
 
             var stat_file = File.new_for_path ("/proc/%d/stat".printf ((int) pid));
