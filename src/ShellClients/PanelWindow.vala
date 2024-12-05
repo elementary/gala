@@ -15,7 +15,6 @@ public class Gala.PanelWindow : Object {
 
     public Meta.Side anchor;
 
-    public DelegateActor delegate_actor;
     private PanelClone clone;
 
     private uint idle_move_id = 0;
@@ -46,7 +45,6 @@ public class Gala.PanelWindow : Object {
 
         window.stick ();
 
-        delegate_actor = new DelegateActor ((Meta.WindowActor) window.get_compositor_private ());
         clone = new PanelClone (wm, this);
 
         var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
@@ -64,8 +62,6 @@ public class Gala.PanelWindow : Object {
     public Meta.Rectangle get_custom_window_rect () {
 #endif
         var window_rect = window.get_frame_rect ();
-        window_rect.x = delegate_actor.actual_x;
-        window_rect.y = delegate_actor.actual_y;
 
         if (width > 0) {
             window_rect.width = width;
