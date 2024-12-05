@@ -341,13 +341,10 @@ namespace Gala {
             }
         }
 
-        public static Clutter.ActorBox actor_box_from_rect (float x, float y, float width, float height, bool clamp_to_pixel = true) {
+        public static Clutter.ActorBox actor_box_from_rect (float x, float y, float width, float height) {
             var actor_box = Clutter.ActorBox ();
             actor_box.init_rect (x, y, width, height);
-
-            if (clamp_to_pixel) {
-                Clutter.ActorBox.clamp_to_pixel (ref actor_box);
-            }
+            Clutter.ActorBox.clamp_to_pixel (ref actor_box);
 
             return actor_box;
         }
