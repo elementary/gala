@@ -20,6 +20,8 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
+    public bool is_waiting { get; private set; default = true; } // On session start wait a bit for a synchronized and smooth reveal
+
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -27,6 +29,8 @@ public class Gala.ShellClientsManager : Object {
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
+
+    private uint currently_starting_panels = 0;
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -143,16 +147,18 @@ public class Gala.ShellClientsManager : Object {
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
 
-    public void set_anchor (Meta.Window window, Meta.Side side) {
+    public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
-            panel_windows[window].update_anchor (side);
+            panel_windows[window].anchor = anchor;
             return;
         }
+
+        currently_starting_panels++;
 
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        panel_windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, anchor);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
@@ -207,6 +213,18 @@ public class Gala.ShellClientsManager : Object {
         return positioned;
     }
 
+    //Called by the WM once it has initialized
+    public void notify_stage_ready () {
+        Timeout.add_seconds_once (5, () => is_waiting = false); // Failsafe if a client stalls to still show the others
+    }
+
+    // Called by the {@link PanelClone} when the window it manages is ready.
+    public void notify_client_ready () {
+        currently_starting_panels--;
+
+        is_waiting &= currently_starting_panels > 0;
+    }
+
     //X11 only
     private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
@@ -226,8 +244,30 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    int parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
-                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 15) {
+                    int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
+                    if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
+                        //FIXME: Next major release change dock and wingpanel calls to get rid of this
+                        Pantheon.Desktop.Anchor parsed = TOP;
+                        switch ((Meta.Side) meta_side_parsed) {
+                            case BOTTOM:
+                                parsed = BOTTOM;
+                                break;
+
+                            case LEFT:
+                                parsed = LEFT;
+                                break;
+
+                            case RIGHT:
+                                parsed = RIGHT;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        set_anchor (window, parsed);
+                        // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
+                        // but on X the window was already shown when we get here so we have to call again to instantly apply it.
                         set_anchor (window, parsed);
                     } else {
                         warning ("Failed to parse %s as anchor", val);

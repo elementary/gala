@@ -16,17 +16,7 @@ public class Gala.HideTracker : Object {
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
 
-    private Pantheon.Desktop.HideMode _hide_mode = NEVER;
-    public Pantheon.Desktop.HideMode hide_mode {
-        get {
-            return _hide_mode;
-        }
-        set {
-            _hide_mode = value;
-
-            setup_barrier ();
-        }
-    }
+    public Pantheon.Desktop.HideMode hide_mode { get; set; }
 
     private Clutter.PanAction pan_action;
 
@@ -97,6 +87,16 @@ public class Gala.HideTracker : Object {
         pan_action.pan.connect (on_pan);
 
         display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
+
+        panel.notify["anchor"].connect (setup_barrier);
+
+        var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => {
+            setup_barrier (); //Make sure barriers are still on the primary monitor
+            schedule_update ();
+        });
+
+        setup_barrier ();
     }
 
 #if !HAS_MUTTER45
@@ -152,7 +152,13 @@ public class Gala.HideTracker : Object {
         });
     }
 
-    private void update_overlap () {
+    /**
+     * Immediately updates the overlap. Usually {@link schedule_update} should be used instead which
+     * internally calls this but throttles it since it's a somewhat expensive operation.
+     * On very rare use cases however it is required to update immediately. In that case you can call
+     * this directly.
+     */
+    public void update_overlap () {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
@@ -171,7 +177,7 @@ public class Gala.HideTracker : Object {
                 continue;
             }
 
-            if (!panel.get_custom_window_rect ().overlap (window.get_frame_rect ())) {
+            if (!panel.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
 

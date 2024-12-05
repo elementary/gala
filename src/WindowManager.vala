@@ -398,13 +398,13 @@ namespace Gala {
 
             stage.show ();
 
-            Idle.add (() => {
+            Idle.add_once (() => {
                 // let the session manager move to the next phase
 #if WITH_SYSTEMD
                 Systemd.Daemon.notify (true, "READY=1");
 #endif
-                display.get_context ().notify_ready ();
-                return GLib.Source.REMOVE;
+                get_display ().get_context ().notify_ready ();
+                ShellClientsManager.get_instance ().notify_stage_ready ();
             });
         }
 
