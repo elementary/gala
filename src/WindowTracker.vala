@@ -63,7 +63,46 @@ public class Gala.WindowTracker : GLib.Object {
             }
         }
 
-        return null;
+        // try to guess app_info name by process name
+        var file = File.new_for_path ("/proc/%d/comm".printf ((int) pid));
+
+        try {
+            var dis = new DataInputStream (file.read ());
+            var name = dis.read_line (null);
+
+            if (name != null && name != "") {
+                name = name.concat (".desktop");
+                unowned var app = AppSystem.get_default ().lookup_app (name);
+                if (app != null) {
+                    return app;
+                }
+            }
+
+            // this particular process's doesn't have corresponding desktop file
+            // but maybe parent process has it
+
+            var stat_file = File.new_for_path ("/proc/%d/stat".printf ((int) pid));
+            var stat_dis = new DataInputStream (stat_file.read ());
+            var stats = stat_dis.read_line (null).split (" ");
+
+            if (stats.length < 3) {
+                warning ("WindowTracker.get_app_from_pid: stat file has wrong format");
+            }
+
+            int parent_pid;
+            if (!int.try_parse (stats[3], out parent_pid, null, 10)) {
+                warning ("WindowTracker.get_app_from_pid: stat file doesn't have parent pid");
+            }
+
+            if (parent_pid == pid || pid < 1) {
+                return null;
+            }
+
+            return get_app_from_pid (parent_pid);
+        } catch (Error e) {
+            critical (e.message);
+            return null;
+        }
     }
 
     private unowned Gala.App? get_app_from_window_pid (Meta.Window window) {
