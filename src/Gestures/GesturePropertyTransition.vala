@@ -13,12 +13,6 @@ public class Gala.GesturePropertyTransition : Object {
     public delegate void DoneCallback ();
 
     /**
-     * Emitted when all animations are finished that is when the property has reached the target value
-     * either via gesture or via easing or combined.
-     */
-    public signal void done ();
-
-    /**
      * The actor whose property will be animated.
      */
     public Clutter.Actor actor { get; construct; }
@@ -49,6 +43,10 @@ public class Gala.GesturePropertyTransition : Object {
      */
     public Value? intermediate_value { get; construct; }
 
+    private Value actual_from_value;
+
+    private DoneCallback? done_callback;
+
     public GesturePropertyTransition (
         Clutter.Actor actor,
         GestureTracker gesture_tracker,
@@ -67,10 +65,6 @@ public class Gala.GesturePropertyTransition : Object {
         );
     }
 
-    construct {
-        done.connect (unref);
-    }
-
     /**
      * Starts animating the property from {@link from_value} to {@link to_value}. If with_gesture is true
      * it will connect to the gesture trackers signals and animate according to the input finishing with an easing
@@ -82,43 +76,31 @@ public class Gala.GesturePropertyTransition : Object {
     public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
         ref ();
 
-        if (done_callback != null) {
-            ulong done_callback_handler = 0;
-            done_callback_handler = done.connect (() => {
-                done_callback ();
-                disconnect (done_callback_handler);
-            });
-        }
+        this.done_callback = (owned) done_callback;
 
         Value current_value = {};
         actor.get_property (property, ref current_value);
 
-        if (from_value == null) {
-            from_value = current_value;
+        actual_from_value = from_value ?? current_value;
 
-            ulong done_handler = 0;
-            done_handler = done.connect (() => {
-                from_value = null;
-                disconnect (done_handler);
-            });
-        } else if (from_value.type () != current_value.type ()) {
+        if (actual_from_value.type () != current_value.type ()) {
             warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
-            done ();
+            finish ();
             return;
         }
 
         if (current_value.type () != to_value.type ()) {
             warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
-            done ();
+            finish ();
             return;
         }
 
         GestureTracker.OnBegin on_animation_begin = () => {
-            actor.set_property (property, from_value);
+            actor.set_property (property, actual_from_value);
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var animation_value = GestureTracker.animation_value (value_to_float (from_value), value_to_float (intermediate_value ?? to_value), percentage);
+            var animation_value = GestureTracker.animation_value (value_to_float (actual_from_value), value_to_float (intermediate_value ?? to_value), percentage);
             actor.set_property (property, value_from_float (animation_value));
         };
 
@@ -128,16 +110,16 @@ public class Gala.GesturePropertyTransition : Object {
             }
 
             actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            actor.set_easing_duration (AnimationsSettings.get_enable_animations () ? calculated_duration : 0);
-            actor.set_property (property, cancel_action ? from_value : to_value);
+            actor.set_easing_mode (EASE_OUT_QUAD);
+            actor.set_easing_duration (AnimationsSettings.get_animation_duration (calculated_duration));
+            actor.set_property (property, cancel_action ? actual_from_value : to_value);
             actor.restore_easing_state ();
 
             unowned var transition = actor.get_transition (property);
             if (transition == null) {
-                done ();
+                finish ();
             } else {
-                transition.stopped.connect (() => done ());
+                transition.stopped.connect (finish);
             }
         };
 
@@ -147,8 +129,8 @@ public class Gala.GesturePropertyTransition : Object {
             on_animation_begin (0);
             if (intermediate_value != null) {
                 actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                actor.set_easing_duration (AnimationsSettings.get_enable_animations () ? gesture_tracker.min_animation_duration : 0);
+                actor.set_easing_mode (EASE_OUT_QUAD);
+                actor.set_easing_duration (AnimationsSettings.get_animation_duration (gesture_tracker.min_animation_duration));
                 actor.set_property (property, intermediate_value);
                 actor.restore_easing_state ();
 
@@ -162,6 +144,14 @@ public class Gala.GesturePropertyTransition : Object {
                 on_animation_end (1, false, gesture_tracker.min_animation_duration);
             }
         }
+    }
+
+    private void finish () {
+        if (done_callback != null) {
+            done_callback ();
+        }
+
+        unref ();
     }
 
     private float value_to_float (Value val) {
@@ -178,7 +168,7 @@ public class Gala.GesturePropertyTransition : Object {
         var float_val = Value (typeof (float));
         float_val.set_float (f);
 
-        var val = Value (from_value.type ());
+        var val = Value (actual_from_value.type ());
 
         if (!float_val.transform (ref val)) {
             warning ("Failed to transform float to give type");
