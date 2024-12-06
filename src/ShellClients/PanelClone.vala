@@ -127,6 +127,10 @@ public class Gala.PanelClone : Object {
 
         panel_hidden = true;
 
+        if (!Meta.Util.is_wayland_compositor ()) {
+            Utils.x11_set_window_pass_through (panel.window);
+        }
+
         if (panel.anchor != TOP && panel.anchor != BOTTOM) {
             warning ("Animated hide not supported for side yet.");
             return;
@@ -144,6 +148,10 @@ public class Gala.PanelClone : Object {
     private void show () {
         if (!panel_hidden) {
             return;
+        }
+
+        if (!Meta.Util.is_wayland_compositor ()) {
+            Utils.x11_unset_window_pass_through (panel.window);
         }
 
         clone.save_easing_state ();
