@@ -1578,7 +1578,7 @@ namespace Gala {
         public override void destroy (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
-            ws_assoc.remove (window);
+            move_window_to_old_ws (window);
 
             actor.remove_all_transitions ();
 
