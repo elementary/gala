@@ -141,6 +141,9 @@ namespace Gala {
 
             expand_to_screen_size ();
 
+            unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (expand_to_screen_size);
+
             init_dbus_interfaces.begin ();
         }
 
