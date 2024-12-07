@@ -43,6 +43,11 @@ public class Gala.GesturePropertyTransition : Object {
      */
     public Value? intermediate_value { get; construct; }
 
+    /**
+     * This is the from value that's actually used when calculating the animation movement.
+     * If {@link from_value} isn't null this will be the same, otherwise it will be set to the current
+     * value of the target property, when calling {@link start}.
+     */
     private Value actual_from_value;
 
     private DoneCallback? done_callback;
