@@ -158,12 +158,19 @@ namespace Gala {
             }
         }
 
+        // is used to determine whether new window is actually new or was moved from another monitor
+        private static Gee.HashSet<Meta.Window> mapped_window_set;
+
         private BackgroundManager background;
         private bool opened = false;
         private uint hover_activate_timeout = 0;
 
         public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
             Object (wm: wm, workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
+        }
+
+        static construct {
+            mapped_window_set = new Gee.HashSet<Meta.Window> ();
         }
 
         construct {
@@ -209,9 +216,9 @@ namespace Gala {
                 }
             });
 
-            display.window_entered_monitor.connect (on_window_entered_monitor);
+            display.window_entered_monitor.connect (window_entered_monitor);
             display.window_left_monitor.connect (window_left_monitor);
-            display.window_created.connect (add_window);
+            wm.window_created.connect (add_window);
             workspace.window_removed.connect (remove_window);
 
             add_child (background);
@@ -225,6 +232,8 @@ namespace Gala {
                     && !window.on_all_workspaces
                     && window.is_on_primary_monitor ()
                 ) {
+                    mark_window_as_mapped (window);
+
                     window_container.add_window (window);
                     icon_group.add_window (window, true);
                 }
@@ -237,9 +246,9 @@ namespace Gala {
         ~WorkspaceClone () {
             unowned Meta.Display display = workspace.get_display ();
 
-            display.window_entered_monitor.disconnect (on_window_entered_monitor);
+            display.window_entered_monitor.disconnect (window_entered_monitor);
             display.window_left_monitor.disconnect (window_left_monitor);
-            display.window_created.disconnect (add_window);
+            wm.window_created.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
 
             var listener = WindowListener.get_default ();
@@ -260,6 +269,8 @@ namespace Gala {
          * belongs to this workspace and this monitor.
          */
         private void add_window (Meta.Window window) {
+            mark_window_as_mapped (window);
+
             if (
                 window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
@@ -281,6 +292,14 @@ namespace Gala {
             icon_group.add_window (window);
         }
 
+        private void mark_window_as_mapped (Meta.Window window) {
+            mapped_window_set.add (window);
+            window.shown.connect
+            window.unmanaged.connect (() => {
+                mapped_window_set.remove (window);
+            });
+        }
+
         /**
          * Remove a window from the WindowCloneContainer and the IconGroup
          */
@@ -289,8 +308,8 @@ namespace Gala {
             icon_group.remove_window (window, opened);
         }
 
-        private void on_window_entered_monitor (int window_monitor, Meta.Window window) {
-            if (window.get_compositor_private () != null) {
+        private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
+            if (window in mapped_window_set) {
                 add_window (window);
             }
         }

@@ -62,10 +62,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
      * {@inheritDoc}
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        unowned var display = wm.get_display ();
-        unowned var manager = display.get_workspace_manager ();
-
         workspaces = new List<Meta.Workspace> ();
+        unowned var manager = wm.get_display ().get_workspace_manager ();
         foreach (unowned var workspace in manager.get_workspaces ()) {
             workspaces.append (workspace);
         }
@@ -111,13 +109,15 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         foreach (var workspace in workspaces) {
             workspace.window_removed.connect (remove_window);
         }
-        display.window_created.connect (add_window);
-        display.window_left_monitor.connect (window_left_monitor);
+        wm.window_created.connect (add_window);
+        wm.get_display ().window_left_monitor.connect (window_left_monitor);
 
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
+
+        unowned var display = wm.get_display ();
 
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var geometry = display.get_monitor_geometry (i);
@@ -267,10 +267,8 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         foreach (var workspace in workspaces) {
             workspace.window_removed.disconnect (remove_window);
         }
-
-        unowned var display = wm.get_display ();
-        display.window_created.disconnect (add_window);
-        display.window_left_monitor.disconnect (window_left_monitor);
+        wm.window_created.disconnect (add_window);
+        wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
         foreach (unowned var child in get_children ()) {
             ((WindowCloneContainer) child).close ();
