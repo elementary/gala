@@ -147,8 +147,8 @@ namespace Gala {
                 background_group.disconnect (changed_handler);
                 changed_handler = 0;
 
-                // Wait for Wingpanel animation 
-                Timeout.add_once (300, show_stage);
+                stage.remove_child (fade_in_screen);
+                fade_in_screen = null;
             });
 
             init_a11y ();
@@ -416,12 +416,6 @@ namespace Gala {
 
             stage.show ();
 
-            display.window_created.connect ((window) => window_created (window));
-        }
-
-        private void show_stage () requires (fade_in_screen.visible) {
-            fade_in_screen.visible = false;
-
             Idle.add_once (() => {
                 // let the session manager move to the next phase
 #if WITH_SYSTEMD
@@ -429,6 +423,8 @@ namespace Gala {
 #endif
                 get_display ().get_context ().notify_ready ();
             });
+
+            display.window_created.connect ((window) => window_created (window));
         }
 
         private void init_a11y () {
