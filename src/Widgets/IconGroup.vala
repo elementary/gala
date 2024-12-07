@@ -39,7 +39,7 @@ namespace Gala {
 
         private DragDropAction drag_action;
 
-        public WindowManager wm { get; construct; }
+        public Meta.Display display { get; construct; }
         public Meta.Workspace workspace { get; construct; }
         private float _scale_factor = 1.0f;
         public float scale_factor {
@@ -55,8 +55,8 @@ namespace Gala {
         private Clutter.Actor? prev_parent = null;
         private Clutter.Actor icon_container;
 
-        public IconGroup (WindowManager wm, Meta.Workspace workspace, float scale) {
-            Object (wm: wm, workspace: workspace, scale_factor: scale);
+        public IconGroup (Meta.Display display, Meta.Workspace workspace, float scale) {
+            Object (display: display, workspace: workspace, scale_factor: scale);
         }
 
         construct {
@@ -114,6 +114,9 @@ namespace Gala {
             var height = InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
             var backdrop_opacity_int = (uint8) (BACKDROP_ABSOLUTE_OPACITY * backdrop_opacity);
 
+#if HAS_MUTTER47
+//FIXME: TODO!
+#else
             Cogl.VertexP2T2C4 vertices[4];
             vertices[0] = { x, y + height, 0, 1, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int, backdrop_opacity_int };
             vertices[1] = { x, y, 0, 0, 0, 0, 0, 0 };
@@ -123,6 +126,7 @@ namespace Gala {
             var primitive = new Cogl.Primitive.p2t2c4 (context.get_framebuffer ().get_context (), Cogl.VerticesMode.TRIANGLE_STRIP, vertices);
             var pipeline = new Cogl.Pipeline (context.get_framebuffer ().get_context ());
             primitive.draw (context.get_framebuffer (), pipeline);
+#endif
             base.paint (context);
         }
 
@@ -143,7 +147,7 @@ namespace Gala {
          *                  the group.
          */
         public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
-            var new_window = new WindowIconActor (wm, window);
+            var new_window = new WindowIconActor (window);
             new_window.set_position (32, 32);
             new_window.temporary = temporary;
 
@@ -165,7 +169,7 @@ namespace Gala {
                     if (animate) {
                         icon.save_easing_state ();
                         icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                        icon.set_easing_duration (wm.enable_animations ? 200 : 0);
+                        icon.set_easing_duration (AnimationsSettings.get_animation_duration (200));
                         icon.opacity = 0;
                         icon.restore_easing_state ();
 
@@ -415,7 +419,7 @@ namespace Gala {
             // disable reactivity so that workspace thumbs can get events
             reactive = false;
 
-            wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+            display.set_cursor (Meta.Cursor.DND_IN_DRAG);
 
             return this;
         }
@@ -433,14 +437,14 @@ namespace Gala {
                 drag_canceled ();
             }
 
-            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+            display.set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void drag_canceled () {
             get_parent ().remove_child (this);
             restore_group ();
 
-            wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+            display.set_cursor (Meta.Cursor.DEFAULT);
         }
 
         private void restore_group () {

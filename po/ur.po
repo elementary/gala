@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-09-17 18:30+0000\n"
+"POT-Creation-Date: 2024-11-23 16:06+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Urdu <https://l10n.elementary.io/projects/desktop/gala/ur/>\n"
@@ -105,53 +105,59 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr ""
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
+#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:34
-msgid "Fix a potential crash when moving windows between workspaces"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:35
-msgid "Fix notification animation when entering multitasking view"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:36 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:95 data/gala.metainfo.xml.in:117
-#: data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:35
+msgid "Improved shadows performance"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:78
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:79
+msgid "Fix notification animation when entering multitasking view"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:94
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:51
+#: data/gala.metainfo.xml.in:95
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:135
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:136
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:137
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:138
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:160
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -177,7 +183,7 @@ msgctxt "program"
 msgid "Unknown"
 msgstr ""
 
-#: src/DesktopIntegration.vala:132
+#: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
 msgstr ""
 
@@ -225,11 +231,11 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/ScreenshotManager.vala:290
+#: src/ScreenshotManager.vala:296
 msgid "Screenshots"
 msgstr ""
 
-#: src/ScreenshotManager.vala:382
+#: src/ScreenshotManager.vala:388
 msgid "Screenshot taken"
 msgstr ""
 
@@ -237,27 +243,27 @@ msgstr ""
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2365
+#: src/WindowManager.vala:2355
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2372
+#: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:2376
+#: src/WindowManager.vala:2366
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:2377
+#: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2416
+#: src/WindowManager.vala:2406
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""

@@ -92,7 +92,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
                 var rect = Graphene.Rect.alloc ();
                 rect.init (point_x, point_y, width, height);
 
-                var popup_window = new PopupWindow (wm, active);
+                var popup_window = new PopupWindow (wm.get_display (), active);
                 popup_window.set_container_clip (rect);
                 popup_window.show.connect (on_popup_window_show);
                 popup_window.hide.connect (on_popup_window_hide);
@@ -114,7 +114,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
-            var popup_window = new PopupWindow (wm, selected);
+            var popup_window = new PopupWindow (wm.get_display (), selected);
             popup_window.show.connect (on_popup_window_show);
             popup_window.hide.connect (on_popup_window_hide);
             add_window (popup_window);

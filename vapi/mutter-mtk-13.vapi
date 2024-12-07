@@ -50,6 +50,10 @@ namespace Mtk {
 #if HAS_MUTTER46
 		public void crop_and_scale (Graphene.Rect src_rect, int dst_width, int dst_height, Mtk.Rectangle dest);
 #endif
+#if HAS_MUTTER47
+		[CCode (has_construct_function = false, type = "MtkRectangle*")]
+		public Rectangle.empty ();
+#endif
 		public bool equal (Mtk.Rectangle src2);
 		public void free ();
 		public static Mtk.Rectangle from_graphene_rect (Graphene.Rect rect, Mtk.RoundingStrategy rounding_strategy);
@@ -63,6 +67,9 @@ namespace Mtk {
 		public void scale_double (double scale, Mtk.RoundingStrategy rounding_strategy, Mtk.Rectangle dest);
 #endif
 		public Graphene.Rect? to_graphene_rect ();
+#if HAS_MUTTER47
+		public void transform (Mtk.MonitorTransform transform, int width, int height, Mtk.Rectangle dest);
+#endif
 		public Mtk.Rectangle union (Mtk.Rectangle rect2);
 		public bool vert_overlap (Mtk.Rectangle rect2);
 	}
@@ -89,6 +96,25 @@ namespace Mtk {
 		public void init (Mtk.Region region);
 		public void next ();
 	}
+#if HAS_MUTTER47
+	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_MONITOR_TRANSFORM_", has_type_id = false)]
+	public enum MonitorTransform {
+		NORMAL,
+		@90,
+		@180,
+		@270,
+		FLIPPED,
+		FLIPPED_90,
+		FLIPPED_180,
+		FLIPPED_270;
+		public Mtk.MonitorTransform invert ();
+		public Mtk.MonitorTransform transform (Mtk.MonitorTransform other);
+		public void transform_matrix (Graphene.Matrix matrix);
+		public void transform_point (int area_width, int area_height, int point_x, int point_y);
+		[CCode (cname = "MTK_MONITOR_ALL_TRANSFORMS")]
+		public const int ALL;
+	}
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_REGION_OVERLAP_", has_type_id = false)]
 	public enum RegionOverlap {
 		OUT,

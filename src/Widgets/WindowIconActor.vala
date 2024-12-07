@@ -23,7 +23,6 @@ namespace Gala {
      */
     public class WindowIconActor : Clutter.Actor {
         public Meta.Window window { get; construct; }
-        public WindowManager wm { get; construct; }
 
         private float cur_icon_scale = 1.0f;
         private float desired_icon_scale = 1.0f;
@@ -65,7 +64,7 @@ namespace Gala {
             set {
                 if (_temporary && !value) {
                     remove_transition ("pulse");
-                } else if (!_temporary && value && wm.enable_animations) {
+                } else if (!_temporary && value && AnimationsSettings.get_enable_animations ()) {
                     var transition = new Clutter.TransitionGroup () {
                         duration = 800,
                         auto_reverse = true,
@@ -102,8 +101,8 @@ namespace Gala {
         private WindowIcon? icon = null;
         private WindowIcon? old_icon = null;
 
-        public WindowIconActor (WindowManager wm, Meta.Window window) {
-            Object (wm: wm, window: window);
+        public WindowIconActor (Meta.Window window) {
+            Object (window: window);
         }
 
         construct {
@@ -147,7 +146,7 @@ namespace Gala {
 
             new_icon.save_easing_state ();
             new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            new_icon.set_easing_duration (wm.enable_animations ? 500 : 0);
+            new_icon.set_easing_duration (AnimationsSettings.get_animation_duration (500));
             new_icon.restore_easing_state ();
 
             if (icon == null) {
