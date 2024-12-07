@@ -10,7 +10,6 @@ public class Gala.PanelWindow : Object {
 
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
-
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
     private WindowPositioner window_positioner;
@@ -35,9 +34,9 @@ public class Gala.PanelWindow : Object {
 
         clone = new PanelClone (wm, this);
 
-        var display = wm.get_display ();
+        unowned var display = wm.get_display ();
 
-        var workspace_manager = display.get_workspace_manager ();
+        unowned var workspace_manager = display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
 
