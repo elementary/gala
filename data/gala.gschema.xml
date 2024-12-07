@@ -62,7 +62,7 @@
       </description>
     </key>
     <key type="s" name="panel-main-menu-action">
-      <default>''</default>
+      <default>'io.elementary.wingpanel --toggle-indicator=app-launcher'</default>
       <summary>Panel main menu action</summary>
       <description>Sets the command to run when the panel-main-menu keybinding is pressed.</description>
     </key>
@@ -72,9 +72,14 @@
       <description></description>
     </key>
     <key type="s" name="overlay-action">
-      <default>''</default>
+      <default>'io.elementary.wingpanel --toggle-indicator=app-launcher'</default>
       <summary></summary>
       <description></description>
+    </key>
+    <key type="s" name="interactive-screenshot-action">
+      <default>'flatpak run io.elementary.screenshot'</default>
+      <summary>Interactive screenshot action</summary>
+      <description>Sets the command to run when the interactive-screenshot keybinding is pressed.</description>
     </key>
     <key type="b" name="move-maximized-workspace">
       <default>false</default>
@@ -143,6 +148,10 @@
     <key name="screenshot" type="as">
       <default><![CDATA[['Print']]]></default>
       <summary>Take a screenshot</summary>
+    </key>
+    <key name="interactive-screenshot" type="as">
+      <default><![CDATA[['<Super>Print']]]></default>
+      <summary>Launch the interactive screenshot tool</summary>
     </key>
     <key name="window-screenshot" type="as">
       <default><![CDATA[['<Alt>Print']]]></default>

@@ -6,8 +6,6 @@
  */
 
 public class Gala.PanelWindow : Object {
-    private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
-
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
@@ -16,8 +14,6 @@ public class Gala.PanelWindow : Object {
     public bool hidden { get; private set; default = false; }
 
     public Meta.Side anchor;
-
-    private Barrier? barrier;
 
     private PanelClone clone;
 
@@ -41,8 +37,6 @@ public class Gala.PanelWindow : Object {
             if (idle_move_id != 0) {
                 Source.remove (idle_move_id);
             }
-
-            destroy_barrier ();
 
             if (window_struts.remove (window)) {
                 update_struts ();
@@ -75,6 +69,11 @@ public class Gala.PanelWindow : Object {
 
         if (height > 0) {
             window_rect.height = height;
+
+            if (anchor == BOTTOM) {
+                var geom = wm.get_display ().get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
         }
 
         return window_rect;
@@ -98,7 +97,7 @@ public class Gala.PanelWindow : Object {
     private void position_window () {
         var display = wm.get_display ();
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var window_rect = get_custom_window_rect ();
+        var window_rect = window.get_frame_rect ();
 
         switch (anchor) {
             case TOP:
@@ -154,13 +153,10 @@ public class Gala.PanelWindow : Object {
     public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
         clone.hide_mode = hide_mode;
 
-        destroy_barrier ();
-
         if (hide_mode == NEVER) {
             make_exclusive ();
         } else {
             unmake_exclusive ();
-            setup_barrier ();
         }
     }
 
@@ -202,72 +198,5 @@ public class Gala.PanelWindow : Object {
             window_struts.remove (window);
             update_struts ();
         }
-    }
-
-    private void destroy_barrier () {
-        barrier = null;
-    }
-
-    private void setup_barrier () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
-        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
-
-        switch (anchor) {
-            case TOP:
-                setup_barrier_top (monitor_geom, offset);
-                break;
-
-            case BOTTOM:
-                setup_barrier_bottom (monitor_geom, offset);
-                break;
-
-            default:
-                warning ("Barrier side not supported yet");
-                break;
-        }
-    }
-
-#if HAS_MUTTER45
-    private void setup_barrier_top (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
-#endif
-        barrier = new Barrier (
-            wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
-            monitor_geom.y,
-            monitor_geom.x + monitor_geom.width - offset,
-            monitor_geom.y,
-            POSITIVE_Y,
-            0,
-            0,
-            int.MAX,
-            int.MAX
-        );
-
-        barrier.trigger.connect (clone.show);
-    }
-
-#if HAS_MUTTER45
-    private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
-#endif
-        barrier = new Barrier (
-            wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
-            monitor_geom.y + monitor_geom.height,
-            monitor_geom.x + monitor_geom.width - offset,
-            monitor_geom.y + monitor_geom.height,
-            NEGATIVE_Y,
-            0,
-            0,
-            int.MAX,
-            int.MAX
-        );
-
-        barrier.trigger.connect (clone.show);
     }
 }
