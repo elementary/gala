@@ -110,10 +110,6 @@ public class Gala.GesturePropertyTransition : Object {
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-            if (cancel_action) {
-                return;
-            }
-
             actor.save_easing_state ();
             actor.set_easing_mode (EASE_OUT_QUAD);
             actor.set_easing_duration (AnimationsSettings.get_animation_duration (calculated_duration));
