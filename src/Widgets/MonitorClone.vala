@@ -48,12 +48,18 @@ namespace Gala {
             window_container = new WindowCloneContainer (wm, gesture_tracker, scale);
             window_container.window_selected.connect ((w) => { window_selected (w); });
 
-            wm.window_created.connect (add_window);
-            display.window_entered_monitor.connect (on_window_entered_monitor);
+            display.window_entered_monitor.connect (window_entered);
             display.window_left_monitor.connect (window_left);
 
-            foreach (unowned var window in display.list_all_windows ()) {
-                add_window (window);
+            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+            foreach (unowned Meta.WindowActor window_actor in window_actors) {
+                if (window_actor.is_destroyed ())
+                    continue;
+
+                unowned Meta.Window window = window_actor.get_meta_window ();
+                if (window.get_monitor () == monitor) {
+                    window_entered (monitor, window);
+                }
             }
 
             add_child (background);
@@ -66,7 +72,7 @@ namespace Gala {
         }
 
         ~MonitorClone () {
-            display.window_entered_monitor.disconnect (on_window_entered_monitor);
+            display.window_entered_monitor.disconnect (window_entered);
             display.window_left_monitor.disconnect (window_left);
         }
 
@@ -107,13 +113,8 @@ namespace Gala {
             window_container.remove_window (window);
         }
 
-        private void on_window_entered_monitor (int window_monitor, Meta.Window window) {
-            add_window (window);
-        }
-
-        private void add_window (Meta.Window window) {
-            warning ("Window entered");
-            if (window.get_monitor () != monitor || window.window_type != Meta.WindowType.NORMAL)
+        private void window_entered (int window_monitor, Meta.Window window) {
+            if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
                 return;
 
             window_container.add_window (window);

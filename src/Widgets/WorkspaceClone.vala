@@ -294,7 +294,6 @@ namespace Gala {
 
         private void mark_window_as_mapped (Meta.Window window) {
             mapped_window_set.add (window);
-            window.shown.connect
             window.unmanaged.connect (() => {
                 mapped_window_set.remove (window);
             });
