@@ -270,6 +270,47 @@ namespace Gala {
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
 
+            // Initialize plugins and add default components if no plugin overrides them
+            unowned var plugin_manager = PluginManager.get_default ();
+            plugin_manager.initialize (this);
+            plugin_manager.regions_changed.connect (update_input_area);
+
+            if (plugin_manager.workspace_view_provider == null
+                || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null
+            ) {
+                workspace_view = new MultitaskingView (this);
+                ui_group.add_child ((Clutter.Actor) workspace_view);
+            }
+
+            if (plugin_manager.window_switcher_provider == null) {
+                window_switcher = new WindowSwitcher (this, gesture_tracker);
+                ui_group.add_child (window_switcher);
+
+                Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+            }
+
+            if (plugin_manager.window_overview_provider == null
+                || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
+            ) {
+                window_overview = new WindowOverview (this);
+                ui_group.add_child ((Clutter.Actor) window_overview);
+            }
+
+            // Add the remaining components that should be on top
+            notification_group = new Clutter.Actor ();
+            ui_group.add_child (notification_group);
+
+            pointer_locator = new PointerLocator (display);
+            ui_group.add_child (pointer_locator);
+            ui_group.add_child (new DwellClickTimer (display));
+
+            ui_group.add_child (screen_shield);
+
             FilterManager.init (this);
 
             /*keybindings*/
@@ -293,12 +334,28 @@ namespace Gala {
             display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
             display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
 
+            display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (window_overview.is_opened ()) {
+                    window_overview.close ();
+                } else {
+                    window_overview.open ();
+                }
+            });
+
             display.overlay_key.connect (() => {
                 launch_action ("overlay-action");
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
                 launch_action ("toggle-recording-action");
+            });
+
+            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
+                if (workspace_view.is_opened ()) {
+                    workspace_view.close ();
+                } else {
+                    workspace_view.open ();
+                }
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -324,79 +381,13 @@ namespace Gala {
 
             zoom = new Zoom (this);
 
-            // Most things inside this "later" depend on GTK. We get segfaults if we try to do GTK stuff before the window manager
-            // is initialized, so we hold this stuff off until we're ready to draw
-            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                if (!Meta.Util.is_wayland_compositor ()) {
-                    string[] args = {};
-                    unowned string[] _args = args;
-                    Gtk.init (ref _args);
-                }
-
-                // initialize plugins and add default components if no plugin overrides them
-                unowned var plugin_manager = PluginManager.get_default ();
-                plugin_manager.initialize (this);
-                plugin_manager.regions_changed.connect (update_input_area);
-
-                if (plugin_manager.workspace_view_provider == null
-                    || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null) {
-                    workspace_view = new MultitaskingView (this);
-                    ui_group.add_child ((Clutter.Actor) workspace_view);
-                }
-
-                Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                    if (workspace_view.is_opened ())
-                        workspace_view.close ();
-                    else
-                        workspace_view.open ();
-                });
-
-                if (plugin_manager.window_switcher_provider == null) {
-                    window_switcher = new WindowSwitcher (this, gesture_tracker);
-                    ui_group.add_child (window_switcher);
-
-                    Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                    Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                }
-
-                if (plugin_manager.window_overview_provider == null
-                    || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null) {
-                    window_overview = new WindowOverview (this);
-                    ui_group.add_child ((Clutter.Actor) window_overview);
-                }
-
-                notification_group = new Clutter.Actor ();
-                ui_group.add_child (notification_group);
-
-                pointer_locator = new PointerLocator (display);
-                ui_group.add_child (pointer_locator);
-                ui_group.add_child (new DwellClickTimer (display));
-
-                ui_group.add_child (screen_shield);
-
-                display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
-                    if (window_overview.is_opened ()) {
-                        window_overview.close ();
-                    } else {
-                        window_overview.open ();
-                    }
-                });
-
-                plugin_manager.load_waiting_plugins ();
-
-                return false;
-            });
-
             update_input_area ();
-
 
             display.window_created.connect ((window) => window_created (window));
 
             stage.show ();
+
+            plugin_manager.load_waiting_plugins ();
 
             Idle.add (() => {
                 // let the session manager move to the next phase
