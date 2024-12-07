@@ -364,46 +364,13 @@ namespace Gala {
 
             var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
             var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
+            background.set_pivot_point (0.5f, pivot_y);
 
             update_size (monitor);
 
-            GestureTracker.OnBegin on_animation_begin = () => {
-                x = initial_x;
-                background.set_pivot_point (0.5f, pivot_y);
-            };
-
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
-                set_x (x);
-
-                var update_scale = (double) GestureTracker.animation_value (1.0f, (float)scale, percentage);
-                background.set_scale (update_scale, update_scale);
-            };
-
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                if (cancel_action) {
-                    return;
-                }
-
-                save_easing_state ();
-                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
-                set_x (target_x);
-                restore_easing_state ();
-
-                background.save_easing_state ();
-                background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
-                background.set_scale (scale, scale);
-                background.restore_easing_state ();
-            };
-
-            if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                on_animation_begin (0);
-                on_animation_end (1, false, 0);
-            } else {
-                gesture_tracker.connect_handlers ((owned) on_animation_begin, (owned) on_animation_update, (owned)on_animation_end);
-            }
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", 1.0d, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", 1.0d, (double) scale).start (with_gesture);
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
@@ -444,41 +411,9 @@ namespace Gala {
             var initial_x = is_cancel_animation ? x : multitasking_view_x ();
             var target_x = multitasking_view_x () + current_x_overlap ();
 
-            double initial_scale_x, initial_scale_y;
-            background.get_scale (out initial_scale_x, out initial_scale_y);
-
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x = GestureTracker.animation_value (initial_x, target_x, percentage);
-                set_x (x);
-
-                double scale_x = (double) GestureTracker.animation_value ((float) initial_scale_x, 1.0f, percentage);
-                double scale_y = (double) GestureTracker.animation_value ((float) initial_scale_y, 1.0f, percentage);
-                background.set_scale (scale_x, scale_y);
-            };
-
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                if (cancel_action) {
-                    return;
-                }
-
-                save_easing_state ();
-                set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
-                set_x (target_x);
-                restore_easing_state ();
-
-                background.save_easing_state ();
-                background.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                background.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
-                background.set_scale (1, 1);
-                background.restore_easing_state ();
-            };
-
-            if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                on_animation_end (1, false, 0);
-            } else {
-                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
-            }
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start (with_gesture);
 
             window_container.close (with_gesture, is_cancel_animation);
         }
