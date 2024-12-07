@@ -34,6 +34,7 @@ gala_bin_sources = files(
     'ColorFilters/FilterManager.vala',
     'ColorFilters/MonochromeEffect.vala',
     'Gestures/Gesture.vala',
+    'Gestures/GesturePropertyTransition.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',
     'Gestures/ScrollBackend.vala',
