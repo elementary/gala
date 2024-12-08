@@ -206,7 +206,7 @@ namespace Gala {
 
             foreach (var tilable in window_positions) {
                 unowned var clone = (WindowClone) tilable.id;
-                clone.take_slot (tilable.rect, opening, with_gesture, is_cancel_animation);
+                clone.take_slot (tilable.rect, opening && !is_cancel_animation, with_gesture);
             }
         }
 
@@ -400,7 +400,7 @@ namespace Gala {
          * Calls the transition_to_original_state() function on each child
          * to make them take their original locations again.
          */
-        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void close (bool with_gesture = false) {
             if (!opened) {
                 return;
             }
@@ -408,7 +408,7 @@ namespace Gala {
             opened = false;
 
             foreach (var window in get_children ()) {
-                ((WindowClone) window).transition_to_original_state (with_gesture, is_cancel_animation);
+                ((WindowClone) window).transition_to_original_state (with_gesture);
             }
         }
     }
