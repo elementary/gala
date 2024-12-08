@@ -53,6 +53,8 @@ namespace Gala {
             }
         }
 
+        private float workspaces_travel_distance;
+
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
         }
@@ -70,12 +72,19 @@ namespace Gala {
 
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker.enable_pan (wm, display.get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
+            multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
+            workspace_gesture_tracker.enable_pan (wm, this, () => workspaces_travel_distance);
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
+            workspace_gesture_tracker.on_gesture_handled.connect ((gesture, timestamp) => {
+                var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
+                switch_workspace_with_gesture (direction, timestamp);
+            });
 
             workspaces = new Clutter.Actor ();
 
@@ -290,39 +299,32 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
-        private void on_multitasking_gesture_detected (Gesture gesture) {
-            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
-                (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
-                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
-            ) {
-                return;
+        private bool on_multitasking_gesture_detected (Gesture gesture) {
+            if (GestureSettings.get_action (gesture) != MULTITASKING_VIEW) {
+                return false;
             }
 
-            if (gesture.direction == GestureDirection.UP && !opened) {
-                toggle (true, false);
-            } else if (gesture.direction == GestureDirection.DOWN && opened) {
-                toggle (true, false);
+            if (gesture.direction == UP && !opened || gesture.direction == DOWN && opened) {
+                return true;
             }
+
+            return false;
         }
 
-        private void on_workspace_gesture_detected (Gesture gesture) {
+        private bool on_workspace_gesture_detected (Gesture gesture) {
             if (!opened) {
-                return;
+                return false;
             }
 
-            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
-
-            var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
-                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
-
-            if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
-                var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_workspace_with_gesture (direction);
+            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE ||
+                gesture.type == TOUCHPAD_SWIPE && gesture.fingers == 1 && (gesture.direction == RIGHT || gesture.direction == LEFT)) {
+                return true;
             }
+
+            return false;
         }
 
-        private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+        private void switch_workspace_with_gesture (Meta.MotionDirection direction, uint32 timestamp) {
             if (switching_workspace_in_progress) {
                 return;
             }
@@ -363,6 +365,8 @@ namespace Gala {
                 }
             }
 
+            workspaces_travel_distance = (initial_x - target_x).abs ();
+
             if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
                 active_icon_group.remove_transition ("backdrop-opacity");
             }
@@ -380,7 +384,7 @@ namespace Gala {
 
             switching_workspace_with_gesture = true;
             if (target_workspace != null) {
-                target_workspace.activate (display.get_current_time ());
+                target_workspace.activate (timestamp);
             }
 
             if (is_nudge_animation) {
@@ -651,9 +655,6 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal (this);
-                modal_proxy.set_keybinding_filter (keybinding_filter);
-
                 wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
@@ -723,6 +724,13 @@ namespace Gala {
                         dock_clones.destroy_all_children ();
 
                         wm.pop_modal (modal_proxy);
+
+                        multitasking_gesture_tracker.enable_pan (wm, wm.get_display ().get_stage (), () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
+                    } else {
+                        modal_proxy = wm.push_modal (this);
+                        modal_proxy.set_keybinding_filter (keybinding_filter);
+                        // We now have to listen to events on this because it's now modal i.e. the stage doesn't get the events anymore
+                        multitasking_gesture_tracker.enable_pan (wm, this, () => InternalUtils.travel_distance_from_primary (wm.get_display (), VERTICAL));
                     }
 
                     animating = false;
