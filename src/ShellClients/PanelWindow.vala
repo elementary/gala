@@ -143,4 +143,8 @@ public class Gala.PanelWindow : Object {
                 return TOP;
         }
     }
+
+    public void set_force_hide (bool force_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        clone.set_force_hide (force_hide, gesture_tracker, with_gesture);
+    }
 }

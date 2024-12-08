@@ -6,12 +6,13 @@
  */
 
 public class Gala.HideTracker : Object {
+    private const int ANIMATION_DURATION = 250;
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
     private const int UPDATE_TIMEOUT = 200;
     private const int HIDE_DELAY = 500;
 
-    public signal void hide ();
-    public signal void show ();
+    public signal void hide (GestureTracker gesture_tracker, bool with_gesture);
+    public signal void show (GestureTracker gesture_tracker, bool with_gesture);
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
@@ -19,6 +20,7 @@ public class Gala.HideTracker : Object {
     public Pantheon.Desktop.HideMode hide_mode { get; set; }
 
     private Clutter.PanAction pan_action;
+    private GestureTracker gesture_tracker; // Placeholder that will replace pan_action once the pan_backend gets merged
 
     private bool hovered = false;
 
@@ -78,6 +80,8 @@ public class Gala.HideTracker : Object {
         });
 
         display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
+
+        gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
         pan_action = new Clutter.PanAction () {
             n_touch_points = 1,
@@ -146,13 +150,13 @@ public class Gala.HideTracker : Object {
         }
 
         update_timeout_id = Timeout.add (UPDATE_TIMEOUT, () => {
-            update_overlap ();
+            update_overlap (gesture_tracker, false);
             update_timeout_id = 0;
             return Source.REMOVE;
         });
     }
 
-    private void update_overlap () {
+    public void update_overlap (GestureTracker gesture_tracker, bool with_gesture) {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
@@ -185,25 +189,25 @@ public class Gala.HideTracker : Object {
             focus_maximized_overlap = VERTICAL in window.get_maximized ();
         }
 
-        update_hidden ();
+        update_hidden (gesture_tracker, with_gesture);
     }
 
-    private void update_hidden () {
+    private void update_hidden (GestureTracker gesture_tracker, bool with_gesture) {
         switch (hide_mode) {
             case MAXIMIZED_FOCUS_WINDOW:
-                toggle_display (focus_maximized_overlap);
+                toggle_display (focus_maximized_overlap, gesture_tracker, with_gesture);
                 break;
 
             case OVERLAPPING_FOCUS_WINDOW:
-                toggle_display (focus_overlap);
+                toggle_display (focus_overlap, gesture_tracker, with_gesture);
                 break;
 
             case OVERLAPPING_WINDOW:
-                toggle_display (overlap);
+                toggle_display (overlap, gesture_tracker, with_gesture);
                 break;
 
             case ALWAYS:
-                toggle_display (true);
+                toggle_display (true, gesture_tracker, with_gesture);
                 break;
 
             default:
@@ -212,7 +216,11 @@ public class Gala.HideTracker : Object {
         }
     }
 
-    private void toggle_display (bool should_hide) {
+    private void toggle_display (bool should_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        if (display.get_monitor_in_fullscreen (panel.window.get_monitor ())) {
+            return;
+        }
+
 #if HAS_MUTTER45
         hovered = panel.window.has_pointer ();
 #else
@@ -222,7 +230,7 @@ public class Gala.HideTracker : Object {
         if (should_hide && !hovered && !panel.window.has_focus ()) {
             trigger_hide ();
         } else {
-            trigger_show ();
+            trigger_show (gesture_tracker, with_gesture);
         }
     }
 
@@ -241,7 +249,7 @@ public class Gala.HideTracker : Object {
         }
 
         hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
-            hide ();
+            hide (gesture_tracker, false);
             hide_timeout_id = 0;
         });
     }
@@ -253,9 +261,9 @@ public class Gala.HideTracker : Object {
         }
     }
 
-    private void trigger_show () {
+    private void trigger_show (GestureTracker gesture_tracker, bool with_gesture) {
         reset_hide_timeout ();
-        show ();
+        show (gesture_tracker, with_gesture);
     }
 
     private bool check_valid_gesture () {
@@ -281,7 +289,7 @@ public class Gala.HideTracker : Object {
 
         if (delta_y < 0) { // Only allow swipes upwards
             panel.window.focus (pan_action.get_last_event (0).get_time ());
-            trigger_show ();
+            trigger_show (gesture_tracker, false);
         }
 
         return false;
@@ -325,7 +333,7 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (trigger_show);
+        barrier.trigger.connect (() => trigger_show (gesture_tracker, false));
     }
 
 #if HAS_MUTTER45
@@ -346,6 +354,6 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (trigger_show);
+        barrier.trigger.connect (() => trigger_show (gesture_tracker, false));
     }
 }

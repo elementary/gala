@@ -207,6 +207,12 @@ public class Gala.ShellClientsManager : Object {
         return positioned;
     }
 
+    public void set_force_hide_panels (bool force_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        foreach (var panel in panel_windows.get_values ()) {
+            panel.set_force_hide (force_hide, gesture_tracker, with_gesture);
+        }
+    }
+
     //X11 only
     private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
