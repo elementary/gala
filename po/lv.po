@@ -8,15 +8,18 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2014-06-28 01:54+0000\n"
-"Last-Translator: Matiss Treinis <matiss@marolind.com>\n"
-"Language-Team: Latvian <lv@li.org>\n"
+"PO-Revision-Date: 2024-12-08 11:16+0000\n"
+"Last-Translator: Jānis Greiškāns <greiskans.janis9@gmail.com>\n"
+"Language-Team: Latvian <https://l10n.elementary.io/projects/desktop/gala/lv/>"
+"\n"
 "Language: lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= "
+"19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
-"X-Generator: Launchpad (build 18326)\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -251,15 +254,15 @@ msgstr[1] ""
 
 #: src/WindowManager.vala:2362
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Paturēt displeja izmaiņas?"
 
 #: src/WindowManager.vala:2366
 msgid "Keep Settings"
-msgstr ""
+msgstr "Paturēt Iestatījumus"
 
 #: src/WindowManager.vala:2367
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Lietot Iepriekšējos Iestatījumus"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/WindowManager.vala:2406
