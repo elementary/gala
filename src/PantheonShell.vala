@@ -243,25 +243,7 @@ namespace Gala {
             return;
         }
 
-        Meta.Side side = TOP;
-        switch (anchor) {
-            case TOP:
-                break;
-
-            case BOTTOM:
-                side = BOTTOM;
-                break;
-
-            case LEFT:
-                side = LEFT;
-                break;
-
-            case RIGHT:
-                side = RIGHT;
-                break;
-        }
-
-        ShellClientsManager.get_instance ().set_anchor (window, side);
+        ShellClientsManager.get_instance ().set_anchor (window, anchor);
     }
 
     internal static void focus_panel (Wl.Client client, Wl.Resource resource) {

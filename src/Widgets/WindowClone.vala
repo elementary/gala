@@ -212,8 +212,6 @@ public class Gala.WindowClone : Clutter.Actor {
         set_child_above_sibling (window_icon, clone);
         set_child_above_sibling (window_title, clone);
 
-        transition_to_original_state (false);
-
         check_shadow_requirements ();
 
         if (should_fade ()) {
@@ -226,7 +224,7 @@ public class Gala.WindowClone : Clutter.Actor {
         // window was opened, so we stay at our old place.
         if (was_waiting && slot != null) {
             opacity = 0;
-            take_slot (slot);
+            take_slot (slot, true);
             opacity = 255;
 
             request_reposition ();
@@ -273,7 +271,7 @@ public class Gala.WindowClone : Clutter.Actor {
      *
      * @param animate Animate the transformation of the placement
      */
-    public void transition_to_original_state (bool animate, bool with_gesture = false, bool is_cancel_animation = false) {
+    public void transition_to_original_state (bool with_gesture = false, bool is_cancel_animation = false) {
         var outer_rect = window.get_frame_rect ();
 
         unowned var display = window.get_display ();
@@ -283,8 +281,6 @@ public class Gala.WindowClone : Clutter.Actor {
         var offset_x = monitor_geom.x;
         var offset_y = monitor_geom.y;
 
-        var initial_x = x;
-        var initial_y = y;
         var initial_width = width;
         var initial_height = height;
 
@@ -294,21 +290,21 @@ public class Gala.WindowClone : Clutter.Actor {
         active = false;
         update_hover_widgets (true);
 
+        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start (with_gesture);
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (with_gesture, () => {
+            update_hover_widgets (false);
+        });
+
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var x = GestureTracker.animation_value (initial_x, target_x, percentage);
-            var y = GestureTracker.animation_value (initial_y, target_y, percentage);
             var width = GestureTracker.animation_value (initial_width, outer_rect.width, percentage);
             var height = GestureTracker.animation_value (initial_height, outer_rect.height, percentage);
             var scale = GestureTracker.animation_value (initial_scale, target_scale, percentage);
-            var opacity = GestureTracker.animation_value (255f, 0f, percentage);
 
-            set_size (width, height);
-            set_position (x, y);
-
-            window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
-
-            shadow_opacity = (uint8) opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -316,43 +312,16 @@ public class Gala.WindowClone : Clutter.Actor {
                 return;
             }
 
-            var duration = (animate && AnimationsSettings.get_enable_animations ()) ? MultitaskingView.ANIMATION_DURATION : 0;
-
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (duration);
-
-            set_position (target_x, target_y);
-            set_size (outer_rect.width, outer_rect.height);
-
-            if (should_fade ()) {
-                opacity = 0;
-            }
-
-            restore_easing_state ();
-
-            if (animate) {
-                toggle_shadow (false);
-            }
+            toggle_shadow (false);
 
             window_icon.save_easing_state ();
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            window_icon.set_easing_duration (duration);
-            window_icon.opacity = 0;
+            window_icon.set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
             set_window_icon_position (outer_rect.width, outer_rect.height, target_scale);
             window_icon.restore_easing_state ();
-
-            var transition = window_icon.get_transition ("opacity");
-            if (transition != null) {
-                transition.completed.connect (() => {
-                    update_hover_widgets (false);
-                });
-            } else {
-                update_hover_widgets (false);
-            }
         };
 
-        if (!animate || gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
+        if (gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
             on_animation_end (1, false, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -363,35 +332,41 @@ public class Gala.WindowClone : Clutter.Actor {
      * Animate the window to the given slot
      */
 #if HAS_MUTTER45
-    public void take_slot (Mtk.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+    public void take_slot (Mtk.Rectangle rect, bool from_window_position, bool with_gesture = false, bool is_cancel_animation = false) {
 #else
-    public void take_slot (Meta.Rectangle rect, bool with_gesture = false, bool is_cancel_animation = false) {
+    public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false, bool is_cancel_animation = false) {
 #endif
         slot = rect;
-        var initial_x = x;
-        var initial_y = y;
-        var initial_width = width;
-        var initial_height = height;
-
         active = false;
+
+        var outer_rect = window.get_frame_rect ();
+
+        float initial_width = from_window_position ? outer_rect.width : width;
+        float initial_height = from_window_position ? outer_rect.height : height;
+
+        var monitor_geom = display.get_monitor_geometry (window.get_monitor ());
+        float intial_x = from_window_position ? outer_rect.x - monitor_geom.x : x;
+        float intial_y = from_window_position ? outer_rect.y - monitor_geom.y : y;
+
         var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
 
         update_hover_widgets (true);
+        set_window_icon_position (initial_width, initial_height, scale);
+
+        new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
+            update_hover_widgets (false);
+        });
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var x = GestureTracker.animation_value (initial_x, rect.x, percentage);
-            var y = GestureTracker.animation_value (initial_y, rect.y, percentage);
             var width = GestureTracker.animation_value (initial_width, rect.width, percentage);
             var height = GestureTracker.animation_value (initial_height, rect.height, percentage);
-            var opacity = GestureTracker.animation_value (0f, 255f, percentage);
 
-            set_size (width, height);
-            set_position (x, y);
-
-            window_icon.opacity = (uint) opacity;
             set_window_icon_position (width, height, scale, false);
-
-            shadow_opacity = (uint8) opacity;
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -401,32 +376,13 @@ public class Gala.WindowClone : Clutter.Actor {
 
             var duration = AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
-            save_easing_state ();
-            set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            set_easing_duration (duration);
-
-            set_size (rect.width, rect.height);
-            set_position (rect.x, rect.y);
-            opacity = 255;
-            restore_easing_state ();
-
             window_icon.save_easing_state ();
             window_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
             window_icon.set_easing_duration (duration);
-            window_icon.opacity = 255;
             set_window_icon_position (rect.width, rect.height, scale);
             window_icon.restore_easing_state ();
 
             toggle_shadow (true);
-
-            var transition = window_icon.get_transition ("opacity");
-            if (transition != null) {
-                transition.completed.connect (() => {
-                    update_hover_widgets (false);
-                });
-            } else {
-                update_hover_widgets (false);
-            }
         };
 
         if (gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
