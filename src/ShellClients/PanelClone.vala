@@ -18,10 +18,10 @@ public class Gala.PanelClone : Object {
         set {
             if (value == NEVER) {
                 hide_tracker = null;
-                show (new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION), false);
+                show (default_gesture_tracker, false);
                 return;
             } else if (hide_tracker == null) {
-                hide_tracker = new HideTracker (wm.get_display (), panel);
+                hide_tracker = new HideTracker (wm.get_display (), panel, default_gesture_tracker);
                 hide_tracker.hide.connect (hide);
                 hide_tracker.show.connect (show);
             }
@@ -35,6 +35,7 @@ public class Gala.PanelClone : Object {
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
 
+    private GestureTracker default_gesture_tracker;
     private GestureTracker? last_gesture_tracker;
     private bool force_hide = false;
 
@@ -45,6 +46,8 @@ public class Gala.PanelClone : Object {
     }
 
     construct {
+        default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+
         clone = new SafeWindowClone (panel.window, true);
         wm.ui_group.add_child (clone);
 
@@ -75,7 +78,7 @@ public class Gala.PanelClone : Object {
 
         Idle.add_once (() => {
             if (hide_mode == NEVER) {
-                show (new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION), false);
+                show (default_gesture_tracker, false);
             } else {
                 hide_tracker.schedule_update ();
             }

@@ -6,7 +6,6 @@
  */
 
 public class Gala.HideTracker : Object {
-    private const int ANIMATION_DURATION = 250;
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
     private const int UPDATE_TIMEOUT = 200;
     private const int HIDE_DELAY = 500;
@@ -16,11 +15,11 @@ public class Gala.HideTracker : Object {
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
+    public GestureTracker default_gesture_tracker { get; construct; } // Placeholder that will replace pan_action once the pan_backend gets merged
 
     public Pantheon.Desktop.HideMode hide_mode { get; set; }
 
     private Clutter.PanAction pan_action;
-    private GestureTracker gesture_tracker; // Placeholder that will replace pan_action once the pan_backend gets merged
 
     private bool hovered = false;
 
@@ -35,8 +34,8 @@ public class Gala.HideTracker : Object {
     private uint hide_timeout_id = 0;
     private uint update_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, PanelWindow panel) {
-        Object (display: display, panel: panel);
+    public HideTracker (Meta.Display display, PanelWindow panel, GestureTracker default_gesture_tracker) {
+        Object (display: display, panel: panel, default_gesture_tracker: default_gesture_tracker);
     }
 
     ~HideTracker () {
@@ -80,8 +79,6 @@ public class Gala.HideTracker : Object {
         });
 
         display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
-
-        gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
         pan_action = new Clutter.PanAction () {
             n_touch_points = 1,
@@ -150,7 +147,7 @@ public class Gala.HideTracker : Object {
         }
 
         update_timeout_id = Timeout.add (UPDATE_TIMEOUT, () => {
-            update_overlap (gesture_tracker, false);
+            update_overlap (default_gesture_tracker, false);
             update_timeout_id = 0;
             return Source.REMOVE;
         });
@@ -249,7 +246,7 @@ public class Gala.HideTracker : Object {
         }
 
         hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
-            hide (gesture_tracker, false);
+            hide (default_gesture_tracker, false);
             hide_timeout_id = 0;
         });
     }
@@ -289,7 +286,7 @@ public class Gala.HideTracker : Object {
 
         if (delta_y < 0) { // Only allow swipes upwards
             panel.window.focus (pan_action.get_last_event (0).get_time ());
-            trigger_show (gesture_tracker, false);
+            trigger_show (default_gesture_tracker, false);
         }
 
         return false;
@@ -333,7 +330,7 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (() => trigger_show (gesture_tracker, false));
+        barrier.trigger.connect (() => trigger_show (default_gesture_tracker, false));
     }
 
 #if HAS_MUTTER45
@@ -354,6 +351,6 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (() => trigger_show (gesture_tracker, false));
+        barrier.trigger.connect (() => trigger_show (default_gesture_tracker, false));
     }
 }
