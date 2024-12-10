@@ -18,10 +18,10 @@ public class Gala.PanelClone : Object {
         set {
             if (value == NEVER) {
                 hide_tracker = null;
-                show ();
+                show (default_gesture_tracker, false);
                 return;
             } else if (hide_tracker == null) {
-                hide_tracker = new HideTracker (wm.get_display (), panel);
+                hide_tracker = new HideTracker (wm.get_display (), panel, default_gesture_tracker);
                 hide_tracker.hide.connect (hide);
                 hide_tracker.show.connect (show);
             }
@@ -35,6 +35,10 @@ public class Gala.PanelClone : Object {
     private SafeWindowClone clone;
     private Meta.WindowActor actor;
 
+    private GestureTracker default_gesture_tracker;
+    private GestureTracker? last_gesture_tracker;
+    private bool force_hide = false;
+
     private HideTracker? hide_tracker;
 
     public PanelClone (WindowManager wm, PanelWindow panel) {
@@ -42,6 +46,8 @@ public class Gala.PanelClone : Object {
     }
 
     construct {
+        default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+
         clone = new SafeWindowClone (panel.window, true);
         wm.ui_group.add_child (clone);
 
@@ -72,7 +78,7 @@ public class Gala.PanelClone : Object {
 
         Idle.add_once (() => {
             if (hide_mode == NEVER) {
-                show ();
+                show (default_gesture_tracker, false);
             } else {
                 hide_tracker.schedule_update ();
             }
@@ -114,16 +120,12 @@ public class Gala.PanelClone : Object {
         }
     }
 
-    private int get_animation_duration () {
-        var fullscreen = wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ());
-        var should_animate = AnimationsSettings.get_enable_animations () && !wm.workspace_view.is_opened () && !fullscreen;
-        return should_animate ? ANIMATION_DURATION : 0;
-    }
-
-    private void hide () {
-        if (panel_hidden) {
+    private void hide (GestureTracker gesture_tracker, bool with_gesture) {
+        if (panel_hidden || last_gesture_tracker != null && last_gesture_tracker.recognizing) {
             return;
         }
+
+        last_gesture_tracker = gesture_tracker;
 
         panel_hidden = true;
 
@@ -138,37 +140,37 @@ public class Gala.PanelClone : Object {
 
         clone.visible = true;
 
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (get_animation_duration ());
-        clone.y = calculate_clone_y (true);
-        clone.restore_easing_state ();
+        new GesturePropertyTransition (clone, gesture_tracker, "y", null, calculate_clone_y (true)).start (with_gesture);
     }
 
-    private void show () {
-        if (!panel_hidden) {
+    private void show (GestureTracker gesture_tracker, bool with_gesture) {
+        if (!panel_hidden || force_hide || last_gesture_tracker != null && last_gesture_tracker.recognizing) {
             return;
         }
+
+        last_gesture_tracker = gesture_tracker;
 
         if (!Meta.Util.is_wayland_compositor ()) {
             Utils.x11_unset_window_pass_through (panel.window);
         }
 
-        clone.save_easing_state ();
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_easing_duration (get_animation_duration ());
-        clone.y = calculate_clone_y (false);
-        clone.restore_easing_state ();
-
-        unowned var y_transition = clone.get_transition ("y");
-        if (y_transition != null) {
-            y_transition.completed.connect (() => {
+        new GesturePropertyTransition (clone, gesture_tracker, "y", null, calculate_clone_y (false)).start (with_gesture, (cancel_action) => {
+            if (!cancel_action) {
                 clone.visible = false;
                 panel_hidden = false;
-            });
+            }
+        });
+    }
+
+    public void set_force_hide (bool force_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        this.force_hide = force_hide;
+
+        if (force_hide) {
+            hide (gesture_tracker, with_gesture);
+        } else if (hide_mode == NEVER) {
+            show (gesture_tracker, with_gesture);
         } else {
-            clone.visible = false;
-            panel_hidden = false;
+            hide_tracker.update_overlap (gesture_tracker, with_gesture);
         }
     }
 }
