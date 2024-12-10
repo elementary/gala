@@ -702,37 +702,29 @@ namespace Gala {
                 ShellClientsManager.get_instance ().set_force_hide_panels (false, multitasking_gesture_tracker, with_gesture);
             }
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-                Timeout.add (calculated_duration, () => {
-                    if (!opening) {
-                        foreach (var container in window_containers_monitors) {
-                            container.visible = false;
-                        }
-
-                        hide ();
-
-                        wm.background_group.show ();
-                        wm.window_group.show ();
-                        wm.top_window_group.show ();
-
-                        wm.pop_modal (modal_proxy);
+            // The callback needs to run at the same frame as the others (e.g. PanelClone) so we can't do a simple Timeout here
+            // The actual transition does nothing here, since the opacity just stays at 255
+            new GesturePropertyTransition (this, multitasking_gesture_tracker, "opacity", null, 255u).start (with_gesture, (cancel_action) => {
+                if (!opening) {
+                    foreach (var container in window_containers_monitors) {
+                        container.visible = false;
                     }
 
-                    animating = false;
+                    hide ();
 
-                    if (cancel_action) {
-                        toggle (false, true);
-                    }
+                    wm.background_group.show ();
+                    wm.window_group.show ();
+                    wm.top_window_group.show ();
 
-                    return Source.REMOVE;
-                });
-            };
+                    wm.pop_modal (modal_proxy);
+                }
 
-            if (!with_gesture) {
-                on_animation_end (1, false, is_cancel_animation ? 0 : ANIMATION_DURATION);
-            } else {
-                multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
-            }
+                animating = false;
+
+                if (cancel_action) {
+                    toggle (false, true);
+                }
+            });
         }
 
         private bool keybinding_filter (Meta.KeyBinding binding) {

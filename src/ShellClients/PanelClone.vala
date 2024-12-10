@@ -156,14 +156,8 @@ public class Gala.PanelClone : Object {
 
         new GesturePropertyTransition (clone, gesture_tracker, "y", null, calculate_clone_y (false)).start (with_gesture, (cancel_action) => {
             if (!cancel_action) {
-                // We need the small timeout because in the case that we're showing in sync with the multitasking view
-                // we have to make sure that we hide the clone after the multitasking view was already hidden otherwise
-                // it flickers because the actual window actors are hidden by the multitasking view
-                Timeout.add_once (10, () => {
-                    force_hide = false;
-                    clone.visible = false;
-                    panel_hidden = false;
-                });
+                clone.visible = false;
+                panel_hidden = false;
             }
         });
     }
