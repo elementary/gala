@@ -328,10 +328,8 @@ public class Gala.WindowClone : Clutter.Actor {
         base.allocate (box);
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
-            warning ("RETURN");
             return;
         }
-        warning ("ALLOCATE");
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
