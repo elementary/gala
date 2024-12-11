@@ -20,8 +20,9 @@ namespace Gala {
         private const double ANIMATION_OPACITY_STEP_INCREMENT = 4.0;
         private const double ANIMATION_MIN_WAKEUP_INTERVAL = 1.0;
 
-        public signal void changed ();
         public signal void loaded ();
+        public signal void invalidate ();
+        public signal void changed ();
 
         public Meta.Display display { get; construct; }
         public int monitor_index { get; construct; }
@@ -35,6 +36,8 @@ namespace Gala {
         private Gee.HashMap<string,ulong> file_watches;
         private Cancellable cancellable;
         private uint update_animation_timeout_id = 0;
+        private string? previous_animation_file = null;
+        private double previous_animation_progress = 0.0;
 
         private Gnome.WallClock clock;
         private ulong clock_timezone_handler = 0;
@@ -156,7 +159,7 @@ namespace Gala {
                 if (changed_file == filename) {
                     var image_cache = Meta.BackgroundImageCache.get_default ();
                     image_cache.purge (File.new_for_path (changed_file));
-                    changed ();
+                    invalidate ();
                 }
             });
         }
@@ -171,12 +174,33 @@ namespace Gala {
         private void finish_animation (string[] files) {
             set_loaded ();
 
-            if (files.length > 1)
+            string? new_last_animation_file = null;
+
+            if (files.length > 1) {
                 background.set_blend (File.new_for_path (files[0]), File.new_for_path (files[1]), animation.transition_progress, style);
-            else if (files.length > 0)
+                new_last_animation_file = files[1];
+            } else if (files.length == 1) {
                 background.set_file (File.new_for_path (files[0]), style);
-            else
+                new_last_animation_file = files[0];
+            } else {
                 background.set_file (null, style);
+                new_last_animation_file = null;
+            }
+
+            if (previous_animation_file != new_last_animation_file) {
+                previous_animation_file = new_last_animation_file;
+                previous_animation_progress = 0.0;
+            }
+
+            if (
+                animation.transition_progress >= 0.25 && previous_animation_progress < 0.25 ||
+                animation.transition_progress >= 0.5 && previous_animation_progress < 0.5 ||
+                animation.transition_progress >= 0.75 && previous_animation_progress < 0.75
+            ) {
+                changed ();
+            }
+
+            previous_animation_progress = animation.transition_progress;
 
             queue_update_animation ();
         }
@@ -229,10 +253,9 @@ namespace Gala {
             if (interval > uint32.MAX)
                 return;
 
-            update_animation_timeout_id = Timeout.add (interval, () => {
+            update_animation_timeout_id = Timeout.add_once (interval, () => {
                 update_animation_timeout_id = 0;
                 update_animation ();
-                return Source.REMOVE;
             });
         }
 
@@ -282,7 +305,7 @@ namespace Gala {
         }
 
         private void settings_changed () {
-            changed ();
+            invalidate ();
         }
     }
 }
