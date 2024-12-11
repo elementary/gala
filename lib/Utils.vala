@@ -269,11 +269,12 @@ namespace Gala {
          * on all workspaces
          *
          * @param workspace The workspace on which to count the windows
+         * @param exclude a window to not count
          */
-        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false) {
+        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.on_all_workspaces) {
+                if (window.on_all_workspaces || window == exclude) {
                     continue;
                 }
 
