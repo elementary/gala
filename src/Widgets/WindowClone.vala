@@ -271,7 +271,7 @@ public class Gala.WindowClone : Clutter.Actor {
      *
      * @param animate Animate the transformation of the placement
      */
-    public void transition_to_original_state (bool with_gesture = false, bool is_cancel_animation = false) {
+    public void transition_to_original_state (bool with_gesture = false) {
         var outer_rect = window.get_frame_rect ();
 
         unowned var display = window.get_display ();
@@ -332,9 +332,9 @@ public class Gala.WindowClone : Clutter.Actor {
      * Animate the window to the given slot
      */
 #if HAS_MUTTER45
-    public void take_slot (Mtk.Rectangle rect, bool from_window_position, bool with_gesture = false, bool is_cancel_animation = false) {
+    public void take_slot (Mtk.Rectangle rect, bool from_window_position, bool with_gesture = false) {
 #else
-    public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false, bool is_cancel_animation = false) {
+    public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false) {
 #endif
         slot = rect;
         active = false;
