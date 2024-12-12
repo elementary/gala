@@ -9,7 +9,6 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : Clutter.Actor {
-    private const int CLOSE_WINDOW_ICON_SIZE = 36;
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -144,6 +143,11 @@ public class Gala.WindowClone : Clutter.Actor {
         reallocate ();
 
         load_clone ();
+
+        window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
+        window_title.set_text (window.get_title () ?? "");
+
+        notify["has-pointer"].connect (() => update_hover_widgets ());
     }
 
     ~WindowClone () {
@@ -186,10 +190,10 @@ public class Gala.WindowClone : Clutter.Actor {
     private void load_clone (bool was_waiting = false) {
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
-            ulong shown_handler = 0;
-            shown_handler = window.shown.connect (() => {
-                load_clone (true);
-                window.disconnect (shown_handler);
+            Idle.add (() => {
+                if (window.get_compositor_private () != null)
+                    load_clone (true);
+                return Source.REMOVE;
             });
 
             return;
@@ -200,6 +204,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
 
         clone = new Clutter.Clone (actor);
+        clone.set_content_scaling_filters (TRILINEAR, TRILINEAR);
         add_child (clone);
 
         set_child_below_sibling (active_shape, clone);
@@ -283,8 +288,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var target_y = outer_rect.y - offset_y;
 
         active = false;
-        in_slot_animation = true;
-        place_widgets (outer_rect.width, outer_rect.height, initial_scale);
+        update_hover_widgets (true);
 
         new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y).start (with_gesture);
@@ -292,8 +296,7 @@ public class Gala.WindowClone : Clutter.Actor {
         new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start (with_gesture);
         new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (with_gesture, () => {
-            in_slot_animation = false;
-            place_widgets (outer_rect.width, outer_rect.height, target_scale);
+            update_hover_widgets (false);
         });
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -302,7 +305,6 @@ public class Gala.WindowClone : Clutter.Actor {
             var scale = GestureTracker.animation_value (initial_scale, target_scale, percentage);
 
             set_window_icon_position (width, height, scale, false);
-            place_widgets ((int)width, (int)height, scale);
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
@@ -335,8 +337,6 @@ public class Gala.WindowClone : Clutter.Actor {
     public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false, bool is_cancel_animation = false) {
 #endif
         slot = rect;
-        in_slot_animation = true;
-
         active = false;
 
         var outer_rect = window.get_frame_rect ();
@@ -349,8 +349,8 @@ public class Gala.WindowClone : Clutter.Actor {
         float intial_y = from_window_position ? outer_rect.y - monitor_geom.y : y;
 
         var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
-        place_widgets (rect.width, rect.height, scale);
 
+        update_hover_widgets (true);
         set_window_icon_position (initial_width, initial_height, scale);
 
         new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start (with_gesture);
@@ -359,8 +359,7 @@ public class Gala.WindowClone : Clutter.Actor {
         new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
         new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
-            in_slot_animation = false;
-            place_widgets (rect.width, rect.height, scale);
+            update_hover_widgets (false);
         });
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -393,33 +392,62 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
-    /**
-     * Except for the texture clone and the highlight all children are placed
-     * according to their given allocations. The first two are placed in a way
-     * that compensates for invisible borders of the texture.
-     */
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
-
-        var input_rect = window.get_buffer_rect ();
-        var outer_rect = window.get_frame_rect ();
-        var scale_factor = width / outer_rect.width;
-
-        Clutter.ActorBox shape_alloc = {
-            -ACTIVE_SHAPE_SIZE,
-            -ACTIVE_SHAPE_SIZE,
-            outer_rect.width * scale_factor + ACTIVE_SHAPE_SIZE,
-            outer_rect.height * scale_factor + ACTIVE_SHAPE_SIZE
-        };
-        active_shape.allocate (shape_alloc);
 
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
-        clone.set_scale (scale_factor, scale_factor);
-        clone.set_position ((input_rect.x - outer_rect.x) * scale_factor,
-                            (input_rect.y - outer_rect.y) * scale_factor);
+        var input_rect = window.get_buffer_rect ();
+        var outer_rect = window.get_frame_rect ();
+        var clone_scale_factor = width / outer_rect.width;
+
+        clone.set_scale (clone_scale_factor, clone_scale_factor);
+
+        float clone_width, clone_height;
+        clone.get_preferred_size (null, null, out clone_width, out clone_height);
+
+        // Compensate for invisible borders of the texture
+        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
+        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
+
+        var clone_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, clone_width, clone_height);
+        clone.allocate (clone_alloc);
+
+        Clutter.ActorBox shape_alloc = {
+            -ACTIVE_SHAPE_SIZE,
+            -ACTIVE_SHAPE_SIZE,
+            box.get_width () + ACTIVE_SHAPE_SIZE,
+            box.get_height () + ACTIVE_SHAPE_SIZE
+        };
+        Clutter.ActorBox.clamp_to_pixel (ref shape_alloc);
+        active_shape.allocate (shape_alloc);
+
+        float close_button_width, close_button_height;
+        close_button.get_preferred_size (null, null, out close_button_width, out close_button_height);
+
+        var close_button_x = is_close_button_on_left () ?
+            -close_button_width * 0.5f : box.get_width () - close_button_width * 0.5f;
+
+        var close_button_alloc = InternalUtils.actor_box_from_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
+        close_button.allocate (close_button_alloc);
+
+        var rect = get_transformed_extents ();
+        var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
+        var monitor_scale = display.get_monitor_scale (monitor_index);
+
+        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
+        float window_title_height, window_title_nat_width;
+        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+
+        var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
+
+        float window_title_x = (box.get_width () - window_title_width) / 2;
+        float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+
+        var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
+        window_title.allocate (window_title_alloc);
     }
 
 #if HAS_MUTTER45
@@ -430,74 +458,26 @@ public class Gala.WindowClone : Clutter.Actor {
         return Clutter.EVENT_STOP;
     }
 
-#if HAS_MUTTER45
-    public override bool enter_event (Clutter.Event event) {
-#else
-    public override bool enter_event (Clutter.CrossingEvent event) {
-#endif
-        if (drag_action != null && drag_action.dragging) {
-            return Clutter.EVENT_PROPAGATE;
+    private void update_hover_widgets (bool? animating = null) {
+        if (animating != null) {
+            in_slot_animation = animating;
         }
 
         var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        close_button.save_easing_state ();
-        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (duration);
-        close_button.opacity = in_slot_animation ? 0 : 255;
-        close_button.restore_easing_state ();
-
-        window_title.save_easing_state ();
-        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_title.set_easing_duration (duration);
-        window_title.opacity = in_slot_animation ? 0 : 255;
-        window_title.restore_easing_state ();
-
-        return Clutter.EVENT_PROPAGATE;
-    }
-
-#if HAS_MUTTER45
-    public override bool leave_event (Clutter.Event event) {
-#else
-    public override bool leave_event (Clutter.CrossingEvent event) {
-#endif
-        var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
+        var show = has_pointer && !in_slot_animation;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
         close_button.set_easing_duration (duration);
-        close_button.opacity = 0;
-        close_button.restore_easing_state ();
-
-        window_title.save_easing_state ();
-        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_title.set_easing_duration (duration);
-        window_title.opacity = 0;
-        window_title.restore_easing_state ();
-
-        return Clutter.EVENT_PROPAGATE;
-    }
-
-    /**
-     * Place the widgets, that is the close button and the WindowIcon of the window,
-     * at their positions inside the actor for a given width and height.
-     */
-    public void place_widgets (int dest_width, int dest_height, float scale_factor) {
-        var close_button_size = InternalUtils.scale_to_int (CLOSE_WINDOW_ICON_SIZE, scale_factor);
-        close_button.set_size (close_button_size, close_button_size);
-
-        close_button.y = -close_button.height * 0.33f;
-        close_button.x = is_close_button_on_left () ?
-            -close_button.width * 0.5f :
-            dest_width - close_button.width * 0.5f;
-
-        bool show = has_pointer && !in_slot_animation;
         close_button.opacity = show ? 255 : 0;
-        window_title.opacity = close_button.opacity;
+        close_button.restore_easing_state ();
 
-        window_title.set_text (window.get_title () ?? "");
-        window_title.set_max_width (dest_width - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, scale_factor));
-        set_window_title_position (dest_width, dest_height, scale_factor);
+        window_title.save_easing_state ();
+        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        window_title.set_easing_duration (duration);
+        window_title.opacity = show ? 255 : 0;
+        window_title.restore_easing_state ();
     }
 
     private void toggle_shadow (bool show) {
@@ -798,12 +778,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         window_icon.set_size (size, size);
         window_icon.set_position (x, y);
-    }
-
-    private void set_window_title_position (float window_width, float window_height, float scale_factor) {
-        var x = (int)Math.round ((window_width - window_title.width) / 2);
-        var y = (int)Math.round (window_height - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, scale_factor) * 0.75f - (window_title.height / 2) - InternalUtils.scale_to_int (18, scale_factor));
-        window_title.set_position (x, y);
     }
 
     private static bool is_close_button_on_left () {

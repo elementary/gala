@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-11-06 11:20+0000\n"
+"PO-Revision-Date: 2024-12-09 11:10+0000\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
-"Language-Team: Chinese (Traditional) <https://l10n.elementary.io/projects/"
-"desktop/gala/zh_Hant/>\n"
+"Language-Team: Chinese (Traditional Han script) <https://l10n.elementary.io/"
+"projects/desktop/gala/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:48+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -34,7 +34,7 @@ msgstr "系統設定值…"
 
 #: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr "開啟系統設定失敗了"
+msgstr "無法開啟《系統設定值》"
 
 #: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
@@ -123,7 +123,7 @@ msgstr "更新翻譯"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved shadows performance"
-msgstr ""
+msgstr "改善陰影效能"
 
 #: data/gala.metainfo.xml.in:78
 msgid "Fix a potential crash when moving windows between workspaces"
