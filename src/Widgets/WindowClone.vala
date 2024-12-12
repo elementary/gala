@@ -307,8 +307,8 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (width, height, scale, false);
         };
 
-        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-            if (cancel_action) {
+        GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+            if (completions == 0) {
                 return;
             }
 
@@ -322,7 +322,7 @@ public class Gala.WindowClone : Clutter.Actor {
         };
 
         if (gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
-            on_animation_end (1, false, 0);
+            on_animation_end (1, 1, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }
@@ -369,8 +369,8 @@ public class Gala.WindowClone : Clutter.Actor {
             set_window_icon_position (width, height, scale, false);
         };
 
-        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-            if (cancel_action) {
+        GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+            if (completions == 0) {
                 return;
             }
 
@@ -386,7 +386,7 @@ public class Gala.WindowClone : Clutter.Actor {
         };
 
         if (gesture_tracker == null || !with_gesture || !AnimationsSettings.get_enable_animations ()) {
-            on_animation_end (1, false, 0);
+            on_animation_end (1, 1, 0);
         } else {
             gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
         }

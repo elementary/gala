@@ -379,28 +379,31 @@ namespace Gala {
             debug ("Target X: %f", target_x);
 
             switching_workspace_with_gesture = true;
-            if (target_workspace != null) {
-                target_workspace.activate (display.get_current_time ());
-            }
 
             if (is_nudge_animation) {
                 new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, initial_x + nudge_gap * -relative_dir).start (true);
             } else {
-                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x).start (true);
+                var upper_clamp = (direction == LEFT) ? (-active_workspace.index () - 0.1) * relative_dir : (num_workspaces - active_workspace.index () - 0.9) * relative_dir;
+                var lower_clamp = (direction == RIGHT) ? (-active_workspace.index () - 0.1) * relative_dir : (num_workspaces - active_workspace.index () - 0.9) * relative_dir;
+
+                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+                    overshoot_lower_clamp = lower_clamp,
+                    overshoot_upper_clamp = upper_clamp
+                }.start (true);
                 new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f).start (true);
                 new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f).start (true);
             }
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
 
-                if (is_nudge_animation || cancel_action) {
-                    active_workspace.activate (display.get_current_time ());
+                if (!is_nudge_animation) {
+                    manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
                 }
             };
 
             if (!AnimationsSettings.get_enable_animations ()) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, 1, 0);
             } else {
                 workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
@@ -706,8 +709,8 @@ namespace Gala {
                 hide_docks (with_gesture, is_cancel_animation);
             }
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
+            GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                var animation_duration = completions == 0 ? 0 : ANIMATION_DURATION;
                 Timeout.add (animation_duration, () => {
                     if (!opening) {
                         foreach (var container in window_containers_monitors) {
@@ -727,7 +730,7 @@ namespace Gala {
 
                     animating = false;
 
-                    if (cancel_action) {
+                    if (completions == 0) {
                         toggle (false, true);
                     }
 
@@ -736,7 +739,7 @@ namespace Gala {
             };
 
             if (!with_gesture) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, 1, 0);
             } else {
                 multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
@@ -792,8 +795,8 @@ namespace Gala {
                     clone.y = y;
                 };
 
-                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    if (cancel_action) {
+                GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                    if (completions == 0) {
                         return;
                     }
 
@@ -805,7 +808,7 @@ namespace Gala {
                 };
 
                 if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                    on_animation_end (1, false, 0);
+                    on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
@@ -823,8 +826,8 @@ namespace Gala {
                     dock.y = y;
                 };
 
-                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    if (cancel_action) {
+                GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                    if (completions == 0) {
                         return;
                     }
 
@@ -836,7 +839,7 @@ namespace Gala {
                 };
 
                 if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                    on_animation_end (1, false, 0);
+                    on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }

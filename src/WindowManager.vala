@@ -2145,9 +2145,9 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, completions, duration) => {
                 if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
-                    switch_workspace_animation_finished (direction, cancel_action);
+                    switch_workspace_animation_finished (direction, completions == 0);
                     return;
                 }
 
@@ -2167,30 +2167,30 @@ namespace Gala {
                 wallpaper.set_easing_mode (animation_mode);
                 wallpaper.set_easing_duration (duration);
 
-                out_group.x = cancel_action ? 0.0f : x2;
+                out_group.x = completions * x2;
                 out_group.restore_easing_state ();
 
-                in_group.x = cancel_action ? -x2 : 0.0f;
+                in_group.x = completions == 0 ? -x2 : 0.0f;
                 in_group.restore_easing_state ();
 
-                wallpaper.x = cancel_action ? 0.0f : x2;
+                wallpaper.x = completions == 0 ? 0.0f : x2;
                 wallpaper.restore_easing_state ();
 
-                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
+                wallpaper_clone.x = completions == 0 ? -x2 : 0.0f;
                 wallpaper_clone.restore_easing_state ();
 
                 var transition = in_group.get_transition ("x");
                 if (transition != null) {
                     transition.completed.connect (() => {
-                        switch_workspace_animation_finished (direction, cancel_action);
+                        switch_workspace_animation_finished (direction, completions == 0);
                     });
                 } else {
-                    switch_workspace_animation_finished (direction, cancel_action);
+                    switch_workspace_animation_finished (direction, completions == 0);
                 }
             };
 
             if (!switch_workspace_with_gesture) {
-                on_animation_end (1, false, AnimationDuration.WORKSPACE_SWITCH_MIN);
+                on_animation_end (1, 1, AnimationDuration.WORKSPACE_SWITCH_MIN);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }

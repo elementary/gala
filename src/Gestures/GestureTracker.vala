@@ -89,11 +89,11 @@ public class Gala.GestureTracker : Object {
     /**
      * @param percentage Value between 0 and 1.
      */
-    public signal void on_end (double percentage, bool cancel_action, int calculated_duration);
+    public signal void on_end (double percentage, int completions, int calculated_duration);
 
     public delegate void OnBegin (double percentage);
     public delegate void OnUpdate (double percentage);
-    public delegate void OnEnd (double percentage, bool cancel_action, int calculated_duration);
+    public delegate void OnEnd (double percentage, int completions, int calculated_duration);
 
     /**
      * Backend used if enable_touchpad is called.
@@ -187,11 +187,15 @@ public class Gala.GestureTracker : Object {
      * values not divisible by physical pixels.
      * @return The linear animation value at the specified percentage.
      */
-    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
+    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false, double end_percentage = 0) {
         float value = initial_value;
 
         if (initial_value != target_value) {
             value = ((target_value - initial_value) * (float) percentage) + initial_value;
+        }
+
+        if (end_percentage != 0) {
+            value += (float) end_percentage * (target_value - initial_value);
         }
 
         if (rounded) {
@@ -244,7 +248,7 @@ public class Gala.GestureTracker : Object {
         int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
 
         if (enabled) {
-            on_end (end_percentage, cancel_action, calculated_duration);
+            on_end (end_percentage, cancel_action ? 0 : 1, calculated_duration);
         }
 
         disconnect_all_handlers ();
@@ -254,8 +258,8 @@ public class Gala.GestureTracker : Object {
         velocity = 0;
     }
 
-    private static double applied_percentage (double percentage, double percentage_delta) {
-        return (percentage - percentage_delta).clamp (0, 1);
+    private static inline double applied_percentage (double percentage, double percentage_delta) {
+        return percentage - percentage_delta;
     }
 
     /**
