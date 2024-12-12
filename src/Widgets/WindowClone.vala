@@ -112,6 +112,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
+        window.size_changed.connect (() => request_reposition ());
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -183,16 +184,14 @@ public class Gala.WindowClone : Clutter.Actor {
      * at this point it will animate to it. Otherwise it will just place
      * itself at the location of the original window. Also adds the shadow
      * effect and makes sure the shadow is updated on size changes.
-     *
-     * @param was_waiting Internal argument used to indicate that we had to
-     *                    wait before the window's texture became available.
      */
-    private void load_clone (bool was_waiting = false) {
+    private void load_clone () {
         var actor = (Meta.WindowActor) window.get_compositor_private ();
         if (actor == null) {
             Idle.add (() => {
-                if (window.get_compositor_private () != null)
-                    load_clone (true);
+                if (window.get_compositor_private () != null) {
+                    load_clone ();
+                }
                 return Source.REMOVE;
             });
 
@@ -216,18 +215,6 @@ public class Gala.WindowClone : Clutter.Actor {
 
         if (should_fade ()) {
             opacity = 0;
-        }
-
-        // if we were waiting the view was most probably already opened when our window
-        // finally got available. So we fade-in and make sure we took the took place.
-        // If the slot is not available however, the view was probably closed while this
-        // window was opened, so we stay at our old place.
-        if (was_waiting && slot != null) {
-            opacity = 0;
-            take_slot (slot, true);
-            opacity = 255;
-
-            request_reposition ();
         }
     }
 
