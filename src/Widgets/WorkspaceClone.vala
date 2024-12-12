@@ -369,8 +369,8 @@ namespace Gala {
             update_size (monitor);
 
             new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", 1.0d, (double) scale).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", 1.0d, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, (double) scale).start (with_gesture);
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
@@ -415,7 +415,7 @@ namespace Gala {
             new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start (with_gesture);
             new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start (with_gesture);
 
-            window_container.close (with_gesture, is_cancel_animation);
+            window_container.close (with_gesture);
         }
     }
 }
