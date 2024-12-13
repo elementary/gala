@@ -113,6 +113,7 @@ public class Gala.GesturePropertyTransition : Object {
             return;
         }
 
+        // Pre calculate some things, so we don't have to do it on every update
         var from_value_float = value_to_float (actual_from_value);
         var to_value_float = value_to_float (intermediate_value ?? to_value);
         var lower_clamp_int = (int) overshoot_lower_clamp;
