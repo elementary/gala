@@ -53,7 +53,6 @@ public class Gala.Zoom : Object {
         }
     }
 
-
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
