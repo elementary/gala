@@ -381,11 +381,13 @@ public class Gala.WindowClone : Clutter.Actor {
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
 
-        var window_icon_size = InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale);
-        var window_icon_x = (box.get_width () - window_icon_size) / 2;
-        var window_icon_y = box.get_height () - (window_icon_size * 0.75f);
+        float window_icon_width, window_icon_height;
+        window_icon.get_preferred_size (null, null, out window_icon_width, out window_icon_height);
 
-        var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_size, window_icon_size);
+        var window_icon_x = (box.get_width () - window_icon_width) / 2;
+        var window_icon_y = box.get_height () - (window_icon_height * 0.75f);
+
+        var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_width, window_icon_height);
         window_icon.allocate (window_icon_alloc);
     }
 
