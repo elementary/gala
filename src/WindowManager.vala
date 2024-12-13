@@ -660,15 +660,21 @@ namespace Gala {
             prepare_workspace_switch (active_index, active_index, direction);
 
             var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
 
-            var nudge_gap = InternalUtils.scale_to_int (NUDGE_GAP, monitor_scale);
+            var to_value = monitor_geom.width + WORKSPACE_GAP * monitor_scale;
 
             if (direction == RIGHT) {
-                nudge_gap *= -1;
+                to_value *= -1;
             }
 
-            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, 0f, nudge_gap).start (switch_workspace_with_gesture);
-            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, 0f, nudge_gap).start (switch_workspace_with_gesture, () => {
+            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, to_value) {
+                overshoot_upper_clamp = 0.1
+            }.start (switch_workspace_with_gesture);
+
+            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, to_value) {
+                overshoot_upper_clamp = 0.1
+            }.start (switch_workspace_with_gesture, () => {
                 switch_workspace_animation_finished (direction, false, true);
                 animating_switch_workspace = false;
             });

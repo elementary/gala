@@ -37,13 +37,6 @@ public class Gala.GesturePropertyTransition : Object {
     public Value to_value { get; construct set; }
 
     /**
-     * If not null this can be used to have an intermediate step before animating back to the origin.
-     * Therefore using this makes mostly sense if {@link to_value} equals {@link from_value}.
-     * This is mostly used for the nudge animations when trying to switch workspaces where there isn't one anymore.
-     */
-    public Value? intermediate_value { get; construct; }
-
-    /**
      * The lower max overshoot. The gesture percentage by which #this animates the property is bounded
      * by this property on the lower end. If it is in the form X.YY with Y not 0 the animation will be linear
      * until X and then take another 100% to animate until X.YY (instead of YY%).
@@ -52,6 +45,8 @@ public class Gala.GesturePropertyTransition : Object {
     public double overshoot_lower_clamp { get; set; default = 0; }
     /**
      * Same as {@link overshoot_lower_clamp} but for the upper limit.
+     * If this is less than 1 and the transition is started without a gesture it will animate to
+     * the {@link to_value} by this percent and then back to the {@link from_value}.
      * Default is 1.
      */
     public double overshoot_upper_clamp { get; set; default = 1; }
@@ -70,16 +65,14 @@ public class Gala.GesturePropertyTransition : Object {
         GestureTracker gesture_tracker,
         string property,
         Value? from_value,
-        Value to_value,
-        Value? intermediate_value = null
+        Value to_value
     ) {
         Object (
             actor: actor,
             gesture_tracker: gesture_tracker,
             property: property,
             from_value: from_value,
-            to_value: to_value,
-            intermediate_value: intermediate_value
+            to_value: to_value
         );
     }
 
@@ -115,7 +108,7 @@ public class Gala.GesturePropertyTransition : Object {
 
         // Pre calculate some things, so we don't have to do it on every update
         var from_value_float = value_to_float (actual_from_value);
-        var to_value_float = value_to_float (intermediate_value ?? to_value);
+        var to_value_float = value_to_float (to_value);
         var lower_clamp_int = (int) overshoot_lower_clamp;
         var upper_clamp_int = (int) overshoot_upper_clamp;
 
@@ -164,11 +157,11 @@ public class Gala.GesturePropertyTransition : Object {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
-            if (intermediate_value != null) {
+            if (overshoot_upper_clamp < 1) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (EASE_OUT_QUAD);
                 actor.set_easing_duration (AnimationsSettings.get_animation_duration (gesture_tracker.min_animation_duration));
-                actor.set_property (property, intermediate_value);
+                actor.set_property (property, value_from_float ((float) overshoot_upper_clamp * (to_value_float - from_value_float) + from_value_float));
                 actor.restore_easing_state ();
 
                 unowned var transition = actor.get_transition (property);
