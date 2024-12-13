@@ -179,7 +179,6 @@ namespace Gala {
             }
         }
 
-
 #if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
             try {
