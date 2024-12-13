@@ -4,7 +4,7 @@
  */
 
 public class Gala.SuperScrollAction : Clutter.Action {
-    public signal void triggered ();
+    public signal void triggered (uint32 timestamp, double dx, double dy);
 
     public Meta.Display display { private get; construct; }
 
@@ -14,7 +14,11 @@ public class Gala.SuperScrollAction : Clutter.Action {
 
     public override bool handle_event (Clutter.Event event) {
         if (event.get_type () == SCROLL && (event.get_state() & display.compositor_modifiers) != 0) {
-            triggered ();
+
+            double dx, dy;
+            event.get_scroll_delta (out dx, out dy);
+
+            triggered (event.get_time (), dx, dy);
 
             return Clutter.EVENT_STOP;
         }

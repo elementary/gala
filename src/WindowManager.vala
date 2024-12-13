@@ -159,9 +159,19 @@ namespace Gala {
 #endif
 
             var scroll_action = new SuperScrollAction (display);
-            scroll_action.triggered.connect (() => warning ("Scroll"));
+            scroll_action.triggered.connect (handle_super_scroll);
 
             stage.add_action_full ("super-scroll-action", CAPTURE, scroll_action);
+        }
+
+        private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
+            var d =  dx.abs () > dy.abs () ? dx : dy;
+
+            if (d < 0) {
+                switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
+            } else if (d > 0) {
+                switch_to_next_workspace (Meta.MotionDirection.LEFT, timestamp);
+            }
         }
 
 
