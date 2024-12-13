@@ -123,19 +123,19 @@ public class Gala.GesturePropertyTransition : Object {
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            double end_percentage = 0;
+            double stretched_percentage = 0;
             if (percentage < lower_clamp_int) {
-                end_percentage = (percentage - lower_clamp_int) * -(overshoot_lower_clamp - lower_clamp_int);
+                stretched_percentage = (percentage - lower_clamp_int) * -(overshoot_lower_clamp - lower_clamp_int);
             } else if (percentage > upper_clamp_int) {
-                end_percentage = (percentage - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
+                stretched_percentage = (percentage - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
             }
 
             percentage = percentage.clamp (lower_clamp_int, upper_clamp_int);
 
             var animation_value = GestureTracker.animation_value (from_value_float, to_value_float, percentage, false);
 
-            if (end_percentage != 0) {
-                animation_value += (float) end_percentage * (to_value_float - from_value_float);
+            if (stretched_percentage != 0) {
+                animation_value += (float) stretched_percentage * (to_value_float - from_value_float);
             }
 
             actor.set_property (property, value_from_float (animation_value));
