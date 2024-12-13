@@ -157,7 +157,13 @@ namespace Gala {
                 });
             }
 #endif
+
+            var scroll_action = new SuperScrollAction (display);
+            scroll_action.triggered.connect (() => warning ("Scroll"));
+
+            stage.add_action_full ("super-scroll-action", CAPTURE, scroll_action);
         }
+
 
 #if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
