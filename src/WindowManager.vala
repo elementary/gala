@@ -165,6 +165,11 @@ namespace Gala {
         }
 
         private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
+            if (behavior_settings.get_enum ("super-scroll-action") != 1) {
+                super_scroll_triggered (timestamp, dx, dy);
+                return;
+            }
+
             var d =  dx.abs () > dy.abs () ? dx : dy;
 
             if (d > 0) {

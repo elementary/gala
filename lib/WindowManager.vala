@@ -123,6 +123,12 @@ namespace Gala {
          */
         public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
 
+        /*
+         * This signal is sent when Super + Scroll was performed and WindowManager couldn't handle it
+         * which probably means that the user doesn't want to switch workspaces on Super + Scroll.
+         */
+        public abstract signal void super_scroll_triggered (uint32 timestamp, double dx, double dy);
+
         /**
          * Enters the modal mode, which means that all events are directed to the stage instead
          * of the windows. This is the only way to receive keyboard events besides shortcut listeners.

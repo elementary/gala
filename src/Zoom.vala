@@ -19,6 +19,7 @@ public class Gala.Zoom : Object {
     private ulong wins_handler_id = 0UL;
 
     private GestureTracker gesture_tracker;
+    private GLib.Settings behavior_settings;
 
     public Zoom (WindowManager wm) {
         Object (wm: wm);
@@ -32,6 +33,9 @@ public class Gala.Zoom : Object {
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
         gesture_tracker.enable_touchpad ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
+        wm.super_scroll_triggered.connect (handle_super_scroll);
     }
 
     ~Zoom () {
@@ -48,6 +52,7 @@ public class Gala.Zoom : Object {
             mouse_poll_timer = 0;
         }
     }
+
 
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
@@ -72,6 +77,20 @@ public class Gala.Zoom : Object {
             (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
         ) {
             zoom_with_gesture (gesture.direction);
+        }
+    }
+
+    private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
+        if (behavior_settings.get_enum ("super-scroll-action") != 2) {
+            return;
+        }
+
+        var d =  dx.abs () > dy.abs () ? dx : dy;
+
+        if (d > 0) {
+            zoom (SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+        } else if (d < 0) {
+            zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
         }
     }
 
