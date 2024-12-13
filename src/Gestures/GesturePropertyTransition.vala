@@ -119,7 +119,7 @@ public class Gala.GesturePropertyTransition : Object {
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             double stretched_percentage = 0;
             if (percentage < lower_clamp_int) {
-                stretched_percentage = (percentage - lower_clamp_int) * -(overshoot_lower_clamp - lower_clamp_int);
+                stretched_percentage = (percentage - lower_clamp_int) * - (overshoot_lower_clamp - lower_clamp_int);
             } else if (percentage > upper_clamp_int) {
                 stretched_percentage = (percentage - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
             }
