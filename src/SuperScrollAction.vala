@@ -15,7 +15,7 @@ public class Gala.SuperScrollAction : Clutter.Action {
     public override bool handle_event (Clutter.Event event) {
         if (
             event.get_type () == SCROLL &&
-            (event.get_state() & display.compositor_modifiers) != 0
+            (event.get_state () & display.compositor_modifiers) != 0
         ) {
 
             warning (event.get_device_type ().to_string ());

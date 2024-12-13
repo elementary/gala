@@ -84,7 +84,7 @@ public class Gala.Zoom : Object {
             return;
         }
 
-        var d =  dx.abs () > dy.abs () ? dx : dy;
+        var d = dx.abs () > dy.abs () ? dx : dy;
 
         if (d > 0) {
             zoom (SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
