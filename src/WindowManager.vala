@@ -170,7 +170,7 @@ namespace Gala {
                 return;
             }
 
-            var d =  dx.abs () > dy.abs () ? dx : dy;
+            var d = dx.abs () > dy.abs () ? dx : dy;
 
             if (d > 0) {
                 switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
