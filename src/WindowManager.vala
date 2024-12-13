@@ -2201,7 +2201,6 @@ namespace Gala {
             if (!animating_switch_workspace) {
                 return;
             }
-            animating_switch_workspace = cancel_action;
 
             if (switch_workspace_window_created_id > 0) {
                 disconnect (switch_workspace_window_created_id);
@@ -2211,6 +2210,8 @@ namespace Gala {
             if (!is_nudge_animation) {
                 switch_workspace_completed ();
             }
+
+            animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
                 var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
@@ -2293,8 +2294,7 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            // We don't care about animation direction, we don't want to cancel it, make it nudge so that it doesn't call switch_workspace_completed ()
-            switch_workspace_animation_finished (LEFT, false, true);
+            end_switch_workspace ();
         }
 
         public override void locate_pointer () {
