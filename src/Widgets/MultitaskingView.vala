@@ -340,11 +340,6 @@ namespace Gala {
             float initial_x = workspaces.x;
             float target_x = 0;
             bool is_nudge_animation = !target_workspace_exists;
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
-
-            unowned IconGroup active_icon_group = null;
-            unowned IconGroup? target_icon_group = null;
 
             if (is_nudge_animation) {
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
@@ -355,19 +350,9 @@ namespace Gala {
                     var workspace = workspace_clone.workspace;
 
                     if (workspace == target_workspace) {
-                        target_icon_group = workspace_clone.icon_group;
                         target_x = -workspace_clone.multitasking_view_x ();
-                    } else if (workspace == active_workspace) {
-                        active_icon_group = workspace_clone.icon_group;
                     }
                 }
-            }
-
-            if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
-                active_icon_group.remove_transition ("backdrop-opacity");
-            }
-            if (!is_nudge_animation && target_icon_group.get_transition ("backdrop-opacity") != null) {
-                target_icon_group.remove_transition ("backdrop-opacity");
             }
 
             debug ("Starting MultitaskingView switch workspace animation:");
@@ -387,8 +372,6 @@ namespace Gala {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
             }.start (true);
-            //  new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f).start (true);
-            //  new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f).start (true);
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
@@ -427,9 +410,6 @@ namespace Gala {
 
                 if (workspace == active_workspace) {
                     active_x = dest_x;
-                    workspace_clone.icon_group.backdrop_opacity = 1.0f;
-                } else {
-                    workspace_clone.icon_group.backdrop_opacity = 0.0f;
                 }
 
                 workspace_clone.save_easing_state ();
