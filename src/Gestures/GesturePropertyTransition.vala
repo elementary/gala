@@ -103,6 +103,9 @@ public class Gala.GesturePropertyTransition : Object {
             return;
         }
 
+        var from_value_float = value_to_float (actual_from_value);
+        var to_value_float = value_to_float (to_value);
+
         GestureTracker.OnBegin on_animation_begin = () => {
             actor.set_property (property, actual_from_value);
         };
@@ -120,15 +123,18 @@ public class Gala.GesturePropertyTransition : Object {
 
             percentage = percentage.clamp (lower_clamp, upper_clamp);
 
-            var animation_value = GestureTracker.animation_value (value_to_float (actual_from_value), value_to_float (intermediate_value ?? to_value), percentage, false, end_percentage);
+            var animation_value = GestureTracker.animation_value (from_value_float, value_to_float (intermediate_value ?? to_value), percentage, false, end_percentage);
             actor.set_property (property, value_from_float (animation_value));
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
+            completions = completions.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+            var target_value = from_value_float + completions * (to_value_float - from_value_float);
+
             actor.save_easing_state ();
             actor.set_easing_mode (EASE_OUT_QUAD);
             actor.set_easing_duration (AnimationsSettings.get_animation_duration (calculated_duration));
-            actor.set_property (property, completions == 0 ? actual_from_value : to_value);
+            actor.set_property (property, value_from_float (target_value));
             actor.restore_easing_state ();
 
             unowned var transition = actor.get_transition (property);

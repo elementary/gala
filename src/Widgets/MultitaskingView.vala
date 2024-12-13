@@ -380,26 +380,21 @@ namespace Gala {
 
             switching_workspace_with_gesture = true;
 
-            if (is_nudge_animation) {
-                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, initial_x + nudge_gap * -relative_dir).start (true);
-            } else {
-                var upper_clamp = (direction == LEFT) ? (-active_workspace.index () - 0.1) * relative_dir : (num_workspaces - active_workspace.index () - 0.9) * relative_dir;
-                var lower_clamp = (direction == RIGHT) ? (-active_workspace.index () - 0.1) * relative_dir : (num_workspaces - active_workspace.index () - 0.9) * relative_dir;
+            var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
+            var lower_clamp = (direction == RIGHT) ? (-active_workspace.index () - 0.1) : -(num_workspaces - active_workspace.index () - 0.9);
 
-                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
-                    overshoot_lower_clamp = lower_clamp,
-                    overshoot_upper_clamp = upper_clamp
-                }.start (true);
-                new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f).start (true);
-                new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f).start (true);
-            }
+            new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+                overshoot_lower_clamp = lower_clamp,
+                overshoot_upper_clamp = upper_clamp
+            }.start (true);
+            //  new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f).start (true);
+            //  new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f).start (true);
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
 
-                if (!is_nudge_animation) {
-                    manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
-                }
+                completions = completions.clamp ((int) lower_clamp, (int) upper_clamp);
+                manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
             };
 
             if (!AnimationsSettings.get_enable_animations ()) {

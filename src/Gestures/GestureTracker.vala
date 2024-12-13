@@ -243,12 +243,17 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
         double end_percentage = applied_percentage (percentage, percentage_delta);
-        bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
-            && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
+        int completions = (int) end_percentage;
+        bool cancel_action = (end_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
+            && ((end_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
         int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
 
+        if (!cancel_action) {
+            completions += end_percentage < 0 ? -1 : 1;
+        }
+
         if (enabled) {
-            on_end (end_percentage, cancel_action ? 0 : 1, calculated_duration);
+            on_end (end_percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
