@@ -97,7 +97,7 @@ namespace Gala {
 #else
         private Meta.Rectangle old_rect_size_change;
 #endif
-        private Clutter.Actor latest_window_snapshot;
+        private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
         private GLib.Settings new_behavior_settings;
@@ -1402,13 +1402,13 @@ namespace Gala {
                 latest_window_snapshot.restore_easing_state ();
 
                 ulong maximize_old_handler_id = 0UL;
-                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
-                    latest_window_snapshot.disconnect (maximize_old_handler_id);
-                    latest_window_snapshot.destroy ();
+                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
+                    snapshot.disconnect (maximize_old_handler_id);
+                    snapshot.destroy ();
                     actor.set_translation (0.0f, 0.0f, 0.0f);
                 });
 
-                latest_window_snapshot.restore_easing_state ();
+                latest_window_snapshot = null;
 
                 actor.set_pivot_point (0.0f, 0.0f);
                 actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
@@ -1775,10 +1775,12 @@ namespace Gala {
                 latest_window_snapshot.restore_easing_state ();
 
                 ulong unmaximize_old_handler_id = 0UL;
-                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect (() => {
-                    latest_window_snapshot.disconnect (unmaximize_old_handler_id);
-                    latest_window_snapshot.destroy ();
+                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
+                    snapshot.disconnect (unmaximize_old_handler_id);
+                    snapshot.destroy ();
                 });
+
+                latest_window_snapshot = null;
 
                 actor.set_pivot_point (0.0f, 0.0f);
                 actor.set_position (ex, ey);
@@ -2199,7 +2201,6 @@ namespace Gala {
             if (!animating_switch_workspace) {
                 return;
             }
-            animating_switch_workspace = cancel_action;
 
             if (switch_workspace_window_created_id > 0) {
                 disconnect (switch_workspace_window_created_id);
@@ -2209,6 +2210,8 @@ namespace Gala {
             if (!is_nudge_animation) {
                 switch_workspace_completed ();
             }
+
+            animating_switch_workspace = cancel_action;
 
             if (cancel_action) {
                 var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
@@ -2291,8 +2294,7 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            // We don't care about animation direction, we don't want to cancel it, make it nudge so that it doesn't call switch_workspace_completed ()
-            switch_workspace_animation_finished (LEFT, false, true);
+            end_switch_workspace ();
         }
 
         public override void locate_pointer () {

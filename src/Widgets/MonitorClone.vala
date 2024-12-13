@@ -102,7 +102,7 @@ namespace Gala {
          */
         public void close (bool with_gesture = false, bool is_cancel_animation = false) {
             window_container.restack_windows ();
-            window_container.close (with_gesture, is_cancel_animation);
+            window_container.close (with_gesture);
         }
 
         private void window_left (int window_monitor, Meta.Window window) {
