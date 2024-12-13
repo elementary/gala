@@ -167,9 +167,9 @@ namespace Gala {
         private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
             var d =  dx.abs () > dy.abs () ? dx : dy;
 
-            if (d < 0) {
+            if (d > 0) {
                 switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
-            } else if (d > 0) {
+            } else if (d < 0) {
                 switch_to_next_workspace (Meta.MotionDirection.LEFT, timestamp);
             }
         }

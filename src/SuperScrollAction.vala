@@ -13,10 +13,33 @@ public class Gala.SuperScrollAction : Clutter.Action {
     }
 
     public override bool handle_event (Clutter.Event event) {
-        if (event.get_type () == SCROLL && (event.get_state() & display.compositor_modifiers) != 0) {
+        if (
+            event.get_type () == SCROLL &&
+            (event.get_state() & display.compositor_modifiers) != 0 &&
+            event.get_device_type () == POINTER_DEVICE
+        ) {
 
-            double dx, dy;
-            event.get_scroll_delta (out dx, out dy);
+            warning (event.get_device_type ().to_string ());
+
+            double dx = 0.0, dy = 0.0;
+            switch (event.get_scroll_direction ()) {
+                case LEFT:
+                    dx = -1.0;
+                    break;
+                case RIGHT:
+                    dx = 1.0;
+                    break;
+                case UP:
+                    dy = 1.0;
+                    break;
+                case DOWN:
+                    dy = -1.0;
+                    break;
+                default:
+                    break;
+            }
+
+            // TODO: support natural scroll settings
 
             triggered (event.get_time (), dx, dy);
 
