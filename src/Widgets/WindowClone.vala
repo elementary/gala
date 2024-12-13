@@ -703,10 +703,15 @@ public class Gala.WindowClone : Clutter.Actor {
 
         display.set_cursor (Meta.Cursor.DEFAULT);
 
-        Timeout.add (duration, () => {
+        if (duration > 0) {
+            ulong handler = 0;
+            handler = clone.transitions_completed.connect (() => {
+                prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
+                clone.disconnect (handler);
+            });
+        } else {
             prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
-            return Source.REMOVE;
-        });
+        }
     }
 
     private static bool is_close_button_on_left () {
