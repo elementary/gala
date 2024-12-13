@@ -187,15 +187,11 @@ public class Gala.GestureTracker : Object {
      * values not divisible by physical pixels.
      * @return The linear animation value at the specified percentage.
      */
-    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false, double end_percentage = 0) {
+    public static float animation_value (float initial_value, float target_value, double percentage, bool rounded = false) {
         float value = initial_value;
 
         if (initial_value != target_value) {
             value = ((target_value - initial_value) * (float) percentage) + initial_value;
-        }
-
-        if (end_percentage != 0) {
-            value += (float) end_percentage * (target_value - initial_value);
         }
 
         if (rounded) {

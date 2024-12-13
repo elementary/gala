@@ -43,7 +43,17 @@ public class Gala.GesturePropertyTransition : Object {
      */
     public Value? intermediate_value { get; construct; }
 
+    /**
+     * The lower max overshoot. The gesture percentage by which #this animates the property is bounded
+     * by this property on the lower end. If it is in the form X.YY with Y not 0 the animation will be linear
+     * until X and then take another 100% to animate until X.YY (instead of YY%).
+     * Default is 0.
+     */
     public double overshoot_lower_clamp { get; set; default = 0; }
+    /**
+     * Same as {@link overshoot_lower_clamp} but for the upper limit.
+     * Default is 1.
+     */
     public double overshoot_upper_clamp { get; set; default = 1; }
 
     /**
@@ -104,31 +114,35 @@ public class Gala.GesturePropertyTransition : Object {
         }
 
         var from_value_float = value_to_float (actual_from_value);
-        var to_value_float = value_to_float (to_value);
+        var to_value_float = value_to_float (intermediate_value ?? to_value);
+        var lower_clamp_int = (int) overshoot_lower_clamp;
+        var upper_clamp_int = (int) overshoot_upper_clamp;
 
         GestureTracker.OnBegin on_animation_begin = () => {
             actor.set_property (property, actual_from_value);
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var lower_clamp = (double) (int) overshoot_lower_clamp;
-            var upper_clamp = (double) (int) overshoot_upper_clamp;
-
             double end_percentage = 0;
-            if (percentage < lower_clamp) {
-                end_percentage = (percentage - lower_clamp) * -(overshoot_lower_clamp - lower_clamp);
-            } else if (percentage > upper_clamp) {
-                end_percentage = (percentage - upper_clamp) * (overshoot_upper_clamp - upper_clamp);
+            if (percentage < lower_clamp_int) {
+                end_percentage = (percentage - lower_clamp_int) * -(overshoot_lower_clamp - lower_clamp_int);
+            } else if (percentage > upper_clamp_int) {
+                end_percentage = (percentage - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
             }
 
-            percentage = percentage.clamp (lower_clamp, upper_clamp);
+            percentage = percentage.clamp (lower_clamp_int, upper_clamp_int);
 
-            var animation_value = GestureTracker.animation_value (from_value_float, value_to_float (intermediate_value ?? to_value), percentage, false, end_percentage);
+            var animation_value = GestureTracker.animation_value (from_value_float, to_value_float, percentage, false);
+
+            if (end_percentage != 0) {
+                animation_value += (float) end_percentage * (to_value_float - from_value_float);
+            }
+
             actor.set_property (property, value_from_float (animation_value));
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
-            completions = completions.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+            completions = completions.clamp (lower_clamp_int, upper_clamp_int);
             var target_value = from_value_float + completions * (to_value_float - from_value_float);
 
             actor.save_easing_state ();
