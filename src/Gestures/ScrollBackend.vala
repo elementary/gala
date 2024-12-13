@@ -136,11 +136,7 @@ public class Gala.ScrollBackend : Object {
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
 
         bool is_positive = (direction == GestureDirection.RIGHT || direction == GestureDirection.DOWN);
-        double clamp_low = is_positive ? 0 : -1;
-        double clamp_high = is_positive ? 1 : 0;
 
-        //  double normalized_delta = (used_delta / finish_delta).clamp (clamp_low, clamp_high).abs ();
-        double normalized_delta = (used_delta / finish_delta) * (is_positive ? 1 : -1);
-        return normalized_delta;
+        return (used_delta / finish_delta) * (is_positive ? 1 : -1);
     }
 }
