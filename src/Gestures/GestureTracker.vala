@@ -88,6 +88,10 @@ public class Gala.GestureTracker : Object {
 
     /**
      * @param percentage Value between 0 and 1.
+     * @param completions How often a full cycle of the gesture was completed in this go. Can be
+     * negative if the gesture was started in one direction but ended in the other. This is used to update
+     * the UI to the according state. 0 for example means that the UI should go back to the same state
+     * it was in before the gesture started.
      */
     public signal void on_end (double percentage, int completions, int calculated_duration);
 
