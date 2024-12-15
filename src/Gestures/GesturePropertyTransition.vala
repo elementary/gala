@@ -57,6 +57,8 @@ public class Gala.GesturePropertyTransition : Object {
      * value of the target property, when calling {@link start}.
      */
     private Value actual_from_value;
+    private float from_value_float; // Only valid in the time between start () and finish ()
+    private float to_value_float; // Only valid in the time between start () and finish ()
 
     private DoneCallback? done_callback;
 
@@ -107,16 +109,17 @@ public class Gala.GesturePropertyTransition : Object {
         }
 
         // Pre calculate some things, so we don't have to do it on every update
-        var from_value_float = value_to_float (actual_from_value);
-        var to_value_float = value_to_float (to_value);
-        var lower_clamp_int = (int) overshoot_lower_clamp;
-        var upper_clamp_int = (int) overshoot_upper_clamp;
+        from_value_float = value_to_float (actual_from_value);
+        to_value_float = value_to_float (to_value);
 
         GestureTracker.OnBegin on_animation_begin = () => {
             actor.set_property (property, actual_from_value);
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
+            var lower_clamp_int = (int) overshoot_lower_clamp;
+            var upper_clamp_int = (int) overshoot_upper_clamp;
+
             double stretched_percentage = 0;
             if (percentage < lower_clamp_int) {
                 stretched_percentage = (percentage - lower_clamp_int) * - (overshoot_lower_clamp - lower_clamp_int);
@@ -136,7 +139,7 @@ public class Gala.GesturePropertyTransition : Object {
         };
 
         GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
-            completions = completions.clamp (lower_clamp_int, upper_clamp_int);
+            completions = completions.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
             var target_value = from_value_float + completions * (to_value_float - from_value_float);
 
             actor.save_easing_state ();
