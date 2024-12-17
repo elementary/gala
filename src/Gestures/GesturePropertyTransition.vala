@@ -122,11 +122,7 @@ public class Gala.GesturePropertyTransition : Object {
             if (transition == null) {
                 finish (cancel_action);
             } else {
-                transition.stopped.connect ((is_finished) => {
-                    if (is_finished) {
-                        finish (cancel_action);
-                    }
-                });
+                transition.stopped.connect ((is_finished) => finish (cancel_action, is_finished));
             }
         };
 
@@ -153,8 +149,8 @@ public class Gala.GesturePropertyTransition : Object {
         }
     }
 
-    private void finish (bool cancel_action) {
-        if (done_callback != null) {
+    private void finish (bool cancel_action, bool callback = true) {
+        if (callback && done_callback != null) {
             done_callback (cancel_action);
         }
 
