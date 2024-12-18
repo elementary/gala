@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-11-24 18:16+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
-">\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
+"\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -128,16 +128,16 @@ msgstr "Traducciones actualizadas"
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
+"Se corrigió un error fatal al terminar un proceso asociado a una ventana "
+"anclada"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Se agregó un atajo para captura de pantalla interactiva"
 
 #: data/gala.metainfo.xml.in:37
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
+msgstr "Solucionado un error fatal al usar los atajos de mosaico"
 
 #: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"
