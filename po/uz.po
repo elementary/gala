@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-08-07 18:17+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Uzbek <https://l10n.elementary.io/projects/desktop/gala/uz/>\n"
 "Language: uz\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -118,7 +118,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
 #: data/gala.metainfo.xml.in:198
 msgid "Updated translations"
-msgstr ""
+msgstr "Yangilangan tarjimalar"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
