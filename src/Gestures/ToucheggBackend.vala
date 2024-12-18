@@ -20,12 +20,7 @@
  * Singleton class to manage the connection with Touchégg daemon and receive touch events.
  * See: [[https://github.com/JoseExposito/touchegg]]
  */
-public class Gala.ToucheggBackend : Object {
-    public signal void on_gesture_detected (Gesture gesture);
-    public signal void on_begin (double delta, uint64 time);
-    public signal void on_update (double delta, uint64 time);
-    public signal void on_end (double delta, uint64 time);
-
+public class Gala.ToucheggBackend : Object, GestureBackend {
     /**
      * Gesture type as returned by the daemon.
      */
@@ -202,7 +197,7 @@ public class Gala.ToucheggBackend : Object {
         switch (signal_name) {
             case DBUS_ON_GESTURE_BEGIN:
                 Idle.add (() => {
-                    on_gesture_detected (make_gesture (type, direction, fingers, performed_on_device_type));
+                    on_gesture_detected (make_gesture (type, direction, fingers, performed_on_device_type), Meta.CURRENT_TIME);
                     on_begin (delta, elapsed_time);
                     return false;
                 });
