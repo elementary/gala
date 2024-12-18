@@ -266,10 +266,15 @@ namespace Gala {
 
         /**
          * Get the number of toplevel windows on a workspace excluding those that are
-         * on all workspaces
+         * on all workspaces.
+         *
+         * We need `exclude` here because on Meta.Workspace.window_removed
+         * the windows gets removed from workspace's internal window list but not display's window list
+         * which Meta.Workspace uses for Meta.Workspace.list_windows ().
          *
          * @param workspace The workspace on which to count the windows
          * @param exclude a window to not count
+         * 
          */
         public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;
