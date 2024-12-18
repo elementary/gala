@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-11-23 16:06+0000\n"
+"POT-Creation-Date: 2024-12-18 21:23+0000\n"
 "PO-Revision-Date: 2024-11-24 18:16+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
-"\n"
+"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
+">\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -109,47 +109,63 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
-#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
-#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
+#: data/gala.metainfo.xml.in:196
 msgid "Improvements:"
 msgstr "Mejoras:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
-#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
+#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:198
 msgid "Updated translations"
 msgstr "Traducciones actualizadas"
 
 #: data/gala.metainfo.xml.in:35
+msgid "Fixed rare crash when a dock window was killed"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36
+msgid "Added interactive screenshot shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:37
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fixed crash when using tiling shortcuts"
+msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
+
+#: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"
 msgstr "Se aplicaron mejoras en el rendimiento de las sombras"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:100
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Se corrigió una posible falla grave al mover ventanas entre espacios de "
 "trabajo"
 
-#: data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:101
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Se corrigió la animación de las notificaciones al entrar a la Vista "
 "Multitarea"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:116
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Se mejoró la navegación con el teclado en la Vista Multitarea"
 
-#: data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:117
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Ahora se cambia el color del panel al mismo tiempo que cuando se atenúa el "
 "fondo de escritorio"
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:157
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -157,23 +173,23 @@ msgstr ""
 "Al cambiar el fondo de escritorio o poner en reposo el escritorio, ahora "
 "respeta la opción «Reducir el movimiento»"
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:158
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Se usan los iconos de puntero apropiados para las acciones de arrastrar y "
 "soltar"
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:159
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Se corrigió un problema donde los gestos en la Vista Multitarea podrían "
 "dejar de funcionar"
 
-#: data/gala.metainfo.xml.in:138
+#: data/gala.metainfo.xml.in:160
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Se mejoraron las áreas de trabajo dinámicas con múltiples monitores"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:182
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Se mejoró el funcionamiento del atajo de «mover al área de trabajo»"
 
@@ -262,27 +278,27 @@ msgstr "Se tomó una captura de pantalla"
 msgid "Window switcher"
 msgstr "Selector de ventanas"
 
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2329
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Los cambios se revertirán automáticamente después de %i segundo."
 msgstr[1] "Los cambios se revertirán automáticamente después de %i segundos."
 
-#: src/WindowManager.vala:2362
+#: src/WindowManager.vala:2336
 msgid "Keep new display settings?"
 msgstr "¿Desea conservar la nueva configuración de pantalla?"
 
-#: src/WindowManager.vala:2366
+#: src/WindowManager.vala:2340
 msgid "Keep Settings"
 msgstr "Conservar configuración"
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:2341
 msgid "Use Previous Settings"
 msgstr "Usar configuración previa"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2406
+#: src/WindowManager.vala:2380
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
@@ -390,9 +406,6 @@ msgstr "Captura de pantalla de %s"
 
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Se muestran atajos de teclado en los menús de la barra de cabecera"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr "Solucionado un posible bloqueo al tomar capturas de pantalla"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""
