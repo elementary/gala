@@ -120,6 +120,7 @@ namespace Gala {
             gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             gesture_tracker.enable_touchpad ();
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
@@ -553,57 +554,41 @@ namespace Gala {
             }
         }
 
-        private void on_gesture_detected (Gesture gesture) {
+        private bool on_gesture_detected (Gesture gesture) {
             if (workspace_view.is_opened ()) {
-                return;
+                return false;
             }
 
-            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
-                (gesture.direction != GestureDirection.LEFT && gesture.direction != GestureDirection.RIGHT)) {
-                return;
-            }
+            var action = GestureSettings.get_action (gesture);
+            switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
+            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
+        }
 
-            unowned var display = get_display ();
+        private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+            var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
-            var fingers = gesture.fingers;
+            switch (GestureSettings.get_action (gesture)) {
+                case MOVE_TO_WORKSPACE:
+                    unowned var display = get_display ();
+                    unowned var manager = display.get_workspace_manager ();
 
-            var three_finger_swipe_horizontal = GestureSettings.get_string ("three-finger-swipe-horizontal");
-            var four_finger_swipe_horizontal = GestureSettings.get_string ("four-finger-swipe-horizontal");
+                    moving = display.focus_window;
+                    if (moving != null) {
+                        moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
+                    }
+                    switch_to_next_workspace (direction, timestamp);
+                    break;
 
-            var three_fingers_switch_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace";
-            var four_fingers_switch_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace";
+                case SWITCH_WORKSPACE:
+                    switch_to_next_workspace (direction, timestamp);
+                    break;
 
-            var three_fingers_move_to_workspace = fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace";
-            var four_fingers_move_to_workspace = fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace";
+                case SWITCH_WINDOWS:
+                    window_switcher.handle_gesture (gesture.direction);
+                    break;
 
-            var three_fingers_switch_windows = fingers == 3 && three_finger_swipe_horizontal == "switch-windows";
-            var four_fingers_switch_windows = fingers == 4 && four_finger_swipe_horizontal == "switch-windows";
-
-            switch_workspace_with_gesture = three_fingers_switch_to_workspace || four_fingers_switch_to_workspace;
-            if (switch_workspace_with_gesture) {
-                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_to_next_workspace (direction, display.get_current_time ());
-                return;
-            }
-
-            switch_workspace_with_gesture = three_fingers_move_to_workspace || four_fingers_move_to_workspace;
-            if (switch_workspace_with_gesture) {
-                unowned var manager = display.get_workspace_manager ();
-
-                var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-
-                moving = display.focus_window;
-                if (moving != null) {
-                    moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
-                }
-
-                switch_to_next_workspace (direction, display.get_current_time ());
-                return;
-            }
-
-            var switch_windows = three_fingers_switch_windows || four_fingers_switch_windows;
-            if (switch_windows && !window_switcher.opened) {
-                window_switcher.handle_gesture (gesture.direction);
+                default:
+                    break;
             }
         }
 
