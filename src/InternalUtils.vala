@@ -355,5 +355,17 @@ namespace Gala {
                 return Source.REMOVE;
             });
         }
+
+        public static void wait_for_window_actor_to_show (Meta.Window window, owned WindowActorReadyCallback callback) {
+            unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+            if (window_actor.visible) {
+                callback (window_actor);
+                return;
+            }
+
+            InternalUtils.wait_for_window_actor (window, (actor) => {
+                actor.show.connect (() => callback (actor));
+            }); 
+        }
     }
 }
