@@ -55,7 +55,7 @@ public class Gala.PixelPicker : Clutter.Actor {
         e.get_coords (out x, out y);
         point = Graphene.Point () { x = x, y = y };
 
-        this.hide ();
+        hide ();
         close ();
 
         return true;
