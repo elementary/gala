@@ -47,11 +47,6 @@ namespace Gala {
         private Drawing.StyleManager style_manager;
 
         private bool switching_workspace_with_gesture = false;
-        private bool switching_workspace_in_progress {
-            get {
-                return switching_workspace_with_gesture || workspaces.get_transition ("x") != null;
-            }
-        }
 
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
@@ -323,10 +318,6 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
-            if (switching_workspace_in_progress) {
-                return;
-            }
-
             unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
             var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
