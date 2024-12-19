@@ -159,6 +159,21 @@ namespace Gala {
 #endif
         }
 
+        private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
+            if (behavior_settings.get_enum ("super-scroll-action") != 1) {
+                super_scroll_triggered (timestamp, dx, dy);
+                return;
+            }
+
+            var d = dx.abs () > dy.abs () ? dx : dy;
+
+            if (d > 0) {
+                switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
+            } else if (d < 0) {
+                switch_to_next_workspace (Meta.MotionDirection.LEFT, timestamp);
+            }
+        }
+
 #if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
             try {
@@ -395,6 +410,10 @@ namespace Gala {
 
 
             display.window_created.connect ((window) => window_created (window));
+
+            var scroll_action = new SuperScrollAction (display);
+            scroll_action.triggered.connect (handle_super_scroll);
+            stage.add_action_full ("super-scroll-action", CAPTURE, scroll_action);
 
             stage.show ();
 
