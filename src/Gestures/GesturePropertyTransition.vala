@@ -37,11 +37,19 @@ public class Gala.GesturePropertyTransition : Object {
     public Value to_value { get; construct set; }
 
     /**
-     * If not null this can be used to have an intermediate step before animating back to the origin.
-     * Therefore using this makes mostly sense if {@link to_value} equals {@link from_value}.
-     * This is mostly used for the nudge animations when trying to switch workspaces where there isn't one anymore.
+     * The lower max overshoot. The gesture percentage by which #this animates the property is bounded
+     * by this property on the lower end. If it is in the form X.YY with Y not 0 the animation will be linear
+     * until X and then take another 100% to animate until X.YY (instead of YY%).
+     * Default is 0.
      */
-    public Value? intermediate_value { get; construct; }
+    public double overshoot_lower_clamp { get; set; default = 0; }
+    /**
+     * Same as {@link overshoot_lower_clamp} but for the upper limit.
+     * If this is less than 1 and the transition is started without a gesture it will animate to
+     * the {@link to_value} by this percent and then back to the {@link from_value}.
+     * Default is 1.
+     */
+    public double overshoot_upper_clamp { get; set; default = 1; }
 
     /**
      * This is the from value that's actually used when calculating the animation movement.
@@ -49,6 +57,8 @@ public class Gala.GesturePropertyTransition : Object {
      * value of the target property, when calling {@link start}.
      */
     private Value actual_from_value;
+    private float from_value_float; // Only valid in the time between start () and finish ()
+    private float to_value_float; // Only valid in the time between start () and finish ()
 
     private DoneCallback? done_callback;
 
@@ -57,16 +67,14 @@ public class Gala.GesturePropertyTransition : Object {
         GestureTracker gesture_tracker,
         string property,
         Value? from_value,
-        Value to_value,
-        Value? intermediate_value = null
+        Value to_value
     ) {
         Object (
             actor: actor,
             gesture_tracker: gesture_tracker,
             property: property,
             from_value: from_value,
-            to_value: to_value,
-            intermediate_value: intermediate_value
+            to_value: to_value
         );
     }
 
@@ -102,20 +110,44 @@ public class Gala.GesturePropertyTransition : Object {
             return;
         }
 
+        // Pre calculate some things, so we don't have to do it on every update
+        from_value_float = value_to_float (actual_from_value);
+        to_value_float = value_to_float (to_value);
+
         GestureTracker.OnBegin on_animation_begin = () => {
             actor.set_property (property, actual_from_value);
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var animation_value = GestureTracker.animation_value (value_to_float (actual_from_value), value_to_float (intermediate_value ?? to_value), percentage);
+            var lower_clamp_int = (int) overshoot_lower_clamp;
+            var upper_clamp_int = (int) overshoot_upper_clamp;
+
+            double stretched_percentage = 0;
+            if (percentage < lower_clamp_int) {
+                stretched_percentage = (percentage - lower_clamp_int) * - (overshoot_lower_clamp - lower_clamp_int);
+            } else if (percentage > upper_clamp_int) {
+                stretched_percentage = (percentage - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
+            }
+
+            percentage = percentage.clamp (lower_clamp_int, upper_clamp_int);
+
+            var animation_value = GestureTracker.animation_value (from_value_float, to_value_float, percentage, false);
+
+            if (stretched_percentage != 0) {
+                animation_value += (float) stretched_percentage * (to_value_float - from_value_float);
+            }
+
             actor.set_property (property, value_from_float (animation_value));
         };
 
-        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+        GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
+            completions = completions.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+            var target_value = from_value_float + completions * (to_value_float - from_value_float);
+
             actor.save_easing_state ();
             actor.set_easing_mode (EASE_OUT_QUAD);
             actor.set_easing_duration (AnimationsSettings.get_animation_duration (calculated_duration));
-            actor.set_property (property, cancel_action ? actual_from_value : to_value);
+            actor.set_property (property, value_from_float (target_value));
             actor.restore_easing_state ();
 
             unowned var transition = actor.get_transition (property);
@@ -130,21 +162,21 @@ public class Gala.GesturePropertyTransition : Object {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
-            if (intermediate_value != null) {
+            if (overshoot_upper_clamp < 1) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (EASE_OUT_QUAD);
                 actor.set_easing_duration (AnimationsSettings.get_animation_duration (gesture_tracker.min_animation_duration));
-                actor.set_property (property, intermediate_value);
+                actor.set_property (property, value_from_float ((float) overshoot_upper_clamp * (to_value_float - from_value_float) + from_value_float));
                 actor.restore_easing_state ();
 
                 unowned var transition = actor.get_transition (property);
                 if (transition == null) {
-                    on_animation_end (1, false, gesture_tracker.min_animation_duration);
+                    on_animation_end (1, 1, gesture_tracker.min_animation_duration);
                 } else {
-                    transition.stopped.connect (() => on_animation_end (1, false, gesture_tracker.min_animation_duration));
+                    transition.stopped.connect (() => on_animation_end (1, 1, gesture_tracker.min_animation_duration));
                 }
             } else {
-                on_animation_end (1, false, gesture_tracker.min_animation_duration);
+                on_animation_end (1, 1, gesture_tracker.min_animation_duration);
             }
         }
     }
