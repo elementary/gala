@@ -12,13 +12,22 @@ public class Gala.WindowActorFetcher : GLib.Object {
 
     public Meta.Window window { get; construct; }
 
+    private uint idle_id = 0;
+
     public WindowActorFetcher (Meta.Window window) {
         Object (window: window);
     }
 
+    ~WindowActorFetcher () {
+        if (idle_id > 0) {
+            Source.remove (idle_id);
+        }
+    }
+
     construct {
-        Idle.add (() => {
+        idle_id = Idle.add (() => {
             if (window == null) {
+                idle_id = 0;
                 return Source.REMOVE;
             }
 
@@ -26,6 +35,7 @@ public class Gala.WindowActorFetcher : GLib.Object {
 
             if (window_actor != null) {
                 window_actor_ready ();
+                idle_id = 0;
 
                 return Source.REMOVE;
             }
