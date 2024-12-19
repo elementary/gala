@@ -10,7 +10,7 @@
  * with easing without a gesture. Respects the enable animation setting.
  */
 public class Gala.GesturePropertyTransition : Object {
-    public delegate void DoneCallback ();
+    public delegate void DoneCallback (int completions);
 
     /**
      * The actor whose property will be animated.
@@ -84,7 +84,9 @@ public class Gala.GesturePropertyTransition : Object {
      * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
      * #this will keep itself alive until the animation finishes so it is safe to immediatly unref it after creation and calling start.
      *
-     * @param done_callback a callback for when the transition finishes. It is guaranteed to be called exactly once.
+     * @param done_callback a callback for when the transition finishes. It is guaranteed to be called exactly once except if the transition was
+     * interrupted. This is for example the case when another transition for the same property was started. (Useful for example when you finish a gesture but
+     * before the animation finishes you do the same one again).
      */
     public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
         ref ();
@@ -98,13 +100,13 @@ public class Gala.GesturePropertyTransition : Object {
 
         if (actual_from_value.type () != current_value.type ()) {
             warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
-            finish ();
+            finish (0);
             return;
         }
 
         if (current_value.type () != to_value.type ()) {
             warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
-            finish ();
+            finish (0);
             return;
         }
 
@@ -150,9 +152,9 @@ public class Gala.GesturePropertyTransition : Object {
 
             unowned var transition = actor.get_transition (property);
             if (transition == null) {
-                finish ();
+                finish (completions);
             } else {
-                transition.stopped.connect (finish);
+                transition.stopped.connect ((is_finished) => finish (completions, is_finished));
             }
         };
 
@@ -179,9 +181,9 @@ public class Gala.GesturePropertyTransition : Object {
         }
     }
 
-    private void finish () {
-        if (done_callback != null) {
-            done_callback ();
+    private void finish (int completions, bool callback = true) {
+        if (callback && done_callback != null) {
+            done_callback (completions);
         }
 
         unref ();
