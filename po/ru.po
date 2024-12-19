@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-11-24 18:16+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
-"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/"
-">\n"
+"Language-Team: Russian <https://l10n.elementary.io/projects/desktop/gala/ru/>"
+"\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -127,17 +127,15 @@ msgstr "Обновлены переводы"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Исправлен редкий сбой, когда окно Дока оказывалось убито"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Добавлено сочетание клавиш интерактивного снимка экрана"
 
 #: data/gala.metainfo.xml.in:37
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Исправлена вероятность сбоя при создании снимков экрана"
+msgstr "Исправлен сбой при использовании сочетаний клавиш закрепления окон"
 
 #: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"

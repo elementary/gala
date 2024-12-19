@@ -3,16 +3,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-11-24 18:16+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/"
-">\n"
+"Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
+"\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -121,17 +121,15 @@ msgstr "התרגומים עודכנו"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "תוקנה קריסה שנגרמה כשחלון מעוגן חוסל"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "נוסף קיצור דרך לצילום מסך אינטראקטיבי"
 
 #: data/gala.metainfo.xml.in:37
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "תיקון של תקלה אפשרית של קריסה בעת צילומים"
+msgstr "תוקנה קריסה עקב שימוש בקיצורי דרך של ריצוף"
 
 #: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"

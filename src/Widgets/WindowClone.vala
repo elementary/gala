@@ -53,7 +53,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public bool overview_mode { get; construct; }
-    public GestureTracker? gesture_tracker { get; construct; }
+    public GestureTracker gesture_tracker { get; construct; }
     private float _monitor_scale_factor = 1.0f;
     public float monitor_scale_factor {
         get {
@@ -94,7 +94,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (Meta.Display display, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+    public WindowClone (Meta.Display display, Meta.Window window, GestureTracker gesture_tracker, float scale, bool overview_mode = false) {
         Object (
             display: display,
             window: window,

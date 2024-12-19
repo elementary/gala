@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-09-22 01:32+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -126,23 +126,19 @@ msgstr "Bijgewerkte vertalingen"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Verhelpt een zeldzame crash wanneer een dock-venster was beëindigd"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Interactieve schermafdruk snelkoppeling toegevoegd"
 
 #: data/gala.metainfo.xml.in:37
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
+msgstr "Een crash verholpen bij het gebruiken van tegelen-snelkoppelingen"
 
 #: data/gala.metainfo.xml.in:56
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
-msgstr "Verbeterde venster schaduwen voor oudere apps"
+msgstr "Verbeterde schaduwen-prestaties"
 
 #: data/gala.metainfo.xml.in:100
 msgid "Fix a potential crash when moving windows between workspaces"
