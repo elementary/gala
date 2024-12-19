@@ -88,12 +88,16 @@ public class Gala.GestureTracker : Object {
 
     /**
      * @param percentage Value between 0 and 1.
+     * @param completions The number of times a full cycle of the gesture was completed in this go. Can be
+     * negative if the gesture was started in one direction but ended in the other. This is used to update
+     * the UI to the according state. 0 for example means that the UI should go back to the same state
+     * it was in before the gesture started.
      */
-    public signal void on_end (double percentage, bool cancel_action, int calculated_duration);
+    public signal void on_end (double percentage, int completions, int calculated_duration);
 
     public delegate void OnBegin (double percentage);
     public delegate void OnUpdate (double percentage);
-    public delegate void OnEnd (double percentage, bool cancel_action, int calculated_duration);
+    public delegate void OnEnd (double percentage, int completions, int calculated_duration);
 
     /**
      * Backend used if enable_touchpad is called.
@@ -239,12 +243,17 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
         double end_percentage = applied_percentage (percentage, percentage_delta);
-        bool cancel_action = (end_percentage < SUCCESS_PERCENTAGE_THRESHOLD)
-            && ((end_percentage <= previous_percentage) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
+        int completions = (int) end_percentage;
+        bool cancel_action = (end_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
+            && ((end_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
         int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
 
+        if (!cancel_action) {
+            completions += end_percentage < 0 ? -1 : 1;
+        }
+
         if (enabled) {
-            on_end (end_percentage, cancel_action, calculated_duration);
+            on_end (end_percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
@@ -254,8 +263,8 @@ public class Gala.GestureTracker : Object {
         velocity = 0;
     }
 
-    private static double applied_percentage (double percentage, double percentage_delta) {
-        return (percentage - percentage_delta).clamp (0, 1);
+    private static inline double applied_percentage (double percentage, double percentage_delta) {
+        return percentage - percentage_delta;
     }
 
     /**

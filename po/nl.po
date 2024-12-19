@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-09-22 01:32+0000\n"
+"POT-Creation-Date: 2024-12-18 21:23+0000\n"
+"PO-Revision-Date: 2024-12-19 16:04+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -108,47 +108,59 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
-#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
-#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
+#: data/gala.metainfo.xml.in:196
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
-#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
+#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:198
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
-msgid "Improved shadows performance"
-msgstr "Verbeterde venster schaduwen voor oudere apps"
+msgid "Fixed rare crash when a dock window was killed"
+msgstr "Verhelpt een zeldzame crash wanneer een dock-venster was beëindigd"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:36
+msgid "Added interactive screenshot shortcut"
+msgstr "Interactieve schermafdruk snelkoppeling toegevoegd"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Fixed crash when using tiling shortcuts"
+msgstr "Een crash verholpen bij het gebruiken van tegelen-snelkoppelingen"
+
+#: data/gala.metainfo.xml.in:56
+msgid "Improved shadows performance"
+msgstr "Verbeterde schaduwen-prestaties"
+
+#: data/gala.metainfo.xml.in:100
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Een mogelijke crash verholpen wanneer vensters worden bewogen tussen "
 "werkruimtes"
 
-#: data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:101
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "De notificatie animatie verholpen wanneer multitaskingweergave wordt "
 "opgeroepen"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:116
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Verbeter toetsenbordnavigatie in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:117
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Verander paneelkleur tegelijk met achtergrondovergang"
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:157
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -156,22 +168,22 @@ msgstr ""
 "De bureaubladachtergrond veranderen of schakelen naar de slaapstand "
 "respecteert de \"Beperk bewegende elementen\" optie"
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:158
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Gebruik passende klikken-en-slepen aanwijzers wanneer vensters versleept "
 "worden"
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:159
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Verbeter de fout wanneer gebaren in de multitasking weergave niet meer werken"
 
-#: data/gala.metainfo.xml.in:138
+#: data/gala.metainfo.xml.in:160
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Verbeter dynamische werkruimtes gedrag met meerdere schermen"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:182
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Verbeter omgaan met verplaats-naar-werkruimte sneltoets"
 
@@ -260,27 +272,27 @@ msgstr "Schermafbeelding genomen"
 msgid "Window switcher"
 msgstr "Vensterwisselaar"
 
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2329
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Wijzigingen worden na %i seconde automatisch teruggedraaid."
 msgstr[1] "Wijzigingen worden na %i seconden automatisch teruggedraaid."
 
-#: src/WindowManager.vala:2362
+#: src/WindowManager.vala:2336
 msgid "Keep new display settings?"
 msgstr "Nieuwe weergave-instellingen bewaren?"
 
-#: src/WindowManager.vala:2366
+#: src/WindowManager.vala:2340
 msgid "Keep Settings"
 msgstr "Instellingen behouden"
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:2341
 msgid "Use Previous Settings"
 msgstr "Vorige instellingen gebruiken"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2406
+#: src/WindowManager.vala:2380
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Schermafbeelding van %s"
@@ -439,9 +451,6 @@ msgstr "Schermafbeelding van %s"
 
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Toon sneltoetsen in titelbalkmenu's"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr "Een mogelijke crash verholpen bij het maken van screenshots"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

@@ -141,6 +141,9 @@ namespace Gala {
 
             expand_to_screen_size ();
 
+            unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (expand_to_screen_size);
+
             init_dbus_interfaces.begin ();
         }
 
@@ -196,7 +199,7 @@ namespace Gala {
             connected_to_buses = success;
         }
 
-        public void expand_to_screen_size () {
+        private void expand_to_screen_size () {
             int screen_width, screen_height;
             wm.get_display ().get_size (out screen_width, out screen_height);
             width = screen_width;
