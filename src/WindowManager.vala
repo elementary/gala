@@ -943,9 +943,9 @@ namespace Gala {
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_MOVING);
 #elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Gtk.get_current_event_time ());
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Gtk.get_current_event_time ());
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
@@ -953,9 +953,9 @@ namespace Gala {
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
 #elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Gtk.get_current_event_time ());
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Gtk.get_current_event_time ());
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
@@ -977,26 +977,26 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
-                    switch_to_next_workspace (Meta.MotionDirection.LEFT, Gtk.get_current_event_time ());
+                    switch_to_next_workspace (Meta.MotionDirection.LEFT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
-                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, Gtk.get_current_event_time ());
+                    switch_to_next_workspace (Meta.MotionDirection.RIGHT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.LEFT);
-                    move_window (current, target_workspace, Gtk.get_current_event_time ());
+                    move_window (current, target_workspace, Meta.CURRENT_TIME);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_RIGHT:
                     unowned var workspace_manager = get_display ().get_workspace_manager ();
                     unowned var active_workspace = workspace_manager.get_active_workspace ();
                     unowned var target_workspace = active_workspace.get_neighbor (Meta.MotionDirection.RIGHT);
-                    move_window (current, target_workspace, Gtk.get_current_event_time ());
+                    move_window (current, target_workspace, Meta.CURRENT_TIME);
                     break;
                 case ActionType.CLOSE_CURRENT:
                     if (current != null && current.can_close ())
-                        current.@delete (Gtk.get_current_event_time ());
+                        current.@delete (Meta.CURRENT_TIME);
                     break;
                 case ActionType.OPEN_LAUNCHER:
                     launch_action ("panel-main-menu-action");
