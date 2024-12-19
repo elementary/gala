@@ -106,8 +106,6 @@ namespace Gala {
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
 
-        private signal void window_created (Meta.Window window);
-
         /**
          * Amount of pixels to move on the nudge animation.
          */
@@ -392,9 +390,6 @@ namespace Gala {
             });
 
             update_input_area ();
-
-
-            display.window_created.connect ((window) => window_created (window));
 
             stage.show ();
 
@@ -2123,11 +2118,16 @@ namespace Gala {
 
             // while a workspace is being switched mutter doesn't map windows
             // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
+            switch_workspace_window_created_id = get_display ().window_created.connect_after ((window) => {
                 if (NotificationStack.is_notification (window)) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor);
+                    ulong window_shown_id = 0;
+                    window_shown_id = window.shown.connect (() => {
+                        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+                        clutter_actor_reparent (actor, notification_group);
+                        notification_stack.show_notification (actor);
+
+                        window.disconnect (window_shown_id);
+                    });
                 }
             });
 
@@ -2203,7 +2203,7 @@ namespace Gala {
             }
 
             if (switch_workspace_window_created_id > 0) {
-                disconnect (switch_workspace_window_created_id);
+                get_display ().disconnect (switch_workspace_window_created_id);
                 switch_workspace_window_created_id = 0;
             }
             end_switch_workspace ();
