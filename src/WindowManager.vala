@@ -643,15 +643,21 @@ namespace Gala {
             prepare_workspace_switch (active_index, active_index, direction);
 
             var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
 
-            var nudge_gap = InternalUtils.scale_to_int (NUDGE_GAP, monitor_scale);
+            var to_value = monitor_geom.width + WORKSPACE_GAP * monitor_scale;
 
             if (direction == RIGHT) {
-                nudge_gap *= -1;
+                to_value *= -1;
             }
 
-            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, 0f, nudge_gap).start (switch_workspace_with_gesture);
-            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, 0f, nudge_gap).start (switch_workspace_with_gesture, () => {
+            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, to_value) {
+                overshoot_upper_clamp = 0.1
+            }.start (switch_workspace_with_gesture);
+
+            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, to_value) {
+                overshoot_upper_clamp = 0.1
+            }.start (switch_workspace_with_gesture, () => {
                 switch_workspace_animation_finished (direction, false, true);
                 animating_switch_workspace = false;
             });
@@ -2128,9 +2134,9 @@ namespace Gala {
                 wallpaper_clone.x = x_in;
             };
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, duration) => {
+            GestureTracker.OnEnd on_animation_end = (percentage, completions, duration) => {
                 if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
-                    switch_workspace_animation_finished (direction, cancel_action);
+                    switch_workspace_animation_finished (direction, completions == 0);
                     return;
                 }
 
@@ -2150,30 +2156,30 @@ namespace Gala {
                 wallpaper.set_easing_mode (animation_mode);
                 wallpaper.set_easing_duration (duration);
 
-                out_group.x = cancel_action ? 0.0f : x2;
+                out_group.x = completions * x2;
                 out_group.restore_easing_state ();
 
-                in_group.x = cancel_action ? -x2 : 0.0f;
+                in_group.x = completions == 0 ? -x2 : 0.0f;
                 in_group.restore_easing_state ();
 
-                wallpaper.x = cancel_action ? 0.0f : x2;
+                wallpaper.x = completions == 0 ? 0.0f : x2;
                 wallpaper.restore_easing_state ();
 
-                wallpaper_clone.x = cancel_action ? -x2 : 0.0f;
+                wallpaper_clone.x = completions == 0 ? -x2 : 0.0f;
                 wallpaper_clone.restore_easing_state ();
 
                 var transition = in_group.get_transition ("x");
                 if (transition != null) {
                     transition.completed.connect (() => {
-                        switch_workspace_animation_finished (direction, cancel_action);
+                        switch_workspace_animation_finished (direction, completions == 0);
                     });
                 } else {
-                    switch_workspace_animation_finished (direction, cancel_action);
+                    switch_workspace_animation_finished (direction, completions == 0);
                 }
             };
 
             if (!switch_workspace_with_gesture) {
-                on_animation_end (1, false, AnimationDuration.WORKSPACE_SWITCH_MIN);
+                on_animation_end (1, 1, AnimationDuration.WORKSPACE_SWITCH_MIN);
             } else {
                 gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
             }
