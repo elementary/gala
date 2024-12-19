@@ -4,7 +4,7 @@
  */
 
 /*
- * Sends a signal when a window texture is ready.
+ * Sends a signal when a window actor is ready.
  * Useful when you need to use window actor when the window was created.
  */
 public class Gala.WindowActorFetcher : GLib.Object {
@@ -17,11 +17,11 @@ public class Gala.WindowActorFetcher : GLib.Object {
     }
 
     construct {
-        start_check.begin ();
-    }
-
-    private async void start_check () {
         Idle.add (() => {
+            if (window == null) {
+                return Source.REMOVE;
+            }
+
             unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
             if (window_actor != null) {
