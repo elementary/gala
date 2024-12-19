@@ -29,7 +29,7 @@ namespace Gala {
         public int padding_bottom { get; set; default = 12; }
 
         public Meta.Display display { get; construct; }
-        public GestureTracker? gesture_tracker { get; construct; }
+        public GestureTracker gesture_tracker { get; construct; }
         public bool overview_mode { get; construct; }
 
         private float _monitor_scale = 1.0f;
@@ -53,7 +53,7 @@ namespace Gala {
          */
         private unowned WindowClone? current_window = null;
 
-        public WindowCloneContainer (Meta.Display display, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+        public WindowCloneContainer (Meta.Display display, GestureTracker gesture_tracker, float scale, bool overview_mode = false) {
             Object (display: display, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
         }
 
