@@ -678,7 +678,7 @@ namespace Gala {
 
             // The callback needs to run at the same frame as the others (e.g. PanelClone) so we can't do a simple Timeout here
             // The actual transition does nothing here, since the opacity just stays at 255
-            new GesturePropertyTransition (this, multitasking_gesture_tracker, "opacity", null, 255u).start (with_gesture, (cancel_action) => {
+            new GesturePropertyTransition (this, multitasking_gesture_tracker, "opacity", null, 255u).start (with_gesture, (completions) => {
                 if (!opening) {
                     foreach (var container in window_containers_monitors) {
                         container.visible = false;
@@ -695,7 +695,7 @@ namespace Gala {
 
                 animating = false;
 
-                if (cancel_action) {
+                if (completions == 0) {
                     toggle (false, true);
                 }
             });

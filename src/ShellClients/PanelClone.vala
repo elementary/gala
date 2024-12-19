@@ -154,8 +154,8 @@ public class Gala.PanelClone : Object {
             Utils.x11_unset_window_pass_through (panel.window);
         }
 
-        new GesturePropertyTransition (clone, gesture_tracker, "y", null, calculate_clone_y (false)).start (with_gesture, (cancel_action) => {
-            if (!cancel_action) {
+        new GesturePropertyTransition (clone, gesture_tracker, "y", null, calculate_clone_y (false)).start (with_gesture, (completions) => {
+            if (completions > 0) {
                 clone.visible = false;
                 panel_hidden = false;
             }
