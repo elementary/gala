@@ -47,9 +47,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-         public Gala.ActivatableComponent workspace_view { get; protected set; }
-
-        public ScreenShield? screen_shield { get; private set; }
+        public Gala.ActivatableComponent workspace_view { get; protected set; }
 
         public PointerLocator pointer_locator { get; private set; }
 
@@ -184,9 +182,6 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
-            screen_shield = new ScreenShield (this);
-            screensaver = new ScreenSaverManager (screen_shield);
-
             DBus.init (this);
             DBusAccelerator.init (display);
             MediaFeedback.init ();
@@ -199,11 +194,6 @@ namespace Gala {
             WindowAttentionTracker.init (display);
 
             notification_stack = new NotificationStack (display);
-
-            // Due to a bug which enables access to the stage when using multiple monitors
-            // in the screensaver, we have to listen for changes and make sure the input area
-            // is set to NONE when we are in locked mode
-            screensaver.active_changed.connect (update_input_area);
 
             stage = display.get_stage () as Clutter.Stage;
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
@@ -309,7 +299,14 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (display));
 
+            var screen_shield = new ScreenShield (this);
             ui_group.add_child (screen_shield);
+
+            screensaver = new ScreenSaverManager (screen_shield);
+            // Due to a bug which enables access to the stage when using multiple monitors
+            // in the screensaver, we have to listen for changes and make sure the input area
+            // is set to NONE when we are in locked mode
+            screensaver.active_changed.connect (update_input_area);
 
             FilterManager.init (this);
 
@@ -373,7 +370,7 @@ namespace Gala {
             }
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-            monitor_manager.monitors_changed.connect (on_monitors_changed);
+            monitor_manager.monitors_changed.connect (update_ui_group_size);
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
@@ -438,11 +435,6 @@ namespace Gala {
             } catch (Error e) {
                 warning (e.message);
             }
-        }
-
-        private void on_monitors_changed () {
-            update_ui_group_size ();
-            screen_shield.expand_to_screen_size ();
         }
 
         [CCode (instance_pos = -1)]
