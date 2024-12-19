@@ -19,6 +19,7 @@ public class Gala.Zoom : Object {
     private ulong wins_handler_id = 0UL;
 
     private GestureTracker gesture_tracker;
+    private GLib.Settings behavior_settings;
 
     public Zoom (WindowManager wm) {
         Object (wm: wm);
@@ -32,6 +33,13 @@ public class Gala.Zoom : Object {
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
         gesture_tracker.enable_touchpad ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+        gesture_tracker.on_gesture_handled.connect ((gesture) => zoom_with_gesture (gesture.direction));
+
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
+
+        var scroll_action = new SuperScrollAction (display);
+        scroll_action.triggered.connect (handle_super_scroll);
+        display.get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
     }
 
     ~Zoom () {
@@ -61,18 +69,36 @@ public class Gala.Zoom : Object {
         zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
     }
 
-    private void on_gesture_detected (Gesture gesture) {
+    private bool on_gesture_detected (Gesture gesture) {
         if (gesture.type != Clutter.EventType.TOUCHPAD_PINCH ||
             (gesture.direction != GestureDirection.IN && gesture.direction != GestureDirection.OUT)
         ) {
-            return;
+            return false;
         }
 
         if ((gesture.fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
             (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
         ) {
-            zoom_with_gesture (gesture.direction);
+            return true;
         }
+
+        return false;
+    }
+
+    private bool handle_super_scroll (uint32 timestamp, double dx, double dy) {
+        if (behavior_settings.get_enum ("super-scroll-action") != 2) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        var d = dx.abs () > dy.abs () ? dx : dy;
+
+        if (d > 0) {
+            zoom (SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+        } else if (d < 0) {
+            zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+        }
+
+        return Clutter.EVENT_STOP;
     }
 
     private void zoom_with_gesture (GestureDirection direction) {
