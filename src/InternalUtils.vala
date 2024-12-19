@@ -348,5 +348,25 @@ namespace Gala {
 
             return actor_box;
         }
+
+        public delegate void WindowActorReadyCallback (Meta.WindowActor window_actor);
+
+        public static void wait_for_window_actor (Meta.Window window, owned WindowActorReadyCallback callback) {
+            unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+            if (window_actor != null) {
+                callback (window_actor);
+                return;
+            }
+
+            Idle.add (() => {
+                window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+                if (window_actor != null) {
+                    callback (window_actor);
+                }
+
+                return Source.REMOVE;
+            });
+        }
     }
 }
