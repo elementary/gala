@@ -4,7 +4,7 @@
  */
 
 public class Gala.SuperScrollAction : Clutter.Action {
-    public signal void triggered (uint32 timestamp, double dx, double dy);
+    public signal bool triggered (uint32 timestamp, double dx, double dy);
 
     public Meta.Display display { private get; construct; }
 
@@ -37,9 +37,7 @@ public class Gala.SuperScrollAction : Clutter.Action {
 
             // TODO: support natural scroll settings
 
-            triggered (event.get_time (), dx, dy);
-
-            return Clutter.EVENT_STOP;
+            return triggered (event.get_time (), dx, dy);
         }
 
         return Clutter.EVENT_PROPAGATE;

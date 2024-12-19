@@ -35,7 +35,10 @@ public class Gala.Zoom : Object {
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
-        wm.super_scroll_triggered.connect (handle_super_scroll);
+
+        var scroll_action = new SuperScrollAction (display);
+        scroll_action.triggered.connect (handle_super_scroll);
+        display.get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
     }
 
     ~Zoom () {
@@ -79,9 +82,9 @@ public class Gala.Zoom : Object {
         }
     }
 
-    private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
+    private bool handle_super_scroll (uint32 timestamp, double dx, double dy) {
         if (behavior_settings.get_enum ("super-scroll-action") != 2) {
-            return;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         var d = dx.abs () > dy.abs () ? dx : dy;
@@ -91,6 +94,8 @@ public class Gala.Zoom : Object {
         } else if (d < 0) {
             zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
         }
+
+        return Clutter.EVENT_STOP;
     }
 
     private void zoom_with_gesture (GestureDirection direction) {

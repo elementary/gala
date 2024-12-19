@@ -159,21 +159,6 @@ namespace Gala {
 #endif
         }
 
-        private void handle_super_scroll (uint32 timestamp, double dx, double dy) {
-            if (behavior_settings.get_enum ("super-scroll-action") != 1) {
-                super_scroll_triggered (timestamp, dx, dy);
-                return;
-            }
-
-            var d = dx.abs () > dy.abs () ? dx : dy;
-
-            if (d > 0) {
-                switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
-            } else if (d < 0) {
-                switch_to_next_workspace (Meta.MotionDirection.LEFT, timestamp);
-            }
-        }
-
 #if WITH_SYSTEMD
         private async void start_x11_services (GLib.Task task) {
             try {
@@ -413,7 +398,7 @@ namespace Gala {
 
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
-            stage.add_action_full ("super-scroll-action", CAPTURE, scroll_action);
+            stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
 
             stage.show ();
 
@@ -471,6 +456,22 @@ namespace Gala {
         private void on_monitors_changed () {
             update_ui_group_size ();
             screen_shield.expand_to_screen_size ();
+        }
+
+        private bool handle_super_scroll (uint32 timestamp, double dx, double dy) {
+            if (behavior_settings.get_enum ("super-scroll-action") != 1) {
+                return Clutter.EVENT_PROPAGATE;
+            }
+
+            var d = dx.abs () > dy.abs () ? dx : dy;
+
+            if (d > 0) {
+                switch_to_next_workspace (Meta.MotionDirection.RIGHT, timestamp);
+            } else if (d < 0) {
+                switch_to_next_workspace (Meta.MotionDirection.LEFT, timestamp);
+            }
+
+            return Clutter.EVENT_STOP;
         }
 
         [CCode (instance_pos = -1)]
