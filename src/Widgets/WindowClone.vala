@@ -80,6 +80,7 @@ public class Gala.WindowClone : Clutter.Actor {
         }
     }
 
+    private WindowActorFetcher? window_actor_fetcher = null;
     private DragDropAction? drag_action = null;
     private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
@@ -143,7 +144,12 @@ public class Gala.WindowClone : Clutter.Actor {
 
         reallocate ();
 
-        load_clone ();
+        if (window.get_compositor_private () != null) {
+            load_clone ();
+        } else {
+            window_actor_fetcher = new WindowActorFetcher (window);
+            window_actor_fetcher.window_actor_ready.connect (load_clone);
+        }
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
@@ -176,24 +182,14 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     /**
-     * Waits for the texture of a new Meta.WindowActor to be available
-     * and makes a close of it. If it was already was assigned a slot
+     * Makes a clone of the window. If the window was already was assigned a slot
      * at this point it will animate to it. Otherwise it will just place
      * itself at the location of the original window. Also adds the shadow
      * effect and makes sure the shadow is updated on size changes.
      */
-    private void load_clone () {
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null) {
-                    load_clone ();
-                }
-                return Source.REMOVE;
-            });
-
-            return;
-        }
+    private void load_clone () requires (window.get_compositor_private () != null) {
+        window_actor_fetcher = null;
+        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
 
         if (overview_mode) {
             actor.hide ();
