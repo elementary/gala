@@ -53,7 +53,7 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public bool overview_mode { get; construct; }
-    public GestureTracker? gesture_tracker { get; construct; }
+    public GestureTracker gesture_tracker { get; construct; }
     private float _monitor_scale_factor = 1.0f;
     public float monitor_scale_factor {
         get {
@@ -94,7 +94,7 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (Meta.Display display, Meta.Window window, GestureTracker? gesture_tracker, float scale, bool overview_mode = false) {
+    public WindowClone (Meta.Display display, Meta.Window window, GestureTracker gesture_tracker, float scale, bool overview_mode = false) {
         Object (
             display: display,
             window: window,
@@ -143,7 +143,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         reallocate ();
 
-        load_clone ();
+        InternalUtils.wait_for_window_actor (window, load_clone);
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
@@ -182,19 +182,7 @@ public class Gala.WindowClone : Clutter.Actor {
      * itself at the location of the original window. Also adds the shadow
      * effect and makes sure the shadow is updated on size changes.
      */
-    private void load_clone () {
-        var actor = (Meta.WindowActor) window.get_compositor_private ();
-        if (actor == null) {
-            Idle.add (() => {
-                if (window.get_compositor_private () != null) {
-                    load_clone ();
-                }
-                return Source.REMOVE;
-            });
-
-            return;
-        }
-
+    private void load_clone (Meta.WindowActor actor) {
         if (overview_mode) {
             actor.hide ();
         }
