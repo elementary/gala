@@ -19,17 +19,12 @@
 /**
  * This gesture backend transforms the touchpad scroll events received by an actor into gestures.
  */
-public class Gala.ScrollBackend : Object {
+public class Gala.ScrollBackend : Object, GestureBackend {
     // Mutter does not expose the size of the touchpad, so we use the same values as GTK apps.
     // From GNOME Shell, TOUCHPAD_BASE_[WIDTH|HEIGHT] / SCROLL_MULTIPLIER
     // https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/swipeTracker.js
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
-
-    public signal void on_gesture_detected (Gesture gesture);
-    public signal void on_begin (double delta, uint64 time);
-    public signal void on_update (double delta, uint64 time);
-    public signal void on_end (double delta, uint64 time);
 
     public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
@@ -62,7 +57,7 @@ public class Gala.ScrollBackend : Object {
             return false;
         }
 
-        uint64 time = event.get_time ();
+        var time = event.get_time ();
         double x, y;
         event.get_scroll_delta (out x, out y);
 
@@ -80,10 +75,12 @@ public class Gala.ScrollBackend : Object {
 
         if (!started) {
             if (delta_x != 0 || delta_y != 0) {
-                Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+                float origin_x, origin_y;
+                event.get_coords (out origin_x, out origin_y);
+                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
                 started = true;
                 direction = gesture.direction;
-                on_gesture_detected (gesture);
+                on_gesture_detected (gesture, time);
 
                 double delta = calculate_delta (delta_x, delta_y, direction);
                 on_begin (delta, time);
@@ -114,7 +111,7 @@ public class Gala.ScrollBackend : Object {
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
     }
 
-    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
+    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -126,7 +123,9 @@ public class Gala.ScrollBackend : Object {
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
+            origin_x = origin_x,
+            origin_y = origin_y
         };
     }
 
@@ -136,10 +135,7 @@ public class Gala.ScrollBackend : Object {
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
 
         bool is_positive = (direction == GestureDirection.RIGHT || direction == GestureDirection.DOWN);
-        double clamp_low = is_positive ? 0 : -1;
-        double clamp_high = is_positive ? 1 : 0;
 
-        double normalized_delta = (used_delta / finish_delta).clamp (clamp_low, clamp_high).abs ();
-        return normalized_delta;
+        return (used_delta / finish_delta) * (is_positive ? 1 : -1);
     }
 }

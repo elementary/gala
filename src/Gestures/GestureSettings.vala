@@ -20,6 +20,14 @@
  * Utility class to access the gesture settings. Easily accessible through GestureTracker.settings.
  */
 public class Gala.GestureSettings : Object {
+    public enum GestureAction {
+        NONE,
+        SWITCH_WORKSPACE,
+        MOVE_TO_WORKSPACE,
+        SWITCH_WINDOWS,
+        MULTITASKING_VIEW
+    }
+
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 
@@ -68,5 +76,42 @@ public class Gala.GestureSettings : Object {
 
     public static string get_string (string setting_id) {
         return gala_settings.get_string (setting_id);
+    }
+
+    public static GestureAction get_action (Gesture gesture) {
+        if (gesture.type == TOUCHPAD_SWIPE) {
+            var fingers = gesture.fingers;
+
+            if (gesture.direction == LEFT || gesture.direction == RIGHT) {
+                var three_finger_swipe_horizontal = get_string ("three-finger-swipe-horizontal");
+                var four_finger_swipe_horizontal = get_string ("four-finger-swipe-horizontal");
+
+                if (fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace" ||
+                    fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace") {
+                    return SWITCH_WORKSPACE;
+                }
+
+                if (fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace" ||
+                    fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace") {
+                    return MOVE_TO_WORKSPACE;
+                }
+
+
+                if (fingers == 3 && three_finger_swipe_horizontal == "switch-windows" ||
+                    fingers == 4 && four_finger_swipe_horizontal == "switch-windows") {
+                    return SWITCH_WINDOWS;
+                }
+            } else if (gesture.direction == UP || gesture.direction == DOWN) {
+                var three_finger_swipe_up = get_string ("three-finger-swipe-up");
+                var four_finger_swipe_up = get_string ("four-finger-swipe-up");
+
+                if (fingers == 3 && three_finger_swipe_up == "multitasking-view" ||
+                    fingers == 4 && four_finger_swipe_up == "multitasking-view") {
+                    return MULTITASKING_VIEW;
+                }
+            }
+        }
+
+        return NONE;
     }
 }
