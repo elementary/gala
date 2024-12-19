@@ -365,7 +365,7 @@ namespace Gala {
 
             InternalUtils.wait_for_window_actor (window, (actor) => {
                 actor.show.connect (() => callback (actor));
-            }); 
+            });
         }
     }
 }
