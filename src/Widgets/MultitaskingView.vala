@@ -311,7 +311,7 @@ namespace Gala {
             return false;
         }
 
-        private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+        private void switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
             var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             unowned var manager = display.get_workspace_manager ();
