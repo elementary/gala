@@ -14,7 +14,7 @@ public class Gala.Zoom : Object {
 
     public WindowManager wm { get; construct; }
 
-    private uint mouse_poll_timer = 0;
+    private ulong position_invalidated_handler = 0;
     private float current_zoom = MIN_ZOOM;
     private ulong wins_handler_id = 0UL;
 
@@ -43,9 +43,10 @@ public class Gala.Zoom : Object {
         display.remove_keybinding ("zoom-in");
         display.remove_keybinding ("zoom-out");
 
-        if (mouse_poll_timer > 0) {
-            Source.remove (mouse_poll_timer);
-            mouse_poll_timer = 0;
+        if (position_invalidated_handler > 0) {
+            unowned var cursor_tracker = wm.get_display ().get_cursor_tracker ();
+            cursor_tracker.disconnect (position_invalidated_handler);
+            position_invalidated_handler = 0;
         }
     }
 
@@ -121,23 +122,22 @@ public class Gala.Zoom : Object {
         }
 
         unowned var wins = wm.ui_group;
-        // Add timer to poll current mouse position to reposition window-group
-        // to show requested zoomed area
-        if (mouse_poll_timer == 0) {
+        unowned var cursor_tracker = wm.get_display ().get_cursor_tracker ();
+        if (position_invalidated_handler == 0) {
             wins.pivot_point = compute_new_pivot_point ();
-
-            mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
+            
+            position_invalidated_handler = cursor_tracker.position_invalidated.connect (() => {
                 var new_pivot = compute_new_pivot_point ();
                 if (wins.pivot_point.equal (new_pivot)) {
-                    return true;
+                    return;
                 }
+                warning ("computing new pivot point");
 
                 wins.save_easing_state ();
                 wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
                 wins.set_easing_duration (MOUSE_POLL_TIME);
                 wins.pivot_point = new_pivot;
                 wins.restore_easing_state ();
-                return true;
             });
         }
 
@@ -152,9 +152,9 @@ public class Gala.Zoom : Object {
         if (current_zoom <= MIN_ZOOM) {
             current_zoom = MIN_ZOOM;
 
-            if (mouse_poll_timer > 0) {
-                Source.remove (mouse_poll_timer);
-                mouse_poll_timer = 0;
+            if (position_invalidated_handler > 0) {
+                cursor_tracker.disconnect (position_invalidated_handler);
+                position_invalidated_handler = 0;
             }
 
             wins.save_easing_state ();
