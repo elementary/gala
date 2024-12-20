@@ -45,6 +45,7 @@
         <issue url="https://github.com/elementary/gala/issues/2131">Unthemed cursor style and glitchy menus on some applications</issue>
         <issue url="https://github.com/elementary/gala/issues/2159">Crash when moving windows between workspaces and using gestures to switch</issue>
         <issue url="https://github.com/elementary/gala/issues/2169">Text UI based Scaling: Tiny Titlebars in XWayland Apps</issue>
+        <issue url="https://github.com/elementary/gala/issues/2171">PiP dragging doesn't start until after mouse is released</issue>
       </issues>
     </release>
 
