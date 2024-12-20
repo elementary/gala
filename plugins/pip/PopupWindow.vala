@@ -452,7 +452,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
 
-        var monitor_rect = display.get_monitor_geometry (display.get_current_monitor ());;
+        var monitor_rect = display.get_monitor_geometry (display.get_current_monitor ());
 
         int monitor_x = monitor_rect.x;
         int monitor_y = monitor_rect.y;
