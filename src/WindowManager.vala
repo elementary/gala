@@ -2120,7 +2120,7 @@ namespace Gala {
             // TODO: currently only notifications are handled here, other windows should be too
             switch_workspace_window_created_id = window_created.connect ((window) => {
                 if (NotificationStack.is_notification (window)) {
-                    InternalUtils.wait_for_window_actor_to_show (window, (actor) => {
+                    InternalUtils.wait_for_window_actor (window, (actor) => {
                         clutter_actor_reparent (actor, notification_group);
                         notification_stack.show_notification (actor);
                     });
