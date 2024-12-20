@@ -88,20 +88,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         update_size ();
 
-#if HAS_MUTTER45
-        Mtk.Rectangle monitor_rect;
-#else
-        Meta.Rectangle monitor_rect;
-#endif
-        get_current_monitor_rect (out monitor_rect);
+        var workarea_rect = display.get_workspace_manager ().get_active_workspace ().get_work_area_all_monitors ();
 
         float x_position, y_position;
         if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
-            x_position = SCREEN_MARGIN + monitor_rect.x;
+            x_position = SCREEN_MARGIN + workarea_rect.x;
         } else {
-            x_position = monitor_rect.width + monitor_rect.x - SCREEN_MARGIN - width;
+            x_position = workarea_rect.x + workarea_rect.width - SCREEN_MARGIN - width;
         }
-        y_position = monitor_rect.height + monitor_rect.y - SCREEN_MARGIN - height;
+        y_position = workarea_rect.y + workarea_rect.height - SCREEN_MARGIN - height;
 
         set_position (x_position, y_position);
 
@@ -431,22 +426,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void place_window_in_screen () {
         off_screen = false;
 
-#if HAS_MUTTER45
-        Mtk.Rectangle monitor_rect;
-#else
-        Meta.Rectangle monitor_rect;
-#endif
-        get_current_monitor_rect (out monitor_rect);
+        var workarea_rect = display.get_workspace_manager ().get_active_workspace ().get_work_area_all_monitors ();
 
-        int monitor_x = monitor_rect.x;
-        int monitor_y = monitor_rect.y;
-        int monitor_width = monitor_rect.width;
-        int monitor_height = monitor_rect.height;
-
-        var screen_limit_start_x = SCREEN_MARGIN + monitor_x;
-        var screen_limit_end_x = monitor_width + monitor_x - SCREEN_MARGIN - width;
-        var screen_limit_start_y = SCREEN_MARGIN + monitor_y;
-        var screen_limit_end_y = monitor_height + monitor_y - SCREEN_MARGIN - height;
+        var screen_limit_start_x = workarea_rect.x + SCREEN_MARGIN;
+        var screen_limit_end_x = workarea_rect.x + workarea_rect.width - SCREEN_MARGIN - width;
+        var screen_limit_start_y = workarea_rect.y + SCREEN_MARGIN;
+        var screen_limit_end_y = workarea_rect.y + workarea_rect.height - SCREEN_MARGIN - height;
 
         var duration = AnimationsSettings.get_animation_duration (300);
 
@@ -467,12 +452,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
 
-#if HAS_MUTTER45
-        Mtk.Rectangle monitor_rect;
-#else
-        Meta.Rectangle monitor_rect;
-#endif
-        get_current_monitor_rect (out monitor_rect);
+        var monitor_rect = display.get_monitor_geometry (display.get_current_monitor ());;
 
         int monitor_x = monitor_rect.x;
         int monitor_y = monitor_rect.y;
@@ -544,14 +524,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
 
         return false;
-    }
-
-#if HAS_MUTTER45
-    private void get_current_monitor_rect (out Mtk.Rectangle rect) {
-#else
-    private void get_current_monitor_rect (out Meta.Rectangle rect) {
-#endif
-        rect = display.get_monitor_geometry (display.get_current_monitor ());
     }
 
     private void get_target_window_size (out float width, out float height) {
