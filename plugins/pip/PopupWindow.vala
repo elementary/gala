@@ -68,11 +68,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         clone = new Clutter.Clone (window_actor);
 
-        move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
-        move_action.drag_begin.connect (on_move_begin);
-        move_action.drag_canceled.connect (on_move_end);
-        move_action.actor_clicked.connect (activate);
-
         clone_container = new Clutter.Actor () {
             scale_x = 0.35f,
             scale_y = 0.35f
@@ -84,7 +79,12 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         };
         container.add_child (clone_container);
         container.add_effect (new ShadowEffect ("window"));
-        container.add_action (move_action);
+
+        move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
+        move_action.drag_begin.connect (on_move_begin);
+        move_action.drag_canceled.connect (on_move_end);
+        move_action.actor_clicked.connect (activate);
+        add_action (move_action);
 
         update_size ();
 
