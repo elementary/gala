@@ -201,7 +201,7 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
         switch (signal_name) {
             case DBUS_ON_GESTURE_BEGIN:
                 Idle.add (() => {
-                    on_gesture_detected (make_gesture (type, direction, fingers), Meta.CURRENT_TIME);
+                    on_gesture_detected (GestureSettings.get_action (fingers, direction), Meta.CURRENT_TIME);
                     on_begin (delta, elapsed_time);
                     return false;
                 });
@@ -221,21 +221,5 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
             default:
                 break;
         }
-    }
-
-    private static GestureAction? make_gesture (GestureType type, GestureDirection direction, int fingers) {
-        Clutter.EventType event_type;
-        switch (type) {
-            case GestureType.SWIPE:
-                event_type = Clutter.EventType.TOUCHPAD_SWIPE;
-                break;
-            case GestureType.PINCH:
-                event_type = Clutter.EventType.TOUCHPAD_PINCH;
-                break;
-            default:
-                return null;
-        }
-
-        return GestureSettings.get_action (event_type, fingers, direction);
     }
 }

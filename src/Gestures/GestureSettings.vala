@@ -57,7 +57,7 @@ public class Gala.GestureSettings : Object {
         }
     }
 
-    public static GestureAction get_action (Clutter.EventType type, int fingers, GestureDirection direction) {
+    public static GestureAction get_action (int fingers, GestureDirection direction) {
         if (fingers <= 2) {
             return new GestureAction (CUSTOM, get_action_direction (direction));
         }

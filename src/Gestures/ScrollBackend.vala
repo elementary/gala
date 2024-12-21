@@ -108,7 +108,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             direction = delta_y > 0 ? GestureDirection.DOWN : GestureDirection.UP;
         }
 
-        return GestureSettings.get_action (SCROLL, 2, direction);
+        return GestureSettings.get_action (2, direction);
     }
 
     private double calculate_delta (double delta_x, double delta_y) {
