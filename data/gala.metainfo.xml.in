@@ -38,6 +38,7 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/397">Prevent PIP overlapping wingpanel?</issue>
         <issue url="https://github.com/elementary/gala/issues/857">Toggling the active window's maximization state during multitasking view messes up the window preview size</issue>
         <issue url="https://github.com/elementary/gala/issues/1967">Some apps ignore HiDPI mode</issue>
         <issue url="https://github.com/elementary/gala/issues/2088">Invisible window clones</issue>
