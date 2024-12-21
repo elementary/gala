@@ -340,7 +340,7 @@ namespace Gala {
 
         public static void wait_for_window_actor (Meta.Window window, owned WindowActorReadyCallback callback) {
             unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-            if (window_actor != null && window_actor.visible) {
+            if (window_actor != null) {
                 callback (window_actor);
                 return;
             }
@@ -348,17 +348,25 @@ namespace Gala {
             Idle.add (() => {
                 window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
-                if (window_actor != null && window_actor.visible) {
+                if (window_actor != null) {
                     callback (window_actor);
-                } else if (window_actor != null) {
+                }
+
+                return Source.REMOVE;
+            });
+        }
+
+        public static void wait_for_window_actor_visible (Meta.Window window, owned WindowActorReadyCallback callback) {
+            wait_for_window_actor (window, (window_actor) => {
+                if (window_actor.visible) {
+                    callback (window_actor);
+                } else {
                     ulong show_handler = 0;
                     show_handler = window_actor.show.connect (() => {
                         window_actor.disconnect (show_handler);
                         callback (window_actor);
                     });
                 }
-
-                return Source.REMOVE;
             });
         }
     }
