@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-11-23 16:06+0000\n"
-"PO-Revision-Date: 2024-12-03 18:16+0000\n"
+"POT-Creation-Date: 2024-12-18 21:23+0000\n"
+"PO-Revision-Date: 2024-12-21 09:16+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
 "\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.8.4\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -109,68 +109,82 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
-#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
-#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
+#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
+#: data/gala.metainfo.xml.in:196
 msgid "Improvements:"
 msgstr "Ulepszenia:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
-#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
+#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:198
 msgid "Updated translations"
 msgstr "Zaktualizowano tłumaczenia"
 
 #: data/gala.metainfo.xml.in:35
+msgid "Fixed rare crash when a dock window was killed"
+msgstr "Naprawiono rzadki crash gdy okno doku jest zabite"
+
+#: data/gala.metainfo.xml.in:36
+msgid "Added interactive screenshot shortcut"
+msgstr "Dodano interaktywny skrót do zrzutów ekranu"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Fixed crash when using tiling shortcuts"
+msgstr "Naprawiono crash podczas korzystania ze skrótów kafelkowania"
+
+#: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"
 msgstr "Poprawiona wydajność cieni"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:100
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Naprawiono potencjalny crash podczas przenoszenia okien między obszarami "
 "roboczymi"
 
-#: data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:101
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Naprawiono animację powiadomienia podczas wchodzenia do widoku "
 "wielozadaniowego"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:116
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Poprawiono nawigację przy użyciu klawiatury w widoku wielozadaniowym"
 
-#: data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:117
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Koloru panelu jest zmieniany w tym samym czasie co tapeta"
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:157
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Zmienianie tła oraz usypianie komputera respektuje opcję \"Zmniejsz ruch\""
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:158
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Użycie poprawnych wskaźników przeciągnij-i-upuść przy przenoszeniu okien"
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:159
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Naprawiono problem z gestami które czasami przestają działać w widoku "
 "wielozadaniowym"
 
-#: data/gala.metainfo.xml.in:138
+#: data/gala.metainfo.xml.in:160
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Poprawa dynamicznego zachowania obszarów roboczych przy kilku monitorach"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:182
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Poprawiona obsługa skrótu „przenieś do obszaru”"
 
@@ -258,7 +272,7 @@ msgstr "Zrzut ekranu wykonany"
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:2329
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -266,20 +280,20 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2362
+#: src/WindowManager.vala:2336
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2366
+#: src/WindowManager.vala:2340
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:2341
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2406
+#: src/WindowManager.vala:2380
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
@@ -455,9 +469,6 @@ msgstr "Zrzut ekranu z %s"
 
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Pokaż skróty klawiszowe w menu HeaderBar"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr "Napraw możliwą awarię przy robieniu zrzutów ekranu"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

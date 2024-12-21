@@ -71,11 +71,13 @@ namespace Gala {
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
+            multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
+            workspace_gesture_tracker.on_gesture_handled.connect (switch_workspace_with_gesture);
 
             workspaces = new Clutter.Actor ();
 
@@ -290,42 +292,36 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
-        private void on_multitasking_gesture_detected (Gesture gesture) {
-            if (gesture.type != Clutter.EventType.TOUCHPAD_SWIPE ||
-                (gesture.fingers == 3 && GestureSettings.get_string ("three-finger-swipe-up") != "multitasking-view") ||
-                (gesture.fingers == 4 && GestureSettings.get_string ("four-finger-swipe-up") != "multitasking-view")
-            ) {
-                return;
+        private bool on_multitasking_gesture_detected (Gesture gesture) {
+            if (GestureSettings.get_action (gesture) != MULTITASKING_VIEW) {
+                return false;
             }
 
-            if (gesture.direction == GestureDirection.UP && !opened) {
-                toggle (true, false);
-            } else if (gesture.direction == GestureDirection.DOWN && opened) {
-                toggle (true, false);
+            if (gesture.direction == UP && !opened || gesture.direction == DOWN && opened) {
+                return true;
             }
+
+            return false;
         }
 
-        private void on_workspace_gesture_detected (Gesture gesture) {
+        private bool on_workspace_gesture_detected (Gesture gesture) {
             if (!opened) {
-                return;
+                return false;
             }
 
-            var can_handle_swipe = gesture.type == Clutter.EventType.TOUCHPAD_SWIPE &&
-                (gesture.direction == GestureDirection.LEFT || gesture.direction == GestureDirection.RIGHT);
-
-            var fingers = (gesture.fingers == 3 && Gala.GestureSettings.get_string ("three-finger-swipe-horizontal") == "switch-to-workspace") ||
-                (gesture.fingers == 4 && Gala.GestureSettings.get_string ("four-finger-swipe-horizontal") == "switch-to-workspace");
-
-            if (gesture.type == Clutter.EventType.SCROLL || (can_handle_swipe && fingers)) {
-                var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
-                switch_workspace_with_gesture (direction);
+            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE) {
+                return true;
             }
+
+            return false;
         }
 
-        private void switch_workspace_with_gesture (Meta.MotionDirection direction) {
+        private void switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
             if (switching_workspace_in_progress) {
                 return;
             }
+
+            var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
@@ -340,11 +336,6 @@ namespace Gala {
             float initial_x = workspaces.x;
             float target_x = 0;
             bool is_nudge_animation = !target_workspace_exists;
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
-
-            unowned IconGroup active_icon_group = null;
-            unowned IconGroup? target_icon_group = null;
 
             if (is_nudge_animation) {
                 var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
@@ -355,19 +346,9 @@ namespace Gala {
                     var workspace = workspace_clone.workspace;
 
                     if (workspace == target_workspace) {
-                        target_icon_group = workspace_clone.icon_group;
                         target_x = -workspace_clone.multitasking_view_x ();
-                    } else if (workspace == active_workspace) {
-                        active_icon_group = workspace_clone.icon_group;
                     }
                 }
-            }
-
-            if (!is_nudge_animation && active_icon_group.get_transition ("backdrop-opacity") != null) {
-                active_icon_group.remove_transition ("backdrop-opacity");
-            }
-            if (!is_nudge_animation && target_icon_group.get_transition ("backdrop-opacity") != null) {
-                target_icon_group.remove_transition ("backdrop-opacity");
             }
 
             debug ("Starting MultitaskingView switch workspace animation:");
@@ -379,28 +360,24 @@ namespace Gala {
             debug ("Target X: %f", target_x);
 
             switching_workspace_with_gesture = true;
-            if (target_workspace != null) {
-                target_workspace.activate (display.get_current_time ());
-            }
 
-            if (is_nudge_animation) {
-                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, initial_x, initial_x + nudge_gap * -relative_dir).start (true);
-            } else {
-                new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x).start (true);
-                new GesturePropertyTransition (active_icon_group, workspace_gesture_tracker, "backdrop-opacity", 1f, 0f).start (true);
-                new GesturePropertyTransition (target_icon_group, workspace_gesture_tracker, "backdrop-opacity", 0f, 1f).start (true);
-            }
+            var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
+            var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
+            new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+                overshoot_lower_clamp = lower_clamp,
+                overshoot_upper_clamp = upper_clamp
+            }.start (true);
+
+            GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
 
-                if (is_nudge_animation || cancel_action) {
-                    active_workspace.activate (display.get_current_time ());
-                }
+                completions = completions.clamp ((int) lower_clamp, (int) upper_clamp);
+                manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
             };
 
             if (!AnimationsSettings.get_enable_animations ()) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, 1, 0);
             } else {
                 workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
@@ -429,9 +406,6 @@ namespace Gala {
 
                 if (workspace == active_workspace) {
                     active_x = dest_x;
-                    workspace_clone.icon_group.backdrop_opacity = 1.0f;
-                } else {
-                    workspace_clone.icon_group.backdrop_opacity = 0.0f;
                 }
 
                 workspace_clone.save_easing_state ();
@@ -706,8 +680,8 @@ namespace Gala {
                 hide_docks (with_gesture, is_cancel_animation);
             }
 
-            GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                var animation_duration = cancel_action ? 0 : ANIMATION_DURATION;
+            GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                var animation_duration = completions == 0 ? 0 : ANIMATION_DURATION;
                 Timeout.add (animation_duration, () => {
                     if (!opening) {
                         foreach (var container in window_containers_monitors) {
@@ -727,7 +701,7 @@ namespace Gala {
 
                     animating = false;
 
-                    if (cancel_action) {
+                    if (completions == 0) {
                         toggle (false, true);
                     }
 
@@ -736,7 +710,7 @@ namespace Gala {
             };
 
             if (!with_gesture) {
-                on_animation_end (1, false, 0);
+                on_animation_end (1, 1, 0);
             } else {
                 multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
@@ -792,8 +766,8 @@ namespace Gala {
                     clone.y = y;
                 };
 
-                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    if (cancel_action) {
+                GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                    if (completions == 0) {
                         return;
                     }
 
@@ -805,7 +779,7 @@ namespace Gala {
                 };
 
                 if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                    on_animation_end (1, false, 0);
+                    on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }
@@ -823,8 +797,8 @@ namespace Gala {
                     dock.y = y;
                 };
 
-                GestureTracker.OnEnd on_animation_end = (percentage, cancel_action) => {
-                    if (cancel_action) {
+                GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                    if (completions == 0) {
                         return;
                     }
 
@@ -836,7 +810,7 @@ namespace Gala {
                 };
 
                 if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
-                    on_animation_end (1, false, 0);
+                    on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
                 }

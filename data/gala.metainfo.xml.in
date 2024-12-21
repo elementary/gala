@@ -27,6 +27,29 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+      <release version="8.0.5" date="2024-12-18" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+          <li>Fixed rare crash when a dock window was killed</li>
+          <li>Added interactive screenshot shortcut</li>
+          <li>Fixed crash when using tiling shortcuts</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/397">Prevent PIP overlapping wingpanel?</issue>
+        <issue url="https://github.com/elementary/gala/issues/857">Toggling the active window's maximization state during multitasking view messes up the window preview size</issue>
+        <issue url="https://github.com/elementary/gala/issues/1967">Some apps ignore HiDPI mode</issue>
+        <issue url="https://github.com/elementary/gala/issues/2088">Invisible window clones</issue>
+        <issue url="https://github.com/elementary/gala/issues/2113">gnome-session-x11-services-ready.target isn't started on Wayland session</issue>
+        <issue url="https://github.com/elementary/gala/issues/2131">Unthemed cursor style and glitchy menus on some applications</issue>
+        <issue url="https://github.com/elementary/gala/issues/2159">Crash when moving windows between workspaces and using gestures to switch</issue>
+        <issue url="https://github.com/elementary/gala/issues/2169">Text UI based Scaling: Tiny Titlebars in XWayland Apps</issue>
+        <issue url="https://github.com/elementary/gala/issues/2171">PiP dragging doesn't start until after mouse is released</issue>
+      </issues>
+    </release>
+
     <release version="8.0.4" date="2024-12-02" urgency="medium">
       <description>
         <p>Improvements:</p>

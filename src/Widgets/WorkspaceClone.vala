@@ -232,6 +232,14 @@ namespace Gala {
 
             var listener = WindowListener.get_default ();
             listener.window_no_longer_on_all_workspaces.connect (add_window);
+
+            parent_set.connect ((old_parent) => {
+                if (old_parent != null) {
+                    old_parent.notify["x"].disconnect (update_icon_group_opacity);
+                }
+
+                get_parent ().notify["x"].connect (update_icon_group_opacity);
+            });
         }
 
         ~WorkspaceClone () {
@@ -248,6 +256,14 @@ namespace Gala {
             background.destroy ();
             window_container.destroy ();
             icon_group.destroy ();
+        }
+
+        private void update_icon_group_opacity () {
+            var offset = (multitasking_view_x () + get_parent ().x).abs ();
+
+            var adjusted_width = width - InternalUtils.scale_to_int (X_OFFSET, scale_factor);
+
+            icon_group.backdrop_opacity = (1 - (offset / adjusted_width)).clamp (0, 1);
         }
 
         private void reallocate () {
@@ -369,8 +385,8 @@ namespace Gala {
             update_size (monitor);
 
             new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", 1.0d, (double) scale).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", 1.0d, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, (double) scale).start (with_gesture);
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
@@ -415,7 +431,7 @@ namespace Gala {
             new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start (with_gesture);
             new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start (with_gesture);
 
-            window_container.close (with_gesture, is_cancel_animation);
+            window_container.close (with_gesture);
         }
     }
 }
