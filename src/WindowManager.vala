@@ -585,7 +585,8 @@ namespace Gala {
         }
 
         private void on_gesture_handled (GestureAction action, uint32 timestamp) {
-            var direction = action.direction == FORWARD ? Meta.MotionDirection.RIGHT : Meta.MotionDirection.LEFT;
+            // If we are going forward we are moving right so in order to have the ui switch forward with us we have to go to a workspace to the left
+            var direction = action.direction == FORWARD ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT;
 
             switch (action.type) {
                 case MOVE_TO_WORKSPACE:
