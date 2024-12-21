@@ -292,40 +292,38 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
-        private bool on_multitasking_gesture_detected (Gesture gesture) {
-            if (GestureSettings.get_action (gesture) != MULTITASKING_VIEW) {
+        private bool on_multitasking_gesture_detected (GestureAction action) {
+            if (action.type != MULTITASKING_VIEW) {
                 return false;
             }
 
-            if (gesture.direction == UP && !opened || gesture.direction == DOWN && opened) {
+            if (action.direction == FORWARD && !opened || action.direction == BACKWARD && opened) {
                 return true;
             }
 
             return false;
         }
 
-        private bool on_workspace_gesture_detected (Gesture gesture) {
+        private bool on_workspace_gesture_detected (GestureAction action) {
             if (!opened) {
                 return false;
             }
 
-            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE) {
+            if (action.type == CUSTOM || action.type == SWITCH_WORKSPACE) {
                 return true;
             }
 
             return false;
         }
 
-        private void switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
+        private void switch_workspace_with_gesture (GestureAction action, uint32 timestamp) {
             if (switching_workspace_in_progress) {
                 return;
             }
 
-            var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
-
             unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
-            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
+            var relative_dir = (action.direction == BACKWARD) ? -1 : 1;
 
             unowned var active_workspace = manager.get_active_workspace ();
 
@@ -361,8 +359,8 @@ namespace Gala {
 
             switching_workspace_with_gesture = true;
 
-            var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
-            var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
+            var upper_clamp = (action.direction == BACKWARD) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
+            var lower_clamp = (action.direction == FORWARD) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
             new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,

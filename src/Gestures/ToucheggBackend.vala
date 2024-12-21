@@ -192,12 +192,16 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
 
+        if (direction == LEFT || direction == RIGHT) {
+            direction = direction == RIGHT ? GestureDirection.LEFT : GestureDirection.RIGHT;
+        }
+
         var delta = percentage * DELTA_MULTIPLIER;
 
         switch (signal_name) {
             case DBUS_ON_GESTURE_BEGIN:
                 Idle.add (() => {
-                    on_gesture_detected (make_gesture (type, direction, fingers, performed_on_device_type), Meta.CURRENT_TIME);
+                    on_gesture_detected (make_gesture (type, direction, fingers), Meta.CURRENT_TIME);
                     on_begin (delta, elapsed_time);
                     return false;
                 });
@@ -219,7 +223,7 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
         }
     }
 
-    private static Gesture? make_gesture (GestureType type, GestureDirection direction, int fingers, DeviceType performed_on_device_type) {
+    private static GestureAction? make_gesture (GestureType type, GestureDirection direction, int fingers) {
         Clutter.EventType event_type;
         switch (type) {
             case GestureType.SWIPE:
@@ -232,23 +236,6 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
                 return null;
         }
 
-        Clutter.InputDeviceType input_source;
-        switch (performed_on_device_type) {
-            case DeviceType.TOUCHPAD:
-                input_source = Clutter.InputDeviceType.TOUCHPAD_DEVICE;
-                break;
-            case DeviceType.TOUCHSCREEN:
-                input_source = Clutter.InputDeviceType.TOUCHSCREEN_DEVICE;
-                break;
-            default:
-                return null;
-        }
-
-        return new Gesture () {
-            type = event_type,
-            direction = direction,
-            fingers = fingers,
-            performed_on_device_type = input_source
-        };
+        return GestureSettings.get_action (event_type, fingers, direction);
     }
 }

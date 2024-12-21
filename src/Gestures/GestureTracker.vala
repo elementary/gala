@@ -17,7 +17,7 @@
  */
 
 public interface Gala.GestureBackend : Object {
-    public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
+    public signal bool on_gesture_detected (GestureAction action, uint32 timestamp);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
     public signal void on_end (double delta, uint64 time);
@@ -81,20 +81,20 @@ public class Gala.GestureTracker : Object {
      * do any preparations instead those should be done in {@link on_gesture_handled}. This is because
      * the backend might have to do some preparations itself before you are allowed to do some to avoid
      * conflicts.
-     * @param gesture Information about the gesture.
+     * @param action Information about the gesture.
      * @return true if the gesture will be handled false otherwise. If false is returned the other
      * signals may still be emitted but aren't guaranteed to be.
      */
-    public signal bool on_gesture_detected (Gesture gesture);
+    public signal bool on_gesture_detected (GestureAction action);
 
     /**
      * Emitted if true was returned form {@link on_gesture_detected}. This should
      * be used to do any preparations for gesture handling and to call {@link connect_handlers} to
      * start receiving updates.
-     * @param gesture the same gesture as in {@link on_gesture_detected}
+     * @param action the same gesture as in {@link on_gesture_detected}
      * @param timestamp the timestamp of the event that initiated the gesture or {@link Meta.CURRENT_TIME}.
      */
-    public signal void on_gesture_handled (Gesture gesture, uint32 timestamp);
+    public signal void on_gesture_handled (GestureAction action, uint32 timestamp);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -169,7 +169,7 @@ public class Gala.GestureTracker : Object {
      * @param orientation If we are interested in the horizontal or vertical axis.
      */
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
-        scroll_backend = new ScrollBackend (actor, orientation, settings);
+        scroll_backend = new ScrollBackend (actor, orientation);
         scroll_backend.on_gesture_detected.connect (gesture_detected);
         scroll_backend.on_begin.connect (gesture_begin);
         scroll_backend.on_update.connect (gesture_update);
@@ -227,10 +227,10 @@ public class Gala.GestureTracker : Object {
         return value;
     }
 
-    private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
-        if (enabled && on_gesture_detected (gesture)) {
+    private bool gesture_detected (GestureBackend backend, GestureAction action, uint32 timestamp) {
+        if (enabled && on_gesture_detected (action)) {
             backend.prepare_gesture_handling ();
-            on_gesture_handled (gesture, timestamp);
+            on_gesture_handled (action, timestamp);
             return true;
         }
 

@@ -28,22 +28,21 @@ public class Gala.ScrollBackend : Object, GestureBackend {
 
     public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
-    public GestureSettings settings { get; construct; }
 
     private bool started;
     private double delta_x;
     private double delta_y;
-    private GestureDirection direction;
+    private GestureAction.Direction direction;
 
     construct {
         started = false;
         delta_x = 0;
         delta_y = 0;
-        direction = GestureDirection.UNKNOWN;
+        direction = FORWARD;
     }
 
-    public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
-        Object (actor: actor, orientation: orientation, settings: settings);
+    public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation) {
+        Object (actor: actor, orientation: orientation);
 
         actor.scroll_event.connect (on_scroll_event);
     }
@@ -64,8 +63,8 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         // Scroll events apply the natural scroll preferences out of the box
         // Standardize them so the direction matches the physical direction of the gesture and the
         // GestureTracker user can decide if it wants to follow natural scroll settings or not
-        bool natural_scroll = settings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
-        if (natural_scroll) {
+        bool natural_scroll = GestureSettings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
+        if (!natural_scroll) {
             x *= -1;
             y *= -1;
         }
@@ -77,10 +76,10 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             if (delta_x != 0 || delta_y != 0) {
                 float origin_x, origin_y;
                 event.get_coords (out origin_x, out origin_y);
-                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
+                GestureAction action = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
                 started = true;
-                direction = gesture.direction;
-                on_gesture_detected (gesture, time);
+                direction = action.direction;
+                on_gesture_detected (action, time);
 
                 double delta = calculate_delta (delta_x, delta_y, direction);
                 on_begin (delta, time);
@@ -91,7 +90,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
                 started = false;
                 delta_x = 0;
                 delta_y = 0;
-                direction = GestureDirection.UNKNOWN;
+                direction = FORWARD;
                 on_end (delta, time);
             } else {
                 on_update (delta, time);
@@ -111,7 +110,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
     }
 
-    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
+    private static GestureAction build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -119,22 +118,15 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             direction = delta_y > 0 ? GestureDirection.DOWN : GestureDirection.UP;
         }
 
-        return new Gesture () {
-            type = Clutter.EventType.SCROLL,
-            direction = direction,
-            fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
-            origin_x = origin_x,
-            origin_y = origin_y
-        };
+        return GestureSettings.get_action (SCROLL, 2, direction);
     }
 
-    private static double calculate_delta (double delta_x, double delta_y, GestureDirection direction) {
-        bool is_horizontal = (direction == GestureDirection.LEFT || direction == GestureDirection.RIGHT);
+    private double calculate_delta (double delta_x, double delta_y, GestureAction.Direction direction) {
+        bool is_horizontal = orientation == HORIZONTAL;
         double used_delta = is_horizontal ? delta_x : delta_y;
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
 
-        bool is_positive = (direction == GestureDirection.RIGHT || direction == GestureDirection.DOWN);
+        bool is_positive = direction == FORWARD;
 
         return (used_delta / finish_delta) * (is_positive ? 1 : -1);
     }

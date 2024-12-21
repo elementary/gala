@@ -20,14 +20,6 @@
  * Utility class to access the gesture settings. Easily accessible through GestureTracker.settings.
  */
 public class Gala.GestureSettings : Object {
-    public enum GestureAction {
-        NONE,
-        SWITCH_WORKSPACE,
-        MOVE_TO_WORKSPACE,
-        SWITCH_WINDOWS,
-        MULTITASKING_VIEW
-    }
-
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 
@@ -36,82 +28,89 @@ public class Gala.GestureSettings : Object {
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
     }
 
-    public bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
+    public static bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
         return (device_type == Clutter.InputDeviceType.TOUCHSCREEN_DEVICE)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
-    }
-
-    public Meta.MotionDirection? get_direction (Gesture gesture) {
-        switch (gesture.direction) {
-            case GestureDirection.UP:
-                return Meta.MotionDirection.UP;
-            case GestureDirection.DOWN:
-                return Meta.MotionDirection.DOWN;
-            case GestureDirection.LEFT:
-                return Meta.MotionDirection.LEFT;
-            case GestureDirection.RIGHT:
-                return Meta.MotionDirection.RIGHT;
-            default:
-                return null;
-        }
-    }
-
-    public Meta.MotionDirection? get_natural_scroll_direction (Gesture gesture) {
-        bool natural_scroll = is_natural_scroll_enabled (gesture.performed_on_device_type);
-
-        switch (gesture.direction) {
-            case GestureDirection.UP:
-                return natural_scroll ? Meta.MotionDirection.DOWN : Meta.MotionDirection.UP;
-            case GestureDirection.DOWN:
-                return natural_scroll ? Meta.MotionDirection.UP : Meta.MotionDirection.DOWN;
-            case GestureDirection.LEFT:
-                return natural_scroll ? Meta.MotionDirection.RIGHT : Meta.MotionDirection.LEFT;
-            case GestureDirection.RIGHT:
-                return natural_scroll ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT;
-            default:
-                return null;
-        }
     }
 
     public static string get_string (string setting_id) {
         return gala_settings.get_string (setting_id);
     }
 
-    public static GestureAction get_action (Gesture gesture) {
-        if (gesture.type == TOUCHPAD_SWIPE) {
-            var fingers = gesture.fingers;
+    private static GestureAction.Direction get_action_direction (GestureDirection direction) {
+        switch (direction) {
+            case LEFT:
+            case RIGHT:
+                return direction == RIGHT ? GestureAction.Direction.FORWARD : GestureAction.Direction.BACKWARD;
 
-            if (gesture.direction == LEFT || gesture.direction == RIGHT) {
+            case DOWN:
+            case UP:
+                return direction == UP ? GestureAction.Direction.FORWARD : GestureAction.Direction.BACKWARD;
+
+            case IN:
+            case OUT:
+                return direction == IN ? GestureAction.Direction.FORWARD : GestureAction.Direction.BACKWARD;
+
+            default:
+                return FORWARD;
+        }
+    }
+
+    public static GestureAction get_action (Clutter.EventType type, int fingers, GestureDirection direction) {
+        if (fingers <= 2) {
+            return new GestureAction (CUSTOM, get_action_direction (direction));
+        }
+
+        switch (direction) {
+            case RIGHT:
+            case LEFT:
                 var three_finger_swipe_horizontal = get_string ("three-finger-swipe-horizontal");
                 var four_finger_swipe_horizontal = get_string ("four-finger-swipe-horizontal");
 
                 if (fingers == 3 && three_finger_swipe_horizontal == "switch-to-workspace" ||
                     fingers == 4 && four_finger_swipe_horizontal == "switch-to-workspace") {
-                    return SWITCH_WORKSPACE;
+                    return new GestureAction (SWITCH_WORKSPACE, get_action_direction (direction));
                 }
 
                 if (fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace" ||
                     fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace") {
-                    return MOVE_TO_WORKSPACE;
+                    return new GestureAction (MOVE_TO_WORKSPACE, get_action_direction (direction));
                 }
-
 
                 if (fingers == 3 && three_finger_swipe_horizontal == "switch-windows" ||
                     fingers == 4 && four_finger_swipe_horizontal == "switch-windows") {
-                    return SWITCH_WINDOWS;
+                    return new GestureAction (SWITCH_WINDOWS, get_action_direction (direction));
                 }
-            } else if (gesture.direction == UP || gesture.direction == DOWN) {
+
+                break;
+
+            case UP:
+            case DOWN:
                 var three_finger_swipe_up = get_string ("three-finger-swipe-up");
                 var four_finger_swipe_up = get_string ("four-finger-swipe-up");
 
                 if (fingers == 3 && three_finger_swipe_up == "multitasking-view" ||
                     fingers == 4 && four_finger_swipe_up == "multitasking-view") {
-                    return MULTITASKING_VIEW;
+                    return new GestureAction (MULTITASKING_VIEW, get_action_direction (direction));
                 }
-            }
+
+                break;
+
+            case IN:
+            case OUT:
+                if ((fingers == 3 && GestureSettings.get_string ("three-finger-pinch") == "zoom") ||
+                    (fingers == 4 && GestureSettings.get_string ("four-finger-pinch") == "zoom")
+                ) {
+                    return new GestureAction (ZOOM, get_action_direction (direction));
+                }
+
+                break;
+
+            default:
+                break;
         }
 
-        return NONE;
+        return new GestureAction (NONE, FORWARD);
     }
 }
