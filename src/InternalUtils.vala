@@ -358,7 +358,7 @@ namespace Gala {
                     });
                 }
 
-                return window_actor != null ? Source.REMOVE : Source.CONTINUE;
+                return Source.REMOVE;
             });
         }
     }
