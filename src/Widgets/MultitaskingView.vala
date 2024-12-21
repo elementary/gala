@@ -355,7 +355,7 @@ namespace Gala {
             var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
             var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
-            new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+            workspace_gesture_tracker.initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
             }.start (true);
