@@ -277,8 +277,8 @@ public class Gala.WindowSwitcher : CanvasActor {
         }
         open_switcher ();
 
-        // if direction == LEFT we need to move to the end of the list first, thats why last_window_index is set to -1
-        var last_window_index = direction == BACKWARD ? 0 : -1;
+        // if direction == BACKWARD we need to move to the end of the list first, thats why last_window_index is set to -1
+        var last_window_index = direction == FORWARD ? 0 : -1;
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
             var window_index = GestureTracker.animation_value (0, GESTURE_RANGE_LIMIT, percentage, true);
 
@@ -288,12 +288,12 @@ public class Gala.WindowSwitcher : CanvasActor {
 
             if (window_index > last_window_index) {
                 while (last_window_index < window_index) {
-                    next_window (direction == FORWARD);
+                    next_window (direction == BACKWARD);
                     last_window_index++;
                 }
             } else if (window_index < last_window_index) {
                 while (last_window_index > window_index) {
-                    next_window (direction == BACKWARD);
+                    next_window (direction == FORWARD);
                     last_window_index--;
                 }
             }

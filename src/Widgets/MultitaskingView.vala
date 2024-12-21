@@ -323,7 +323,8 @@ namespace Gala {
 
             unowned var manager = display.get_workspace_manager ();
             var num_workspaces = manager.get_n_workspaces ();
-            var relative_dir = (action.direction == BACKWARD) ? -1 : 1;
+            // If we are going forward we are moving right so in order to have the ui switch forward with us we have to go to a workspace to the left
+            var relative_dir = (action.direction == FORWARD) ? -1 : 1;
 
             unowned var active_workspace = manager.get_active_workspace ();
 
@@ -359,8 +360,8 @@ namespace Gala {
 
             switching_workspace_with_gesture = true;
 
-            var upper_clamp = (action.direction == BACKWARD) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
-            var lower_clamp = (action.direction == FORWARD) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
+            var upper_clamp = (action.direction == FORWARD) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
+            var lower_clamp = (action.direction == BACKWARD) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
             new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,

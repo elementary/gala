@@ -192,10 +192,6 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
 
-        if (direction == LEFT || direction == RIGHT) {
-            direction = direction == RIGHT ? GestureDirection.LEFT : GestureDirection.RIGHT;
-        }
-
         var delta = percentage * DELTA_MULTIPLIER;
 
         switch (signal_name) {
