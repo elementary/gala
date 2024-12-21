@@ -76,16 +76,16 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             if (delta_x != 0 || delta_y != 0) {
                 float origin_x, origin_y;
                 event.get_coords (out origin_x, out origin_y);
-                GestureAction action = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
+                GestureAction action = build_gesture (delta_x, delta_y);
                 started = true;
                 direction = action.direction;
                 on_gesture_detected (action, time);
 
-                double delta = calculate_delta (delta_x, delta_y, direction);
+                double delta = calculate_delta (delta_x, delta_y);
                 on_begin (delta, time);
             }
         } else {
-            double delta = calculate_delta (delta_x, delta_y, direction);
+            double delta = calculate_delta (delta_x, delta_y);
             if (x == 0 && y == 0) {
                 started = false;
                 delta_x = 0;
@@ -100,19 +100,9 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         return true;
     }
 
-#if HAS_MUTTER45
-    private static bool can_handle_event (Clutter.Event event) {
-#else
-    private static bool can_handle_event (Clutter.ScrollEvent event) {
-#endif
-        return event.get_type () == Clutter.EventType.SCROLL
-            && event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE
-            && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
-    }
-
-    private static GestureAction build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
+    private GestureAction build_gesture (double delta_x, double delta_y) {
         GestureDirection direction;
-        if (orientation == Clutter.Orientation.HORIZONTAL) {
+        if (orientation == HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
         } else {
             direction = delta_y > 0 ? GestureDirection.DOWN : GestureDirection.UP;
@@ -121,7 +111,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         return GestureSettings.get_action (SCROLL, 2, direction);
     }
 
-    private double calculate_delta (double delta_x, double delta_y, GestureAction.Direction direction) {
+    private double calculate_delta (double delta_x, double delta_y) {
         bool is_horizontal = orientation == HORIZONTAL;
         double used_delta = is_horizontal ? delta_x : delta_y;
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
@@ -129,5 +119,15 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         bool is_positive = direction == FORWARD;
 
         return (used_delta / finish_delta) * (is_positive ? 1 : -1);
+    }
+
+#if HAS_MUTTER45
+    private static bool can_handle_event (Clutter.Event event) {
+#else
+    private static bool can_handle_event (Clutter.ScrollEvent event) {
+#endif
+        return event.get_type () == Clutter.EventType.SCROLL
+            && event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE
+            && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
     }
 }
