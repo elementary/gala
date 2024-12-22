@@ -32,14 +32,12 @@ namespace Gala {
          */
         public Clutter.Actor window_group { get; protected set; }
 
-        public Clutter.Actor shell_group { get; private set; }
-
         /**
          * {@inheritDoc}
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        public Clutter.Actor notification_group { get; protected set; }
+        public Clutter.Actor shell_group { get; private set; }
 
         /**
          * {@inheritDoc}
@@ -297,9 +295,6 @@ namespace Gala {
 #endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
-
-            notification_group = new Clutter.Actor ();
-            ui_group.add_child (notification_group);
 
             pointer_locator = new PointerLocator (display);
             ui_group.add_child (pointer_locator);
@@ -1484,10 +1479,16 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                actor.get_parent ().remove_child (actor);
+                shell_group.add_child (actor);
+                return;
+            }
+
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, notification_group);
+                clutter_actor_reparent (actor, shell_group);
                 notification_stack.show_notification (actor);
 
                 map_completed (actor);
@@ -2127,7 +2128,7 @@ namespace Gala {
             switch_workspace_window_created_id = window_created.connect ((window) => {
                 if (NotificationStack.is_notification (window)) {
                     InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                        clutter_actor_reparent (actor, notification_group);
+                        clutter_actor_reparent (actor, shell_group);
                         notification_stack.show_notification (actor);
                     });
                 }
