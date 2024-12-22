@@ -195,6 +195,23 @@ public class Gala.GestureTracker : Object {
         }
     }
 
+    /**
+     * Connects a callback that will only be called if != 0 completions were made.
+     * If with_gesture is false it will be called immediately, otherwise once {@link on_end} is emitted.
+     */
+    public void add_success_callback (bool with_gesture, owned OnEnd callback) {
+        if (!with_gesture) {
+            callback (1, 1, min_animation_duration);
+        } else {
+            ulong handler_id = on_end.connect ((percentage, completions, duration) => {
+                if (completions != 0) {
+                    callback (percentage, completions, duration);
+                }
+            });
+            handlers.add (handler_id);
+        }
+    }
+
     private void disconnect_all_handlers () {
         foreach (var handler in handlers) {
             disconnect (handler);

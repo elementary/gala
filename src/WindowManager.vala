@@ -32,6 +32,8 @@ namespace Gala {
          */
         public Clutter.Actor window_group { get; protected set; }
 
+        public Clutter.Actor shell_group { get; private set; }
+
         /**
          * {@inheritDoc}
          */
@@ -253,14 +255,6 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-#if HAS_MUTTER44
-            var feedback_group = display.get_compositor ().get_feedback_group ();
-#else
-            var feedback_group = display.get_feedback_group ();
-#endif
-            stage.remove_child (feedback_group);
-            ui_group.add_child (feedback_group);
-
             // Initialize plugins and add default components if no plugin overrides them
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
@@ -293,6 +287,17 @@ namespace Gala {
             }
 
             // Add the remaining components that should be on top
+            shell_group = new Clutter.Actor ();
+            ui_group.add_child (shell_group);
+
+#if HAS_MUTTER44
+            var feedback_group = display.get_compositor ().get_feedback_group ();
+#else
+            var feedback_group = display.get_feedback_group ();
+#endif
+            stage.remove_child (feedback_group);
+            ui_group.add_child (feedback_group);
+
             notification_group = new Clutter.Actor ();
             ui_group.add_child (notification_group);
 
@@ -2002,8 +2007,9 @@ namespace Gala {
                 if (!window.showing_on_its_workspace () ||
                     move_primary_only && !window.is_on_primary_monitor () ||
                     window == moving ||
-                    window == grabbed_window) {
-
+                    window == grabbed_window ||
+                    window.window_type == DOCK
+                ) {
                     continue;
                 }
 
@@ -2221,7 +2227,7 @@ namespace Gala {
         }
 
         private void end_switch_workspace () {
-            if (windows == null || parents == null)
+            if ((windows == null || parents == null) && tmp_actors == null)
                 return;
 
             unowned var display = get_display ();

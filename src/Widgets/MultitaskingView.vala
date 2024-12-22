@@ -676,29 +676,38 @@ namespace Gala {
                 ShellClientsManager.get_instance ().set_force_hide_panels (false, multitasking_gesture_tracker, with_gesture);
             }
 
-            // The callback needs to run at the same frame as the others (e.g. PanelClone) so we can't do a simple Timeout here
-            // The actual transition does nothing here, since the opacity just stays at 255
-            new GesturePropertyTransition (this, multitasking_gesture_tracker, "opacity", null, 255u).start (with_gesture, (completions) => {
-                if (!opening) {
-                    foreach (var container in window_containers_monitors) {
-                        container.visible = false;
+            GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
+                var animation_duration = completions == 0 ? 0 : ANIMATION_DURATION;
+                Timeout.add (animation_duration, () => {
+                    if (!opening) {
+                        foreach (var container in window_containers_monitors) {
+                            container.visible = false;
+                        }
+
+                        hide ();
+
+                        wm.background_group.show ();
+                        wm.window_group.show ();
+                        wm.top_window_group.show ();
+
+                        wm.pop_modal (modal_proxy);
                     }
 
-                    hide ();
+                    animating = false;
 
-                    wm.background_group.show ();
-                    wm.window_group.show ();
-                    wm.top_window_group.show ();
+                    if (completions == 0) {
+                        toggle (false, true);
+                    }
 
-                    wm.pop_modal (modal_proxy);
-                }
+                    return Source.REMOVE;
+                });
+            };
 
-                animating = false;
-
-                if (completions == 0) {
-                    toggle (false, true);
-                }
-            });
+            if (!with_gesture) {
+                on_animation_end (1, 1, 0);
+            } else {
+                multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
+            }
         }
 
         private bool keybinding_filter (Meta.KeyBinding binding) {

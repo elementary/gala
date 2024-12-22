@@ -10,7 +10,7 @@
  * with easing without a gesture. Respects the enable animation setting.
  */
 public class Gala.GesturePropertyTransition : Object {
-    public delegate void DoneCallback (int completions);
+    public delegate void DoneCallback ();
 
     /**
      * The actor whose property will be animated.
@@ -100,13 +100,13 @@ public class Gala.GesturePropertyTransition : Object {
 
         if (actual_from_value.type () != current_value.type ()) {
             warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
-            finish (0);
+            finish ();
             return;
         }
 
         if (current_value.type () != to_value.type ()) {
             warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
-            finish (0);
+            finish ();
             return;
         }
 
@@ -152,9 +152,9 @@ public class Gala.GesturePropertyTransition : Object {
 
             unowned var transition = actor.get_transition (property);
             if (transition == null) {
-                finish (completions);
+                finish ();
             } else {
-                transition.stopped.connect ((is_finished) => finish (completions, is_finished));
+                transition.stopped.connect (finish);
             }
         };
 
@@ -181,9 +181,9 @@ public class Gala.GesturePropertyTransition : Object {
         }
     }
 
-    private void finish (int completions, bool callback = true) {
-        if (callback && done_callback != null) {
-            done_callback (completions);
+    private void finish () {
+        if (done_callback != null) {
+            done_callback ();
         }
 
         unref ();

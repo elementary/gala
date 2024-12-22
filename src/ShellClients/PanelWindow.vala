@@ -8,7 +8,7 @@
 public class Gala.PanelWindow : Object {
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
     public Meta.Window window { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
@@ -19,7 +19,7 @@ public class Gala.PanelWindow : Object {
     private int width = -1;
     private int height = -1;
 
-    public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
+    public PanelWindow (WindowManagerGala wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, window: window, anchor: anchor);
     }
 
