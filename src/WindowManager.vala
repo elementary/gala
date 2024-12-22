@@ -387,6 +387,10 @@ namespace Gala {
             scroll_action.triggered.connect (handle_super_scroll);
             stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
 
+            display.window_created.connect ((window) =>
+                InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
+            );
+
             stage.show ();
 
             plugin_manager.load_waiting_plugins ();
@@ -1164,6 +1168,20 @@ namespace Gala {
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
+        private void check_shell_window (Meta.WindowActor actor) {
+            unowned var window = actor.get_meta_window ();
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)
+                || NotificationStack.is_notification (window)
+            ) {
+                actor.get_parent ().remove_child (actor);
+                shell_group.add_child (actor);
+            }
+
+            if (NotificationStack.is_notification (window)) {
+                notification_stack.show_notification (actor);
+            }
+        }
+
         /*
          * effects
          */
@@ -1479,16 +1497,7 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            if (ShellClientsManager.get_instance ().is_positioned_window (window)
-                || NotificationStack.is_notification (window)
-            ) {
-                actor.get_parent ().remove_child (actor);
-                shell_group.add_child (actor);
-            }
-
             if (NotificationStack.is_notification (window)) {
-                notification_stack.show_notification (actor);
-
                 map_completed (actor);
                 return;
             }
@@ -1892,7 +1901,6 @@ namespace Gala {
         private List<Clutter.Actor>? windows;
         private List<Clutter.Actor>? parents;
         private List<Clutter.Actor>? tmp_actors;
-        private ulong switch_workspace_window_created_id = 0;
         private Clutter.Actor? out_group;
         private Clutter.Actor? in_group;
         private Clutter.Actor? wallpaper;
@@ -2121,17 +2129,6 @@ namespace Gala {
 
             prepare_workspace_switch (from, to, direction);
 
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (NotificationStack.is_notification (window)) {
-                    InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                        clutter_actor_reparent (actor, shell_group);
-                        notification_stack.show_notification (actor);
-                    });
-                }
-            });
-
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             var x2 = -in_group.x;
@@ -2203,11 +2200,8 @@ namespace Gala {
                 return;
             }
 
-            if (switch_workspace_window_created_id > 0) {
-                disconnect (switch_workspace_window_created_id);
-                switch_workspace_window_created_id = 0;
-            }
             end_switch_workspace ();
+
             if (!is_nudge_animation) {
                 switch_workspace_completed ();
             }
