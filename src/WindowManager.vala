@@ -1479,16 +1479,14 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)
+                || NotificationStack.is_notification (window)
+            ) {
                 actor.get_parent ().remove_child (actor);
                 shell_group.add_child (actor);
-                return;
             }
 
-            // Notifications are a special case and have to be always be handled
-            // (also regardless of the animation setting)
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, shell_group);
                 notification_stack.show_notification (actor);
 
                 map_completed (actor);
