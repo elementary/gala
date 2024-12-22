@@ -104,8 +104,6 @@ namespace Gala {
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
 
-        private signal void window_created (Meta.Window window);
-
         /**
          * Amount of pixels to move on the nudge animation.
          */
@@ -380,8 +378,6 @@ namespace Gala {
             zoom = new Zoom (this);
 
             update_input_area ();
-
-            display.window_created.connect ((window) => window_created (window));
 
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
