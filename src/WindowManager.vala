@@ -1564,7 +1564,7 @@ namespace Gala {
         public override void destroy (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
-            actor.destroy.connect (() => {
+            actor.destroy.connect (() => Idle.add (() => {
                 if (ws_assoc.contains (window)) {
                     var old_ws_index = ws_assoc[window];
                     var old_ws = get_display ().get_workspace_manager ().get_workspace_by_index (old_ws_index);
@@ -1573,7 +1573,9 @@ namespace Gala {
                         old_ws.activate (Meta.CURRENT_TIME);
                     }
                 }
-            });
+
+                return Source.REMOVE;
+            }));
 
             actor.remove_all_transitions ();
 
