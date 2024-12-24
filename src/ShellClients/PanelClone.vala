@@ -8,7 +8,7 @@
 public class Gala.PanelClone : Object {
     private const int ANIMATION_DURATION = 250;
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
     public unowned PanelWindow panel { get; construct; }
 
     public Pantheon.Desktop.HideMode hide_mode {
@@ -37,9 +37,11 @@ public class Gala.PanelClone : Object {
     private GestureTracker default_gesture_tracker;
     private GestureTracker last_gesture_tracker;
 
+    private bool force_hide = false;
+
     private HideTracker? hide_tracker;
 
-    public PanelClone (WindowManager wm, PanelWindow panel) {
+    public PanelClone (WindowManagerGala wm, PanelWindow panel) {
         Object (wm: wm, panel: panel);
     }
 
@@ -47,6 +49,8 @@ public class Gala.PanelClone : Object {
         last_gesture_tracker = default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
+        actor.get_parent ().remove_child (actor);
+        wm.shell_group.add_child (actor);
 
         notify["panel-hidden"].connect (() => {
             // When hidden changes schedule an update to make sure it's actually
@@ -98,7 +102,7 @@ public class Gala.PanelClone : Object {
     }
 
     private void show (GestureTracker gesture_tracker, bool with_gesture) {
-        if (!panel_hidden || last_gesture_tracker.recognizing) {
+        if (!panel_hidden || force_hide || last_gesture_tracker.recognizing) {
             return;
         }
 
@@ -111,5 +115,17 @@ public class Gala.PanelClone : Object {
         new GesturePropertyTransition (actor, gesture_tracker, "translation-y", null, calculate_y (false)).start (with_gesture);
 
         gesture_tracker.add_success_callback (with_gesture, () => panel_hidden = false);
+    }
+
+    public void set_force_hide (bool force_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        this.force_hide = force_hide;
+
+        if (force_hide) {
+            hide (gesture_tracker, with_gesture);
+        } else if (hide_mode == NEVER) {
+            show (gesture_tracker, with_gesture);
+        } else {
+            hide_tracker.update_overlap (gesture_tracker, with_gesture);
+        }
     }
 }
