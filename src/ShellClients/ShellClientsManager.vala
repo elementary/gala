@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
@@ -20,7 +20,7 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -28,7 +28,7 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
 
-    private ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 
@@ -205,6 +205,12 @@ public class Gala.ShellClientsManager : Object {
         });
 
         return positioned;
+    }
+
+    public void set_force_hide_panels (bool force_hide, GestureTracker gesture_tracker, bool with_gesture) {
+        foreach (var panel in panel_windows.get_values ()) {
+            panel.set_force_hide (force_hide, gesture_tracker, with_gesture);
+        }
     }
 
     //X11 only
