@@ -121,6 +121,17 @@ public class Gala.GestureTracker : Object {
     public delegate void OnUpdate (double percentage);
     public delegate void OnEnd (double percentage, int completions, int calculated_duration);
 
+    public double initial_percentage {
+        set {
+            if (percentage != 0) {
+                critical ("Gesture has already started and is in progress.");
+                return;
+            }
+
+            percentage = value;
+        }
+    }
+
     /**
      * Backend used if enable_touchpad is called.
      */
@@ -133,6 +144,7 @@ public class Gala.GestureTracker : Object {
 
     private Gee.ArrayList<ulong> handlers;
 
+    private double percentage = 0;
     private double previous_percentage;
     private uint64 previous_time;
     private double percentage_delta;
@@ -239,7 +251,7 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
         if (enabled) {
-            on_begin (percentage);
+            on_begin (this.percentage);
         }
 
         previous_percentage = percentage;
@@ -247,6 +259,8 @@ public class Gala.GestureTracker : Object {
     }
 
     private void gesture_update (double percentage, uint64 elapsed_time) {
+        var previous_applied = applied_percentage (previous_percentage, percentage_delta);
+
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -259,8 +273,10 @@ public class Gala.GestureTracker : Object {
             }
         }
 
+        this.percentage += applied_percentage (percentage, percentage_delta) - previous_applied;
+
         if (enabled) {
-            on_update (applied_percentage (percentage, percentage_delta));
+            on_update (this.percentage);
         }
 
         previous_percentage = percentage;
@@ -269,20 +285,22 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
         double end_percentage = applied_percentage (percentage, percentage_delta);
-        int completions = (int) end_percentage;
+        this.percentage += end_percentage - applied_percentage (previous_percentage, percentage_delta);
+        int completions = (int) this.percentage;
         bool cancel_action = (end_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
             && ((end_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
-        int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
+        int calculated_duration = calculate_end_animation_duration (this.percentage, cancel_action);
 
         if (!cancel_action) {
-            completions += end_percentage < 0 ? -1 : 1;
+            completions += this.percentage < 0 ? -1 : 1;
         }
 
         if (enabled) {
-            on_end (end_percentage, completions, calculated_duration);
+            on_end (this.percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
+        this.percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
         percentage_delta = 0;
