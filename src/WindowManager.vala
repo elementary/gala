@@ -1564,19 +1564,6 @@ namespace Gala {
         public override void destroy (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
-            actor.destroy.connect (() => Idle.add (() => {
-                if (ws_assoc.contains (window)) {
-                    var old_ws_index = ws_assoc[window];
-                    var old_ws = get_display ().get_workspace_manager ().get_workspace_by_index (old_ws_index);
-
-                    if (old_ws != null) {
-                        old_ws.activate (Meta.CURRENT_TIME);
-                    }
-                }
-
-                return Source.REMOVE;
-            }));
-
             actor.remove_all_transitions ();
 
             if (NotificationStack.is_notification (window)) {
@@ -1788,6 +1775,10 @@ namespace Gala {
             window.change_workspace (new_ws);
             new_ws.activate_with_focus (window, time);
 
+            if (!(window in ws_assoc)) {
+                window.unmanaged.connect (move_window_to_old_ws);
+            }
+
             ws_assoc[window] = old_ws_index;
         }
 
@@ -1816,6 +1807,8 @@ namespace Gala {
             }
 
             ws_assoc.remove (window);
+
+            window.unmanaged.disconnect (move_window_to_old_ws);
         }
 
         // Cancel attached animation of an actor and reset it
