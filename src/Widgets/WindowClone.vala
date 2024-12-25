@@ -165,7 +165,9 @@ public class Gala.WindowClone : Clutter.Actor {
         };
         close_button.triggered.connect (close_window);
 
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor));
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
+            visible = !overview_mode
+        };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
 
@@ -340,6 +342,15 @@ public class Gala.WindowClone : Clutter.Actor {
         var close_button_alloc = InternalUtils.actor_box_from_rect (close_button_x, -close_button_height * 0.33f, close_button_width, close_button_height);
         close_button.allocate (close_button_alloc);
 
+        float window_icon_width, window_icon_height;
+        window_icon.get_preferred_size (null, null, out window_icon_width, out window_icon_height);
+
+        var window_icon_x = (box.get_width () - window_icon_width) / 2;
+        var window_icon_y = box.get_height () - (window_icon_height * 0.75f);
+
+        var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_width, window_icon_height);
+        window_icon.allocate (window_icon_alloc);
+
         var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
@@ -351,19 +362,10 @@ public class Gala.WindowClone : Clutter.Actor {
         var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
-        float window_title_y = box.get_height () - InternalUtils.scale_to_int (WINDOW_ICON_SIZE, monitor_scale) * 0.75f - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
-
-        float window_icon_width, window_icon_height;
-        window_icon.get_preferred_size (null, null, out window_icon_width, out window_icon_height);
-
-        var window_icon_x = (box.get_width () - window_icon_width) / 2;
-        var window_icon_y = box.get_height () - (window_icon_height * 0.75f);
-
-        var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_width, window_icon_height);
-        window_icon.allocate (window_icon_alloc);
     }
 
 #if HAS_MUTTER45
