@@ -19,13 +19,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
     // so we keep a cache to avoid creating the same texture all over again.
     private static Gee.HashMap<string, Shadow> shadow_cache;
 
-    // Sometimes we use a shadow in only one place and rapidly switch between two shadows
-    // In order to not drop them and create them all over again we wait 5 seconds before finally dropping a shadow.
-    private static Gee.HashMap<string, uint> shadows_marked_for_dropping;
-
     static construct {
         shadow_cache = new Gee.HashMap<string, Shadow> ();
-        shadows_marked_for_dropping = new Gee.HashMap<string, uint> ();
     }
 
     private string _css_class;
@@ -184,11 +179,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         shadow.users++;
-
-        uint timeout_id;
-        if (shadows_marked_for_dropping.unset (key, out timeout_id)) {
-            Source.remove (timeout_id);
-        }
     }
 
     private static void decrement_shadow_users (string key) {
@@ -199,15 +189,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         if (--shadow.users == 0) {
-            queue_shadow_drop (key);
-        }
-    }
-
-    private static void queue_shadow_drop (string key) {
-        shadows_marked_for_dropping[key] = Timeout.add_seconds (5, () => {
             shadow_cache.unset (key);
-            shadows_marked_for_dropping.unset (key);
-            return Source.REMOVE;
-        });
+        }
     }
 }
