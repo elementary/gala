@@ -155,7 +155,7 @@ namespace Gala {
             var rect = window.get_frame_rect ();
 #if HAS_MUTTER45
             if (!include_frame) {
-#if else
+#else
             if ((include_frame && window.is_client_decorated ()) ||
                 (!include_frame && !window.is_client_decorated ())) {
 #endif
