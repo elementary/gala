@@ -372,25 +372,64 @@ namespace Gala.Drawing {
             uint8 *pixels = original.get_data ();
 
             try {
-                // Process Rows
-                var th = new Thread<void*>.try (null, () => {
-                    exponential_blur_rows (pixels, width, height, 0, height / 2, 0, width, alpha);
-                    return null;
-                });
+                //  var num_proc = (int) get_num_processors ();
+                var num_proc = 2;
 
-                exponential_blur_rows (pixels, width, height, height / 2, height, 0, width, alpha);
-                th.join ();
+                // Process rows
+                var min_h = height / num_proc;
+                var remainder_h = height % num_proc;
 
-                // Process Columns
-                var th2 = new Thread<void*>.try (null, () => {
-                    exponential_blur_columns (pixels, width, height, 0, width / 2, 0, height, alpha);
-                    return null;
-                });
+                var heights = new int[num_proc + 1];
+                for (var i = 1; i < num_proc - remainder_h + 1; i++) {
+                    heights[i] += heights[i - 1] + min_h;
+                }
+                for (var i = num_proc - remainder_h + 1; i < num_proc + 1; i++) {
+                    heights[i] += heights[i - 1] + min_h + 1;
+                }
 
-                exponential_blur_columns (pixels, width, height, width / 2, width, 0, height, alpha);
-                th2.join ();
-            } catch (Error err) {
-                warning (err.message);
+                GLib.Thread<void>[] threads_h = {};
+
+                for (var i = 1; i < num_proc + 1; i++) {
+                    var prev_h = heights[i - 1];
+                    var curr_h = heights[i];
+
+                    threads_h += new Thread<void>.try (null, () => {
+                        exponential_blur_rows (pixels, width, height, prev_h, curr_h, 0, width, alpha);
+                    });
+                }
+
+                foreach (var th in threads_h) {
+                    th.join ();
+                }
+
+                // Process columns
+                var min_w = width / num_proc;
+                var remainder_w = width % num_proc;
+
+                var widths = new int[num_proc + 1];
+                for (var i = 1; i < num_proc - remainder_w + 1; i++) {
+                    widths[i] += widths[i - 1] + min_w;
+                }
+                for (var i = num_proc - remainder_w + 1; i < num_proc + 1; i++) {
+                    widths[i] += widths[i - 1] + min_w + 1;
+                }
+
+                GLib.Thread<void>[] threads_w = {};
+
+                for (var i = 1; i < num_proc + 1; i++) {
+                    var prev_w = widths[i - 1];
+                    var curr_w = widths[i];
+
+                    threads_w += new Thread<void>.try (null, () => {
+                        exponential_blur_columns (pixels, width, height, prev_w, curr_w, 0, height, alpha);
+                    });
+                }
+
+                foreach (var th in threads_w) {
+                    th.join ();
+                }
+            } catch (Error e) {
+                warning (e.message);
             }
 
             original.mark_dirty ();
