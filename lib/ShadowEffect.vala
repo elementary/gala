@@ -33,7 +33,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
     private int radius {
         get {
-            return shadow_size / 2;
+            //  return shadow_size / 2;
+            return 10;
         }
     }
 
@@ -73,21 +74,20 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     /* Returns null when there was an error generating the texture or when the texture shouldn't change */
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height) {
         if (width == current_width && height == current_height) {
             return null;
         }
 
-        Mtk.Region region = Mtk.Region.create_rectangle ({ 0, 0, (int) actor.width, (int) actor.height });
-        return make_shadow (region);
+        current_width = width;
+        current_height = height;
+
+        Mtk.Rectangle rect = { 0, 0, width, height };
+        return make_shadow (rect);
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
-        var bounding_box = get_bounding_box ();
-        var width = (int) (bounding_box.x2 - bounding_box.x1);
-        var height = (int) (bounding_box.y2 - bounding_box.y1);
-
-        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size);
+        var shadow = get_shadow (context.get_framebuffer ().get_context (), (int) actor.width, (int) actor.height);
         if (shadow != null) {
             pipeline.set_layer_texture (0, shadow);
         }
@@ -98,36 +98,39 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         pipeline.set_color (alpha);
 
-        context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
+        //  var bounding_box = get_bounding_box ();
+        //  warning ("Drawing %f %f %f %f", bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
+        context.get_framebuffer ().draw_rectangle (pipeline, 0, 0, actor.width, actor.height);
 
         actor.continue_paint (context);
     }
 
-    private Clutter.ActorBox get_bounding_box () {
-        var size = shadow_size * scale_factor;
-        var bounding_box = Clutter.ActorBox ();
+    //  private Clutter.ActorBox get_bounding_box () {
+    //      // FIXME: THIS IS VERY VERY BROKEN
+    //      var size = shadow_size * scale_factor;
+    //      var bounding_box = Clutter.ActorBox ();
 
-        bounding_box.set_origin (-size, -size);
-        bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
+    //      bounding_box.set_origin (-size, -size);
+    //      bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
 
-        return bounding_box;
-    }
+    //      return bounding_box;
+    //  }
 
-    public override bool modify_paint_volume (Clutter.PaintVolume volume) {
-        var bounding_box = get_bounding_box ();
+    //  public override bool modify_paint_volume (Clutter.PaintVolume volume) {
+    //      var bounding_box = get_bounding_box ();
 
-        volume.set_width (bounding_box.get_width ());
-        volume.set_height (bounding_box.get_height ());
+    //      volume.set_width (bounding_box.get_width ());
+    //      volume.set_height (bounding_box.get_height ());
 
-        float origin_x, origin_y;
-        bounding_box.get_origin (out origin_x, out origin_y);
-        var origin = volume.get_origin ();
-        origin.x += origin_x;
-        origin.y += origin_y;
-        volume.set_origin (origin);
+    //      float origin_x, origin_y;
+    //      bounding_box.get_origin (out origin_x, out origin_y);
+    //      var origin = volume.get_origin ();
+    //      origin.x += origin_x;
+    //      origin.y += origin_y;
+    //      volume.set_origin (origin);
 
-        return true;
-    }
+    //      return true;
+    //  }
     
     /* We emulate a 1D Gaussian blur by using 3 consecutive box blurs;
     * this produces a result that's within 3% of the original and can be
@@ -155,19 +158,14 @@ public class Gala.ShadowEffect : Clutter.Effect {
     */
     private void blur_xspan (
         uint8* row,
-        uint8[] tmp_buffer,
-        int row_width,
+        int buffer_width,
         int x0,
         int x1,
         int d,
-        int shift
-    ) {        
-        int offset;
-        if (d % 2 == 1) {
-            offset = d / 2;
-        } else {
-            offset = (d - shift) / 2;
-        }
+        int shift,
+        int offset
+    ) {       
+        var tmp_buffer = new uint8[buffer_width];
 
         /* All the conditionals in here look slow, but the branches will
         * be well predicted and there are enough different possibilities
@@ -179,8 +177,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
         * of the divide step is possible.)
         */
         int sum = 0;
-        for (var i = x0 - d + offset; i < x1 + offset; i++) {
-            if (i >= 0 && i < row_width) {
+        for (var i = 0; i < buffer_width; i++) {
+            if (i >= 0 && i < buffer_width) {
                 sum += row[i];
             }
 
@@ -190,6 +188,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
                 }
 
                 tmp_buffer[i - offset] = (uint8) ((sum + d / 2) / d);
+                //  tmp_buffer[i - offset] = 255;
             }
         }
 
@@ -197,7 +196,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     private void blur_rows (
-        Mtk.Region border_region,
+        Mtk.Rectangle[] border_rects,
         int x_offset,
         int y_offset,
         uint8[] buffer,
@@ -205,14 +204,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
         int buffer_height,
         int d
     ) {
-        var tmp_buffer = new uint8[buffer_width];
+        var n_rects = border_rects.length;
+        for (var rect_i = 0; rect_i < n_rects; rect_i++) {
+            var rect = border_rects[rect_i];
 
-        var n_rectangles = border_region.num_rectangles ();
-        for (var i = 0; i < n_rectangles; i++) {
-            var rect = border_region.get_rectangle (i);
-
-            for (var j = y_offset + rect.y; j < y_offset + rect.y + rect.height; j++) {
-                var row = &buffer[0] + j * buffer_width;
+            warning ("Blurring from %d go %d", y_offset + rect.y, y_offset + rect.y + rect.height);
+            for (var row_i = y_offset + rect.y; row_i < y_offset + rect.y + rect.height; row_i++) {
+                uint8 *row = &buffer[0] + buffer_width * row_i;
                 int x0 = x_offset + rect.x;
                 int x1 = x0 + rect.width;
 
@@ -223,133 +221,23 @@ public class Gala.ShadowEffect : Clutter.Effect {
                  * (technique also from the SVG specification)
                  */
                 if (d % 2 == 1) {
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d, 0);
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d, 0);
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d, 0);
+                    blur_xspan (row, buffer_width, x0, x1, d, 0, x_offset);
+                    //  blur_xspan (row, buffer_width, x0, x1, d, 0, x_offset);
+                    //  blur_xspan (row, buffer_width, x0, x1, d, 0, x_offset);
                 } else {
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d, 1);
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d, -1);
-                    blur_xspan (row, tmp_buffer, buffer_width, x0, x1, d + 1, 0);
+                    blur_xspan (row, buffer_width, x0, x1, d, 1, x_offset);
+                    //  blur_xspan (row, buffer_width, x0, x1, d, -1, x_offset);
+                    //  blur_xspan (row, buffer_width, x0, x1, d + 1, 0, x_offset);
                 }
             }
         }
-    }
-
-    private void add_expanded_rect (
-        Mtk.RegionBuilder builder,
-        int x,
-        int y,
-        int width,
-        int height,
-        int x_amount,
-        int y_amount,
-        bool flip
-    ) {
-        if (flip){
-            builder.add_rectangle (
-                y - y_amount, x - x_amount,
-                height + 2 * y_amount, width + 2 * x_amount
-            );
-        } else {
-            builder.add_rectangle (
-                x - x_amount, y - y_amount,
-                width + 2 * x_amount, height + 2 * y_amount
-            );
-        }
-    }
-
-    private Mtk.Region expand_region (
-        Mtk.Region region,
-        int x_amount,
-        int y_amount,
-        bool flip
-    ) {
-        Mtk.RegionBuilder builder = {};
-        builder.init ();
-
-        var n = region.num_rectangles ();
-        for (var i = 0; i < n; i++) {
-            var rect = region.get_rectangle (i);
-            add_expanded_rect (
-                builder,
-                rect.x, rect.y, rect.width, rect.height,
-                x_amount, y_amount, flip
-            );
-        }
-
-        return builder.finish ();
-    }
-
-    /* This computes a (clipped version) of the inverse of the region
-     * and expands it by the given amount */
-    private Mtk.Region expand_region_inverse (
-        Mtk.Region region,
-        int x_amount,
-        int y_amount,
-        bool flip
-    ) { 
-        Mtk.RegionBuilder builder = {};
-        builder.init ();
-
-        var extents = region.get_extents ();
-        add_expanded_rect (
-            builder,
-            extents.x, extents.y - 1, extents.width, 1,
-            x_amount, y_amount, flip
-        );
-        add_expanded_rect (
-            builder,
-            extents.x - 1, extents.y, 1, extents.height,
-            x_amount, y_amount, flip
-        );
-        add_expanded_rect (
-            builder,
-            extents.x + extents.width, extents.y, 1, extents.height,
-            x_amount, y_amount, flip
-        );
-        add_expanded_rect (
-            builder,
-            extents.x, extents.y + extents.height, extents.width, 1,
-            x_amount, y_amount, flip
-        );
-
-        var last_x = extents.x;
-        Mtk.RegionIterator iter = {};
-        for (iter.init (region); !iter.at_end (); iter.next ()) {
-            if (iter.rectangle.x > last_x) {
-                add_expanded_rect (
-                    builder,
-                    last_x, iter.rectangle.y,
-                    iter.rectangle.x - last_x, iter.rectangle.height,
-                    x_amount, y_amount, flip
-                );
-            }
-
-            if (iter.line_end) {
-                if (extents.x + extents.width > iter.rectangle.x + iter.rectangle.width) {
-                    add_expanded_rect (
-                        builder,
-                        iter.rectangle.x + iter.rectangle.width, iter.rectangle.y,
-                        (extents.x + extents.width) - (iter.rectangle.x + iter.rectangle.width), iter.rectangle.height,
-                        x_amount, y_amount, flip
-                    );
-                }
-
-                last_x = extents.x;
-            } else {
-                last_x = iter.rectangle.x + iter.rectangle.width;
-            }
-        }
-
-        return builder.finish ();
     }
 
     /**
-     * make_border_region:
-     * @region: a #MtkRegion
+     * make_border_rects:
+     * @rect: a #Mtk.Rectangle
      * @x_amount: distance from the border to extend horizontally
      * @y_amount: distance from the border to extend vertically
-     * @flip: if true, the result is computed with x and y interchanged
      *
      * Computes the "border region" of a given region, which is roughly
      * speaking the set of points near the boundary of the region.  If we
@@ -362,17 +250,17 @@ public class Gala.ShadowEffect : Clutter.Effect {
      *
      * Return value: a new region which is the border of the given region
      */
-    private Mtk.Region make_border_region (
-        Mtk.Region region,
+    private Mtk.Rectangle[] make_border_rects (
+        Mtk.Rectangle rect,
         int x_amount,
-        int y_amount,
-        bool flip
+        int y_amount
     ) {
-        var border_region = expand_region (region, x_amount, y_amount, flip);
-        var inverse_region = expand_region_inverse (region, x_amount, y_amount, flip);
-        border_region.intersect (inverse_region);
-
-        return border_region;
+        Mtk.Rectangle top_rect = {0, 0, rect.width + x_amount * 2, y_amount};
+        Mtk.Rectangle bottom_rect = {0, rect.height + y_amount, rect.width + x_amount * 2, y_amount};
+        Mtk.Rectangle left_rect = {0, y_amount, x_amount, rect.height};
+        Mtk.Rectangle right_rect = {rect.width + x_amount, y_amount, x_amount, rect.height};
+            
+        return { top_rect, bottom_rect, left_rect, right_rect };
     }
 
 
@@ -380,73 +268,71 @@ public class Gala.ShadowEffect : Clutter.Effect {
      * buffer or allocates a new buffer, frees the original buffer and returns
      * the new buffer.
      */
-    private void flip_buffer (
+    private uint8[] flip_buffer (
         uint8[] buffer,
         int width,
-        int height,
-        out uint8[] result
+        int height
     ) {
         /* Working in blocks increases cache efficiency, compared to reading
-        * or writing an entire column at once */
+         * or writing an entire column at once */
         var BLOCK_SIZE = 16;
 
-        if (width == height) {
-            int i0, j0;
+        //  if (width == height) {
+        //      int i0, j0;
 
-            for (j0 = 0; j0 < height; j0 += BLOCK_SIZE) {
-                for (i0 = 0; i0 <= j0; i0 += BLOCK_SIZE) {
+        //      for (j0 = 0; j0 < height; j0 += BLOCK_SIZE) {
+        //          for (i0 = 0; i0 <= j0; i0 += BLOCK_SIZE) {
+        //              int max_j = int.min (j0 + BLOCK_SIZE, height);
+        //              int max_i = int.min (i0 + BLOCK_SIZE, width);
+        //              int i, j;
+
+        //              if (i0 == j0) {
+        //                  for (j = j0; j < max_j; j++) {
+        //                      for (i = i0; i < j; i++) {
+        //                          uint8 tmp = buffer[j * width + i];
+        //                          buffer[j * width + i] = buffer[i * width + j];
+        //                          buffer[i * width + j] = tmp;
+        //                      }
+        //                  }
+        //              } else {
+        //                  for (j = j0; j < max_j; j++) {
+        //                      for (i = i0; i < max_i; i++) {
+        //                          uint8 tmp = buffer[j * width + i];
+        //                          buffer[j * width + i] = buffer[i * width + j];
+        //                          buffer[i * width + j] = tmp;
+        //                      }
+        //                  }
+        //              }
+        //          }
+        //      }
+
+        //      return buffer;
+        //  } else {
+            var new_buffer = new uint8[width * height];
+
+            for (var i0 = 0; i0 < width; i0 += BLOCK_SIZE) {
+                int max_i = int.min (i0 + BLOCK_SIZE, width);
+
+                for (var j0 = 0; j0 < height; j0 += BLOCK_SIZE) {
                     int max_j = int.min (j0 + BLOCK_SIZE, height);
-                    int max_i = int.min (i0 + BLOCK_SIZE, width);
-                    int i, j;
 
-                    if (i0 == j0) {
-                        for (j = j0; j < max_j; j++) {
-                            for (i = i0; i < j; i++) {
-                                uint8 tmp = buffer[j * width + i];
-                                buffer[j * width + i] = buffer[i * width + j];
-                                buffer[i * width + j] = tmp;
-                            }
-                        }
-                    } else {
-                        for (j = j0; j < max_j; j++) {
-                            for (i = i0; i < max_i; i++) {
-                                uint8 tmp = buffer[j * width + i];
-                                buffer[j * width + i] = buffer[i * width + j];
-                                buffer[i * width + j] = tmp;
-                            }
-                        }
-                    }
-                }
-
-                result = buffer;
-            }
-        } else {
-            var new_buffer = new uint8[height * width];
-            int i0, j0;
-
-            for (i0 = 0; i0 < width; i0 += BLOCK_SIZE) {
-                for (j0 = 0; j0 < height; j0 += BLOCK_SIZE) {
-                    int max_j = int.min (j0 + BLOCK_SIZE, height);
-                    int max_i = int.min (i0 + BLOCK_SIZE, width);
-                    int i, j;
-
-                    for (i = i0; i < max_i; i++) {
-                        for (j = j0; j < max_j; j++) {
+                    for (var i = i0; i < max_i; i++) {
+                        for (var j = j0; j < max_j; j++) {
                             new_buffer[i * height + j] = buffer[j * width + i];
                         }
                     }
                 }
             }
 
-            result = new_buffer;
-        }
+            return new_buffer;
+        //  }
     }
 
-    private Cogl.Texture? make_shadow (Mtk.Region region) {
+    private Cogl.Texture? make_shadow (Mtk.Rectangle rect) {
         var spread = shadow_spread;
 
-        var buffer_width = (int) actor.width + spread * 2;
-        var buffer_height = (int) actor.height + spread * 2;
+        var buffer_width = rect.width + spread * 2;
+        var buffer_height = rect.height + spread * 2;
 
         /* Round up so we have aligned rows/columns */
         buffer_width = (buffer_width + 3) & ~3;
@@ -455,11 +341,11 @@ public class Gala.ShadowEffect : Clutter.Effect {
         /* Square buffer allows in-place swaps, which are roughly 70% faster, but we
          * don't want to over-allocate too much memory.
          */
-        if (buffer_height < buffer_width && buffer_height > (3 * buffer_width) / 4) {
-            buffer_height = buffer_width;
-        } else if (buffer_width < buffer_height && buffer_width > (3 * buffer_height) / 4) {
-            buffer_width = buffer_height;
-        }
+        //  if (buffer_height < buffer_width && buffer_height > (3 * buffer_width) / 4) {
+        //      buffer_height = buffer_width;
+        //  } else if (buffer_width < buffer_height && buffer_width > (3 * buffer_height) / 4) {
+        //      buffer_width = buffer_height;
+        //  }
 
         var buffer = new uint8[buffer_width * buffer_height];
 
@@ -467,59 +353,50 @@ public class Gala.ShadowEffect : Clutter.Effect {
          * large shadow sizes) we can improve efficiency by restricting the blur
          * to the region that actually needs to be blurred.
          */
-        var row_border_region = make_border_region (region, spread, spread, false);
-        var column_border_region = make_border_region (region, 0, spread, true);
+        var row_border_rects = make_border_rects (rect, spread, spread);
+
+        Mtk.Rectangle flipped_rect = { rect.y, rect.x, rect.height, rect.width };
+        var column_border_rects = make_border_rects (flipped_rect, spread, 0);
 
         /* Offsets between coordinates of the regions and coordinates in the buffer */
         var x_offset = spread;
         var y_offset = spread;
 
-
         /* Step 1: unblurred image */
-        var n_rectangles = region.num_rectangles ();
-        for (var k = 0; k < n_rectangles; k++) {
-            var rect = region.get_rectangle (k);
-            for (var j = y_offset + rect.y; j < y_offset + rect.y + rect.height; j++) {
-                Memory.set (&buffer + buffer_width * j + x_offset + rect.x, 255, rect.width);
-            }
+        for (var row_i = rect.y + y_offset; row_i < rect.y + y_offset + rect.height; row_i++) {
+            Memory.set (&buffer[0] + buffer_width * row_i + x_offset + rect.x, 255, rect.width);
         }
 
         /* Step 2: swap rows and columns */
-        flip_buffer (buffer, buffer_width, buffer_height, out buffer);
-
-
+        buffer = flip_buffer (buffer, buffer_width, buffer_height);
         
         /* Step 3: blur rows (really columns) */
         var d = box_filter_size;
         blur_rows (
-            column_border_region, y_offset, x_offset,
+            column_border_rects, y_offset, x_offset,
             buffer, buffer_height, buffer_width,
             d
         );
 
-
         /* Step 4: swap rows and columns */
-        flip_buffer (buffer, buffer_height, buffer_width, out buffer);
+        buffer = flip_buffer (buffer, buffer_height, buffer_width);
 
         /* Step 5: blur rows */
-        blur_rows (
-            row_border_region, x_offset, y_offset,
-            buffer, buffer_width, buffer_height,
-            d
-        );
+        //  blur_rows (
+        //      row_border_rects, x_offset, y_offset,
+        //      buffer, buffer_width, buffer_height,
+        //      d
+        //  );
 
-
-        /* We offset the passed in pixels to crop off the extra area we allocated at the top
-         * in the case of top_fade >= 0. We also account for padding at the left for symmetry
-         * though that doesn't currently occur.
-         */
         var backend = Clutter.get_default_backend ();
         var ctx = backend.get_cogl_context ();
         try {
+            //  return null;
+
             var texture = new Cogl.Texture2D.from_data (
                 ctx,
-                spread + region.get_rectangle (0).width + spread,
-                spread + region.get_rectangle (0).height + spread,
+                buffer_width,
+                buffer_height,
                 Cogl.PixelFormat.A_8,
                 buffer_width,
                 buffer

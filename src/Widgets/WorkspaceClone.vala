@@ -37,6 +37,8 @@ namespace Gala {
         }
 
         construct {
+            opacity = 128;
+
             pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
