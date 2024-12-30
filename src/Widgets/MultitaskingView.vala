@@ -69,12 +69,14 @@ namespace Gala {
             display = wm.get_display ();
 
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
-            multitasking_gesture_tracker.enable_touchpad ();
+            multitasking_gesture_tracker.enable_touchpad (wm.stage);
+            multitasking_gesture_tracker.enable_touchscreen ();
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
             multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            workspace_gesture_tracker.enable_touchpad ();
+            workspace_gesture_tracker.enable_touchpad (this);
+            workspace_gesture_tracker.enable_touchscreen ();
             workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
             workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
             workspace_gesture_tracker.on_gesture_handled.connect (switch_workspace_with_gesture);
@@ -625,7 +627,7 @@ namespace Gala {
             }
 
             if (opening) {
-                modal_proxy = wm.push_modal (this);
+                modal_proxy = wm.push_modal (get_stage ());
                 modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 wm.background_group.hide ();

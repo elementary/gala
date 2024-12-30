@@ -124,7 +124,12 @@ public class Gala.GestureTracker : Object {
     /**
      * Backend used if enable_touchpad is called.
      */
-    private ToucheggBackend touchpad_backend;
+    private GestureBackend touchpad_backend;
+
+    /**
+     * Backend used if enable_touchscreen is called.
+     */
+    private GestureBackend touchscreen_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -155,12 +160,40 @@ public class Gala.GestureTracker : Object {
     /**
      * Allow to receive touchpad multi-touch gestures.
      */
-    public void enable_touchpad () {
-        touchpad_backend = ToucheggBackend.get_default ();
-        touchpad_backend.on_gesture_detected.connect (gesture_detected);
+    public void enable_touchpad (Clutter.Actor actor) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            touchpad_backend = new TouchpadBackend (actor);
+            touchpad_backend.on_gesture_detected.connect (gesture_detected);
+        } else {
+            touchpad_backend = ToucheggBackend.get_default ();
+
+            touchpad_backend.on_gesture_detected.connect ((backend ,gesture, timestamp) => {
+                if (gesture.performed_on_device_type == Clutter.InputDeviceType.TOUCHPAD_DEVICE) {
+                    return gesture_detected (backend ,gesture, timestamp);
+                }
+
+                return false;
+            });
+        }
+
         touchpad_backend.on_begin.connect (gesture_begin);
         touchpad_backend.on_update.connect (gesture_update);
         touchpad_backend.on_end.connect (gesture_end);
+    }
+
+    public void enable_touchscreen () {
+        touchscreen_backend = ToucheggBackend.get_default ();
+
+        touchscreen_backend.on_gesture_detected.connect ((backend ,gesture, timestamp) => {
+            if (gesture.performed_on_device_type == Clutter.InputDeviceType.TOUCHSCREEN_DEVICE) {
+                return gesture_detected (backend ,gesture, timestamp);
+            }
+
+            return false;
+        });
+        touchscreen_backend.on_begin.connect (gesture_begin);
+        touchscreen_backend.on_update.connect (gesture_update);
+        touchscreen_backend.on_end.connect (gesture_end);
     }
 
     /**

@@ -117,11 +117,6 @@ namespace Gala {
         public const int WORKSPACE_GAP = 24;
 
         construct {
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            gesture_tracker.enable_touchpad ();
-            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
-            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
-
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -204,6 +199,11 @@ namespace Gala {
 #else
             stage.background_color = Clutter.Color.from_string (color);
 #endif
+            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+            gesture_tracker.enable_touchpad (stage);
+            gesture_tracker.enable_touchscreen ();
+            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
             unowned var laters = display.get_compositor ().get_laters ();
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
@@ -822,7 +822,7 @@ namespace Gala {
 
             unowned Meta.Display display = get_display ();
 
-            update_input_area ();
+            //  update_input_area ();
             proxy.grab = stage.grab (actor);
 
             if (modal_stack.size == 1) {
@@ -846,7 +846,7 @@ namespace Gala {
             if (is_modal ())
                 return;
 
-            update_input_area ();
+            //  update_input_area ();
 
             unowned Meta.Display display = get_display ();
 

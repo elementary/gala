@@ -31,7 +31,8 @@ public class Gala.Zoom : Object {
         display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
 
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
-        gesture_tracker.enable_touchpad ();
+        gesture_tracker.enable_touchpad (wm.stage);
+        gesture_tracker.enable_touchscreen ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         gesture_tracker.on_gesture_handled.connect ((gesture) => zoom_with_gesture (gesture.direction));
 
