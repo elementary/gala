@@ -152,7 +152,7 @@ public class Gala.HideTracker : Object {
         });
     }
 
-    private void update_overlap () {
+    public void update_overlap () {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
