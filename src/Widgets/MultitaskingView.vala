@@ -47,11 +47,6 @@ namespace Gala {
         private Drawing.StyleManager style_manager;
 
         private bool switching_workspace_with_gesture = false;
-        private bool switching_workspace_in_progress {
-            get {
-                return switching_workspace_with_gesture || workspaces.get_transition ("x") != null;
-            }
-        }
 
         public MultitaskingView (WindowManager wm) {
             Object (wm: wm);
@@ -317,10 +312,6 @@ namespace Gala {
         }
 
         private void switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
-            if (switching_workspace_in_progress) {
-                return;
-            }
-
             var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             unowned var manager = display.get_workspace_manager ();
@@ -364,7 +355,7 @@ namespace Gala {
             var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
             var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
-            new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+            workspace_gesture_tracker.initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
             }.start (true);
