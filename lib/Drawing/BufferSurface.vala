@@ -369,29 +369,12 @@ namespace Gala.Drawing {
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
-            uint8 *pixels = original.get_data ();
+            uint8* pixels = original.get_data ();
 
-            try {
-                // Process Rows
-                var th = new Thread<void*>.try (null, () => {
-                    exponential_blur_rows (pixels, width, height, 0, height / 2, 0, width, alpha);
-                    return null;
-                });
-
-                exponential_blur_rows (pixels, width, height, height / 2, height, 0, width, alpha);
-                th.join ();
-
-                // Process Columns
-                var th2 = new Thread<void*>.try (null, () => {
-                    exponential_blur_columns (pixels, width, height, 0, width / 2, 0, height, alpha);
-                    return null;
-                });
-
-                exponential_blur_columns (pixels, width, height, width / 2, width, 0, height, alpha);
-                th2.join ();
-            } catch (Error err) {
-                warning (err.message);
-            }
+            exponential_blur_rows (pixels, width, height, 0, height, 0, width, alpha);
+            exponential_flip_buffer (pixels, width, height);
+            exponential_blur_rows (pixels, height, width, 0, width, 0, height, alpha);
+            exponential_flip_buffer (pixels, height, width);
 
             original.mark_dirty ();
 
@@ -399,37 +382,6 @@ namespace Gala.Drawing {
             context.set_source_surface (original, 0, 0);
             context.paint ();
             context.set_operator (Operator.OVER);
-        }
-
-        private void exponential_blur_columns (
-            uint8* pixels,
-            int width,
-            int height,
-            int start_col,
-            int end_col,
-            int start_y,
-            int end_y,
-            int alpha
-        ) {
-            for (var column_index = start_col; column_index < end_col; column_index++) {
-                // blur columns
-                uint8 *column = pixels + column_index * 4;
-
-                var z_alpha = column[0] << PARAM_PRECISION;
-                var z_red = column[1] << PARAM_PRECISION;
-                var z_green = column[2] << PARAM_PRECISION;
-                var z_blue = column[3] << PARAM_PRECISION;
-
-                // Top to Bottom
-                for (var index = width * (start_y + 1); index < (end_y - 1) * width; index += width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
-                }
-
-                // Bottom to Top
-                for (var index = (end_y - 2) * width; index >= start_y; index -= width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
-                }
-            }
         }
 
         private void exponential_blur_rows (
@@ -452,12 +404,14 @@ namespace Gala.Drawing {
                 var z_blue = row[start_x + 3] << PARAM_PRECISION;
 
                 // Left to Right
-                for (var index = start_x + 1; index < end_x; index++)
+                for (var index = start_x + 1; index < end_x; index++) {
                     exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
 
                 // Right to Left
-                for (var index = end_x - 2; index >= start_x; index--)
+                for (var index = end_x - 2; index >= start_x; index--) {
                     exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
             }
         }
 
@@ -478,6 +432,33 @@ namespace Gala.Drawing {
             pixel[1] = (uint8) (z_red >> PARAM_PRECISION);
             pixel[2] = (uint8) (z_green >> PARAM_PRECISION);
             pixel[3] = (uint8) (z_blue >> PARAM_PRECISION);
+        }
+
+        private void exponential_flip_buffer (uint8* pixels, int width, int height) {
+            //  var BLOCK_SIZE = 16;
+            var new_buffer = new uint8[height * width * 4];
+
+            //  for (var i0 = 0; i0 < width; i0 += BLOCK_SIZE) {
+            //      int max_i = int.min (i0 + BLOCK_SIZE, width);
+
+            //      for (var j0 = 0; j0 < height; j0 += BLOCK_SIZE) {
+            //          int max_j = int.min (j0 + BLOCK_SIZE, height);
+
+            for (var i = 0; i < width; i++) {
+                for (var j = 0; j < height; j++) {
+                    //  Memory.copy (&new_buffer + i * height + j, pixels + j * width + i, 4);
+                    //  new_buffer[(i * height + j) * 1 + 0] = pixels[(j * width + i) * 1 + 0];
+                    new_buffer[(i * height + j) * 4 + 0] = pixels[(j * width + i) * 4 + 0];
+                    new_buffer[(i * height + j) * 4 + 1] = pixels[(j * width + i) * 4 + 1];
+                    new_buffer[(i * height + j) * 4 + 2] = pixels[(j * width + i) * 4 + 2];
+                    new_buffer[(i * height + j) * 4 + 3] = pixels[(j * width + i) * 4 + 3];
+                }
+            }
+
+            //      }
+            //  }
+
+            Memory.copy (pixels, &new_buffer[0], height * width * 4);
         }
 
         /**
