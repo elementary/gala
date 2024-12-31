@@ -369,26 +369,24 @@ namespace Gala.Drawing {
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
-            uint8 *pixels = original.get_data ();
+            uint32 *pixels = original.get_data ();
 
             try {
                 // Process Rows
-                var th = new Thread<void*>.try (null, () => {
+                var th = new Thread<void>.try (null, () => {
                     exponential_blur_rows (pixels, width, height, 0, height / 2, 0, width, alpha);
-                    return null;
                 });
 
                 exponential_blur_rows (pixels, width, height, height / 2, height, 0, width, alpha);
                 th.join ();
 
                 // Process Columns
-                var th2 = new Thread<void*>.try (null, () => {
-                    exponential_blur_columns (pixels, width, height, 0, width / 2, 0, height, alpha);
-                    return null;
-                });
+                //  var th2 = new Thread<void>.try (null, () => {
+                //      exponential_blur_columns (pixels, width, height, 0, width / 2, 0, height, alpha);
+                //  });
 
-                exponential_blur_columns (pixels, width, height, width / 2, width, 0, height, alpha);
-                th2.join ();
+                //  exponential_blur_columns (pixels, width, height, width / 2, width, 0, height, alpha);
+                //  th2.join ();
             } catch (Error err) {
                 warning (err.message);
             }
@@ -402,7 +400,7 @@ namespace Gala.Drawing {
         }
 
         private void exponential_blur_columns (
-            uint8* pixels,
+            uint32* pixels,
             int width,
             int height,
             int start_col,
@@ -413,27 +411,28 @@ namespace Gala.Drawing {
         ) {
             for (var column_index = start_col; column_index < end_col; column_index++) {
                 // blur columns
-                uint8 *column = pixels + column_index * 4;
+                uint32 *column = pixels + column_index;
 
-                var z_alpha = column[0] << PARAM_PRECISION;
-                var z_red = column[1] << PARAM_PRECISION;
-                var z_green = column[2] << PARAM_PRECISION;
-                var z_blue = column[3] << PARAM_PRECISION;
+                var z_alpha = (*column >> 24) & 255;
+                var z_red = (*column >> 16) & 255;
+                var z_green = (*column >> 8) & 255;
+                var z_blue = (*column) & 255;
+
 
                 // Top to Bottom
                 for (var index = width * (start_y + 1); index < (end_y - 1) * width; index += width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&column[index], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
                 }
 
                 // Bottom to Top
                 for (var index = (end_y - 2) * width; index >= start_y; index -= width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&column[index], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
                 }
             }
         }
 
         private void exponential_blur_rows (
-            uint8* pixels,
+            uint32* pixels,
             int width,
             int height,
             int start_row,
@@ -442,42 +441,44 @@ namespace Gala.Drawing {
             int end_x,
             int alpha
         ) {
-            for (var row_index = start_row; row_index < end_row; row_index++) {
+            for (var row_index = 0; row_index < end_row; row_index++) {
                 // Get a pointer to our current row
-                uint8* row = pixels + row_index * width * 4;
+                uint32* row = pixels + row_index * width;
 
-                var z_alpha = row[start_x + 0] << PARAM_PRECISION;
-                var z_red = row[start_x + 1] << PARAM_PRECISION;
-                var z_green = row[start_x + 2] << PARAM_PRECISION;
-                var z_blue = row[start_x + 3] << PARAM_PRECISION;
+                var z_alpha = (*row >> 24) & 255;
+                var z_red = (*row >> 16) & 255;
+                var z_green = (*row >> 8) & 255;
+                var z_blue = (*row) & 255;
 
                 // Left to Right
-                for (var index = start_x + 1; index < end_x; index++)
-                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                for (var index = start_x + 1; index < end_x; index++) {
+                    exponential_blur_inner (row + index, ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
 
                 // Right to Left
-                for (var index = end_x - 2; index >= start_x; index--)
-                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                for (var index = end_x - 2; index >= start_x; index--) {
+                    exponential_blur_inner (row + index, ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
             }
         }
 
         private static inline void exponential_blur_inner (
-            uint8* pixel,
-            ref int z_alpha,
-            ref int z_red,
-            ref int z_green,
-            ref int z_blue,
+            uint32* pixel,
+            ref uint32 z_alpha,
+            ref uint32 z_red,
+            ref uint32 z_green,
+            ref uint32 z_blue,
             int alpha
         ) {
-            z_alpha += (alpha * ((pixel[0] << PARAM_PRECISION) - z_alpha)) >> ALPHA_PRECISION;
-            z_red += (alpha * ((pixel[1] << PARAM_PRECISION) - z_red)) >> ALPHA_PRECISION;
-            z_green += (alpha * ((pixel[2] << PARAM_PRECISION) - z_green)) >> ALPHA_PRECISION;
-            z_blue += (alpha * ((pixel[3] << PARAM_PRECISION) - z_blue)) >> ALPHA_PRECISION;
+            z_alpha += (alpha * ((*pixel >> 24) & 255) - z_alpha) >> ALPHA_PRECISION;
+            z_red += (alpha * ((*pixel >> 16) & 255) - z_red) >> ALPHA_PRECISION;
+            z_green += (alpha * ((*pixel >> 8) & 255) - z_green) >> ALPHA_PRECISION;
+            z_blue += (alpha * ((*pixel >> 0) & 255) - z_blue) >> ALPHA_PRECISION;
 
-            pixel[0] = (uint8) (z_alpha >> PARAM_PRECISION);
-            pixel[1] = (uint8) (z_red >> PARAM_PRECISION);
-            pixel[2] = (uint8) (z_green >> PARAM_PRECISION);
-            pixel[3] = (uint8) (z_blue >> PARAM_PRECISION);
+            *pixel += z_alpha << 24;
+            *pixel += z_red << 16;
+            *pixel += z_green << 8;
+            *pixel += z_blue;
         }
 
         /**
