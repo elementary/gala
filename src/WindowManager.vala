@@ -161,7 +161,7 @@ namespace Gala {
 
             var i = 0;
             Clutter.Actor? prev = null;
-            Timeout.add (5000, () => {
+            Timeout.add (1000, () => {
                 if (prev != null) {
                     prev.get_parent ().remove_child (prev);
                     prev = null;
