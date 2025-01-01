@@ -156,35 +156,6 @@ namespace Gala {
                 });
             }
 #endif
-
-
-
-            Timeout.add_seconds_once (5, () => {
-                var i = 0;
-                Clutter.Actor? prev = null;
-                Timeout.add_seconds (1, () => {
-                    if (prev != null) {
-                        prev.get_parent ().remove_child (prev);
-                        prev = null;
-                    }
-
-                    if (i == 9) {
-                        return Source.REMOVE;
-                    }
-    
-                    var a = new Clutter.Actor () {
-                        width = 1000,
-                        height = 1000
-                    };
-                    a.add_effect (new ShadowEffect ());
-                    stage.add_child (a);
-    
-                    i++;
-                    prev = a;
-    
-                    return Source.CONTINUE;
-                });
-            });
         }
 
 #if WITH_SYSTEMD

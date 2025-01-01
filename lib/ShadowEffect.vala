@@ -103,15 +103,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
-        if (width == height) {
-            var t = new Timer ();
-            t.start ();
-            buffer.exponential_blur (shadow_size / 2);
-            t.stop ();
-            warning ("1000x1000: %f", t.elapsed ());
-        } else {
-            buffer.exponential_blur (shadow_size / 2);
-        }
+        buffer.exponential_blur (shadow_size / 2);
 
         var surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
         var cr = new Cairo.Context (surface);
@@ -207,8 +199,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         if (--shadow.users == 0) {
-            shadow_cache.unset (key);
-            //  queue_shadow_drop (key);
+            queue_shadow_drop (key);
         }
     }
 
