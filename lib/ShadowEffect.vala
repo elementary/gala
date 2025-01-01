@@ -103,7 +103,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
-        if (width == height == 1000) {
+        if (width == height) {
             var t = new Timer ();
             t.start ();
             buffer.exponential_blur (shadow_size / 2);
@@ -207,7 +207,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         if (--shadow.users == 0) {
-            queue_shadow_drop (key);
+            shadow_cache.unset (key);
+            //  queue_shadow_drop (key);
         }
     }
 
