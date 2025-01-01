@@ -103,7 +103,15 @@ public class Gala.ShadowEffect : Clutter.Effect {
         buffer.context.set_source_rgba (0, 0, 0, 0.7);
         buffer.context.fill ();
 
-        buffer.exponential_blur (shadow_size / 2);
+        if (width == height == 1000) {
+            var t = new Timer ();
+            t.start ();
+            buffer.exponential_blur (shadow_size / 2);
+            t.stop ();
+            warning ("1000x1000: %f", t.elapsed ());
+        } else {
+            buffer.exponential_blur (shadow_size / 2);
+        }
 
         var surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
         var cr = new Cairo.Context (surface);
@@ -215,40 +223,16 @@ public class Gala.ShadowEffect : Clutter.Effect {
         private const int ALPHA_PRECISION = 16;
         private const int PARAM_PRECISION = 7;
 
-        private Cairo.Surface _surface;
-        public Cairo.Surface surface {
-            get {
-                if (_surface == null) {
-                    _surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
-                }
-
-                return _surface;
-            }
-            private set { _surface = value; }
-        }
-
         public int width { get; private set; }
         public int height { get; private set; }
+        public Cairo.Surface surface { get; private set; }
+        public Cairo.Context context { get; private set; }
 
-        private Cairo.Context _context;
-        public Cairo.Context context {
-            get {
-                if (_context == null) {
-                    _context = new Cairo.Context (surface);
-                }
-
-                return _context;
-            }
-        }
-
-        public ShadowBufferSurface (int width, int height) requires (width >= 0 && height >= 0) {
-            this.width = width;
-            this.height = height;
-        }
-
-        construct {
-            //  surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-            //  context = new Cairo.Context (surface);
+        public ShadowBufferSurface (int _width, int _height) requires (_width > 0 && _height > 0) {
+            width = _width;
+            height = _height;
+            surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
+            context = new Cairo.Context (surface);
         }
 
         /**

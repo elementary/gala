@@ -156,6 +156,26 @@ namespace Gala {
                 });
             }
 #endif
+
+
+
+            var i = 0;
+            Clutter.Actor? prev = null;
+            Timeout.add (5000, () => {
+                if (prev != null) {
+                    prev.get_parent ().remove_child (prev);
+                    prev = null;
+                }
+
+                prev = new Clutter.Actor () {
+                    width = 1000,
+                    height = 1000
+                };
+                prev.add_effect (new ShadowEffect ());
+                stage.add_child (prev);
+
+                return i < 10 ? Source.CONTINUE : Source.REMOVE;
+            });
         }
 
 #if WITH_SYSTEMD
