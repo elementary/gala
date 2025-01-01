@@ -105,7 +105,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         buffer.exponential_blur (shadow_size / 2);
 
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+        var surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
         var cr = new Cairo.Context (surface);
         cr.set_source_surface (buffer.surface, 0, 0);
         cr.paint ();
@@ -118,7 +118,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         cr.restore ();
 
         try {
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
+            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.A_8,
                 surface.get_stride (), surface.get_data ());
             shadow_cache.@set (current_key, new Shadow (texture));
 
@@ -219,7 +219,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         public Cairo.Surface surface {
             get {
                 if (_surface == null) {
-                    _surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+                    _surface = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
                 }
 
                 return _surface;
@@ -263,7 +263,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
             var height = this.height;
             var width = this.width;
 
-            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+            var original = new Cairo.ImageSurface (Cairo.Format.A8, width, height);
             var cr = new Cairo.Context (original);
 
             cr.set_operator (Cairo.Operator.SOURCE);
@@ -312,21 +312,18 @@ public class Gala.ShadowEffect : Clutter.Effect {
         ) {
             for (var column_index = start_col; column_index < end_col; column_index++) {
                 // blur columns
-                uint8 *column = pixels + column_index * 4;
+                uint8 *column = pixels + column_index;
 
                 var z_alpha = column[0] << PARAM_PRECISION;
-                var z_red = column[1] << PARAM_PRECISION;
-                var z_green = column[2] << PARAM_PRECISION;
-                var z_blue = column[3] << PARAM_PRECISION;
 
                 // Top to Bottom
                 for (var index = width * (start_y + 1); index < (end_y - 1) * width; index += width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&column[index], ref z_alpha, alpha);
                 }
 
                 // Bottom to Top
                 for (var index = (end_y - 2) * width; index >= start_y; index -= width) {
-                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&column[index], ref z_alpha, alpha);
                 }
             }
         }
@@ -343,40 +340,28 @@ public class Gala.ShadowEffect : Clutter.Effect {
         ) {
             for (var row_index = start_row; row_index < end_row; row_index++) {
                 // Get a pointer to our current row
-                uint8* row = pixels + row_index * width * 4;
+                uint8* row = pixels + row_index * width;
 
                 var z_alpha = row[start_x + 0] << PARAM_PRECISION;
-                var z_red = row[start_x + 1] << PARAM_PRECISION;
-                var z_green = row[start_x + 2] << PARAM_PRECISION;
-                var z_blue = row[start_x + 3] << PARAM_PRECISION;
 
                 // Left to Right
                 for (var index = start_x + 1; index < end_x; index++)
-                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&row[index], ref z_alpha, alpha);
 
                 // Right to Left
                 for (var index = end_x - 2; index >= start_x; index--)
-                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                    exponential_blur_inner (&row[index], ref z_alpha, alpha);
             }
         }
 
         private static inline void exponential_blur_inner (
             uint8* pixel,
             ref int z_alpha,
-            ref int z_red,
-            ref int z_green,
-            ref int z_blue,
             int alpha
         ) {
             z_alpha += (alpha * ((pixel[0] << PARAM_PRECISION) - z_alpha)) >> ALPHA_PRECISION;
-            z_red += (alpha * ((pixel[1] << PARAM_PRECISION) - z_red)) >> ALPHA_PRECISION;
-            z_green += (alpha * ((pixel[2] << PARAM_PRECISION) - z_green)) >> ALPHA_PRECISION;
-            z_blue += (alpha * ((pixel[3] << PARAM_PRECISION) - z_blue)) >> ALPHA_PRECISION;
 
             pixel[0] = (uint8) (z_alpha >> PARAM_PRECISION);
-            pixel[1] = (uint8) (z_red >> PARAM_PRECISION);
-            pixel[2] = (uint8) (z_green >> PARAM_PRECISION);
-            pixel[3] = (uint8) (z_blue >> PARAM_PRECISION);
         }
     }
 }
