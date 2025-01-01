@@ -90,7 +90,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         // fill a new texture for this size
-        var buffer = new Drawing.BufferSurface (width, height);
+        var buffer = new ShadowBufferSurface (width, height);
         Drawing.Utilities.cairo_rounded_rectangle (
             buffer.context,
             shadow_size,
@@ -209,5 +209,174 @@ public class Gala.ShadowEffect : Clutter.Effect {
             shadows_marked_for_dropping.unset (key);
             return Source.REMOVE;
         });
+    }
+
+    private class ShadowBufferSurface : GLib.Object {
+        private const int ALPHA_PRECISION = 16;
+        private const int PARAM_PRECISION = 7;
+
+        private Cairo.Surface _surface;
+        public Cairo.Surface surface {
+            get {
+                if (_surface == null) {
+                    _surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+                }
+
+                return _surface;
+            }
+            private set { _surface = value; }
+        }
+
+        public int width { get; private set; }
+        public int height { get; private set; }
+
+        private Cairo.Context _context;
+        public Cairo.Context context {
+            get {
+                if (_context == null) {
+                    _context = new Cairo.Context (surface);
+                }
+
+                return _context;
+            }
+        }
+
+        public ShadowBufferSurface (int width, int height) requires (width >= 0 && height >= 0) {
+            this.width = width;
+            this.height = height;
+        }
+
+        construct {
+            //  surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+            //  context = new Cairo.Context (surface);
+        }
+
+        /**
+        * Performs a blur operation on the internal {@link Cairo.Surface}, using an
+        * exponential blurring algorithm. This method is usually the fastest
+        * and produces good-looking results (though not quite as good as gaussian's).
+        *
+        * @param radius the blur radius
+        */
+        public void exponential_blur (int radius) requires (radius > 0) {
+            var alpha = (int) ((1 << ALPHA_PRECISION) * (1.0 - Math.exp (-2.3 / (radius + 1.0))));
+            var height = this.height;
+            var width = this.width;
+
+            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
+            var cr = new Cairo.Context (original);
+
+            cr.set_operator (Cairo.Operator.SOURCE);
+            cr.set_source_surface (surface, 0, 0);
+            cr.paint ();
+
+            uint8 *pixels = original.get_data ();
+
+            try {
+                // Process Rows
+                var th = new GLib.Thread<void>.try (null, () => {
+                    exponential_blur_rows (pixels, width, height, 0, height / 2, 0, width, alpha);
+                });
+
+                exponential_blur_rows (pixels, width, height, height / 2, height, 0, width, alpha);
+                th.join ();
+
+                // Process Columns
+                var th2 = new GLib.Thread<void>.try (null, () => {
+                    exponential_blur_columns (pixels, width, height, 0, width / 2, 0, height, alpha);
+                });
+
+                exponential_blur_columns (pixels, width, height, width / 2, width, 0, height, alpha);
+                th2.join ();
+            } catch (Error err) {
+                warning (err.message);
+            }
+
+            original.mark_dirty ();
+
+            context.set_operator (Cairo.Operator.SOURCE);
+            context.set_source_surface (original, 0, 0);
+            context.paint ();
+            context.set_operator (Cairo.Operator.OVER);
+        }
+
+        private void exponential_blur_columns (
+            uint8* pixels,
+            int width,
+            int height,
+            int start_col,
+            int end_col,
+            int start_y,
+            int end_y,
+            int alpha
+        ) {
+            for (var column_index = start_col; column_index < end_col; column_index++) {
+                // blur columns
+                uint8 *column = pixels + column_index * 4;
+
+                var z_alpha = column[0] << PARAM_PRECISION;
+                var z_red = column[1] << PARAM_PRECISION;
+                var z_green = column[2] << PARAM_PRECISION;
+                var z_blue = column[3] << PARAM_PRECISION;
+
+                // Top to Bottom
+                for (var index = width * (start_y + 1); index < (end_y - 1) * width; index += width) {
+                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
+
+                // Bottom to Top
+                for (var index = (end_y - 2) * width; index >= start_y; index -= width) {
+                    exponential_blur_inner (&column[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+                }
+            }
+        }
+
+        private void exponential_blur_rows (
+            uint8* pixels,
+            int width,
+            int height,
+            int start_row,
+            int end_row,
+            int start_x,
+            int end_x,
+            int alpha
+        ) {
+            for (var row_index = start_row; row_index < end_row; row_index++) {
+                // Get a pointer to our current row
+                uint8* row = pixels + row_index * width * 4;
+
+                var z_alpha = row[start_x + 0] << PARAM_PRECISION;
+                var z_red = row[start_x + 1] << PARAM_PRECISION;
+                var z_green = row[start_x + 2] << PARAM_PRECISION;
+                var z_blue = row[start_x + 3] << PARAM_PRECISION;
+
+                // Left to Right
+                for (var index = start_x + 1; index < end_x; index++)
+                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+
+                // Right to Left
+                for (var index = end_x - 2; index >= start_x; index--)
+                    exponential_blur_inner (&row[index * 4], ref z_alpha, ref z_red, ref z_green, ref z_blue, alpha);
+            }
+        }
+
+        private static inline void exponential_blur_inner (
+            uint8* pixel,
+            ref int z_alpha,
+            ref int z_red,
+            ref int z_green,
+            ref int z_blue,
+            int alpha
+        ) {
+            z_alpha += (alpha * ((pixel[0] << PARAM_PRECISION) - z_alpha)) >> ALPHA_PRECISION;
+            z_red += (alpha * ((pixel[1] << PARAM_PRECISION) - z_red)) >> ALPHA_PRECISION;
+            z_green += (alpha * ((pixel[2] << PARAM_PRECISION) - z_green)) >> ALPHA_PRECISION;
+            z_blue += (alpha * ((pixel[3] << PARAM_PRECISION) - z_blue)) >> ALPHA_PRECISION;
+
+            pixel[0] = (uint8) (z_alpha >> PARAM_PRECISION);
+            pixel[1] = (uint8) (z_red >> PARAM_PRECISION);
+            pixel[2] = (uint8) (z_green >> PARAM_PRECISION);
+            pixel[3] = (uint8) (z_blue >> PARAM_PRECISION);
+        }
     }
 }
