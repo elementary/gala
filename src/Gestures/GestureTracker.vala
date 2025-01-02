@@ -122,9 +122,15 @@ public class Gala.GestureTracker : Object {
     public delegate void OnEnd (double percentage, int completions, int calculated_duration);
 
     /**
-     * Backend used if enable_touchpad is called.
+     * Backend used if enable_touchpad is called on wayland.
      */
-    private ToucheggBackend touchpad_backend;
+    private TouchpadBackend touchpad_backend;
+
+    /**
+     * Backend used if enable_touchpad is called on X or for
+     * touchscreen and pinch gestures if enable_touchpad is called on wayland.
+     */
+    private ToucheggBackend touchegg_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -155,12 +161,20 @@ public class Gala.GestureTracker : Object {
     /**
      * Allow to receive touchpad multi-touch gestures.
      */
-    public void enable_touchpad () {
-        touchpad_backend = ToucheggBackend.get_default ();
-        touchpad_backend.on_gesture_detected.connect (gesture_detected);
-        touchpad_backend.on_begin.connect (gesture_begin);
-        touchpad_backend.on_update.connect (gesture_update);
-        touchpad_backend.on_end.connect (gesture_end);
+    public void enable_touchpad (Clutter.Actor actor) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            touchpad_backend = new TouchpadBackend (actor);
+            touchpad_backend.on_gesture_detected.connect (gesture_detected);
+            touchpad_backend.on_begin.connect (gesture_begin);
+            touchpad_backend.on_update.connect (gesture_update);
+            touchpad_backend.on_end.connect (gesture_end);
+        }
+
+        touchegg_backend = ToucheggBackend.get_default (); // Will automatically filter events on wayland
+        touchegg_backend.on_gesture_detected.connect (gesture_detected);
+        touchegg_backend.on_begin.connect (gesture_begin);
+        touchegg_backend.on_update.connect (gesture_update);
+        touchegg_backend.on_end.connect (gesture_end);
     }
 
     /**

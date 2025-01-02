@@ -42,7 +42,6 @@ public class Gala.WindowSwitcher : CanvasActor {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-                _current_icon.grab_key_focus ();
             }
 
             update_caption_text ();
@@ -412,6 +411,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         opened = show;
         if (show) {
             push_modal ();
+            get_stage ().set_key_focus (this);
         } else {
             wm.pop_modal (modal_proxy);
             get_stage ().set_key_focus (null);
@@ -424,7 +424,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     private void push_modal () {
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (get_stage ());
         modal_proxy.set_keybinding_filter ((binding) => {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
