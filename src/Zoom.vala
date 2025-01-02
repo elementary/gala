@@ -32,7 +32,6 @@ public class Gala.Zoom : Object {
 
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
         gesture_tracker.enable_touchpad (wm.stage);
-        gesture_tracker.enable_touchscreen ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         gesture_tracker.on_gesture_handled.connect ((gesture) => zoom_with_gesture (gesture.direction));
 

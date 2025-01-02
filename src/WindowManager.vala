@@ -201,7 +201,6 @@ namespace Gala {
 #endif
             gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             gesture_tracker.enable_touchpad (stage);
-            gesture_tracker.enable_touchscreen ();
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
             gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 

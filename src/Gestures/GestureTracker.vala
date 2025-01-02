@@ -122,14 +122,15 @@ public class Gala.GestureTracker : Object {
     public delegate void OnEnd (double percentage, int completions, int calculated_duration);
 
     /**
-     * Backend used if enable_touchpad is called.
+     * Backend used if enable_touchpad is called on wayland.
      */
-    private GestureBackend touchpad_backend;
+    private TouchpadBackend touchpad_backend;
 
     /**
-     * Backend used if enable_touchscreen is called.
+     * Backend used if enable_touchpad is called on X or for
+     * touchscreen and pinch gestures if enable_touchpad is called on wayland.
      */
-    private ToucheggBackend touchscreen_backend;
+    private ToucheggBackend touchegg_backend;
 
     /**
      * Scroll backend used if enable_scroll is called.
@@ -159,36 +160,21 @@ public class Gala.GestureTracker : Object {
 
     /**
      * Allow to receive touchpad multi-touch gestures.
-     * On X this automatically enables touchscreen as well.
      */
     public void enable_touchpad (Clutter.Actor actor) {
         if (Meta.Util.is_wayland_compositor ()) {
             touchpad_backend = new TouchpadBackend (actor);
-        } else {
-            touchpad_backend = ToucheggBackend.get_default ();
+            touchpad_backend.on_gesture_detected.connect (gesture_detected);
+            touchpad_backend.on_begin.connect (gesture_begin);
+            touchpad_backend.on_update.connect (gesture_update);
+            touchpad_backend.on_end.connect (gesture_end);
         }
 
-        touchpad_backend.on_gesture_detected.connect (gesture_detected);
-        touchpad_backend.on_begin.connect (gesture_begin);
-        touchpad_backend.on_update.connect (gesture_update);
-        touchpad_backend.on_end.connect (gesture_end);
-    }
-
-    /**
-     * Allow to receive touchscreen multi-touch gestures.
-     */
-    public void enable_touchscreen () {
-        if (!Meta.Util.is_wayland_compositor ()) { //Automatically enabled by enable_touchpad
-            return;
-        }
-
-        touchscreen_backend = ToucheggBackend.get_default ();
-        touchscreen_backend.touchscreen_only = true;
-
-        touchscreen_backend.on_gesture_detected.connect (gesture_detected);
-        touchscreen_backend.on_begin.connect (gesture_begin);
-        touchscreen_backend.on_update.connect (gesture_update);
-        touchscreen_backend.on_end.connect (gesture_end);
+        touchegg_backend = ToucheggBackend.get_default (); // Will automatically filter events on wayland
+        touchegg_backend.on_gesture_detected.connect (gesture_detected);
+        touchegg_backend.on_begin.connect (gesture_begin);
+        touchegg_backend.on_update.connect (gesture_update);
+        touchegg_backend.on_end.connect (gesture_end);
     }
 
     /**
