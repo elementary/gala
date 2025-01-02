@@ -62,7 +62,7 @@ public class Gala.WindowClone : Clutter.Actor {
         set {
             if (value != _monitor_scale_factor) {
                 _monitor_scale_factor = value;
-                reallocate ();
+                notify_property ("monitor-scale-factor");
             }
         }
     }
@@ -132,16 +132,32 @@ public class Gala.WindowClone : Clutter.Actor {
             add_action (drag_action);
         }
 
-        window_title = new Tooltip ();
-        window_title.opacity = 0;
+        active_shape = new ActiveShape () {
+            opacity = 0
+        };
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        close_button = new Gala.CloseButton (monitor_scale_factor) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale-factor", close_button, "scale");
+
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, monitor_scale_factor) {
+            visible = !overview_mode,
+            opacity = 0,
+            pivot_point = { 0.5f, 0.5f }
+        };
+        bind_property ("monitor-scale-factor", window_icon, "scale");
+
+        window_title = new Tooltip () {
+            opacity = 0
+        };
 
         add_child (active_shape);
+        add_child (close_button);
         add_child (window_title);
+        add_child (window_icon);
 
-        reallocate ();
+        close_button.triggered.connect (close_window);
 
         InternalUtils.wait_for_window_actor (window, load_clone);
 
@@ -159,24 +175,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
     }
 
-    private void reallocate () {
-        close_button = new Gala.CloseButton (monitor_scale_factor) {
-            opacity = 0
-        };
-        close_button.triggered.connect (close_window);
-
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
-            visible = !overview_mode
-        };
-        window_icon.opacity = 0;
-        window_icon.set_pivot_point (0.5f, 0.5f);
-
-        add_child (close_button);
-        add_child (window_icon);
-
-        set_child_below_sibling (window_icon, window_title);
-    }
-
     /**
      * Waits for the texture of a new Meta.WindowActor to be available
      * and makes a close of it. If it was already was assigned a slot
@@ -191,12 +189,7 @@ public class Gala.WindowClone : Clutter.Actor {
 
         clone = new Clutter.Clone (actor);
         clone.set_content_scaling_filters (TRILINEAR, TRILINEAR);
-        add_child (clone);
-
-        set_child_below_sibling (active_shape, clone);
-        set_child_above_sibling (close_button, clone);
-        set_child_above_sibling (window_icon, clone);
-        set_child_above_sibling (window_title, clone);
+        insert_child_above (clone, active_shape);
 
         check_shadow_requirements ();
 
