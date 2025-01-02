@@ -14,8 +14,8 @@ public class Gala.WindowIcon : Clutter.Actor {
     public Meta.Window window { get; construct; }
     public int icon_size { get; construct; }
 
-    private int _scale;
-    public int scale {
+    private float _scale;
+    public float scale {
         get {
             return _scale;
         }
@@ -32,7 +32,7 @@ public class Gala.WindowIcon : Clutter.Actor {
      * @param icon_size            The size of the icon in pixels
      * @param scale                The desired scale of the icon
      */
-    public WindowIcon (Meta.Window window, int icon_size, int scale = 1) {
+    public WindowIcon (Meta.Window window, int icon_size, float scale = 1) {
         Object (window: window, icon_size: icon_size, scale: scale);
     }
 
@@ -48,10 +48,12 @@ public class Gala.WindowIcon : Clutter.Actor {
     }
 
     private void reload_icon () {
-        width = icon_size * scale;
-        height = icon_size * scale;
+        var resource_scale = (int) Math.roundf (scale);
 
-        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
+        width = icon_size * resource_scale;
+        height = icon_size * resource_scale;
+
+        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, resource_scale);
         try {
             var image = new Clutter.Image ();
             Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
