@@ -8,7 +8,17 @@ public class Gala.CloseButton : Clutter.Actor {
     private static Gee.HashMap<int, Gdk.Pixbuf?> close_pixbufs;
 
     public signal void triggered (uint32 timestamp);
-    public float scale { get; construct set; }
+
+    private float _scale;
+    public float scale {
+        get {
+            return _scale;
+        }
+        construct set {
+            _scale = value;
+            reload_pixbuf ();
+        }
+    }
 
     // used to avoid changing hitbox of the button
     private Clutter.Actor pixbuf_actor;
@@ -29,7 +39,9 @@ public class Gala.CloseButton : Clutter.Actor {
             pivot_point = { 0.5f, 0.5f }
         };
         add_child (pixbuf_actor);
+    }
 
+    private void reload_pixbuf () {
         var pixbuf = get_close_button_pixbuf (scale);
         if (pixbuf != null) {
             try {
