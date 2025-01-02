@@ -13,7 +13,17 @@
 public class Gala.WindowIcon : Clutter.Actor {
     public Meta.Window window { get; construct; }
     public int icon_size { get; construct; }
-    public int scale { get; construct; }
+
+    private int _scale;
+    public int scale {
+        get {
+            return _scale;
+        }
+        construct set {
+            _scale = value;
+            reload_icon ();
+        }
+    }
 
     /**
      * Creates a new WindowIcon
@@ -23,9 +33,7 @@ public class Gala.WindowIcon : Clutter.Actor {
      * @param scale                The desired scale of the icon
      */
     public WindowIcon (Meta.Window window, int icon_size, int scale = 1) {
-        Object (window: window,
-            icon_size: icon_size,
-            scale: scale);
+        Object (window: window, icon_size: icon_size, scale: scale);
     }
 
     construct {
@@ -37,8 +45,6 @@ public class Gala.WindowIcon : Clutter.Actor {
          */
         window.notify["wm-class"].connect (reload_icon);
         window.notify["gtk-application-id"].connect (reload_icon);
-
-        reload_icon ();
     }
 
     private void reload_icon () {
