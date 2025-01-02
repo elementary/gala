@@ -185,15 +185,15 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     public void close_window (uint64 uid) throws GLib.DBusError, GLib.IOError {
-        var apps = Gala.AppSystem.get_default().get_running_apps();
+        var apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned var app in apps) {
-            foreach (weak Meta.Window window in app.get_windows()) {
-                if (window.get_id() == uid) {
-                    window.delete(Meta.CURRENT_TIME);
+            foreach (weak Meta.Window window in app.get_windows ()) {
+                if (window.get_id () == uid) {
+                    window.delete (Meta.CURRENT_TIME);
                     return;
                 }
             }
         }
-        throw new GLib.IOError.NOT_FOUND("Window not found");
+        throw new GLib.IOError.NOT_FOUND ("Window not found");
     }
 }
