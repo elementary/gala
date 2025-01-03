@@ -18,7 +18,7 @@
 
 namespace Gala {
     /**
-     * Physical direction of the gesture. This direction doesn't follow natural scroll preferences.
+     * Physical direction of the gesture.
      */
     public enum GestureDirection {
         UNKNOWN = 0,
@@ -34,26 +34,31 @@ namespace Gala {
         OUT = 6,
     }
 
-    public class Gesture {
-        public const float INVALID_COORD = float.MAX;
+    /**
+     * Action triggered by the gesture.
+     */
+    public class GestureAction {
+        public enum Type {
+            NONE,
+            CUSTOM, // Means we have less than three fingers. Usually only emitted if we are interacting with a component itself e.g. MultitaskingView
+            SWITCH_WORKSPACE,
+            MOVE_TO_WORKSPACE,
+            SWITCH_WINDOWS,
+            MULTITASKING_VIEW,
+            ZOOM
+        }
 
-        public Clutter.EventType type;
-        public GestureDirection direction;
-        public int fingers;
-        public Clutter.InputDeviceType performed_on_device_type;
+        public enum Direction {
+            FORWARD,
+            BACKWARD
+        }
 
-        /**
-         * The x coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
-         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
-         */
-        public float origin_x = INVALID_COORD;
+        public GestureAction (Type type, Direction direction) {
+            this.type = type;
+            this.direction = direction;
+        }
 
-        /**
-         * The y coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
-         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
-         */
-        public float origin_y = INVALID_COORD;
+        public Type type;
+        public Direction direction;
     }
 }
