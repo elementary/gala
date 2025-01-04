@@ -266,6 +266,10 @@ public class Gala.WindowClone : Clutter.Actor {
             update_hover_widgets (false);
             toggle_shadow (false);
         });
+
+        if (should_fade ()) {
+            new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 0u).start (with_gesture);
+        }
     }
 
     /**
@@ -294,6 +298,7 @@ public class Gala.WindowClone : Clutter.Actor {
         new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
+        new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 255u).start (with_gesture);
         new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
         new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
             update_hover_widgets (false);
