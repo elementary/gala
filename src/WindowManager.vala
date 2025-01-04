@@ -1961,29 +1961,7 @@ namespace Gala {
             }
             main_container.add_child (static_windows);
 
-            // if we have a move action, pack that window to the static ones
-            if (moving != null) {
-                unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
             unowned var grabbed_window = window_grab_tracker.current_window;
-
-            if (grabbed_window != null) {
-                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
 
@@ -1999,15 +1977,11 @@ namespace Gala {
                     continue;
                 }
 
-                if (!window.showing_on_its_workspace () ||
-                    move_primary_only && !window.is_on_primary_monitor () ||
-                    window == moving ||
-                    window == grabbed_window) {
-
+                if (!window.showing_on_its_workspace () || move_primary_only && !window.is_on_primary_monitor ()) {
                     continue;
                 }
 
-                if (window.on_all_workspaces) {
+                if (window.on_all_workspaces || window == moving || window == grabbed_window) {
                     // notifications use their own group and are always on top
                     if (NotificationStack.is_notification (window)) {
                         continue;
@@ -2019,8 +1993,8 @@ namespace Gala {
                     clutter_actor_reparent (actor, static_windows);
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
 
-                    // Don't fade docks they just stay where they are
-                    if (window.window_type == DOCK) {
+                    // Don't fade docks and moving/grabbed windows they just stay where they are
+                    if (window.window_type == DOCK || window == moving || window == grabbed_window) {
                         continue;
                     }
 
