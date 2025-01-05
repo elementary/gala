@@ -592,12 +592,10 @@ namespace Gala {
                 case MOVE_TO_WORKSPACE:
                     unowned var display = get_display ();
                     unowned var manager = display.get_workspace_manager ();
+                    unowned var active_workspace = manager.get_active_workspace ();
+                    unowned var target_workspace = active_workspace.get_neighbor (direction);
 
-                    moving = display.focus_window;
-                    if (moving != null) {
-                        moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
-                    }
-                    switch_to_next_workspace (direction, timestamp);
+                    move_window (display.focus_window, target_workspace, timestamp);
                     break;
 
                 case SWITCH_WORKSPACE:
