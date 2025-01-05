@@ -57,7 +57,7 @@ namespace Gala {
             );
             display.add_keybinding (
                 "area-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_area_shortcut.begin (true)
-            );  
+            );
         }
 
         private static ScreenshotManager? instance;
