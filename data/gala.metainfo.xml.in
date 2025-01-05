@@ -40,16 +40,21 @@
       <issues>
         <issue url="https://github.com/elementary/gala/issues/397">Prevent PIP overlapping wingpanel?</issue>
         <issue url="https://github.com/elementary/gala/issues/551">Return to original workspace if a fullscreen window is closed and there is no more windows open</issue>
+        <issue url="https://github.com/elementary/gala/issues/815">Zoom with Super + Scroll</issue>
         <issue url="https://github.com/elementary/gala/issues/857">Toggling the active window's maximization state during multitasking view messes up the window preview size</issue>
+        <issue url="https://github.com/elementary/gala/issues/1178">Workspace Switching with Keyboard (meta) + Mouse scroll</issue>
         <issue url="https://github.com/elementary/gala/issues/1967">Some apps ignore HiDPI mode</issue>
         <issue url="https://github.com/elementary/gala/issues/1986">Does not return to the first virtual desktop after exiting fullscreen mode.</issue>
         <issue url="https://github.com/elementary/gala/issues/2088">Invisible window clones</issue>
+        <issue url="https://github.com/elementary/gala/issues/2102">Notifications sometimes result in segfault</issue>
         <issue url="https://github.com/elementary/gala/issues/2113">gnome-session-x11-services-ready.target isn't started on Wayland session</issue>
         <issue url="https://github.com/elementary/gala/issues/2131">Unthemed cursor style and glitchy menus on some applications</issue>
         <issue url="https://github.com/elementary/gala/issues/2154">Windows do not display correctly after moving between workspaces</issue>
         <issue url="https://github.com/elementary/gala/issues/2159">Crash when moving windows between workspaces and using gestures to switch</issue>
         <issue url="https://github.com/elementary/gala/issues/2169">Text UI based Scaling: Tiny Titlebars in XWayland Apps</issue>
+        <issue url="https://github.com/elementary/gala/issues/2170">Don’t show app icons in app window spread</issue>
         <issue url="https://github.com/elementary/gala/issues/2171">PiP dragging doesn't start until after mouse is released</issue>
+        <issue url="https://github.com/elementary/gala/issues/2175">Gala crashes when receiving a notification while switching workspaces</issue>
       </issues>
     </release>
 
