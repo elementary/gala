@@ -1705,10 +1705,6 @@ namespace Gala {
 
                 unmaximizing.add (actor);
 
-                // FIXME: Gtk windows don't want to go out of bounds of screen when unmaximizing, so place them manually
-                // This is OS 7 (Mutter 42) specific, this was not needed in OS 6
-                window.move_frame (true, ex, ey);
-
                 latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
                 ui_group.add_child (latest_window_snapshot);
