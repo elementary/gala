@@ -20,31 +20,95 @@ namespace Gala {
     private const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
     [DBus (name="org.gnome.Shell.Screenshot")]
-    public class ScreenshotManager : Object {
-        private static ScreenshotManager? instance;
-
+    public class ScreenshotManager : GLib.Object {
         [DBus (visible = false)]
-        public static unowned ScreenshotManager init (WindowManager wm) {
-            if (instance == null)
-                instance = new ScreenshotManager (wm);
-
-            return instance;
-        }
-
-        private WindowManager wm;
-        private Settings desktop_settings;
+        public WindowManagerGala wm { get; construct; }
+        private GLib.Settings desktop_settings;
 
         private string prev_font_regular;
         private string prev_font_document;
         private string prev_font_mono;
         private uint conceal_timeout;
 
-        construct {
-            desktop_settings = new Settings ("org.gnome.desktop.interface");
+        [DBus (visible = false)]
+        public static void init (WindowManagerGala wm) requires (instance == null) {
+            instance = new ScreenshotManager (wm);
+
+            unowned var display = wm.get_display ();
+            var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
+
+            display.add_keybinding (
+                "interactive-screenshot", keybinding_settings, IGNORE_AUTOREPEAT, () => wm.launch_action ("interactive-screenshot-action")
+            );
+            display.add_keybinding (
+                "screenshot", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_screen_shortcut.begin ()
+            );
+            display.add_keybinding (
+                "screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_screen_shortcut.begin (true)
+            );
+            display.add_keybinding (
+                "window-screenshot", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_current_window_shortcut.begin ()
+            );
+            display.add_keybinding (
+                "window-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_current_window_shortcut.begin (true)
+            );
+            display.add_keybinding (
+                "area-screenshot", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_area_shortcut.begin ()
+            );
+            display.add_keybinding (
+                "area-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, () => instance.handle_screenshot_area_shortcut.begin (true)
+            );  
         }
 
-        private ScreenshotManager (WindowManager _wm) {
-            wm = _wm;
+        private static ScreenshotManager? instance;
+        [DBus (visible = false)]
+        public static ScreenshotManager get_default () requires (instance != null) {
+            return instance;
+        }
+
+        private string generate_screenshot_filename () {
+            var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
+            /// TRANSLATORS: %s represents a timestamp here
+            return _("Screenshot from %s").printf (date_time);
+        }
+
+        [DBus (visible = false)]
+        public async void handle_screenshot_current_window_shortcut (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                yield screenshot_window (true, false, true, filename, null, null);
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+
+        private async void handle_screenshot_area_shortcut (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+
+                int x, y, w, h;
+                yield select_area (out x, out y, out w, out h);
+                yield screenshot_area (x, y, w, h, true, filename, null, null);
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+
+        private async void handle_screenshot_screen_shortcut (bool clipboard = false) {
+            try {
+                string filename = clipboard ? "" : generate_screenshot_filename ();
+                yield screenshot (false, true, filename, null, null);
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+
+        private ScreenshotManager (WindowManagerGala wm) {
+            Object (wm: wm);
+        }
+
+        construct {
+            desktop_settings = new Settings ("org.gnome.desktop.interface");
         }
 
         public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {

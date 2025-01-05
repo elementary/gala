@@ -34,7 +34,7 @@ public class Gala.DBus {
             (connection) => {
                 try {
                     connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm.get_display ()));
-                    connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
+                    connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.get_default ());
                 } catch (Error e) { warning (e.message); }
             },
             () => {},
