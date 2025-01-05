@@ -84,7 +84,10 @@ public class Gala.GesturePropertyTransition : Object {
      * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
      * #this will keep itself alive until the animation finishes so it is safe to immediatly unref it after creation and calling start.
      *
-     * @param done_callback a callback for when the transition finishes. It is guaranteed to be called exactly once.
+     * @param done_callback a callback for when the transition finishes. This shouldn't be used for setting state, instead state should
+     * be set immediately on {@link GestureTracker.OnEnd} not only once the animation ends to allow for interrupting the animation by starting a new gesture.
+     * done_callback will only be called if the animation finishes, not if it is interrupted e.g. by starting a new animation for the same property,
+     * destroying the actor or removing the transition.
      */
     public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
         ref ();
@@ -179,8 +182,8 @@ public class Gala.GesturePropertyTransition : Object {
         }
     }
 
-    private void finish () {
-        if (done_callback != null) {
+    private void finish (bool callback = true) {
+        if (done_callback != null && callback) {
             done_callback ();
         }
 
