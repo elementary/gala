@@ -46,7 +46,13 @@ namespace Gala {
             reactive = false;
 
             settings = new GLib.Settings ("org.gnome.desktop.interface");
-            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+
+#if HAS_MUTTER47
+            unowned var ctx = context.get_backend ().get_cogl_context ();
+#else
+            unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
+#endif
+            pipeline = new Cogl.Pipeline (ctx);
 
             var pivot = Graphene.Point ();
             pivot.init (0.5f, 0.5f);
