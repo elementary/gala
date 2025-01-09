@@ -253,11 +253,7 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-#if HAS_MUTTER44
             var feedback_group = display.get_compositor ().get_feedback_group ();
-#else
-            var feedback_group = display.get_feedback_group ();
-#endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
 
@@ -952,20 +948,16 @@ namespace Gala {
                     if (current != null && current.allows_move ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_MOVING);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
@@ -2244,12 +2236,8 @@ namespace Gala {
         }
 
         public override void confirm_display_change () {
-#if HAS_MUTTER44
             unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
             var timeout = monitor_manager.get_display_configuration_timeout ();
-#else
-            var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
-#endif
             var summary = ngettext (
                 "Changes will automatically revert after %i second.",
                 "Changes will automatically revert after %i seconds.",
