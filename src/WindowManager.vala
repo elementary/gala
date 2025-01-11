@@ -2361,7 +2361,4 @@ namespace Gala {
             actor.unref ();
         }
     }
-
-    [CCode (cname="clutter_x11_get_stage_window")]
-    public extern X.Window x_get_stage_window (Clutter.Actor stage);
 }
