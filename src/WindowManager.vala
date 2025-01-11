@@ -2145,7 +2145,14 @@ namespace Gala {
                 unowned Meta.Display display = get_display ();
                 unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
                 unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
-                neighbor.activate (display.get_current_time ());
+
+                if (moving != null) {
+                    move_window (moving, neighbor, Meta.CURRENT_TIME);
+                } else {
+                    neighbor.activate (display.get_current_time ());
+                }
+            } else {
+                moving = null;
             }
         }
 
@@ -2207,7 +2214,6 @@ namespace Gala {
 
             windows = null;
             parents = null;
-            moving = null;
 
             out_group = null;
             in_group = null;
