@@ -1439,7 +1439,7 @@ namespace Gala {
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, notification_group);
+                InternalUtils.clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor);
 
                 map_completed (actor);
@@ -1945,7 +1945,7 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
 
-                    clutter_actor_reparent (actor, static_windows);
+                    InternalUtils.clutter_actor_reparent (actor, static_windows);
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
 
                     // Don't fade docks and moving/grabbed windows they just stay where they are
@@ -1966,7 +1966,7 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, out_group);
+                    InternalUtils.clutter_actor_reparent (actor, out_group);
 
                     if (window.fullscreen)
                         from_has_fullscreened = true;
@@ -1975,7 +1975,7 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, in_group);
+                    InternalUtils.clutter_actor_reparent (actor, in_group);
 
                     if (window.fullscreen)
                         to_has_fullscreened = true;
@@ -2050,7 +2050,7 @@ namespace Gala {
             switch_workspace_window_created_id = window_created.connect ((window) => {
                 if (NotificationStack.is_notification (window)) {
                     InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                        clutter_actor_reparent (actor, notification_group);
+                        InternalUtils.clutter_actor_reparent (actor, notification_group);
                         notification_stack.show_notification (actor);
                     });
                 }
@@ -2180,13 +2180,13 @@ namespace Gala {
 
                 unowned Meta.WindowActor? window = actor as Meta.WindowActor;
                 if (window == null) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
+                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
                     continue;
                 }
 
                 unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
+                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
                 }
 
                 kill_window_effects (window);
@@ -2349,16 +2349,6 @@ namespace Gala {
             } catch (Error e) {
                 // Ignore this error
             }
-        }
-
-        private static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
-            if (actor == new_parent)
-                return;
-
-            actor.ref ();
-            actor.get_parent ().remove_child (actor);
-            new_parent.add_child (actor);
-            actor.unref ();
         }
     }
 
