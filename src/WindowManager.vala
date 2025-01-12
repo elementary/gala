@@ -57,6 +57,8 @@ namespace Gala {
 
         private WindowSwitcher? window_switcher = null;
 
+        private DesktopWorkspaceSwitcher desktop_workspace_switcher;
+
         public ActivatableComponent? window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -260,6 +262,11 @@ namespace Gala {
 #endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
+
+            desktop_workspace_switcher = new DesktopWorkspaceSwitcher (display, gesture_tracker);
+            ui_group.add_child (desktop_workspace_switcher);
+
+            desktop_workspace_switcher.completed.connect (() => switch_workspace_completed ());
 
             // Initialize plugins and add default components if no plugin overrides them
             unowned var plugin_manager = PluginManager.get_default ();
@@ -2031,6 +2038,8 @@ namespace Gala {
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
+            desktop_workspace_switcher.animate_workspace_switch (from, to, false);
+            return;
             if (!AnimationsSettings.get_enable_animations ()
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
                 || animating_switch_workspace

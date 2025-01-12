@@ -22,6 +22,8 @@ gala_bin_sources = files(
     'WindowStateSaver.vala',
     'WindowTracker.vala',
     'WorkspaceManager.vala',
+    'Widgets/WorkspaceSwitcher/DesktopWorkspaceSwitcher.vala',
+    'Widgets/WorkspaceSwitcher/DesktopWorkspaceClone.vala',
     'Zoom.vala',
     'Background/Animation.vala',
     'Background/Background.vala',
