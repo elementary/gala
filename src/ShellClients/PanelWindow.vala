@@ -36,16 +36,16 @@ public class Gala.PanelWindow : Object {
 
         unowned var display = wm.get_display ();
 
+        window_positioner = new WindowPositioner (display, window, WindowPositioner.Position.from_anchor (anchor));
+
+        notify["anchor"].connect (() => window_positioner.position = WindowPositioner.Position.from_anchor (anchor));
+
         unowned var workspace_manager = display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
 
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
-
-        window_positioner = new WindowPositioner (display, window, WindowPositioner.Position.from_anchor (anchor));
-
-        notify["anchor"].connect (() => window_positioner.position = WindowPositioner.Position.from_anchor (anchor));
     }
 
 #if HAS_MUTTER45
