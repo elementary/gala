@@ -28,7 +28,9 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     construct {
         background_color = { 0x2e, 0x34, 0x36, 0xff };
         active_index = display.get_workspace_manager ().get_active_workspace_index ();
+
         clip_to_allocation = true;
+        visible = false;
 
         workspaces = new Clutter.Actor () {
             layout_manager = new Clutter.BoxLayout () {
@@ -111,7 +113,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
 
     private void build_workspace_row () {
         unowned var workspace_manager = display.get_workspace_manager ();
-        for (int i = 0; i <= workspace_manager.n_workspaces; i++) {
+        for (int i = 0; i < workspace_manager.n_workspaces; i++) {
             var workspace = workspace_manager.get_workspace_by_index (i);
 
             var workspace_clone = new DesktopWorkspaceClone (this, workspace);

@@ -635,7 +635,8 @@ namespace Gala {
                 if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
                     ((MultitaskingView) workspace_view).play_nudge_animation (direction);
                 } else {
-                    play_nudge_animation (direction);
+                    var target_index = active_workspace.index () + (direction == LEFT ? -1 : 1);
+                    desktop_workspace_switcher.animate_workspace_switch (target_index, false);
                 }
             }
         }
