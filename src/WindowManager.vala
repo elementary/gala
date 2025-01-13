@@ -2159,9 +2159,9 @@ namespace Gala {
             }
         }
 
-        private bool end_switch_workspace () {
+        private void end_switch_workspace () {
             if ((windows == null || parents == null) && tmp_actors == null)
-                return false;
+                return;
 
             unowned var display = get_display ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
@@ -2225,14 +2225,10 @@ namespace Gala {
 
             switch_workspace_with_gesture = false;
             animating_switch_workspace = false;
-
-            return true;
         }
 
         public override void kill_switch_workspace () {
-            if (end_switch_workspace ()) {
-                switch_workspace_completed ();
-            }
+            end_switch_workspace ();
         }
 
         public override void locate_pointer () {
