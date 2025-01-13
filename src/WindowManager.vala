@@ -1354,7 +1354,7 @@ namespace Gala {
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, notification_group);
+                InternalUtils.clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor);
 
                 map_completed (actor);
@@ -1885,18 +1885,5 @@ namespace Gala {
                 // Ignore this error
             }
         }
-
-        private static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
-            if (actor == new_parent)
-                return;
-
-            actor.ref ();
-            actor.get_parent ().remove_child (actor);
-            new_parent.add_child (actor);
-            actor.unref ();
-        }
     }
-
-    [CCode (cname="clutter_x11_get_stage_window")]
-    public extern X.Window x_get_stage_window (Clutter.Actor stage);
 }
