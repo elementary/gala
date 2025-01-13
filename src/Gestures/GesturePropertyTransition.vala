@@ -174,7 +174,11 @@ public class Gala.GesturePropertyTransition : Object {
                 if (transition == null) {
                     on_animation_end (1, 1, gesture_tracker.min_animation_duration);
                 } else {
-                    transition.stopped.connect (() => on_animation_end (1, 1, gesture_tracker.min_animation_duration));
+                    transition.stopped.connect ((is_finished) => {
+                        if (is_finished) {
+                            on_animation_end (0, 0, gesture_tracker.min_animation_duration);
+                        }
+                    });
                 }
             } else {
                 on_animation_end (1, 1, gesture_tracker.min_animation_duration);
