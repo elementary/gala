@@ -477,7 +477,7 @@ namespace Gala {
             if (active_workspace_index != index) {
                 manager.get_workspace_by_index (index).activate (event.get_time ());
             } else {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
             }
         }
 
@@ -787,13 +787,13 @@ namespace Gala {
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
                 return;
             }
 
             // don't allow moving into non-existing workspaces
             if (active == workspace) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
                 return;
             }
 

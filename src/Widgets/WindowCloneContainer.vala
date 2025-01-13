@@ -340,7 +340,7 @@ namespace Gala {
 
             if (closest == null) {
                 if (current_window != null) {
-                    Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                    InternalUtils.bell_notify (display);
                     current_window.active = true;
                 }
                 return;
