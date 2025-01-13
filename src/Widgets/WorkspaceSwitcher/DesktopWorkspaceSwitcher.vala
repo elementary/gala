@@ -1,9 +1,7 @@
 
 // TODO: We might need to hand the old active index aka from to animate_workspace_switch etc. if the workspace_manager.get_active_workspace_index () is already updated.
 public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
-    private const int WORKSPACE_GAP = 10;
-
-    public signal void completed ();
+    private const int WORKSPACE_GAP = 24;
 
     public Meta.Display display { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
@@ -11,12 +9,18 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     private Clutter.Actor workspaces;
     private GesturePropertyTransition x_transition;
 
-    public DesktopWorkspaceSwitcher (Meta.Display display, GestureTracker gesture_tracker) {
-        Object (display: display, gesture_tracker: gesture_tracker);
+    // This is the index of the workspace that from our POV is the active one (we're animating towards it).
+    // This is not necessarily the same as the index of the workspace that is actually active.
+    // (e.g. when the gesture animation finishes but the workspace wasn't activated yet)
+    private int active_index;
+
+    public DesktopWorkspaceSwitcher (Meta.Display display) {
+        Object (display: display);
     }
 
     construct {
         background_color = { 0x2e, 0x34, 0x36, 0xff };
+        active_index = display.get_workspace_manager ().get_active_workspace_index ();
 
         workspaces = new Clutter.Actor () {
             layout_manager = new Clutter.BoxLayout () {
@@ -26,35 +30,43 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         };
         add_child (workspaces);
 
+        gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
+        gesture_tracker.enable_touchpad ();
+        gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
+        gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
+
         x_transition = new GesturePropertyTransition (workspaces, gesture_tracker, "x", null, 0f);
     }
 
-    public void switch_workspace_with_gesture (GestureDirection direction) {
+    private bool on_gesture_detected (Gesture gesture) {
+        var action = GestureSettings.get_action (gesture);
+        return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
+    }
+
+    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+        var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
         var relative_dir = direction == LEFT ? -1 : 1;
 
         var workspace_manager = display.get_workspace_manager ();
-        var active_index = workspace_manager.get_active_workspace_index ();
         var target_index = active_index + relative_dir;
 
-        animate_workspace_switch (active_index, target_index, true);
+        animate_workspace_switch (target_index, true);
 
-        GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
-            completions = completions.clamp ((int) x_transition.overshoot_lower_clamp, (int) x_transition.overshoot_upper_clamp);
-            workspace_manager.get_workspace_by_index (active_index + completions * relative_dir).activate (display.get_current_time ());
-        };
-
-        if (!AnimationsSettings.get_enable_animations ()) {
-            on_animation_end (1, 1, 0);
-        } else {
-            gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
-        }
+        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
+            /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
+            workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
+        });
     }
 
-    public void animate_workspace_switch (int active_index, int target_index, bool with_gesture) {
+    public void animate_workspace_switch (int target_index, bool with_gesture) {
+        if (active_index == target_index) { // We've already animated e.g. via the one to one gesture
+            return;
+        }
+
         visible = true;
 
         if (workspaces.get_n_children () == 0) { //this might be > 0 if we interrupt an animation by starting a new gesture
-            build_workspace_row (active_index);
+            build_workspace_row ();
         }
 
         unowned var workspace_manager = display.get_workspace_manager ();
@@ -64,9 +76,14 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         x_transition.overshoot_upper_clamp = (active_index > target_index) ? (active_index + 0.1) : (n_workspaces - active_index - 0.9);
         x_transition.to_value = calculate_x (target_index);
         x_transition.start (with_gesture, end_animation);
+
+        gesture_tracker.add_success_callback (with_gesture, (percentage, completions, calculated_duration) => {
+            completions = completions.clamp ((int) x_transition.overshoot_lower_clamp, (int) x_transition.overshoot_upper_clamp);
+            active_index += completions * (target_index - active_index);
+        });
     }
 
-    private void build_workspace_row (int active_index) {
+    private void build_workspace_row () {
         unowned var workspace_manager = display.get_workspace_manager ();
         for (int i = 0; i <= workspace_manager.n_workspaces; i++) {
             var workspace = workspace_manager.get_workspace_by_index (i);
@@ -81,7 +98,6 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     public void end_animation () {
         workspaces.remove_all_children ();
         visible = false;
-        completed ();
     }
 
     private inline float calculate_x (int index) {

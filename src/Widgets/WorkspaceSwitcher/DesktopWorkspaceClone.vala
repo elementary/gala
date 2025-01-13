@@ -17,6 +17,10 @@ public class Gala.DesktopWorkspaceClone : Clutter.Actor {
         height = monitor_geom.height;
 
         foreach (var window in workspace.list_windows ()) { //TODO: sort by stacking.
+            if (window.window_type == DESKTOP) {
+                continue;
+            }
+
             var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
             var clone = new Clutter.Clone (window_actor);

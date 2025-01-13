@@ -263,10 +263,8 @@ namespace Gala {
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
 
-            desktop_workspace_switcher = new DesktopWorkspaceSwitcher (display, gesture_tracker);
+            desktop_workspace_switcher = new DesktopWorkspaceSwitcher (display);
             ui_group.add_child (desktop_workspace_switcher);
-
-            desktop_workspace_switcher.completed.connect (() => switch_workspace_completed ());
 
             // Initialize plugins and add default components if no plugin overrides them
             unowned var plugin_manager = PluginManager.get_default ();
@@ -589,7 +587,7 @@ namespace Gala {
 
             var action = GestureSettings.get_action (gesture);
             switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
+            return (action == SWITCH_WINDOWS && !window_switcher.opened);
         }
 
         private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
@@ -2038,7 +2036,8 @@ namespace Gala {
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            desktop_workspace_switcher.animate_workspace_switch (from, to, false);
+            desktop_workspace_switcher.animate_workspace_switch (to, false);
+            switch_workspace_completed ();
             return;
             if (!AnimationsSettings.get_enable_animations ()
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
