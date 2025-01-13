@@ -1173,8 +1173,7 @@ namespace Gala {
             if (ShellClientsManager.get_instance ().is_positioned_window (window)
                 || NotificationStack.is_notification (window)
             ) {
-                actor.get_parent ().remove_child (actor);
-                shell_group.add_child (actor);
+                InternalUtils.clutter_actor_reparent (actor, shell_group);
             }
 
             if (NotificationStack.is_notification (window)) {

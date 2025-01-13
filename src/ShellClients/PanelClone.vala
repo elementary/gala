@@ -46,8 +46,7 @@ public class Gala.PanelClone : Object {
         default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
-        actor.get_parent ().remove_child (actor);
-        wm.shell_group.add_child (actor);
+        InternalUtils.clutter_actor_reparent (actor, wm.shell_group);
 
         notify["panel-hidden"].connect (() => {
             // When hidden changes schedule an update to make sure it's actually

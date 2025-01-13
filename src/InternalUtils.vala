@@ -391,7 +391,7 @@ namespace Gala {
 
         public static void update_transients_visible (Meta.Window window, bool visible) {
             window.foreach_transient ((transient) => {
-                var actor = (Meta.WindowActor) transient.get_compositor_private ();
+                unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
 
                 actor.visible = visible;
 
