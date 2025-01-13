@@ -781,34 +781,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp) {
-            if (window == null) {
-                return;
-            }
-
-            unowned Meta.Display display = get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-
-            unowned var active = manager.get_active_workspace ();
-
-            // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
-                return;
-            }
-
-            // don't allow moving into non-existing workspaces
-            if (active == workspace) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
-                return;
-            }
-
-            moving = window;
-
-            if (!window.is_on_all_workspaces ()) {
-                window.change_workspace (workspace);
-            }
-
-            workspace.activate_with_focus (window, timestamp);
+            desktop_workspace_switcher.move_window (window, workspace, timestamp);
         }
 
         /**

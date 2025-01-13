@@ -6,6 +6,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     public Meta.Display display { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
 
+    private WindowGrabTracker window_grab_tracker;
     private Meta.Window? moving;
 
     private Clutter.Actor workspaces;
@@ -43,6 +44,36 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
         x_transition = new GesturePropertyTransition (workspaces, gesture_tracker, "x", null, 0f);
+
+        window_grab_tracker = new WindowGrabTracker (display);
+    }
+
+    /**
+     * Moves a window to the given workspace and activates it.
+     */
+    public void move_window (Meta.Window? window, Meta.Workspace workspace, uint32 timestamp) {
+        if (window == null) {
+            return;
+        }
+
+        unowned var manager = display.get_workspace_manager ();
+
+        unowned var active = manager.get_active_workspace ();
+
+        // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
+        if (Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
+            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            return;
+        }
+
+        if (active == workspace) {
+            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            return;
+        }
+
+        moving = window;
+
+        workspace.activate (timestamp);
     }
 
     public void animate_workspace_switch (int target_index, bool with_gesture) {
@@ -67,6 +98,11 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         gesture_tracker.add_success_callback (with_gesture, (percentage, completions, calculated_duration) => {
             completions = completions.clamp ((int) x_transition.overshoot_lower_clamp, (int) x_transition.overshoot_upper_clamp);
             active_index += completions * (target_index - active_index);
+
+            if (moving != null && !moving.is_on_all_workspaces ()) {
+                moving.change_workspace_by_index (active_index, false);
+                moving = null;
+            }
         });
     }
 
@@ -125,9 +161,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
             return true;
         }
 
-        //grabbed
-
-        return false;
+        return window == window_grab_tracker.current_window;
     }
 
     private bool on_gesture_detected (Gesture gesture) {
@@ -141,6 +175,10 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
 
         var workspace_manager = display.get_workspace_manager ();
         var target_index = active_index + relative_dir;
+
+        if (GestureSettings.get_action (gesture) == MOVE_TO_WORKSPACE) {
+            moving = display.focus_window;
+        }
 
         animate_workspace_switch (target_index, true);
 
