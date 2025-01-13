@@ -1760,7 +1760,7 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            desktop_workspace_switcher.end_animation ();
+            // For the animation we only work with clones so we don't need to do anything here
         }
 
         public override void locate_pointer () {

@@ -82,7 +82,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     }
 
     public void animate_workspace_switch (int target_index, bool with_gesture) {
-        if (active_index == target_index) { // We've already animated e.g. via the one to one gesture
+        if (active_index == target_index || gesture_tracker.recognizing) { // active_index == target_index implies we've already animated e.g. via the one to one gesture
             return;
         }
 
@@ -112,6 +112,8 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     }
 
     private void build_workspace_row () {
+        background_group.get_child_at_index (display.get_primary_monitor ()).visible = false;
+
         unowned var workspace_manager = display.get_workspace_manager ();
         for (int i = 0; i < workspace_manager.n_workspaces; i++) {
             var workspace = workspace_manager.get_workspace_by_index (i);
@@ -150,6 +152,9 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     public void end_animation () {
         workspaces.remove_all_children ();
         static_windows.remove_all_children ();
+
+        background_group.get_child_at_index (display.get_primary_monitor ()).visible = true;
+
         visible = false;
     }
 
