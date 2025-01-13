@@ -6,8 +6,12 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     public Meta.Display display { get; construct; }
     public GestureTracker gesture_tracker { get; construct; }
 
+    private Meta.Window? moving;
+
     private Clutter.Actor workspaces;
     private GesturePropertyTransition x_transition;
+
+    private Clutter.Actor static_windows;
 
     // This is the index of the workspace that from our POV is the active one (we're animating towards it).
     // This is not necessarily the same as the index of the workspace that is actually active.
@@ -30,32 +34,15 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         };
         add_child (workspaces);
 
+        static_windows = new Clutter.Actor ();
+        add_child (static_windows);
+
         gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
         gesture_tracker.enable_touchpad ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
         gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
         x_transition = new GesturePropertyTransition (workspaces, gesture_tracker, "x", null, 0f);
-    }
-
-    private bool on_gesture_detected (Gesture gesture) {
-        var action = GestureSettings.get_action (gesture);
-        return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-    }
-
-    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
-        var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-        var relative_dir = direction == LEFT ? -1 : 1;
-
-        var workspace_manager = display.get_workspace_manager ();
-        var target_index = active_index + relative_dir;
-
-        animate_workspace_switch (target_index, true);
-
-        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
-            /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
-            workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
-        });
     }
 
     public void animate_workspace_switch (int target_index, bool with_gesture) {
@@ -65,7 +52,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
 
         visible = true;
 
-        if (workspaces.get_n_children () == 0) { //this might be > 0 if we interrupt an animation by starting a new gesture
+        if (workspaces.get_n_children () == 0) { // This might be > 0 if we interrupt an animation by starting a new gesture
             build_workspace_row ();
         }
 
@@ -88,20 +75,78 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         for (int i = 0; i <= workspace_manager.n_workspaces; i++) {
             var workspace = workspace_manager.get_workspace_by_index (i);
 
-            var workspace_clone = new DesktopWorkspaceClone (workspace);
+            var workspace_clone = new DesktopWorkspaceClone (this, workspace);
             workspaces.add_child (workspace_clone);
         }
 
         workspaces.x = calculate_x (active_index);
-    }
 
-    public void end_animation () {
-        workspaces.remove_all_children ();
-        visible = false;
+        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+        foreach (var window_actor in display.get_window_actors ()) {
+            var window = window_actor.meta_window;
+
+            if (!window.is_on_primary_monitor ()) {
+                continue;
+            }
+
+            if (!is_static (window)) {
+                continue;
+            }
+
+            var clone = new Clutter.Clone (window_actor);
+            clone.x = window_actor.x - monitor_geom.x;
+            clone.y = window_actor.y - monitor_geom.y;
+
+            static_windows.add_child (clone);
+        }
     }
 
     private inline float calculate_x (int index) {
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         return -index * (monitor_geom.width + WORKSPACE_GAP);
+    }
+
+    public void end_animation () {
+        workspaces.remove_all_children ();
+        static_windows.remove_all_children ();
+        visible = false;
+    }
+
+    public bool is_static (Meta.Window window) {
+        if (window.window_type == DESKTOP || window.window_type == DOCK) {
+            return true;
+        }
+
+        if (window.is_on_all_workspaces ()) {
+            return true;
+        }
+
+        if (window == moving) {
+            return true;
+        }
+
+        //grabbed
+
+        return false;
+    }
+
+    private bool on_gesture_detected (Gesture gesture) {
+        var action = GestureSettings.get_action (gesture);
+        return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
+    }
+
+    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+        var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+        var relative_dir = direction == LEFT ? -1 : 1;
+
+        var workspace_manager = display.get_workspace_manager ();
+        var target_index = active_index + relative_dir;
+
+        animate_workspace_switch (target_index, true);
+
+        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
+            /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
+            workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
+        });
     }
 }

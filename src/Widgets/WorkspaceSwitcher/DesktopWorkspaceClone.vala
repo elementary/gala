@@ -1,9 +1,10 @@
 
 public class Gala.DesktopWorkspaceClone : Clutter.Actor {
+    public unowned DesktopWorkspaceSwitcher switcher { get; construct; }
     public Meta.Workspace workspace { get; construct; }
 
-    public DesktopWorkspaceClone (Meta.Workspace workspace) {
-        Object (workspace: workspace);
+    public DesktopWorkspaceClone (DesktopWorkspaceSwitcher switcher, Meta.Workspace workspace) {
+        Object (switcher: switcher, workspace: workspace);
     }
 
     construct {
@@ -17,7 +18,7 @@ public class Gala.DesktopWorkspaceClone : Clutter.Actor {
         height = monitor_geom.height;
 
         foreach (var window in workspace.list_windows ()) { //TODO: sort by stacking.
-            if (window.window_type == DESKTOP) {
+            if (switcher.is_static (window)) {
                 continue;
             }
 
