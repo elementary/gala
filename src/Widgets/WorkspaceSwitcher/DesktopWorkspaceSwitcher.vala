@@ -4,7 +4,9 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     private const int WORKSPACE_GAP = 24;
 
     public Meta.Display display { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; }
+    public Clutter.Actor background_group { get; construct; }
+
+    private GestureTracker gesture_tracker;
 
     private WindowGrabTracker window_grab_tracker;
     private Meta.Window? moving;
@@ -19,13 +21,14 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
     // (e.g. when the gesture animation finishes but the workspace wasn't activated yet)
     private int active_index;
 
-    public DesktopWorkspaceSwitcher (Meta.Display display) {
-        Object (display: display);
+    public DesktopWorkspaceSwitcher (Meta.Display display, Clutter.Actor background_group) {
+        Object (display: display, background_group: background_group);
     }
 
     construct {
         background_color = { 0x2e, 0x34, 0x36, 0xff };
         active_index = display.get_workspace_manager ().get_active_workspace_index ();
+        clip_to_allocation = true;
 
         workspaces = new Clutter.Actor () {
             layout_manager = new Clutter.BoxLayout () {
@@ -186,5 +189,13 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
             /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
             workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
         });
+    }
+
+    public override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
+        min_width = natural_width = display.get_monitor_geometry (display.get_primary_monitor ()).width;
+    }
+
+    public override void get_preferred_height (float for_width, out float min_height, out float natural_height) {
+        min_height = natural_height = display.get_monitor_geometry (display.get_primary_monitor ()).height;
     }
 }

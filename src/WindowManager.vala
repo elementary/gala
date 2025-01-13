@@ -263,7 +263,7 @@ namespace Gala {
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
 
-            desktop_workspace_switcher = new DesktopWorkspaceSwitcher (display);
+            desktop_workspace_switcher = new DesktopWorkspaceSwitcher (display, background_group);
             ui_group.add_child (desktop_workspace_switcher);
 
             // Initialize plugins and add default components if no plugin overrides them

@@ -8,14 +8,15 @@ public class Gala.DesktopWorkspaceClone : Clutter.Actor {
     }
 
     construct {
-        // insert background clone
-
         unowned var display = workspace.get_display ();
         var monitor = display.get_primary_monitor ();
         var monitor_geom = display.get_monitor_geometry (monitor);
 
         width = monitor_geom.width;
         height = monitor_geom.height;
+
+        unowned var background = switcher.background_group.get_child_at_index (monitor);
+        add_child (new Clutter.Clone (background));
 
         foreach (var window in workspace.list_windows ()) { //TODO: sort by stacking.
             if (switcher.is_static (window)) {
