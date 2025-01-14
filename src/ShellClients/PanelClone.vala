@@ -8,7 +8,7 @@
 public class Gala.PanelClone : Object {
     private const int ANIMATION_DURATION = 250;
 
-    public WindowManagerGala wm { get; construct; }
+    public WindowManager wm { get; construct; }
     public unowned PanelWindow panel { get; construct; }
 
     public Pantheon.Desktop.HideMode hide_mode {
@@ -38,7 +38,7 @@ public class Gala.PanelClone : Object {
 
     private HideTracker? hide_tracker;
 
-    public PanelClone (WindowManagerGala wm, PanelWindow panel) {
+    public PanelClone (WindowManager wm, PanelWindow panel) {
         Object (wm: wm, panel: panel);
     }
 
@@ -46,7 +46,6 @@ public class Gala.PanelClone : Object {
         default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
         actor = (Meta.WindowActor) panel.window.get_compositor_private ();
-        InternalUtils.clutter_actor_reparent (actor, wm.shell_group);
 
         notify["panel-hidden"].connect (() => {
             // When hidden changes schedule an update to make sure it's actually

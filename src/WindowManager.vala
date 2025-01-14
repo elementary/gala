@@ -1170,9 +1170,7 @@ namespace Gala {
 
         private void check_shell_window (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
-            if (ShellClientsManager.get_instance ().is_positioned_window (window)
-                || NotificationStack.is_notification (window)
-            ) {
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, shell_group);
             }
 

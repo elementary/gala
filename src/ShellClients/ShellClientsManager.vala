@@ -20,7 +20,7 @@ public class Gala.ShellClientsManager : Object {
         return instance;
     }
 
-    public WindowManagerGala wm { get; construct; }
+    public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -28,7 +28,7 @@ public class Gala.ShellClientsManager : Object {
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
 
-    private ShellClientsManager (WindowManagerGala wm) {
+    private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
 
@@ -191,7 +191,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     private bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows);
+        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
     }
 
     public bool is_positioned_window (Meta.Window window) {
