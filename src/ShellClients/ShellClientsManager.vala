@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManagerGala wm) {
+    public static void init (WindowManager wm) {
         if (instance != null) {
             return;
         }
