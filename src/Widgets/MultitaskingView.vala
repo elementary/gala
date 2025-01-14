@@ -66,7 +66,7 @@ namespace Gala {
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
-            multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
+            multitasking_gesture_tracker.on_gesture_handled.connect (on_multitasking_gesture_handled);
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
@@ -299,6 +299,11 @@ namespace Gala {
             return false;
         }
 
+        private double on_multitasking_gesture_handled (Gesture gesture, uint32 timestamp) {
+            toggle (true, false);
+            return 0;
+        }
+
         private bool on_workspace_gesture_detected (Gesture gesture) {
             if (!opened) {
                 return false;
@@ -311,7 +316,7 @@ namespace Gala {
             return false;
         }
 
-        private void switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
+        private double switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
             var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             unowned var manager = display.get_workspace_manager ();
@@ -355,7 +360,7 @@ namespace Gala {
             var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
             var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
 
-            workspace_gesture_tracker.initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
+            var initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
             }.start (true);
@@ -372,6 +377,8 @@ namespace Gala {
             } else {
                 workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
+
+            return initial_percentage;
         }
 
         /**

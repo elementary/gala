@@ -585,7 +585,7 @@ namespace Gala {
             return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
         }
 
-        private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+        private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
             var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             switch (GestureSettings.get_action (gesture)) {
@@ -609,6 +609,8 @@ namespace Gala {
                 default:
                     break;
             }
+
+            return 0;
         }
 
         /**

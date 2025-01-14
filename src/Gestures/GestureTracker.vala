@@ -95,8 +95,10 @@ public class Gala.GestureTracker : Object {
      * start receiving updates.
      * @param gesture the same gesture as in {@link on_gesture_detected}
      * @param timestamp the timestamp of the event that initiated the gesture or {@link Meta.CURRENT_TIME}.
+     * @return the initial percentage that should already be preapplied. This is useful
+     * if an animation was still ongoing when the gesture was started.
      */
-    public signal void on_gesture_handled (Gesture gesture, uint32 timestamp);
+    public signal double on_gesture_handled (Gesture gesture, uint32 timestamp);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -122,17 +124,6 @@ public class Gala.GestureTracker : Object {
     public delegate void OnBegin (double percentage);
     public delegate void OnUpdate (double percentage);
     public delegate void OnEnd (double percentage, int completions, int calculated_duration);
-
-    public double initial_percentage {
-        set {
-            if (applied_percentage != 0) {
-                critical ("Gesture has already started and is in progress.");
-                return;
-            }
-
-            applied_percentage = value;
-        }
-    }
 
     /**
      * Backend used if enable_touchpad is called.
@@ -261,7 +252,7 @@ public class Gala.GestureTracker : Object {
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
         if (enabled && on_gesture_detected (gesture)) {
             backend.prepare_gesture_handling ();
-            on_gesture_handled (gesture, timestamp);
+            applied_percentage = on_gesture_handled (gesture, timestamp);
             return true;
         }
 
