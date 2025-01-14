@@ -355,5 +355,38 @@ namespace Gala {
                 return Source.REMOVE;
             });
         }
+
+        public static void wait_for_window_actor_visible (Meta.Window window, owned WindowActorReadyCallback callback) {
+            wait_for_window_actor (window, (window_actor) => {
+                if (window_actor.visible) {
+                    callback (window_actor);
+                } else {
+                    ulong show_handler = 0;
+                    show_handler = window_actor.show.connect (() => {
+                        window_actor.disconnect (show_handler);
+                        callback (window_actor);
+                    });
+                }
+            });
+        }
+
+        public static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
+            if (actor == new_parent) {
+                return;
+            }
+
+            actor.ref ();
+            actor.get_parent ().remove_child (actor);
+            new_parent.add_child (actor);
+            actor.unref ();
+        }
+
+        public static void bell_notify (Meta.Display display) {
+#if HAS_MUTTER47
+            display.get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
+#else
+            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+#endif
+        }
     }
 }

@@ -477,7 +477,7 @@ namespace Gala {
             if (active_workspace_index != index) {
                 manager.get_workspace_by_index (index).activate (event.get_time ());
             } else {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
             }
         }
 
@@ -592,12 +592,10 @@ namespace Gala {
                 case MOVE_TO_WORKSPACE:
                     unowned var display = get_display ();
                     unowned var manager = display.get_workspace_manager ();
+                    unowned var active_workspace = manager.get_active_workspace ();
+                    unowned var target_workspace = active_workspace.get_neighbor (direction);
 
-                    moving = display.focus_window;
-                    if (moving != null) {
-                        moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
-                    }
-                    switch_to_next_workspace (direction, timestamp);
+                    move_window (display.focus_window, target_workspace, timestamp);
                     break;
 
                 case SWITCH_WORKSPACE:
@@ -789,13 +787,13 @@ namespace Gala {
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
             if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
                 return;
             }
 
             // don't allow moving into non-existing workspaces
             if (active == workspace) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
                 return;
             }
 
@@ -1168,50 +1166,6 @@ namespace Gala {
          * effects
          */
 
-        private void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
-            // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
-                return;
-
-            // Due to how this is implemented, by relying on the functionality
-            // offered by the dynamic workspace handler, let's just bail out
-            // if that's not available.
-            if (!Meta.Prefs.get_dynamic_workspaces ())
-                return;
-
-            unowned Meta.Display display = get_display ();
-            var time = display.get_current_time ();
-            unowned Meta.Workspace win_ws = window.get_workspace ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-
-            if (which_change == Meta.SizeChange.FULLSCREEN) {
-                // Do nothing if the current workspace would be empty
-                if (Utils.get_n_windows (win_ws) <= 1)
-                    return;
-
-                var old_ws_index = win_ws.index ();
-                var new_ws_index = old_ws_index + 1;
-                InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-                unowned var new_ws = manager.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws);
-                new_ws.activate_with_focus (window, time);
-
-                ws_assoc.insert (window, old_ws_index);
-            } else if (ws_assoc.contains (window)) {
-                var old_ws_index = ws_assoc.get (window);
-                var new_ws_index = win_ws.index ();
-
-                if (new_ws_index != old_ws_index && old_ws_index < manager.get_n_workspaces ()) {
-                    unowned var old_ws = manager.get_workspace_by_index (old_ws_index);
-                    window.change_workspace (old_ws);
-                    old_ws.activate_with_focus (window, time);
-                }
-
-                ws_assoc.remove (window);
-            }
-        }
-
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
 #if HAS_MUTTER45
@@ -1257,8 +1211,10 @@ namespace Gala {
                     unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 case Meta.SizeChange.FULLSCREEN:
+                    maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+                    break;
                 case Meta.SizeChange.UNFULLSCREEN:
-                    handle_fullscreen_window (window, which_change_local);
+                    unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 default:
                     break;
@@ -1347,7 +1303,8 @@ namespace Gala {
             kill_window_effects (actor);
 
             unowned var window = actor.get_meta_window ();
-            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) {
+            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
+                || window.fullscreen && behavior_settings.get_boolean ("move-fullscreened-workspace")) {
                 move_window_to_next_ws (window);
             }
 
@@ -1482,7 +1439,7 @@ namespace Gala {
             // Notifications are a special case and have to be always be handled
             // (also regardless of the animation setting)
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, notification_group);
+                InternalUtils.clutter_actor_reparent (actor, notification_group);
                 notification_stack.show_notification (actor);
 
                 map_completed (actor);
@@ -1605,8 +1562,6 @@ namespace Gala {
         public override void destroy (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
-            ws_assoc.remove (window);
-
             actor.remove_all_transitions ();
 
             if (NotificationStack.is_notification (window)) {
@@ -1728,9 +1683,7 @@ namespace Gala {
             kill_window_effects (actor);
             unowned var window = actor.get_meta_window ();
 
-            if (behavior_settings.get_boolean ("move-maximized-workspace")) {
-                move_window_to_old_ws (window);
-            }
+            move_window_to_old_ws (window);
 
             if (window.window_type == Meta.WindowType.NORMAL) {
                 float offset_x, offset_y;
@@ -1749,10 +1702,6 @@ namespace Gala {
                 }
 
                 unmaximizing.add (actor);
-
-                // FIXME: Gtk windows don't want to go out of bounds of screen when unmaximizing, so place them manually
-                // This is OS 7 (Mutter 42) specific, this was not needed in OS 6
-                window.move_frame (true, ex, ey);
 
                 latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
@@ -1820,6 +1769,10 @@ namespace Gala {
             window.change_workspace (new_ws);
             new_ws.activate_with_focus (window, time);
 
+            if (!(window in ws_assoc)) {
+                window.unmanaged.connect (move_window_to_old_ws);
+            }
+
             ws_assoc[window] = old_ws_index;
         }
 
@@ -1848,6 +1801,8 @@ namespace Gala {
             }
 
             ws_assoc.remove (window);
+
+            window.unmanaged.disconnect (move_window_to_old_ws);
         }
 
         // Cancel attached animation of an actor and reset it
@@ -1961,29 +1916,7 @@ namespace Gala {
             }
             main_container.add_child (static_windows);
 
-            // if we have a move action, pack that window to the static ones
-            if (moving != null) {
-                unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
             unowned var grabbed_window = window_grab_tracker.current_window;
-
-            if (grabbed_window != null) {
-                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
             var to_has_fullscreened = false;
             var from_has_fullscreened = false;
 
@@ -1999,15 +1932,11 @@ namespace Gala {
                     continue;
                 }
 
-                if (!window.showing_on_its_workspace () ||
-                    move_primary_only && !window.is_on_primary_monitor () ||
-                    window == moving ||
-                    window == grabbed_window) {
-
+                if (!window.showing_on_its_workspace () || move_primary_only && !window.is_on_primary_monitor ()) {
                     continue;
                 }
 
-                if (window.on_all_workspaces) {
+                if (window.on_all_workspaces || window == moving || window == grabbed_window) {
                     // notifications use their own group and are always on top
                     if (NotificationStack.is_notification (window)) {
                         continue;
@@ -2016,11 +1945,11 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
 
-                    clutter_actor_reparent (actor, static_windows);
+                    InternalUtils.clutter_actor_reparent (actor, static_windows);
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
 
-                    // Don't fade docks they just stay where they are
-                    if (window.window_type == DOCK) {
+                    // Don't fade docks and moving/grabbed windows they just stay where they are
+                    if (window.window_type == DOCK || window == moving || window == grabbed_window) {
                         continue;
                     }
 
@@ -2037,7 +1966,7 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, out_group);
+                    InternalUtils.clutter_actor_reparent (actor, out_group);
 
                     if (window.fullscreen)
                         from_has_fullscreened = true;
@@ -2046,7 +1975,7 @@ namespace Gala {
                     windows.append (actor);
                     parents.append (actor.get_parent ());
                     actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, in_group);
+                    InternalUtils.clutter_actor_reparent (actor, in_group);
 
                     if (window.fullscreen)
                         to_has_fullscreened = true;
@@ -2120,9 +2049,10 @@ namespace Gala {
             // TODO: currently only notifications are handled here, other windows should be too
             switch_workspace_window_created_id = window_created.connect ((window) => {
                 if (NotificationStack.is_notification (window)) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    clutter_actor_reparent (actor, notification_group);
-                    notification_stack.show_notification (actor);
+                    InternalUtils.wait_for_window_actor_visible (window, (actor) => {
+                        InternalUtils.clutter_actor_reparent (actor, notification_group);
+                        notification_stack.show_notification (actor);
+                    });
                 }
             });
 
@@ -2215,7 +2145,14 @@ namespace Gala {
                 unowned Meta.Display display = get_display ();
                 unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
                 unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
-                neighbor.activate (display.get_current_time ());
+
+                if (moving != null) {
+                    move_window (moving, neighbor, Meta.CURRENT_TIME);
+                } else {
+                    neighbor.activate (display.get_current_time ());
+                }
+            } else {
+                moving = null;
             }
         }
 
@@ -2243,13 +2180,13 @@ namespace Gala {
 
                 unowned Meta.WindowActor? window = actor as Meta.WindowActor;
                 if (window == null) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
+                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
                     continue;
                 }
 
                 unowned Meta.Window? meta_window = window.get_meta_window ();
                 if (!window.is_destroyed ()) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
+                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
                 }
 
                 kill_window_effects (window);
@@ -2277,7 +2214,6 @@ namespace Gala {
 
             windows = null;
             parents = null;
-            moving = null;
 
             out_group = null;
             in_group = null;
@@ -2414,18 +2350,5 @@ namespace Gala {
                 // Ignore this error
             }
         }
-
-        private static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
-            if (actor == new_parent)
-                return;
-
-            actor.ref ();
-            actor.get_parent ().remove_child (actor);
-            new_parent.add_child (actor);
-            actor.unref ();
-        }
     }
-
-    [CCode (cname="clutter_x11_get_stage_window")]
-    public extern X.Window x_get_stage_window (Clutter.Actor stage);
 }
