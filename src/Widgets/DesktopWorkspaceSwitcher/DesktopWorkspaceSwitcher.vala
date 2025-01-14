@@ -67,18 +67,42 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
 
         // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
         if (Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
-            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            InternalUtils.bell_notify (display);
             return;
         }
 
         if (active == workspace) {
-            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            InternalUtils.bell_notify (display);
             return;
         }
 
         moving = window;
 
         workspace.activate (timestamp);
+    }
+
+    private bool on_gesture_detected (Gesture gesture) {
+        var action = GestureSettings.get_action (gesture);
+        return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
+    }
+
+    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+        var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+        var relative_dir = direction == LEFT ? -1 : 1;
+
+        var workspace_manager = display.get_workspace_manager ();
+        var target_index = active_index + relative_dir;
+
+        if (GestureSettings.get_action (gesture) == MOVE_TO_WORKSPACE) {
+            moving = display.focus_window;
+        }
+
+        animate_workspace_switch (target_index, true);
+
+        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
+            /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
+            workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
+        });
     }
 
     public void animate_workspace_switch (int target_index, bool with_gesture) {
@@ -172,30 +196,6 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         }
 
         return window == window_grab_tracker.current_window;
-    }
-
-    private bool on_gesture_detected (Gesture gesture) {
-        var action = GestureSettings.get_action (gesture);
-        return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-    }
-
-    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
-        var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-        var relative_dir = direction == LEFT ? -1 : 1;
-
-        var workspace_manager = display.get_workspace_manager ();
-        var target_index = active_index + relative_dir;
-
-        if (GestureSettings.get_action (gesture) == MOVE_TO_WORKSPACE) {
-            moving = display.focus_window;
-        }
-
-        animate_workspace_switch (target_index, true);
-
-        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
-            /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
-            workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
-        });
     }
 
     public override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
