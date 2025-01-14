@@ -478,7 +478,7 @@ namespace Gala {
             if (active_workspace_index != index) {
                 manager.get_workspace_by_index (index).activate (event.get_time ());
             } else {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
             }
         }
 
