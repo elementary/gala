@@ -76,8 +76,6 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
-        private WindowGrabTracker window_grab_tracker;
-
         private NotificationStack notification_stack;
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
@@ -133,7 +131,6 @@ namespace Gala {
         public override void start () {
             ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
-            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
