@@ -125,12 +125,12 @@ public class Gala.GestureTracker : Object {
 
     public double initial_percentage {
         set {
-            if (percentage != 0) {
+            if (applied_percentage != 0) {
                 critical ("Gesture has already started and is in progress.");
                 return;
             }
 
-            percentage = value;
+            applied_percentage = value;
         }
     }
 
@@ -146,7 +146,7 @@ public class Gala.GestureTracker : Object {
 
     private Gee.ArrayList<ulong> handlers;
 
-    private double percentage = 0;
+    private double applied_percentage = 0;
     private double previous_percentage;
     private uint64 previous_time;
     private double percentage_delta;
@@ -270,7 +270,7 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
         if (enabled) {
-            on_begin (this.percentage);
+            on_begin (applied_percentage);
         }
 
         recognizing = true;
@@ -279,8 +279,7 @@ public class Gala.GestureTracker : Object {
     }
 
     private void gesture_update (double percentage, uint64 elapsed_time) {
-        var previous_applied = applied_percentage (previous_percentage, percentage_delta);
-
+        var updated_delta = percentage_delta;
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -289,46 +288,47 @@ public class Gala.GestureTracker : Object {
             if (velocity > MAX_VELOCITY) {
                 velocity = MAX_VELOCITY;
                 var used_percentage = MAX_VELOCITY * time + previous_percentage;
-                percentage_delta += percentage - used_percentage;
+                updated_delta += percentage - used_percentage;
             }
         }
 
-        this.percentage += applied_percentage (percentage, percentage_delta) - previous_applied;
+        applied_percentage += calculate_applied_delta (percentage, updated_delta, previous_percentage, percentage_delta);
 
         if (enabled) {
-            on_update (this.percentage);
+            on_update (applied_percentage);
         }
 
         previous_percentage = percentage;
         previous_time = elapsed_time;
+        percentage_delta = updated_delta;
     }
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
-        double end_percentage = applied_percentage (percentage, percentage_delta);
-        this.percentage += end_percentage - applied_percentage (previous_percentage, percentage_delta);
-        int completions = (int) this.percentage;
-        bool cancel_action = (end_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
-            && ((end_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
-        int calculated_duration = calculate_end_animation_duration (this.percentage, cancel_action);
+        applied_percentage += calculate_applied_delta (percentage, percentage_delta, previous_percentage, percentage_delta);
+
+        int completions = (int) applied_percentage;
+        bool cancel_action = (applied_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
+            && ((applied_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
+        int calculated_duration = calculate_end_animation_duration (applied_percentage, cancel_action);
 
         if (!cancel_action) {
-            completions += this.percentage < 0 ? -1 : 1;
+            completions += applied_percentage < 0 ? -1 : 1;
         }
 
         if (enabled) {
-            on_end (this.percentage, completions, calculated_duration);
+            on_end (applied_percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
         recognizing = false;
-        this.percentage = 0;
+        applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
         percentage_delta = 0;
         velocity = 0;
     }
 
-    private static inline double applied_percentage (double percentage, double percentage_delta) {
+    private static inline double calculate_applied_delta (double percentage, double percentage_delta, double old_percentage, double old_delta) {
         return percentage - percentage_delta;
     }
 
