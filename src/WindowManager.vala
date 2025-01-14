@@ -39,7 +39,7 @@ namespace Gala {
 
         /**
          * The group that contains all WindowActors that make shell elements, that is all windows reported as
-         * ShellClientsManager.is_positioned_window and notifications, as well as manually added elements.
+         * ShellClientsManager.is_positioned_window.
          * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
          * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
          */
