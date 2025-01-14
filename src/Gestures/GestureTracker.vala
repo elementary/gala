@@ -329,7 +329,7 @@ public class Gala.GestureTracker : Object {
     }
 
     private static inline double calculate_applied_delta (double percentage, double percentage_delta, double old_percentage, double old_delta) {
-        return percentage - percentage_delta;
+        return (percentage - percentage_delta) - (old_percentage - old_delta);
     }
 
     /**
