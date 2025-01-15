@@ -76,7 +76,7 @@ public class Gala.PanelClone : Object {
     }
 
     private void hide () {
-        if (panel_hidden || default_gesture_tracker.recognizing) {
+        if (panel_hidden || default_gesture_tracker.has_started) {
             return;
         }
 
@@ -95,7 +95,7 @@ public class Gala.PanelClone : Object {
     }
 
     private void show () {
-        if (!panel_hidden || default_gesture_tracker.recognizing) {
+        if (!panel_hidden || default_gesture_tracker.has_started) {
             return;
         }
 

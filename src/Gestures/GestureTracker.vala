@@ -77,6 +77,8 @@ public class Gala.GestureTracker : Object {
 
     public bool recognizing { get; private set; }
 
+    public bool has_started { get; private set; default = false;}
+
     /**
      * Emitted when a new gesture is detected.
      * This should only be used to determine whether the gesture should be handled. This shouldn't
@@ -262,6 +264,7 @@ public class Gala.GestureTracker : Object {
             on_begin (percentage);
         }
 
+        has_started = true;
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
@@ -299,6 +302,7 @@ public class Gala.GestureTracker : Object {
         }
 
         recognizing = false;
+        has_started = false;
 
         if (enabled) {
             on_end (end_percentage, completions, calculated_duration);
