@@ -75,9 +75,9 @@ public class Gala.GestureTracker : Object {
      */
     public bool enabled { get; set; default = true; }
 
-    public bool recognizing { get; private set; }
+    public bool recognizing { get; private set; default = false; }
 
-    public bool has_started { get; private set; default = false;}
+    public bool has_started { get; private set; default = false; }
 
     /**
      * Emitted when a new gesture is detected.
