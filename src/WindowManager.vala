@@ -657,11 +657,11 @@ namespace Gala {
 
             new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, to_value) {
                 overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture);
+            }.start ();
 
             new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, to_value) {
                 overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture, () => {
+            }.start (() => {
                 switch_workspace_animation_finished (direction, false, true);
                 animating_switch_workspace = false;
             });

@@ -368,7 +368,7 @@ namespace Gala {
          * Also sets the current_window of the WindowCloneContainer to the active window
          * if it belongs to this workspace.
          */
-        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void open (bool is_cancel_animation = false) {
             if (opened) {
                 return;
             }
@@ -389,9 +389,9 @@ namespace Gala {
 
             update_size (monitor);
 
-            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, (double) scale).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, (double) scale).start (with_gesture);
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start ();
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, (double) scale).start ();
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, (double) scale).start ();
 
 #if HAS_MUTTER45
             Mtk.Rectangle area = {
@@ -413,14 +413,14 @@ namespace Gala {
             icon_group.redraw ();
 
             Meta.Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
-            window_container.open (selected_window, with_gesture, is_cancel_animation);
+            window_container.open (selected_window, is_cancel_animation);
         }
 
         /**
          * Close the view again by animating the background back to its scale and
          * the windows back to their old locations.
          */
-        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void close (bool is_cancel_animation = false) {
             if (!opened) {
                 return;
             }
@@ -432,11 +432,11 @@ namespace Gala {
             var initial_x = is_cancel_animation ? x : multitasking_view_x ();
             var target_x = multitasking_view_x () + current_x_overlap ();
 
-            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start (with_gesture);
+            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start ();
+            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start ();
+            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start ();
 
-            window_container.close (with_gesture);
+            window_container.close ();
         }
     }
 }

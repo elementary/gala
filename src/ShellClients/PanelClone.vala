@@ -89,9 +89,9 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (true)).start (false);
+        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (true)).start ();
 
-        default_gesture_tracker.add_success_callback (false, () => panel_hidden = true);
+        default_gesture_tracker.add_success_callback (() => panel_hidden = true);
     }
 
     private void show () {
@@ -103,8 +103,8 @@ public class Gala.PanelClone : Object {
             Utils.x11_unset_window_pass_through (panel.window);
         }
 
-        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (false)).start (false);
+        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (false)).start ();
 
-        default_gesture_tracker.add_success_callback (false, () => panel_hidden = false);
+        default_gesture_tracker.add_success_callback (() => panel_hidden = false);
     }
 }

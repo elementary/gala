@@ -71,7 +71,7 @@ namespace Gala {
             multitasking_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
             multitasking_gesture_tracker.enable_touchpad ();
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
-            multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (true, false));
+            multitasking_gesture_tracker.on_gesture_handled.connect (() => toggle (false));
 
             workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             workspace_gesture_tracker.enable_touchpad ();
@@ -367,7 +367,7 @@ namespace Gala {
             new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
-            }.start (true);
+            }.start ();
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
@@ -595,7 +595,7 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        private void toggle (bool with_gesture = false, bool is_cancel_animation = false) {
+        private void toggle (bool is_cancel_animation = false) {
             if (animating) {
                 return;
             }
@@ -618,9 +618,9 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open (with_gesture, is_cancel_animation);
+                    container.open (is_cancel_animation);
                 } else {
-                    container.close (with_gesture, is_cancel_animation);
+                    container.close (is_cancel_animation);
                 }
             }
 
@@ -668,16 +668,16 @@ namespace Gala {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening) {
-                    workspace.open (with_gesture, is_cancel_animation);
+                    workspace.open (is_cancel_animation);
                 } else {
-                    workspace.close (with_gesture, is_cancel_animation);
+                    workspace.close (is_cancel_animation);
                 }
             }
 
             if (opening) {
-                show_docks (with_gesture, is_cancel_animation);
+                show_docks (is_cancel_animation);
             } else {
-                hide_docks (with_gesture, is_cancel_animation);
+                hide_docks (is_cancel_animation);
             }
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
@@ -702,21 +702,21 @@ namespace Gala {
                     animating = false;
 
                     if (completions == 0) {
-                        toggle (false, true);
+                        toggle (true);
                     }
 
                     return Source.REMOVE;
                 });
             };
 
-            if (!with_gesture) {
+            if (!multitasking_gesture_tracker.recognizing) {
                 on_animation_end (1, 1, 0);
             } else {
                 multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
             }
         }
 
-        private void show_docks (bool with_gesture, bool is_cancel_animation) {
+        private void show_docks (bool is_cancel_animation) {
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 200;
@@ -778,7 +778,7 @@ namespace Gala {
                     clone.restore_easing_state ();
                 };
 
-                if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
+                if (!multitasking_gesture_tracker.recognizing || !AnimationsSettings.get_enable_animations ()) {
                     on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
@@ -786,7 +786,7 @@ namespace Gala {
             }
         }
 
-        private void hide_docks (bool with_gesture, bool is_cancel_animation) {
+        private void hide_docks (bool is_cancel_animation) {
             foreach (unowned var child in dock_clones.get_children ()) {
                 var dock = (Clutter.Clone) child;
                 var initial_y = dock.y;
@@ -809,7 +809,7 @@ namespace Gala {
                     dock.restore_easing_state ();
                 };
 
-                if (!with_gesture || !AnimationsSettings.get_enable_animations ()) {
+                if (!multitasking_gesture_tracker.recognizing || !AnimationsSettings.get_enable_animations ()) {
                     on_animation_end (1, 1, 0);
                 } else {
                     multitasking_gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);

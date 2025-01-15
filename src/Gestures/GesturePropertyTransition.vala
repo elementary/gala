@@ -79,9 +79,9 @@ public class Gala.GesturePropertyTransition : Object {
     }
 
     /**
-     * Starts animating the property from {@link from_value} to {@link to_value}. If with_gesture is true
+     * Starts animating the property from {@link from_value} to {@link to_value}. If the GestureTracker is recognizing
      * it will connect to the gesture trackers signals and animate according to the input finishing with an easing
-     * to the final position. If with_gesture is false it will just ease to the {@link to_value}.
+     * to the final position. If it's not it will just ease to the {@link to_value}.
      * #this will keep itself alive until the animation finishes so it is safe to immediatly unref it after creation and calling start.
      *
      * @param done_callback a callback for when the transition finishes. This shouldn't be used for setting state, instead state should
@@ -89,7 +89,7 @@ public class Gala.GesturePropertyTransition : Object {
      * done_callback will only be called if the animation finishes, not if it is interrupted e.g. by starting a new animation for the same property,
      * destroying the actor or removing the transition.
      */
-    public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
+    public void start (owned DoneCallback? done_callback = null) {
         ref ();
 
         this.done_callback = (owned) done_callback;
@@ -159,7 +159,7 @@ public class Gala.GesturePropertyTransition : Object {
             }
         };
 
-        if (with_gesture && AnimationsSettings.get_enable_animations ()) {
+        if (gesture_tracker.recognizing && AnimationsSettings.get_enable_animations ()) {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);

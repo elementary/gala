@@ -245,7 +245,7 @@ public class Gala.WindowClone : Clutter.Actor {
      *
      * @param animate Animate the transformation of the placement
      */
-    public void transition_to_original_state (bool with_gesture = false) {
+    public void transition_to_original_state () {
         var outer_rect = window.get_frame_rect ();
 
         unowned var display = window.get_display ();
@@ -257,18 +257,18 @@ public class Gala.WindowClone : Clutter.Actor {
         active = false;
         update_hover_widgets (true);
 
-        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start (with_gesture);
-        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (with_gesture, () => {
+        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start ();
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (() => {
             update_hover_widgets (false);
             toggle_shadow (false);
         });
 
         if (should_fade ()) {
-            new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 0u).start (with_gesture);
+            new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 0u).start ();
         }
     }
 
@@ -276,9 +276,9 @@ public class Gala.WindowClone : Clutter.Actor {
      * Animate the window to the given slot
      */
 #if HAS_MUTTER45
-    public void take_slot (Mtk.Rectangle rect, bool from_window_position, bool with_gesture = false) {
+    public void take_slot (Mtk.Rectangle rect, bool from_window_position) {
 #else
-    public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false) {
+    public void take_slot (Meta.Rectangle rect, bool from_window_position) {
 #endif
         slot = rect;
         active = false;
@@ -294,13 +294,13 @@ public class Gala.WindowClone : Clutter.Actor {
 
         update_hover_widgets (true);
 
-        new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 255u).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
-        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
+        new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 255u).start ();
+        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start ();
+        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (() => {
             update_hover_widgets (false);
             toggle_shadow (true);
         });

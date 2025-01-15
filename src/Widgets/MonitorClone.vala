@@ -92,17 +92,17 @@ namespace Gala {
         /**
          * Animate the windows from their old location to a tiled layout
          */
-        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void open (bool is_cancel_animation = false) {
             window_container.restack_windows ();
-            window_container.open (null, with_gesture, is_cancel_animation);
+            window_container.open (null, is_cancel_animation);
         }
 
         /**
          * Animate the windows back to their old location
          */
-        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+        public void close (bool is_cancel_animation = false) {
             window_container.restack_windows ();
-            window_container.close (with_gesture);
+            window_container.close ();
         }
 
         private void window_left (int window_monitor, Meta.Window window) {
