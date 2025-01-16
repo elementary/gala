@@ -47,9 +47,7 @@ public class Gala.WindowIcon : Clutter.Actor {
 
         var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
         try {
-            var image = new Clutter.Image ();
-            Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-            image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+            var image = new Gala.Image.from_pixbuf (pixbuf);
             set_content (image);
         } catch (Error e) {}
     }

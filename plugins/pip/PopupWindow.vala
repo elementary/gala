@@ -316,7 +316,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
         restore_easing_state ();
 
+#if HAS_MUTTER48
+        GLib.Timeout.add (duration, () => {
+#else
         Clutter.Threads.Timeout.add (duration, () => {
+#endif
             closed ();
             return Source.REMOVE;
         });
