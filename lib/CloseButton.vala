@@ -33,10 +33,7 @@ public class Gala.CloseButton : Clutter.Actor {
         var pixbuf = get_close_button_pixbuf (scale);
         if (pixbuf != null) {
             try {
-                var image = new Clutter.Image ();
-                Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-                image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
-
+                var image = new Gala.Image.from_pixbuf (pixbuf);
                 pixbuf_actor.set_content (image);
                 pixbuf_actor.set_size (pixbuf.width, pixbuf.height);
                 set_size (pixbuf.width, pixbuf.height);

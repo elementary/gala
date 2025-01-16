@@ -78,7 +78,11 @@ namespace Gala {
                 var scale = display.get_monitor_scale (display.get_current_monitor ());
                 update_cursor_size (scale);
 
+#if HAS_MUTTER48
+                unowned var tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
                 unowned var tracker = display.get_cursor_tracker ();
+#endif
                 Graphene.Point coords = {};
                 tracker.get_pointer (out coords, null);
 
