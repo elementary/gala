@@ -1,0 +1,139 @@
+// Non mini-object
+ActorBox struct
+Margin struct
+PaintVolume struct
+Perspective struct
+
+*.ref unowned
+* cheader_filename="clutter/clutter.h"
+
+// Fix the few clutter-pango headers
+Text cheader_filename="clutter/clutter-pango.h"
+TextBuffer cheader_filename="clutter/clutter-pango.h"
+TextNode cheader_filename="clutter/clutter-pango.h"
+Actor
+	.get_pango_context cheader_filename="clutter/clutter-pango.h"
+	.create_pango_context cheader_filename="clutter/clutter-pango.h"
+	.create_pango_layout cheader_filename="clutter/clutter-pango.h"
+
+
+Actor
+	.apply_transform.matrix ref
+	.get_abs_allocation_vertices.verts out=false
+Event.type#method name="get_type"
+
+// ???
+Actor.has_pointer#method name="get_has_pointer"
+
+// Not all backing symbols are deprecated
+Actor.pick deprecated=false
+
+// Nullable return values
+Actor
+	.get_parent nullable
+
+// method/virtual-method/signal don't match
+Actor
+	.event#method name="emit_event"
+	.get_paint_volume#virtual_method name="get_paint_volume_vfunc"
+	.get_paint_volume#virtual_method.volume out
+Text
+	.activate#method name="try_activate"
+	.insert_text#signal skip
+TextBuffer.get_text#virtual_method name="get_text_with_length"
+
+// Default values
+Stage.read_pixels
+	.width default=-1
+	.height default=-1
+Stage.paint_to_buffer
+    .data type="uint8[]"
+Text
+	.position_to_coords.line_height default=null
+
+// Skipped by g-i for unknown reasons
+LayoutManager
+	.create_child_meta skip=false
+
+// We can use static strings
+PaintNode
+	.set_static_name skip=false
+
+// Variadic arguments
+Backend
+	.get_cogl_context skip=false
+Interval
+	.new skip=false
+	.get_interval skip=false
+	.set_final skip=false
+	.set_initial skip=false
+	.set_interval skip=false
+LayoutManager
+	.child_get skip=false
+	.child_set skip=false
+
+// Skipped upstream for unknown reasons
+Interval.register_progress_func skip=false
+
+// struct/class confusion
+ActorBox
+	.new skip
+	.from_vertices skip
+Margin
+	.new skip
+
+// Upstream
+Event
+	.get_position.position out
+
+FrameListenerIface skip
+FrameClock.new skip
+
+// Remove for clutter-2.0
+/////////////////////////
+
+StageView.layout skip
+
+Stage
+	.paint_view.redraw_clip type="Cairo.Region"
+
+// *Event should be compact classes derived from Clutter.Event
+Event.type skip=false
+AnyEvent struct=false base_type="Clutter.Event"
+ButtonEvent struct=false base_type="Clutter.Event"
+CrossingEvent struct=false base_type="Clutter.Event"
+DeviceEvent struct=false base_type="Clutter.Event"
+IMEvent struct=false base_type="Clutter.Event"
+KeyEvent struct=false base_type="Clutter.Event"
+MotionEvent struct=false base_type="Clutter.Event"
+PadButtonEvent struct=false base_type="Clutter.Event"
+PadRingEvent struct=false base_type="Clutter.Event"
+PadStripEvent struct=false base_type="Clutter.Event"
+ProximityEvent struct=false base_type="Clutter.Event"
+ScrollEvent struct=false base_type="Clutter.Event"
+TouchEvent struct=false base_type="Clutter.Event"
+TouchpadHoldEvent struct=false base_type="Clutter.Event"
+TouchpadPinchEvent struct=false base_type="Clutter.Event"
+TouchpadSwipeEvent struct=false base_type="Clutter.Event"
+
+// Keysyms used to be CLUTTER_X instead of CLUTTER_KEY_X
+*#constant skip
+CURRENT_TIME skip=false
+PRIORITY_REDRAW skip=false
+
+// Clutter devs don't like us creating nested namespaces
+value_* name="value_(.+)" parent="Clutter.Value"
+threads_* name="threads_(.+)" parent="Clutter.Threads"
+
+// There is no way to know sealed classes before GLib 2.70
+ColorState sealed
+FrameClock sealed
+TextureContent sealed
+
+TextureContent.new_from_texture symbol_type="constructor"
+
+// Possibly keep
+KEY_* skip=false name="KEY_(.+)" type="uint" parent="Clutter.Key"
+BUTTON_* skip=false name="BUTTON_(.+)" type="uint32" parent="Clutter.Button"
+EVENT_STOP skip=false type="bool"
+EVENT_PROPAGATE skip=false type="bool"

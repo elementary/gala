@@ -60,7 +60,9 @@ namespace Gala {
 
         private SystemBackground system_background;
 
+#if !HAS_MUTTER48
         private Meta.PluginInfo info;
+#endif
 
         private WindowSwitcher? window_switcher = null;
 
@@ -131,8 +133,10 @@ namespace Gala {
             gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
             gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
+#if !HAS_MUTTER46
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
+#endif
 
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
             new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
@@ -205,7 +209,11 @@ namespace Gala {
 
             notification_stack = new NotificationStack (display);
 
+#if HAS_MUTTER48
+            stage = display.get_compositor ().get_stage () as Clutter.Stage;
+#else
             stage = display.get_stage () as Clutter.Stage;
+#endif
             var background_settings = new GLib.Settings ("org.gnome.desktop.background");
             var color = background_settings.get_string ("primary-color");
 #if HAS_MUTTER47
@@ -249,7 +257,11 @@ namespace Gala {
             update_ui_group_size ();
             stage.add_child (ui_group);
 
+#if HAS_MUTTER48
+            window_group = display.get_compositor ().get_window_group ();
+#else
             window_group = display.get_window_group ();
+#endif
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
 
@@ -258,7 +270,11 @@ namespace Gala {
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
+#if HAS_MUTTER48
+            top_window_group = display.get_compositor ().get_top_window_group ();
+#else
             top_window_group = display.get_top_window_group ();
+#endif
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
@@ -836,7 +852,11 @@ namespace Gala {
             proxy.grab = stage.grab (actor);
 
             if (modal_stack.size == 1) {
+#if HAS_MUTTER48
+                display.get_compositor ().disable_unredirect ();
+#else
                 display.disable_unredirect ();
+#endif
             }
 
             return proxy;
@@ -860,7 +880,11 @@ namespace Gala {
 
             unowned Meta.Display display = get_display ();
 
+#if HAS_MUTTER48
+            display.get_compositor ().enable_unredirect ();
+#else
             display.enable_unredirect ();
+#endif
         }
 
         /**
@@ -2306,9 +2330,11 @@ namespace Gala {
             return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
         }
 
+#if !HAS_MUTTER46
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
+#endif
 
         private string generate_screenshot_filename () {
             var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
