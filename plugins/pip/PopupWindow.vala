@@ -201,7 +201,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
+#if HAS_MUTTER48
+        display.set_cursor (Meta.Cursor.MOVE);
+#else
         display.set_cursor (Meta.Cursor.DND_IN_DRAG);
+#endif
 
         return this;
     }
@@ -304,7 +308,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
         restore_easing_state ();
 
+#if HAS_MUTTER48
+        GLib.Timeout.add (duration, () => {
+#else
         Clutter.Threads.Timeout.add (duration, () => {
+#endif
             closed ();
             return Source.REMOVE;
         });

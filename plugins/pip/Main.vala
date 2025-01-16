@@ -129,7 +129,11 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
     private Meta.WindowActor? get_window_actor_at (int x, int y) {
         unowned Meta.Display display = wm.get_display ();
+#if HAS_MUTTER48
+        unowned List<Meta.WindowActor> actors = display.get_compositor ().get_window_actors ();
+#else
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
+#endif
 
         var copy = actors.copy ();
         copy.reverse ();
@@ -153,7 +157,11 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
     private Meta.WindowActor? get_active_window_actor () {
         unowned Meta.Display display = wm.get_display ();
+#if HAS_MUTTER48
+        unowned List<Meta.WindowActor> actors = display.get_compositor ().get_window_actors ();
+#else
         unowned List<Meta.WindowActor> actors = display.get_window_actors ();
+#endif
 
         var copy = actors.copy ();
         copy.reverse ();

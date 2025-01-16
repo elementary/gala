@@ -260,7 +260,11 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         }
         wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
+#if HAS_MUTTER48
+        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
+#else
         Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
+#endif
             cleanup ();
 
             return Source.REMOVE;

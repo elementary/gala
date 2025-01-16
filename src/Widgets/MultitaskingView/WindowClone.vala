@@ -498,7 +498,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.opacity = 0;
         window_title.opacity = 0;
 
+#if HAS_MUTTER48
+        wm.get_display ().set_cursor (Meta.Cursor.MOVE);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+#endif
 
         return this;
     }
@@ -551,7 +555,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             }
         }
 
+#if HAS_MUTTER48
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE: Meta.Cursor.NO_DROP);
+#else
         wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
+#endif
     }
 
     /**

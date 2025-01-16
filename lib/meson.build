@@ -13,6 +13,7 @@ gala_lib_sources = files(
     'Drawing/Color.vala',
     'Drawing/StyleManager.vala',
     'Drawing/Utilities.vala',
+    'Image.vala',
     'Plugin.vala',
     'ShadowEffect.vala',
     'Utils.vala',

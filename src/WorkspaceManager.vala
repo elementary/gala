@@ -109,7 +109,11 @@ public class Gala.WorkspaceManager : Object {
             }
         }
 
+#if HAS_MUTTER48
+        unowned var window_actors = display.get_compositor ().get_window_actors ();
+#else
         unowned var window_actors = display.get_window_actors ();
+#endif
         foreach (var actor in window_actors) {
             var win = actor.meta_window;
 

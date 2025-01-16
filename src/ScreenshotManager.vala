@@ -584,7 +584,11 @@ public class Gala.ScreenshotManager : Object {
     }
 
     private Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
-        unowned Meta.CursorTracker cursor_tracker = wm.get_display ().get_cursor_tracker ();
+#if HAS_MUTTER48
+        unowned var cursor_tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var cursor_tracker = wm.get_display ().get_cursor_tracker ();
+#endif
         Graphene.Point coords = {};
         cursor_tracker.get_pointer (out coords, null);
 
