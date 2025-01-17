@@ -388,5 +388,15 @@ namespace Gala {
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
         }
+
+        public static void update_transients_visible (Meta.Window window, bool visible) {
+            window.foreach_transient ((transient) => {
+                unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
+
+                actor.visible = visible;
+
+                return true;
+            });
+        }
     }
 }
