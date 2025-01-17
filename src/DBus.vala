@@ -1,27 +1,31 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2024-2025 elementary, Inc. (https://elementary.io)
  *                         2012-2014 Tom Beckmann
  *                         2012-2014 Jacob Parker
  */
 
 [DBus (name="org.pantheon.gala")]
 public class Gala.DBus {
-    private static DBus? instance;
-    private static WindowManagerGala wm;
+    private WindowManagerGala wm;
 
     [DBus (visible = false)]
-    public static void init (WindowManagerGala _wm, DBusAccelerator dbus_accelerator) {
+    public DBus (WindowManagerGala _wm) {
         wm = _wm;
+    }
 
+    public void perform_action (ActionType type) throws DBusError, IOError {
+        wm.perform_action (type);
+    }
+}
+
+
+public class Gala.DBusManager : GLib.Object {
+    public DBusManager (WindowManagerGala wm, DBusAccelerator dbus_accelerator) {
         Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
             (connection) => {
-                if (instance == null) {
-                    instance = new DBus ();
-                }
-
                 try {
-                    connection.register_object ("/org/pantheon/gala", instance);
+                    connection.register_object ("/org/pantheon/gala", new DBus (wm));
                 } catch (Error e) {
                     warning (e.message);
                 }
@@ -76,9 +80,5 @@ public class Gala.DBus {
             () => {},
             () => critical ("Could not acquire ScreenSaver bus")
         );
-    }
-
-    public void perform_action (ActionType type) throws DBusError, IOError {
-        wm.perform_action (type);
     }
 }

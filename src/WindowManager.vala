@@ -75,6 +75,8 @@ namespace Gala {
 
         private DBusAccelerator dbus_accelerator;
 
+        private DBusManager dbus_manager;
+
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -193,7 +195,7 @@ namespace Gala {
 
             media_feedback = new MediaFeedback ();
             dbus_accelerator = new DBusAccelerator (display, media_feedback);
-            DBus.init (this, dbus_accelerator);
+            dbus_manager = new DBusManager (this, dbus_accelerator);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
