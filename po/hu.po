@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-12-08 11:16+0000\n"
+"PO-Revision-Date: 2025-01-16 17:55+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementary.io/projects/desktop/gala/"
 "hu/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -128,17 +128,17 @@ msgstr "Frissített fordítások"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Ritka összeomlás javítva dokk ablak leállításakor"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Gyorsparancs interaktív képernyőképhez"
 
 #: data/gala.metainfo.xml.in:37
-#, fuzzy
-#| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Esetleges összeomlás javítva képernyőkép készítésekor"
+msgstr ""
+"Összeomlás javítva ablakok felosztásával kapcsolatos gyorsparancsok "
+"használatakor"
 
 #: data/gala.metainfo.xml.in:56
 msgid "Improved shadows performance"
