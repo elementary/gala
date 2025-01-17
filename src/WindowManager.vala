@@ -67,9 +67,13 @@ namespace Gala {
 
         public ScreenSaverManager? screensaver { get; private set; }
 
-        private HotCornerManager? hot_corner_manager = null;
+        private HotCornerManager hot_corner_manager;
 
         public WindowTracker? window_tracker { get; private set; }
+
+        private MediaFeedback media_feedback;
+
+        private DBusAccelerator dbus_accelerator;
 
         /**
          * Allow to zoom in/out the entire desktop.
@@ -187,9 +191,9 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
-            DBus.init (this);
-            DBusAccelerator.init (display);
-            MediaFeedback.init ();
+            media_feedback = new MediaFeedback ();
+            dbus_accelerator = new DBusAccelerator (display, media_feedback);
+            DBus.init (this, dbus_accelerator);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
