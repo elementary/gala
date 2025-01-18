@@ -72,15 +72,17 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell")]
     public class DBusAccelerator {
+        private const string NOTIFICATION_COMPONENT_NAME = "DBusAccelerator";
+
         public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
         private Meta.Display display;
-        private MediaFeedback media_feedback;
+        private NotificationsManager notifications_manager;
         private GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
 
-        public DBusAccelerator (Meta.Display _display, MediaFeedback _media_feedback) {
+        public DBusAccelerator (Meta.Display _display, NotificationsManager _notifications_manager) {
             display = _display;
-            media_feedback = _media_feedback;
+            notifications_manager = _notifications_manager;
 
             grabbed_accelerators = new HashTable<unowned string, GrabbedAccelerator> (str_hash, str_equal);
             display.accelerator_activated.connect (on_accelerator_activated);
@@ -168,7 +170,19 @@ namespace Gala {
                 level = (int)(double_level * 100);
             }
 
-            media_feedback.send (icon, level);
+            var hints = new GLib.HashTable<string, Variant> (null, null);
+            hints.set ("x-canonical-private-synchronous", new Variant.string ("gala-feedback"));
+            hints.set ("value", new Variant.int32 (level));
+
+            notifications_manager.send (
+                new NotificationsManager.NotificationData (
+                    NOTIFICATION_COMPONENT_NAME,
+                    label,
+                    "",
+                    icon,
+                    hints
+                )
+            );
         }
     }
 }
