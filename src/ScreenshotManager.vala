@@ -17,10 +17,12 @@
 
 [DBus (name="org.gnome.Shell.Screenshot")]
 public class Gala.ScreenshotManager : GLib.Object {
+    private const string NOTIFICATION_COMPONENT_NAME = "ScreenshotManager";
     private const string EXTENSION = ".png";
     private const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
     private WindowManager wm;
+    private NotificationsManager notifications_manager;
     private Settings desktop_settings;
 
     private string prev_font_regular;
@@ -29,8 +31,9 @@ public class Gala.ScreenshotManager : GLib.Object {
     private uint conceal_timeout;
 
     [DBus (visible = false)]
-    public ScreenshotManager (WindowManager _wm) {
+    public ScreenshotManager (WindowManager _wm, NotificationsManager _notifications_manager) {
         wm = _wm;
+        notifications_manager = _notifications_manager;
     }
 
     construct {
@@ -92,6 +95,7 @@ public class Gala.ScreenshotManager : GLib.Object {
 
         if (success) {
             play_shutter_sound ();
+            send_notification (filename == "");
         }
     }
 
@@ -123,6 +127,7 @@ public class Gala.ScreenshotManager : GLib.Object {
 
         if (success) {
             play_shutter_sound ();
+            send_notification (filename == "");
         } else {
             throw new DBusError.FAILED ("Failed to save image");
         }
@@ -181,6 +186,7 @@ public class Gala.ScreenshotManager : GLib.Object {
 
         if (success) {
             play_shutter_sound ();
+            send_notification (filename == "");
         }
     }
 
@@ -379,6 +385,18 @@ public class Gala.ScreenshotManager : GLib.Object {
         props.sets (Canberra.PROP_CANBERRA_CACHE_CONTROL, "permanent");
 
         context.play_full (0, props, null);
+    }
+
+    private void send_notification (bool clipboard) {
+        notifications_manager.send (
+            new NotificationsManager.NotificationData (
+                NOTIFICATION_COMPONENT_NAME,
+                "Screenshot taken",
+                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                "image-x-generic",
+                new GLib.HashTable<string, Variant> (null, null)
+            )
+        );
     }
 
     private Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
