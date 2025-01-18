@@ -21,16 +21,6 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
-        private static ScreenshotManager? instance;
-
-        [DBus (visible = false)]
-        public static unowned ScreenshotManager init (WindowManager wm) {
-            if (instance == null)
-                instance = new ScreenshotManager (wm);
-
-            return instance;
-        }
-
         private WindowManager wm;
         private Settings desktop_settings;
 
@@ -39,12 +29,13 @@ namespace Gala {
         private string prev_font_mono;
         private uint conceal_timeout;
 
-        construct {
-            desktop_settings = new Settings ("org.gnome.desktop.interface");
+        [DBus (visible = false)]
+        public ScreenshotManager (WindowManager _wm) {
+            wm = _wm;
         }
 
-        private ScreenshotManager (WindowManager _wm) {
-            wm = _wm;
+        construct {
+            desktop_settings = new Settings ("org.gnome.desktop.interface");
         }
 
         public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {
