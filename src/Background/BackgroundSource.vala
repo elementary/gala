@@ -96,7 +96,7 @@ namespace Gala {
                     background.update_resolution ();
                     return false;
                 } else {
-                    background.changed.disconnect (background_changed);
+                    background.invalidate.disconnect (background_invalidated);
                     background.destroy ();
                     return true;
                 }
@@ -121,7 +121,7 @@ namespace Gala {
             var background = backgrounds.lookup (monitor_index);
             if (background == null) {
                 background = new Background (display, monitor_index, filename, this, (GDesktop.BackgroundStyle) style);
-                background.changed.connect (background_changed);
+                background.invalidate.connect (background_invalidated);
                 backgrounds.insert (monitor_index, background);
             }
 
@@ -146,8 +146,8 @@ namespace Gala {
             return uri;
         }
 
-        private void background_changed (Background background) {
-            background.changed.disconnect (background_changed);
+        private void background_invalidated (Background background) {
+            background.invalidate.disconnect (background_invalidated);
             background.destroy ();
             backgrounds.remove (background.monitor_index);
         }
@@ -157,7 +157,7 @@ namespace Gala {
             monitor_manager = null;
 
             backgrounds.foreach_remove ((hash, background) => {
-                background.changed.disconnect (background_changed);
+                background.invalidate.disconnect (background_invalidated);
                 background.destroy ();
                 return true;
             });
