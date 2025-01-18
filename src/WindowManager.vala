@@ -194,7 +194,7 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
 
             notifications_manager = new NotificationsManager ();
-            screenshot_manager = new ScreenshotManager (this);
+            screenshot_manager = new ScreenshotManager (this, notifications_manager);
             dbus_accelerator = new DBusAccelerator (display, notifications_manager);
             DBus.init (this, dbus_accelerator, screenshot_manager);
 

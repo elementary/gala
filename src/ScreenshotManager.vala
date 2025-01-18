@@ -21,7 +21,10 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
+        private const string NOTIFICATION_COMPONENT_NAME = "ScreenshotManager";
+
         private WindowManager wm;
+        private NotificationsManager notifications_manager;
         private Settings desktop_settings;
 
         private string prev_font_regular;
@@ -30,8 +33,9 @@ namespace Gala {
         private uint conceal_timeout;
 
         [DBus (visible = false)]
-        public ScreenshotManager (WindowManager _wm) {
+        public ScreenshotManager (WindowManager _wm, NotificationsManager _notifications_manager) {
             wm = _wm;
+            notifications_manager = _notifications_manager;
         }
 
         construct {
@@ -93,6 +97,7 @@ namespace Gala {
 
             if (success) {
                 play_shutter_sound ();
+                send_notification (filename == "");
             }
         }
 
@@ -124,6 +129,7 @@ namespace Gala {
 
             if (success) {
                 play_shutter_sound ();
+                send_notification (filename == "");
             } else {
                 throw new DBusError.FAILED ("Failed to save image");
             }
@@ -182,6 +188,7 @@ namespace Gala {
 
             if (success) {
                 play_shutter_sound ();
+                send_notification (filename == "");
             }
         }
 
@@ -380,6 +387,18 @@ namespace Gala {
             props.sets (Canberra.PROP_CANBERRA_CACHE_CONTROL, "permanent");
 
             context.play_full (0, props, null);
+        }
+
+        private void send_notification (bool clipboard) {
+            notifications_manager.send (
+                new NotificationsManager.NotificationData (
+                    NOTIFICATION_COMPONENT_NAME,
+                    "Screenshot taken",
+                    clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                    "image-x-generic",
+                    new GLib.HashTable<string, Variant> (null, null)
+                )
+            );
         }
 
         private Cairo.ImageSurface take_screenshot (int x, int y, int width, int height, bool include_cursor) {
