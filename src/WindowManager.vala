@@ -71,6 +71,8 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
+        private NotificationsManager notifications_manager;
+
         private DBusAccelerator dbus_accelerator;
 
         private ScreenshotManager screenshot_manager;
@@ -191,10 +193,10 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
+            notifications_manager = new NotificationsManager ();
             screenshot_manager = new ScreenshotManager (this);
-            dbus_accelerator = new DBusAccelerator (display);
+            dbus_accelerator = new DBusAccelerator (display, notifications_manager);
             DBus.init (this, dbus_accelerator, screenshot_manager);
-            MediaFeedback.init ();
 
             WindowListener.init (display);
             KeyboardManager.init (display);
