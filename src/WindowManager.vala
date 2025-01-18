@@ -75,6 +75,8 @@ namespace Gala {
 
         private DBusAccelerator dbus_accelerator;
 
+        private ScreenshotManager screenshot_manager;
+
         private DBusManager dbus_manager;
 
         /**
@@ -195,7 +197,8 @@ namespace Gala {
 
             notifications_manager = new NotificationsManager ();
             dbus_accelerator = new DBusAccelerator (display, notifications_manager);
-            dbus_manager = new DBusManager (this, dbus_accelerator);
+            screenshot_manager = new ScreenshotManager (this);
+            dbus_manager = new DBusManager (this, dbus_accelerator, screenshot_manager);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
@@ -2323,7 +2326,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
@@ -2335,8 +2337,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-
-                unowned var screenshot_manager = ScreenshotManager.init (this);
 
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
@@ -2351,7 +2351,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
