@@ -28,7 +28,7 @@ namespace Gala {
         private GestureTracker multitasking_gesture_tracker;
         private GestureTracker workspace_gesture_tracker;
 
-        public WindowManager wm { get; construct; }
+        public WindowManagerGala wm { get; construct; }
 
         private Meta.Display display;
         private ModalProxy modal_proxy;
@@ -48,7 +48,7 @@ namespace Gala {
 
         private bool switching_workspace_with_gesture = false;
 
-        public MultitaskingView (WindowManager wm) {
+        public MultitaskingView (WindowManagerGala wm) {
             Object (wm: wm);
         }
 
@@ -629,6 +629,7 @@ namespace Gala {
                 wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
+                wm.shell_group.hide ();
                 show ();
                 grab_key_focus ();
 
@@ -691,6 +692,7 @@ namespace Gala {
                         wm.background_group.show ();
                         wm.window_group.show ();
                         wm.top_window_group.show ();
+                        wm.shell_group.show ();
 
                         dock_clones.destroy_all_children ();
 
@@ -719,7 +721,7 @@ namespace Gala {
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 200;
 
-                if (actor.is_destroyed () || !actor.visible) {
+                if (actor.is_destroyed () || !actor.visible || actor.translation_y != 0) {
                     continue;
                 }
 

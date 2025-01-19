@@ -37,7 +37,13 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        public Clutter.Actor notification_group { get; protected set; }
+        /**
+         * The group that contains all WindowActors that make shell elements, that is all windows reported as
+         * ShellClientsManager.is_positioned_window.
+         * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
+         * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
+         */
+        public Clutter.Actor shell_group { get; private set; }
 
         /**
          * {@inheritDoc}
@@ -103,8 +109,6 @@ namespace Gala {
         private GestureTracker gesture_tracker;
         private bool animating_switch_workspace = false;
         private bool switch_workspace_with_gesture = false;
-
-        private signal void window_created (Meta.Window window);
 
         /**
          * Amount of pixels to move on the nudge animation.
@@ -253,14 +257,6 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-#if HAS_MUTTER44
-            var feedback_group = display.get_compositor ().get_feedback_group ();
-#else
-            var feedback_group = display.get_feedback_group ();
-#endif
-            stage.remove_child (feedback_group);
-            ui_group.add_child (feedback_group);
-
             // Initialize plugins and add default components if no plugin overrides them
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
@@ -293,8 +289,16 @@ namespace Gala {
             }
 
             // Add the remaining components that should be on top
-            notification_group = new Clutter.Actor ();
-            ui_group.add_child (notification_group);
+            shell_group = new Clutter.Actor ();
+            ui_group.add_child (shell_group);
+
+#if HAS_MUTTER44
+            var feedback_group = display.get_compositor ().get_feedback_group ();
+#else
+            var feedback_group = display.get_feedback_group ();
+#endif
+            stage.remove_child (feedback_group);
+            ui_group.add_child (feedback_group);
 
             pointer_locator = new PointerLocator (display);
             ui_group.add_child (pointer_locator);
@@ -381,11 +385,13 @@ namespace Gala {
 
             update_input_area ();
 
-            display.window_created.connect ((window) => window_created (window));
-
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
             stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
+
+            display.window_created.connect ((window) =>
+                InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
+            );
 
             stage.show ();
 
@@ -1164,6 +1170,17 @@ namespace Gala {
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
+        private void check_shell_window (Meta.WindowActor actor) {
+            unowned var window = actor.get_meta_window ();
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                InternalUtils.clutter_actor_reparent (actor, shell_group);
+            }
+
+            if (NotificationStack.is_notification (window)) {
+                notification_stack.show_notification (actor);
+            }
+        }
+
         /*
          * effects
          */
@@ -1438,12 +1455,8 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            // Notifications are a special case and have to be always be handled
-            // (also regardless of the animation setting)
+            // Notifications initial animation is handled by the notification stack
             if (NotificationStack.is_notification (window)) {
-                InternalUtils.clutter_actor_reparent (actor, notification_group);
-                notification_stack.show_notification (actor);
-
                 map_completed (actor);
                 return;
             }
@@ -1845,7 +1858,6 @@ namespace Gala {
         private List<Clutter.Actor>? windows;
         private List<Clutter.Actor>? parents;
         private List<Clutter.Actor>? tmp_actors;
-        private ulong switch_workspace_window_created_id = 0;
         private Clutter.Actor? out_group;
         private Clutter.Actor? in_group;
         private Clutter.Actor? wallpaper;
@@ -1934,7 +1946,10 @@ namespace Gala {
                     continue;
                 }
 
-                if (!window.showing_on_its_workspace () || move_primary_only && !window.is_on_primary_monitor ()) {
+                if (!window.showing_on_its_workspace () ||
+                    move_primary_only && !window.is_on_primary_monitor () ||
+                    actor.get_parent () == shell_group
+                ) {
                     continue;
                 }
 
@@ -2047,17 +2062,6 @@ namespace Gala {
 
             prepare_workspace_switch (from, to, direction);
 
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (NotificationStack.is_notification (window)) {
-                    InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                        InternalUtils.clutter_actor_reparent (actor, notification_group);
-                        notification_stack.show_notification (actor);
-                    });
-                }
-            });
-
             var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
 
             var x2 = -in_group.x;
@@ -2129,11 +2133,8 @@ namespace Gala {
                 return;
             }
 
-            if (switch_workspace_window_created_id > 0) {
-                disconnect (switch_workspace_window_created_id);
-                switch_workspace_window_created_id = 0;
-            }
             end_switch_workspace ();
+
             if (!is_nudge_animation) {
                 switch_workspace_completed ();
             }
@@ -2159,7 +2160,7 @@ namespace Gala {
         }
 
         private void end_switch_workspace () {
-            if (windows == null || parents == null)
+            if ((windows == null || parents == null) && tmp_actors == null)
                 return;
 
             unowned var display = get_display ();
