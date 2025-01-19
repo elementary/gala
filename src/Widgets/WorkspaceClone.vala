@@ -37,7 +37,12 @@ namespace Gala {
         }
 
         construct {
-            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#if HAS_MUTTER47
+            unowned var ctx = context.get_backend ().get_cogl_context ();
+#else
+            unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
+#endif
+            pipeline = new Cogl.Pipeline (ctx);
             var primary = display.get_primary_monitor ();
             var monitor_geom = display.get_monitor_geometry (primary);
 

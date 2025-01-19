@@ -380,5 +380,23 @@ namespace Gala {
             new_parent.add_child (actor);
             actor.unref ();
         }
+
+        public static void bell_notify (Meta.Display display) {
+#if HAS_MUTTER47
+            display.get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
+#else
+            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+#endif
+        }
+
+        public static void update_transients_visible (Meta.Window window, bool visible) {
+            window.foreach_transient ((transient) => {
+                unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
+
+                actor.visible = visible;
+
+                return true;
+            });
+        }
     }
 }

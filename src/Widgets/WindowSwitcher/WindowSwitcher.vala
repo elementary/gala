@@ -377,7 +377,7 @@ public class Gala.WindowSwitcher : CanvasActor {
 
     private void open_switcher () {
         if (container.get_n_children () == 0) {
-            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            InternalUtils.bell_notify (wm.get_display ());
             return;
         }
 
@@ -473,7 +473,7 @@ public class Gala.WindowSwitcher : CanvasActor {
         Clutter.Actor actor;
 
         if (container.get_n_children () == 1 && current_icon != null) {
-            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            InternalUtils.bell_notify (wm.get_display ());
             return;
         }
 

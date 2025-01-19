@@ -51,7 +51,13 @@ namespace Gala {
             visible = false;
             reactive = false;
 
-            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#if HAS_MUTTER47
+            unowned var backend = context.get_backend ();
+#else
+            unowned var backend = Clutter.get_default_backend ();
+#endif
+
+            pipeline = new Cogl.Pipeline (backend.get_cogl_context ());
 
             transition = new Clutter.PropertyTransition ("angle");
             transition.set_progress_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
@@ -65,7 +71,7 @@ namespace Gala {
 
             interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
 
-            var seat = Clutter.get_default_backend ().get_default_seat ();
+            var seat = backend.get_default_seat ();
             seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
 
             seat.ptr_a11y_timeout_started.connect ((device, type, timeout) => {

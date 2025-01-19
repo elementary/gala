@@ -191,7 +191,7 @@ public class Gala.ShellClientsManager : Object {
     }
 
     private bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows);
+        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
     }
 
     public bool is_positioned_window (Meta.Window window) {
