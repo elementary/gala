@@ -55,6 +55,8 @@ public class Gala.PanelClone : Object {
             }
         });
 
+        wm.get_display ().in_fullscreen_changed.connect (check_hide);
+
         Idle.add_once (() => {
             if (hide_mode == NEVER) {
                 show ();
@@ -89,13 +91,17 @@ public class Gala.PanelClone : Object {
             return;
         }
 
-        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (true)).start ();
+        InternalUtils.update_transients_visible (panel.window, false);
+
+        new GesturePropertyTransition (
+            actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (true)
+        ).start (() => InternalUtils.update_transients_visible (panel.window, !panel_hidden));
 
         default_gesture_tracker.add_success_callback (() => panel_hidden = true);
     }
 
     private void show () {
-        if (!panel_hidden || default_gesture_tracker.has_started) {
+        if (!panel_hidden || default_gesture_tracker.has_started || wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ())) {
             return;
         }
 
@@ -103,8 +109,20 @@ public class Gala.PanelClone : Object {
             Utils.x11_unset_window_pass_through (panel.window);
         }
 
-        new GesturePropertyTransition (actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (false)).start ();
+        new GesturePropertyTransition (
+            actor, default_gesture_tracker, "translation-y", null, calculate_translation_y (false)
+        ).start (() => InternalUtils.update_transients_visible (panel.window, !panel_hidden));
 
         default_gesture_tracker.add_success_callback (() => panel_hidden = false);
+    }
+
+    private void check_hide () {
+        if (wm.get_display ().get_monitor_in_fullscreen (panel.window.get_monitor ())) {
+            hide ();
+        } else if (hide_mode == NEVER) {
+            show ();
+        } else {
+            hide_tracker.update_overlap ();
+        }
     }
 }
