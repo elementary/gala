@@ -13,10 +13,10 @@ public class Gala.ShellWindow : PositionedWindow {
         MULTITASKING_VIEW
     }
 
-    private Meta.WindowActor actor;
+    private const State HIDING_STATES = CUSTOM_HIDDEN | MULTITASKING_VIEW;
 
-    private State state = DESKTOP;
-    private bool hidden = false;
+    private Meta.WindowActor actor;
+    private State current_state = DESKTOP;
 
     private bool gesture_ongoing = false;
 
@@ -29,35 +29,15 @@ public class Gala.ShellWindow : PositionedWindow {
     }
 
     public void add_state (State state, GestureTracker gesture_tracker) {
-        this.state |= state;
-        check_hide (gesture_tracker);
+        animate (current_state | state, gesture_tracker);
     }
 
     public void remove_state (State state, GestureTracker gesture_tracker) {
-        this.state &= ~state;
-        check_hide (gesture_tracker);
+        animate (current_state & ~state, gesture_tracker);
     }
 
-    private void check_hide (GestureTracker gesture_tracker) {
-        if (gesture_ongoing) {
-            return;
-        }
-
-        if (CUSTOM_HIDDEN in state) {
-            animate (true, gesture_tracker);
-            return;
-        }
-
-        if (MULTITASKING_VIEW in state) {
-            animate (true, gesture_tracker);
-            return;
-        }
-
-        animate (false, gesture_tracker);
-    }
-
-    private void animate (bool hide, GestureTracker gesture_tracker) {
-        if (hide == hidden) {
+    private void animate (State new_state, GestureTracker gesture_tracker) {
+        if (new_state == current_state || gesture_ongoing) {
             return;
         }
 
@@ -70,11 +50,14 @@ public class Gala.ShellWindow : PositionedWindow {
         InternalUtils.update_transients_visible (window, false);
 
         new GesturePropertyTransition (
-            actor, gesture_tracker, get_animation_property (), null, calculate_value (hide)
-        ).start (true, () => InternalUtils.update_transients_visible (window, !hidden));
+            actor, gesture_tracker, get_animation_property (), null, calculate_value ((new_state & HIDING_STATES) != 0)
+        ).start (true, () => InternalUtils.update_transients_visible (window, (current_state & HIDING_STATES) == 0));
 
-        gesture_tracker.add_success_callback (false, () => {
-            hidden = hide;
+        gesture_tracker.add_success_callback (false, (percentage, completions) => {
+            if (completions != 0) {
+                current_state = new_state;
+            }
+
             gesture_ongoing = false;
         });
     }
