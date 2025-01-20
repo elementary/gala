@@ -70,6 +70,16 @@ public class Gala.PanelWindow : ShellWindow {
                 hide_tracker.schedule_update ();
             }
         });
+
+        window.display.in_fullscreen_changed.connect (() => {
+            if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
+                hide ();
+            } else if (hide_mode == NEVER) {
+                show ();
+            } else {
+                hide_tracker.update_overlap ();
+            }
+        });
     }
 
 #if HAS_MUTTER45
@@ -107,6 +117,10 @@ public class Gala.PanelWindow : ShellWindow {
     }
 
     private void show () {
+        if (window.display.get_monitor_in_fullscreen (window.get_monitor ())) {
+            return;
+        }
+
         remove_state (CUSTOM_HIDDEN, default_gesture_tracker);
     }
 

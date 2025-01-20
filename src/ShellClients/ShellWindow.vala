@@ -9,8 +9,8 @@ public class Gala.ShellWindow : PositionedWindow {
     [Flags]
     public enum State {
         CUSTOM_HIDDEN,
-        DESKTOP,
-        MULTITASKING_VIEW
+        MULTITASKING_VIEW,
+        DESKTOP
     }
 
     private const State HIDING_STATES = CUSTOM_HIDDEN | MULTITASKING_VIEW;
