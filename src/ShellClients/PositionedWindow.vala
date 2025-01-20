@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.WindowPositioner : Object {
+public class Gala.PositionedWindow : Object {
     public enum Position {
         TOP,
         BOTTOM,
@@ -21,7 +21,6 @@ public class Gala.WindowPositioner : Object {
         }
     }
 
-    public Meta.Display display { get; construct; }
     public Meta.Window window { get; construct; }
     /**
      * This may only be set after the window was shown.
@@ -30,8 +29,8 @@ public class Gala.WindowPositioner : Object {
     public Position position { get; construct set; }
     public Variant? position_data { get; construct set; }
 
-    public WindowPositioner (Meta.Display display, Meta.Window window, Position position, Variant? position_data = null) {
-        Object (display: display, window: window, position: position, position_data: position_data);
+    public PositionedWindow (Meta.Window window, Position position, Variant? position_data = null) {
+        Object (window: window, position: position, position_data: position_data);
     }
 
     construct {
@@ -41,7 +40,7 @@ public class Gala.WindowPositioner : Object {
         window.position_changed.connect (position_window);
         window.shown.connect (position_window);
 
-        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        unowned var monitor_manager = window.display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (position_window);
         monitor_manager.monitors_changed_internal.connect (position_window);
 
@@ -51,8 +50,8 @@ public class Gala.WindowPositioner : Object {
 
     private void position_window () {
         int x = 0, y = 0;
-
         var window_rect = window.get_frame_rect ();
+        unowned var display = window.display;
 
         switch (position) {
             case CENTER:

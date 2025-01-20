@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellWindow : WindowPositioner {
+public class Gala.ShellWindow : PositionedWindow {
     [Flags]
     public enum State {
         CUSTOM_HIDDEN,
@@ -21,7 +21,7 @@ public class Gala.ShellWindow : WindowPositioner {
     private bool gesture_ongoing = false;
 
     public ShellWindow (Meta.Window window, Position position, Variant? position_data = null) {
-        base (window.display, window, position, position_data);
+        base (window, position, position_data);
     }
 
     construct {

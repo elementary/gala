@@ -180,7 +180,7 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
-        panel_windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].hide_mode = hide_mode;
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
@@ -194,10 +194,18 @@ public class Gala.ShellClientsManager : Object {
         foreach (var window in positioned_windows.get_values ()) {
             window.add_state (state, gesture_tracker);
         }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.add_state (state, gesture_tracker);
+        }
     }
 
     public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker) {
         foreach (var window in positioned_windows.get_values ()) {
+            window.remove_state (state, gesture_tracker);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
             window.remove_state (state, gesture_tracker);
         }
     }

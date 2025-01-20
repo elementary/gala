@@ -5,22 +5,44 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : Object {
+public class Gala.PanelWindow : ShellWindow {
+    private const int ANIMATION_DURATION = 250;
+
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
-    public Meta.Window window { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
-    private WindowPositioner window_positioner;
+    public Pantheon.Desktop.HideMode hide_mode {
+        get {
+            return hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode;
+        }
+        set {
+            if (value == NEVER) {
+                hide_tracker = null;
+                show ();
+                make_exclusive ();
+                return;
+            } else if (hide_tracker == null) {
+                unmake_exclusive ();
 
-    private PanelClone clone;
+                hide_tracker = new HideTracker (wm.get_display (), this);
+                hide_tracker.hide.connect (hide);
+                hide_tracker.show.connect (show);
+            }
+
+            hide_tracker.hide_mode = value;
+        }
+    }
+
+    private GestureTracker default_gesture_tracker;
+    private HideTracker? hide_tracker;
 
     private int width = -1;
     private int height = -1;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
-        Object (wm: wm, window: window, anchor: anchor);
+        Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
 
     construct {
@@ -30,22 +52,24 @@ public class Gala.PanelWindow : Object {
             }
         });
 
-        window.stick ();
+        notify["anchor"].connect (() => position = Position.from_anchor (anchor));
 
-        clone = new PanelClone (wm, this);
-
-        unowned var display = wm.get_display ();
-
-        window_positioner = new WindowPositioner (display, window, WindowPositioner.Position.from_anchor (anchor));
-
-        notify["anchor"].connect (() => window_positioner.position = WindowPositioner.Position.from_anchor (anchor));
-
-        unowned var workspace_manager = display.get_workspace_manager ();
+        unowned var workspace_manager = window.display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
 
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
+
+        default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+
+        notify["hidden"].connect (() => {
+            // When hidden changes schedule an update to make sure it's actually
+            // correct since things might have changed during the animation
+            if (hide_tracker != null) {
+                hide_tracker.schedule_update ();
+            }
+        });
     }
 
 #if HAS_MUTTER45
@@ -78,14 +102,12 @@ public class Gala.PanelWindow : Object {
         update_strut ();
     }
 
-    public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
-        clone.hide_mode = hide_mode;
+    private void hide () {
+        add_state (CUSTOM_HIDDEN, default_gesture_tracker);
+    }
 
-        if (hide_mode == NEVER) {
-            make_exclusive ();
-        } else {
-            unmake_exclusive ();
-        }
+    private void show () {
+        remove_state (CUSTOM_HIDDEN, default_gesture_tracker);
     }
 
     private void make_exclusive () {
@@ -93,7 +115,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void update_strut () {
-        if (clone.hide_mode != NEVER) {
+        if (hide_mode != NEVER) {
             return;
         }
 
