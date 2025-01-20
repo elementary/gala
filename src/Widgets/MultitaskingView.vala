@@ -39,7 +39,6 @@ namespace Gala {
 
         private IconGroupContainer icon_groups;
         private Clutter.Actor workspaces;
-        private Clutter.Actor dock_clones;
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
 
@@ -83,8 +82,6 @@ namespace Gala {
 
             icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
-            dock_clones = new Clutter.Actor ();
-
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
@@ -101,7 +98,6 @@ namespace Gala {
             primary_monitor_container.add_child (icon_groups);
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
-            add_child (dock_clones);
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -631,7 +627,6 @@ namespace Gala {
                 wm.background_group.hide ();
                 wm.window_group.hide ();
                 wm.top_window_group.hide ();
-                //  wm.shell_group.hide ();
                 show ();
                 grab_key_focus ();
 
@@ -694,9 +689,6 @@ namespace Gala {
                         wm.background_group.show ();
                         wm.window_group.show ();
                         wm.top_window_group.show ();
-                        wm.shell_group.show ();
-
-                        dock_clones.destroy_all_children ();
 
                         wm.pop_modal (modal_proxy);
                     }
