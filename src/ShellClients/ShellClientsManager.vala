@@ -26,7 +26,7 @@ public class Gala.ShellClientsManager : Object {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -184,10 +184,22 @@ public class Gala.ShellClientsManager : Object {
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
-        positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
+        positioned_windows[window] = new ShellWindow (window, CENTER);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
+
+    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.add_state (state, gesture_tracker);
+        }
+    }
+
+    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.remove_state (state, gesture_tracker);
+        }
     }
 
     private bool is_itself_positioned (Meta.Window window) {
