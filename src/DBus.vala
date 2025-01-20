@@ -11,7 +11,7 @@ public class Gala.DBus {
     private static WindowManagerGala wm;
 
     [DBus (visible = false)]
-    public static void init (WindowManagerGala _wm) {
+    public static void init (WindowManagerGala _wm, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
         Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -34,7 +34,7 @@ public class Gala.DBus {
             (connection) => {
                 try {
                     connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm.get_display ()));
-                    connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
+                    connection.register_object ("/org/gnome/Shell/Screenshot", screenshot_manager);
                 } catch (Error e) { warning (e.message); }
             },
             () => {},
