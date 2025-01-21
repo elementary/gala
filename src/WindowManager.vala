@@ -585,20 +585,20 @@ namespace Gala {
             }
         }
 
-        private bool on_gesture_detected (Gesture gesture) {
+        private bool on_gesture_detected (GestureAction action) {
             if (workspace_view.is_opened ()) {
                 return false;
             }
 
-            var action = GestureSettings.get_action (gesture);
-            switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
+            switch_workspace_with_gesture = action.type == SWITCH_WORKSPACE || action.type == MOVE_TO_WORKSPACE;
+            return switch_workspace_with_gesture || (action.type == SWITCH_WINDOWS && !window_switcher.opened);
         }
 
-        private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
-            var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
+        private void on_gesture_handled (GestureAction action, uint32 timestamp) {
+            // If we are going forward we are moving right so in order to have the ui switch forward with us we have to go to a workspace to the left
+            var direction = action.direction == FORWARD ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT;
 
-            switch (GestureSettings.get_action (gesture)) {
+            switch (action.type) {
                 case MOVE_TO_WORKSPACE:
                     unowned var display = get_display ();
                     unowned var manager = display.get_workspace_manager ();
@@ -613,7 +613,7 @@ namespace Gala {
                     break;
 
                 case SWITCH_WINDOWS:
-                    window_switcher.handle_gesture (gesture.direction);
+                    window_switcher.handle_gesture (action.direction);
                     break;
 
                 default:
