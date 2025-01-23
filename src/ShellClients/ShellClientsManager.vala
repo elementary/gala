@@ -190,23 +190,23 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker) {
+    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
         foreach (var window in positioned_windows.get_values ()) {
-            window.add_state (state, gesture_tracker);
+            window.add_state (state, gesture_tracker, with_gesture);
         }
 
         foreach (var window in panel_windows.get_values ()) {
-            window.add_state (state, gesture_tracker);
+            window.add_state (state, gesture_tracker, with_gesture);
         }
     }
 
-    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker) {
+    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
         foreach (var window in positioned_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker);
+            window.remove_state (state, gesture_tracker, with_gesture);
         }
 
         foreach (var window in panel_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker);
+            window.remove_state (state, gesture_tracker, with_gesture);
         }
     }
 

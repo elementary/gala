@@ -113,7 +113,7 @@ public class Gala.PanelWindow : ShellWindow {
     }
 
     private void hide () {
-        add_state (CUSTOM_HIDDEN, default_gesture_tracker);
+        add_state (CUSTOM_HIDDEN, default_gesture_tracker, false);
     }
 
     private void show () {
@@ -121,7 +121,7 @@ public class Gala.PanelWindow : ShellWindow {
             return;
         }
 
-        remove_state (CUSTOM_HIDDEN, default_gesture_tracker);
+        remove_state (CUSTOM_HIDDEN, default_gesture_tracker, false);
     }
 
     private void make_exclusive () {

@@ -28,15 +28,15 @@ public class Gala.ShellWindow : PositionedWindow {
         actor = (Meta.WindowActor) window.get_compositor_private ();
     }
 
-    public void add_state (State state, GestureTracker gesture_tracker) {
-        animate (current_state | state, gesture_tracker);
+    public void add_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
+        animate (current_state | state, gesture_tracker, with_gesture);
     }
 
-    public void remove_state (State state, GestureTracker gesture_tracker) {
-        animate (current_state & ~state, gesture_tracker);
+    public void remove_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
+        animate (current_state & ~state, gesture_tracker, with_gesture);
     }
 
-    private void animate (State new_state, GestureTracker gesture_tracker) {
+    private void animate (State new_state, GestureTracker gesture_tracker, bool with_gesture) {
         if (new_state == current_state || gesture_ongoing) {
             return;
         }
@@ -51,9 +51,9 @@ public class Gala.ShellWindow : PositionedWindow {
 
         new GesturePropertyTransition (
             actor, gesture_tracker, get_animation_property (), null, calculate_value ((new_state & HIDING_STATES) != 0)
-        ).start (true, () => InternalUtils.update_transients_visible (window, (current_state & HIDING_STATES) == 0));
+        ).start (with_gesture, () => InternalUtils.update_transients_visible (window, (current_state & HIDING_STATES) == 0));
 
-        gesture_tracker.add_success_callback (false, (percentage, completions) => {
+        gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
             if (completions != 0) {
                 current_state = new_state;
             }

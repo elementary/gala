@@ -671,9 +671,9 @@ namespace Gala {
             }
 
             if (opening) {
-                ShellClientsManager.get_instance ().add_state (MULTITASKING_VIEW, multitasking_gesture_tracker);
+                ShellClientsManager.get_instance ().add_state (MULTITASKING_VIEW, multitasking_gesture_tracker, with_gesture);
             } else {
-                ShellClientsManager.get_instance ().remove_state (MULTITASKING_VIEW, multitasking_gesture_tracker);
+                ShellClientsManager.get_instance ().remove_state (MULTITASKING_VIEW, multitasking_gesture_tracker, with_gesture);
             }
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
