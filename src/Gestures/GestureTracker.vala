@@ -203,11 +203,9 @@ public class Gala.GestureTracker : Object {
         if (!with_gesture) {
             callback (1, 1, min_animation_duration);
         } else {
-            ulong handler_id = on_end.connect ((percentage, completions, duration) => {
-                if (completions != 0) {
-                    callback (percentage, completions, duration);
-                }
-            });
+            ulong handler_id = on_end.connect ((percentage, cancel_action, duration) =>
+                callback (percentage, cancel_action, duration)
+            );
             handlers.add (handler_id);
         }
     }
