@@ -7,7 +7,7 @@
 /**
  * Gala.NotificationsManager can be used to send notifications to org.freedesktop.Notifications
  */
- public class Gala.NotificationsManager : GLib.Object {
+public class Gala.NotificationsManager : GLib.Object {
     [DBus (name = "org.freedesktop.Notifications")]
     private interface DBusNotifications : GLib.Object {
         public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
