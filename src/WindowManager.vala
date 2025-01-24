@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2012-2014 Tom Beckmann, Rico Tzschichholz
+//                2025 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -70,6 +71,8 @@ namespace Gala {
         private HotCornerManager? hot_corner_manager = null;
 
         public WindowTracker? window_tracker { get; private set; }
+
+        private ScreenshotManager screenshot_manager;
 
         /**
          * Allow to zoom in/out the entire desktop.
@@ -187,7 +190,8 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
-            DBus.init (this);
+            screenshot_manager = new ScreenshotManager (this);
+            DBus.init (this, screenshot_manager);
             DBusAccelerator.init (display);
             MediaFeedback.init ();
 
@@ -2319,7 +2323,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
@@ -2331,8 +2334,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-
-                unowned var screenshot_manager = ScreenshotManager.init (this);
 
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
@@ -2347,7 +2348,6 @@ namespace Gala {
                 string filename = clipboard ? "" : generate_screenshot_filename ();
                 bool success = false;
                 string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
             } catch (Error e) {
                 // Ignore this error
