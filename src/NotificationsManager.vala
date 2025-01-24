@@ -22,22 +22,22 @@ public class Gala.NotificationsManager : GLib.Object {
     [Compact]
     public class NotificationData {
         public string component_name;
+        public string icon;
         public string summary;
         public string body;
-        public string icon;
         public GLib.HashTable<string, Variant> hints;
 
         public NotificationData (
             string _component_name,
+            string _icon,
             string _summary,
             string _body,
-            string _icon,
             GLib.HashTable<string, Variant> _hints
         ) {
             component_name = _component_name;
+            icon = _icon;
             summary = _summary;
             body = _body;
-            icon = _icon;
             hints = _hints;
         }
     }

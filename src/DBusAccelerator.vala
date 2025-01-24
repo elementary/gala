@@ -177,9 +177,9 @@ namespace Gala {
             notifications_manager.send (
                 new NotificationsManager.NotificationData (
                     NOTIFICATION_COMPONENT_NAME,
+                    icon,
                     label,
                     "",
-                    icon,
                     hints
                 )
             );
