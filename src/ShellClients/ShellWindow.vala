@@ -43,10 +43,6 @@ public class Gala.ShellWindow : PositionedWindow {
 
         gesture_ongoing = true;
 
-        if (!Meta.Util.is_wayland_compositor ()) {
-            Utils.x11_set_window_pass_through (window);
-        }
-
         InternalUtils.update_transients_visible (window, false);
 
         new GesturePropertyTransition (
@@ -56,6 +52,14 @@ public class Gala.ShellWindow : PositionedWindow {
         gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
             if (completions != 0) {
                 current_state = new_state;
+            }
+
+            if (!Meta.Util.is_wayland_compositor ()) {
+                if ((current_state & HIDING_STATES) != 0) {
+                    Utils.x11_set_window_pass_through (window);
+                } else {
+                    Utils.x11_unset_window_pass_through (window);
+                }
             }
 
             gesture_ongoing = false;
