@@ -16,7 +16,7 @@ public class Gala.ShellClientsManager : Object {
         instance = new ShellClientsManager (wm);
     }
 
-    public static ShellClientsManager? get_instance () {
+    public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
 
@@ -210,7 +210,7 @@ public class Gala.ShellClientsManager : Object {
         }
     }
 
-    private bool is_itself_positioned (Meta.Window window) {
+    public bool is_itself_positioned (Meta.Window window) {
         return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
     }
 

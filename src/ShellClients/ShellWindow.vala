@@ -67,7 +67,13 @@ public class Gala.ShellWindow : PositionedWindow {
     }
 
     private void update_transients_visible (bool visible) {
+        unowned var manager = ShellClientsManager.get_instance ();
+
         window.foreach_transient ((transient) => {
+            if (manager.is_itself_positioned (transient)) {
+                return true;
+            }
+
             unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
 
             actor.visible = visible;
