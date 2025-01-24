@@ -10,7 +10,7 @@
 public class Gala.NotificationsManager : GLib.Object {
     [DBus (name = "org.freedesktop.Notifications")]
     private interface DBusNotifications : GLib.Object {
-        public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
+        public abstract async uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
     }
 
@@ -42,18 +42,10 @@ public class Gala.NotificationsManager : GLib.Object {
         }
     }
 
-    private ThreadPool<NotificationData>? pool = null;
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
 
     construct {
-        try {
-            pool = new ThreadPool<NotificationData>.with_owned_data (send_feedback, 1, false);
-        } catch (ThreadError e) {
-            warning (e.message);
-            pool = null;
-        }
-
         try {
             Bus.watch_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameWatcherFlags.NONE, on_watch, on_unwatch);
         } catch (IOError e) {
@@ -79,19 +71,7 @@ public class Gala.NotificationsManager : GLib.Object {
         notifications = null;
     }
 
-    public void send (owned NotificationData notification_data) {
-        if (pool == null) {
-            return;
-        }
-
-        try {
-            pool.add ((owned) notification_data);
-        } catch (ThreadError e) {
-            warning ("NotificationsManager: could't add notificationData: %s", e.message);
-        }
-    }
-
-    private void send_feedback (owned NotificationData notification_data) {
+    public async void send (owned NotificationData notification_data) {
         if (notifications == null) {
             return;
         }
@@ -102,7 +82,7 @@ public class Gala.NotificationsManager : GLib.Object {
         }
 
         try {
-            var notification_id = notifications.notify (
+            var notification_id = yield notifications.notify (
                 "gala-feedback",
                 replaces_id,
                 notification_data.icon,
