@@ -63,14 +63,6 @@ public class Gala.PanelWindow : ShellWindow {
 
         default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
 
-        notify["hidden"].connect (() => {
-            // When hidden changes schedule an update to make sure it's actually
-            // correct since things might have changed during the animation
-            if (hide_tracker != null) {
-                hide_tracker.schedule_update ();
-            }
-        });
-
         window.display.in_fullscreen_changed.connect (() => {
             if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
                 hide ();
