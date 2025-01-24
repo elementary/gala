@@ -43,11 +43,11 @@ public class Gala.ShellWindow : PositionedWindow {
 
         gesture_ongoing = true;
 
-        update_transients_visible (false);
+        update_visibility (true);
 
         new GesturePropertyTransition (
             actor, gesture_tracker, get_animation_property (), null, calculate_value ((new_state & HIDING_STATES) != 0)
-        ).start (with_gesture, () => update_transients_visible ((current_state & HIDING_STATES) == 0));
+        ).start (with_gesture, () => update_visibility (false));
 
         gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
             if (completions != 0) {
@@ -66,9 +66,12 @@ public class Gala.ShellWindow : PositionedWindow {
         });
     }
 
-    private void update_transients_visible (bool visible) {
-        unowned var manager = ShellClientsManager.get_instance ();
+    private void update_visibility (bool animating) {
+        var visible = (current_state & HIDING_STATES) == 0;
 
+        actor.visible = animating || visible;
+
+        unowned var manager = ShellClientsManager.get_instance ();
         window.foreach_transient ((transient) => {
             if (manager.is_itself_positioned (transient)) {
                 return true;
@@ -76,7 +79,7 @@ public class Gala.ShellWindow : PositionedWindow {
 
             unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
 
-            actor.visible = visible;
+            actor.visible = visible && !animating;
 
             return true;
         });
