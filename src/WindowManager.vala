@@ -2327,7 +2327,7 @@ namespace Gala {
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
@@ -2345,7 +2345,7 @@ namespace Gala {
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
                 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
@@ -2360,20 +2360,28 @@ namespace Gala {
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
                 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
             }
         }
 
-        private void send_screenshot_notification (bool clipboard) {
+        private void send_screenshot_notification (string filename_used) {
+            var clipboard = filename_used == null;
+
+            string[] actions = {};
+            if (!clipboard) {
+                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), "Show in Files" };
+            }
+
             notifications_manager.send (
                 new NotificationsManager.NotificationData (
                     "ScreenshotManager",
+                    "image-x-generic",
                     "Screenshot taken",
                     clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
-                    "image-x-generic",
+                    actions,
                     new GLib.HashTable<string, Variant> (null, null)
                 )
             );

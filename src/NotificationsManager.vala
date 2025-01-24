@@ -7,9 +7,11 @@
 /**
  * Gala.NotificationsManager can be used to send notifications to org.freedesktop.Notifications
  */
- public class Gala.NotificationsManager : GLib.Object {
+public class Gala.NotificationsManager : GLib.Object {
     [DBus (name = "org.freedesktop.Notifications")]
     private interface DBusNotifications : GLib.Object {
+        public signal void action_invoked (uint32 id, string action_key);
+
         public abstract uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
     }
@@ -22,26 +24,30 @@
     [Compact]
     public class NotificationData {
         public string component_name;
+        public string icon;
         public string summary;
         public string body;
-        public string icon;
+        public string[] actions;
         public GLib.HashTable<string, Variant> hints;
 
         public NotificationData (
             string _component_name,
+            string _icon,
             string _summary,
             string _body,
-            string _icon,
+            string[] _actions,
             GLib.HashTable<string, Variant> _hints
         ) {
             component_name = _component_name;
+            icon = _icon;
             summary = _summary;
             body = _body;
-            icon = _icon;
+            actions = _actions;
             hints = _hints;
         }
     }
 
+    private GLib.SimpleActionGroup action_group = new GLib.SimpleActionGroup ();
     private ThreadPool<NotificationData>? pool = null;
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
@@ -67,6 +73,7 @@
             (obj, res) => {
                 try {
                     notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
+                    notifications.action_invoked.connect (handle_action_invoked);
                 } catch (Error e) {
                     warning (e.message);
                     notifications = null;
@@ -91,6 +98,10 @@
         }
     }
 
+    public void add_action (GLib.Action action) {
+        action_group.add_action (action);
+    }
+
     private void send_feedback (owned NotificationData notification_data) {
         if (notifications == null) {
             return;
@@ -108,7 +119,7 @@
                 notification_data.icon,
                 notification_data.summary,
                 notification_data.body,
-                {},
+                notification_data.actions,
                 notification_data.hints,
                 EXPIRE_TIMEOUT
             );
@@ -116,6 +127,22 @@
             replaces_id_table.insert (notification_data.component_name, notification_id);
         } catch (Error e) {
             critical (e.message);
+        }
+    }
+
+    private void handle_action_invoked (uint32 id, string action_name) {
+        string name;
+        GLib.Variant? target_value;
+
+        try {
+            GLib.Action.parse_detailed_name (action_name, out name, out target_value);
+        } catch (Error e) {
+            warning (e.message);
+            return;
+        }
+
+        if (action_group.has_action (name)) {
+            action_group.activate_action (name, target_value);
         }
     }
 }
