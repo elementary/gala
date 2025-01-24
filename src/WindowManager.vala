@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2012-2014 Tom Beckmann, Rico Tzschichholz
+//                2025 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -72,8 +73,6 @@ namespace Gala {
         public WindowTracker? window_tracker { get; private set; }
 
         private NotificationsManager notifications_manager;
-
-        private DBusAccelerator dbus_accelerator;
 
         private ScreenshotManager screenshot_manager;
 
@@ -195,8 +194,7 @@ namespace Gala {
 
             notifications_manager = new NotificationsManager ();
             screenshot_manager = new ScreenshotManager (this);
-            dbus_accelerator = new DBusAccelerator (display, notifications_manager);
-            DBus.init (this, dbus_accelerator, screenshot_manager);
+            DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
