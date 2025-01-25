@@ -174,14 +174,12 @@ namespace Gala {
             hints.set ("x-canonical-private-synchronous", new Variant.string ("gala-feedback"));
             hints.set ("value", new Variant.int32 (level));
 
-            notifications_manager.send (
-                new NotificationsManager.NotificationData (
-                    NOTIFICATION_COMPONENT_NAME,
-                    label,
-                    "",
-                    icon,
-                    hints
-                )
+            notifications_manager.send.begin (
+                NOTIFICATION_COMPONENT_NAME,
+                icon,
+                label,
+                "",
+                hints
             );
         }
     }
