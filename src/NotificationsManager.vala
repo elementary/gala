@@ -30,7 +30,7 @@ public class Gala.NotificationsManager : GLib.Object {
                 try {
                     notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
                 } catch (Error e) {
-                    warning ("NotificationManager: Couldn't connect to notifications server: %s", e.message);
+                    warning ("NotificationsManager: Couldn't connect to notifications server: %s", e.message);
                     notifications = null;
                 }
             }
@@ -38,7 +38,7 @@ public class Gala.NotificationsManager : GLib.Object {
     }
 
     private void on_unwatch (DBusConnection conn) {
-        warning ("NotificationManager: Lost connection to notifications server");
+        warning ("NotificationsManager: Lost connection to notifications server");
         notifications = null;
     }
 
