@@ -45,7 +45,23 @@ public class Gala.NotificationsManager : GLib.Object {
         warning ("NotificationsManager: Lost connection to notifications server");
         notifications = null;
     }
-    
+
+    private void handle_action_invoked (uint32 id, string action_name) {
+        string name;
+        GLib.Variant? target_value;
+
+        try {
+            GLib.Action.parse_detailed_name (action_name, out name, out target_value);
+        } catch (Error e) {
+            warning ("NotificationsManager: Couldn't parse action: %s", e.message);
+            return;
+        }
+
+        if (action_group.has_action (name)) {
+            action_group.activate_action (name, target_value);
+        }
+    }
+
     public void add_action (GLib.Action action) {
         action_group.add_action (action);
     }
@@ -69,7 +85,7 @@ public class Gala.NotificationsManager : GLib.Object {
         }
 
         try {
-            var notification_id = notifications.notify (
+            var notification_id = yield notifications.notify (
                 "gala-feedback",
                 replaces_id,
                 icon,
@@ -83,22 +99,6 @@ public class Gala.NotificationsManager : GLib.Object {
             replaces_id_table.insert (component_name, notification_id);
         } catch (Error e) {
             critical ("NotificationsManager: There was an error sending a notification: %s", e.message);
-        }
-    }
-
-    private void handle_action_invoked (uint32 id, string action_name) {
-        string name;
-        GLib.Variant? target_value;
-
-        try {
-            GLib.Action.parse_detailed_name (action_name, out name, out target_value);
-        } catch (Error e) {
-            warning (e.message);
-            return;
-        }
-
-        if (action_group.has_action (name)) {
-            action_group.activate_action (name, target_value);
         }
     }
 }
