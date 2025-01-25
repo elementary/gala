@@ -2341,7 +2341,7 @@ namespace Gala {
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
-                
+
                 if (success) {
                     send_screenshot_notification (clipboard);
                 }
@@ -2356,7 +2356,7 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
-                
+
                 if (success) {
                     send_screenshot_notification (clipboard);
                 }
@@ -2366,14 +2366,12 @@ namespace Gala {
         }
 
         private void send_screenshot_notification (bool clipboard) {
-            notifications_manager.send (
-                new NotificationsManager.NotificationData (
-                    "ScreenshotManager",
-                    "Screenshot taken",
-                    clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
-                    "image-x-generic",
-                    new GLib.HashTable<string, Variant> (null, null)
-                )
+            notifications_manager.send.begin (
+                "ScreenshotManager",
+                "image-x-generic",
+                "Screenshot taken",
+                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                new GLib.HashTable<string, Variant> (null, null)
             );
         }
     }
