@@ -20,21 +20,17 @@ public class Gala.NotificationsManager : GLib.Object {
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
 
     construct {
-        try {
-            Bus.watch_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameWatcherFlags.NONE, on_watch, on_unwatch);
-        } catch (IOError e) {
-            warning (e.message);
-        }
+        Bus.watch_name (BusType.SESSION, "org.freedesktop.Notifications", BusNameWatcherFlags.NONE, on_watch, on_unwatch);
     }
 
-    private void on_watch (DBusConnection conn) {
-        conn.get_proxy.begin<DBusNotifications> (
+    private void on_watch (DBusConnection connection) {
+        connection.get_proxy.begin<DBusNotifications> (
             "org.freedesktop.Notifications", "/org/freedesktop/Notifications", DBusProxyFlags.NONE, null,
             (obj, res) => {
                 try {
                     notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
                 } catch (Error e) {
-                    warning (e.message);
+                    warning ("NotificationManager: Couldn't connect to notifications server: %s", e.message);
                     notifications = null;
                 }
             }
@@ -42,6 +38,7 @@ public class Gala.NotificationsManager : GLib.Object {
     }
 
     private void on_unwatch (DBusConnection conn) {
+        warning ("NotificationManager: Lost connection to notifications server");
         notifications = null;
     }
 
@@ -53,6 +50,7 @@ public class Gala.NotificationsManager : GLib.Object {
         GLib.HashTable<string, Variant> hints
     ) {
         if (notifications == null) {
+            warning ("NotificationsManager: Unable to send notification. No connection to notification server");
             return;
         }
 
@@ -75,7 +73,7 @@ public class Gala.NotificationsManager : GLib.Object {
 
             replaces_id_table.insert (component_name, notification_id);
         } catch (Error e) {
-            critical (e.message);
+            critical ("NotificationsManager: There was an error sending a notification: %s", e.message);
         }
     }
 }
