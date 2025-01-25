@@ -2372,6 +2372,7 @@ namespace Gala {
 
             string[] actions = {};
             if (!clipboard) {
+                /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
                 actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
             }
 
