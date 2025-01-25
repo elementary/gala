@@ -2371,7 +2371,7 @@ namespace Gala {
             notifications_manager.send.begin (
                 "ScreenshotManager",
                 "image-x-generic",
-                "Screenshot taken",
+                _("Screenshot taken"),
                 clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
                 new GLib.HashTable<string, Variant> (null, null)
             );
