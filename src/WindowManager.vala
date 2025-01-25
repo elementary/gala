@@ -2376,14 +2376,12 @@ namespace Gala {
             }
 
             notifications_manager.send (
-                new NotificationsManager.NotificationData (
-                    "ScreenshotManager",
-                    "image-x-generic",
-                    "Screenshot taken",
-                    clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
-                    actions,
-                    new GLib.HashTable<string, Variant> (null, null)
-                )
+                "ScreenshotManager",
+                "image-x-generic",
+                "Screenshot taken",
+                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                actions,
+                new GLib.HashTable<string, Variant> (null, null)
             );
         }
     }
