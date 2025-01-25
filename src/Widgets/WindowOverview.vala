@@ -274,7 +274,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             ((WindowCloneContainer) child).close ();
         }
 
+
+#if HAS_MUTTER48
+        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
+#else
         Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
+#endif
             cleanup ();
 
             return Source.REMOVE;

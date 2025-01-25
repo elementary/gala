@@ -719,7 +719,11 @@ namespace Gala {
         }
 
         private void show_docks (bool with_gesture, bool is_cancel_animation) {
+#if HAS_MUTTER48
+            unowned GLib.List<Meta.WindowActor> window_actors = display.get_compositor ().get_window_actors ();
+#else
             unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+#endif
             foreach (unowned Meta.WindowActor actor in window_actors) {
                 const int MAX_OFFSET = 200;
 
