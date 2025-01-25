@@ -137,20 +137,25 @@ public class Gala.GestureTracker : Object {
 
     private Gee.ArrayList<ulong> handlers;
 
-    private double applied_percentage = 0;
+    private double applied_percentage;
     private double previous_percentage;
     private uint64 previous_time;
-    private double percentage_delta;
+    private double previous_delta;
     private double velocity;
+    // Used to check whether to cancel. Necessary because on_end is often called
+    // with the same percentage as the last update so this is the one before the last update.
+    private double old_previous;
 
     construct {
         settings = new GestureSettings ();
 
         handlers = new Gee.ArrayList<ulong> ();
+        applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
-        percentage_delta = 0;
+        previous_delta = 0;
         velocity = 0;
+        old_previous = 0;
     }
 
     public GestureTracker (int min_animation_duration, int max_animation_duration) {
@@ -270,7 +275,7 @@ public class Gala.GestureTracker : Object {
     }
 
     private void gesture_update (double percentage, uint64 elapsed_time) {
-        var updated_delta = percentage_delta;
+        var updated_delta = previous_delta;
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -283,24 +288,29 @@ public class Gala.GestureTracker : Object {
             }
         }
 
-        applied_percentage += calculate_applied_delta (percentage, updated_delta, previous_percentage, percentage_delta);
+        applied_percentage += calculate_applied_delta (percentage, updated_delta);
 
         if (enabled) {
             on_update (applied_percentage);
         }
 
+        old_previous = previous_percentage;
         previous_percentage = percentage;
         previous_time = elapsed_time;
-        percentage_delta = updated_delta;
+        previous_delta = updated_delta;
     }
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
-        applied_percentage += calculate_applied_delta (percentage, percentage_delta, previous_percentage, percentage_delta);
+        applied_percentage += calculate_applied_delta (percentage, previous_delta);
 
         int completions = (int) applied_percentage;
-        bool cancel_action = (applied_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
-            && ((applied_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
-        int calculated_duration = calculate_end_animation_duration (applied_percentage, cancel_action);
+
+        var remaining_percentage = applied_percentage - completions;
+
+        bool cancel_action = ((percentage - (int) percentage).abs () < SUCCESS_PERCENTAGE_THRESHOLD) && (velocity.abs () < SUCCESS_VELOCITY_THRESHOLD)
+            || ((percentage.abs () < old_previous.abs ()) && (velocity.abs () > SUCCESS_VELOCITY_THRESHOLD));
+
+        int calculated_duration = calculate_end_animation_duration (remaining_percentage, cancel_action);
 
         if (!cancel_action) {
             completions += applied_percentage < 0 ? -1 : 1;
@@ -315,12 +325,18 @@ public class Gala.GestureTracker : Object {
         applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
-        percentage_delta = 0;
+        previous_delta = 0;
         velocity = 0;
+        old_previous = 0;
     }
 
-    private static inline double calculate_applied_delta (double percentage, double percentage_delta, double old_percentage, double old_delta) {
-        return (percentage - percentage_delta) - (old_percentage - old_delta);
+    /**
+     * Calculate the delta between the new percentage and the previous one while taking into account
+     * the velocity delta which makes sure we don't go over the MAX_VELOCITY. The velocity delta we use
+     * for the calculation shouldn't be confused with this delta.
+     */
+    private inline double calculate_applied_delta (double percentage, double percentage_delta) {
+        return (percentage - percentage_delta) - (previous_percentage - previous_delta);
     }
 
     /**
