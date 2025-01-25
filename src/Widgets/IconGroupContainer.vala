@@ -1,7 +1,7 @@
 /*
- * Copyright 2014 Tom Beckmann
- * Copyright 2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2014 Tom Beckmann
+ *                         2025 elementary, Inc. <https://elementary.io>
  */
 
 /**
