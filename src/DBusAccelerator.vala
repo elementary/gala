@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2015 Nicolas Bruguier, Corentin Noël
+//                2025 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -72,23 +73,12 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell")]
     public class DBusAccelerator {
-        private static DBusAccelerator? instance;
-
-        [DBus (visible = false)]
-        public static unowned DBusAccelerator init (Meta.Display display) {
-            if (instance == null) {
-                instance = new DBusAccelerator (display);
-            }
-
-            return instance;
-        }
-
         public signal void accelerator_activated (uint action, GLib.HashTable<string, Variant> parameters);
 
         private Meta.Display display;
         private GLib.HashTable<unowned string, GrabbedAccelerator> grabbed_accelerators;
 
-        private DBusAccelerator (Meta.Display _display) {
+        public DBusAccelerator (Meta.Display _display) {
             display = _display;
             grabbed_accelerators = new HashTable<unowned string, GrabbedAccelerator> (str_hash, str_equal);
             display.accelerator_activated.connect (on_accelerator_activated);

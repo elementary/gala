@@ -192,7 +192,6 @@ namespace Gala {
 
             screenshot_manager = new ScreenshotManager (this);
             DBus.init (this, screenshot_manager);
-            DBusAccelerator.init (display);
             MediaFeedback.init ();
 
             WindowListener.init (display);
