@@ -2372,7 +2372,7 @@ namespace Gala {
 
             string[] actions = {};
             if (!clipboard) {
-                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), "Show in Files" };
+                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
             }
 
             notifications_manager.send.begin (
