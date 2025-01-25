@@ -66,28 +66,28 @@ public class Gala.IconGroupContainer : Clutter.Actor {
     }
 
     /**
-        * Removes an icon group "in place".
-        * When initially dragging an icon group we remove
-        * it and it's previous WorkspaceInsertThumb. This would make
-        * the container immediately reallocate and fill the empty space
-        * with right-most IconGroups.
-        *
-        * We don't want that until the IconGroup
-        * leaves the expanded WorkspaceInsertThumb.
-        */
+     * Removes an icon group "in place".
+     * When initially dragging an icon group we remove
+     * it and it's previous WorkspaceInsertThumb. This would make
+     * the container immediately reallocate and fill the empty space
+     * with right-most IconGroups.
+     *
+     * We don't want that until the IconGroup
+     * leaves the expanded WorkspaceInsertThumb.
+     */
     public void remove_group_in_place (IconGroup group) {
         var deleted_thumb = (WorkspaceInsertThumb) group.get_previous_sibling ();
         var deleted_placeholder_thumb = (WorkspaceInsertThumb) group.get_next_sibling ();
 
         remove_group (group);
 
-        /**
-            * We will account for that empty space
-            * by manually expanding the next WorkspaceInsertThumb with the
-            * width we deleted. Because the IconGroup is still hovering over
-            * the expanded thumb, we will also update the drag & drop action
-            * of IconGroup on that.
-            */
+        /*
+        * We will account for that empty space
+        * by manually expanding the next WorkspaceInsertThumb with the
+        * width we deleted. Because the IconGroup is still hovering over
+        * the expanded thumb, we will also update the drag & drop action
+        * of IconGroup on that.
+        */
         if (deleted_placeholder_thumb != null) {
             float deleted_width = deleted_thumb.get_width () + group.get_width ();
             deleted_placeholder_thumb.expanded = true;
@@ -111,9 +111,9 @@ public class Gala.IconGroupContainer : Clutter.Actor {
     }
 
     /**
-        * Calculates the width that will be occupied taking currently running animations
-        * end states into account
-        */
+     * Calculates the width that will be occupied taking currently running animations
+     * end states into account
+     */
     public float calculate_total_width () {
         var spacing = InternalUtils.scale_to_int (SPACING, scale_factor);
         var group_width = InternalUtils.scale_to_int (GROUP_WIDTH, scale_factor);
