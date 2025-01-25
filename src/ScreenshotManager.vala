@@ -23,7 +23,6 @@ namespace Gala {
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
         private WindowManager wm;
-        private NotificationsManager notifications_manager;
         private Settings desktop_settings;
 
         private string prev_font_regular;
@@ -32,9 +31,8 @@ namespace Gala {
         private uint conceal_timeout;
 
         [DBus (visible = false)]
-        public ScreenshotManager (WindowManager _wm, NotificationsManager _notifications_manager) {
+        public ScreenshotManager (WindowManager _wm) {
             wm = _wm;
-            notifications_manager = _notifications_manager;
         }
 
         construct {
