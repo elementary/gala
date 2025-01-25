@@ -214,10 +214,10 @@ public class Gala.WorkspaceManager : Object {
     }
 
     /**
-        * Make sure we switch to a different workspace and remove the given one
-        *
-        * @param workspace The workspace to remove
-        */
+     * Make sure we switch to a different workspace and remove the given one
+     *
+     * @param workspace The workspace to remove
+     */
     private void remove_workspace (Meta.Workspace workspace) {
         unowned Meta.Display display = workspace.get_display ();
         unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -252,15 +252,15 @@ public class Gala.WorkspaceManager : Object {
     }
 
     /**
-        * Temporarily disables removing workspaces when they are empty
-        */
+     * Temporarily disables removing workspaces when they are empty
+     */
     public void freeze_remove () {
         GLib.AtomicInt.inc (ref remove_freeze_count);
     }
 
     /**
-        * Undo the effect of freeze_remove()
-        */
+     * Undo the effect of freeze_remove()
+     */
     public void thaw_remove () {
         if (GLib.AtomicInt.dec_and_test (ref remove_freeze_count)) {
             cleanup ();
@@ -270,10 +270,10 @@ public class Gala.WorkspaceManager : Object {
     }
 
     /**
-        * If workspaces are dynamic, checks if there are empty workspaces that should
-        * be removed. Particularly useful in conjunction with freeze/thaw_remove to
-        * cleanup after an operation that required stable workspace/window indices
-        */
+     * If workspaces are dynamic, checks if there are empty workspaces that should
+     * be removed. Particularly useful in conjunction with freeze/thaw_remove to
+     * cleanup after an operation that required stable workspace/window indices
+     */
     private void cleanup () {
         if (!Meta.Prefs.get_dynamic_workspaces ()) {
             return;
