@@ -16,6 +16,7 @@ public class Gala.ShellWindow : PositionedWindow {
     private const State HIDING_STATES = CUSTOM_HIDDEN | MULTITASKING_VIEW;
 
     private Meta.WindowActor actor;
+    private State pending_state = DESKTOP;
     private State current_state = DESKTOP;
 
     private bool gesture_ongoing = false;
@@ -29,11 +30,13 @@ public class Gala.ShellWindow : PositionedWindow {
     }
 
     public void add_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
-        animate (current_state | state, gesture_tracker, with_gesture);
+        pending_state |= state;
+        animate (pending_state, gesture_tracker, with_gesture);
     }
 
     public void remove_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
-        animate (current_state & ~state, gesture_tracker, with_gesture);
+        pending_state &= ~state;
+        animate (pending_state, gesture_tracker, with_gesture);
     }
 
     private void animate (State new_state, GestureTracker gesture_tracker, bool with_gesture) {
@@ -50,6 +53,8 @@ public class Gala.ShellWindow : PositionedWindow {
         ).start (with_gesture, () => update_visibility (false));
 
         gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
+            gesture_ongoing = false;
+
             if (completions != 0) {
                 current_state = new_state;
             }
@@ -62,7 +67,11 @@ public class Gala.ShellWindow : PositionedWindow {
                 }
             }
 
-            gesture_ongoing = false;
+            if (pending_state != new_state) { // We have received new state while animating
+                animate (pending_state, gesture_tracker, false);
+            } else {
+                pending_state = current_state;
+            }
         });
     }
 
