@@ -307,7 +307,7 @@ public class Gala.GestureTracker : Object {
 
         var remaining_percentage = applied_percentage - completions;
 
-        bool cancel_action = ((percentage - (int) percentage).abs () < SUCCESS_PERCENTAGE_THRESHOLD) && (velocity.abs () < SUCCESS_VELOCITY_THRESHOLD)
+        bool cancel_action = ((percentage - completions).abs () < SUCCESS_PERCENTAGE_THRESHOLD) && (velocity.abs () < SUCCESS_VELOCITY_THRESHOLD)
             || ((percentage.abs () < old_previous.abs ()) && (velocity.abs () > SUCCESS_VELOCITY_THRESHOLD));
 
         int calculated_duration = calculate_end_animation_duration (remaining_percentage, cancel_action);
