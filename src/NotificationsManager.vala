@@ -16,32 +16,6 @@ public class Gala.NotificationsManager : GLib.Object {
 
     private const int EXPIRE_TIMEOUT = 2000;
 
-    /**
-     * Data structure to hold notification data. Component name is used to correctly replace notifications.
-     */
-    [Compact]
-    public class NotificationData {
-        public string component_name;
-        public string icon;
-        public string summary;
-        public string body;
-        public GLib.HashTable<string, Variant> hints;
-
-        public NotificationData (
-            string _component_name,
-            string _icon,
-            string _summary,
-            string _body,
-            GLib.HashTable<string, Variant> _hints
-        ) {
-            component_name = _component_name;
-            icon = _icon;
-            summary = _summary;
-            body = _body;
-            hints = _hints;
-        }
-    }
-
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
 
@@ -71,12 +45,18 @@ public class Gala.NotificationsManager : GLib.Object {
         notifications = null;
     }
 
-    public async void send (owned NotificationData notification_data) {
+    public async void send (
+        string component_name,
+        string icon,
+        string summary,
+        string body,
+        GLib.HashTable<string, Variant> hints
+    ) {
         if (notifications == null) {
             return;
         }
 
-        uint32? replaces_id = replaces_id_table.get (notification_data.component_name);
+        uint32? replaces_id = replaces_id_table.get (component_name);
         if (replaces_id == null) {
             replaces_id = 0;
         }
@@ -85,15 +65,15 @@ public class Gala.NotificationsManager : GLib.Object {
             var notification_id = yield notifications.notify (
                 "gala-feedback",
                 replaces_id,
-                notification_data.icon,
-                notification_data.summary,
-                notification_data.body,
+                icon,
+                summary,
+                body,
                 {},
-                notification_data.hints,
+                hints,
                 EXPIRE_TIMEOUT
             );
 
-            replaces_id_table.insert (notification_data.component_name, notification_id);
+            replaces_id_table.insert (component_name, notification_id);
         } catch (Error e) {
             critical (e.message);
         }
