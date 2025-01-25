@@ -33,7 +33,7 @@ public class Gala.Zoom : Object {
         gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
         gesture_tracker.enable_touchpad ();
         gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
-        gesture_tracker.on_gesture_handled.connect ((gesture) => zoom_with_gesture (gesture.direction));
+        gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
@@ -101,9 +101,9 @@ public class Gala.Zoom : Object {
         return Clutter.EVENT_STOP;
     }
 
-    private void zoom_with_gesture (GestureDirection direction) {
+    private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
         var initial_zoom = current_zoom;
-        var target_zoom = (direction == GestureDirection.IN)
+        var target_zoom = (gesture.direction == GestureDirection.IN)
             ? initial_zoom - MAX_ZOOM
             : initial_zoom + MAX_ZOOM;
 
@@ -123,6 +123,8 @@ public class Gala.Zoom : Object {
         };
 
         gesture_tracker.connect_handlers (null, (owned) on_animation_update, null);
+
+        return 0;
     }
 
     private inline Graphene.Point compute_new_pivot_point () {

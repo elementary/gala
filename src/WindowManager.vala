@@ -72,6 +72,8 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
+        private NotificationsManager notifications_manager;
+
         private ScreenshotManager screenshot_manager;
 
         /**
@@ -190,9 +192,9 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
+            notifications_manager = new NotificationsManager ();
             screenshot_manager = new ScreenshotManager (this);
-            DBus.init (this, screenshot_manager);
-            MediaFeedback.init ();
+            DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
@@ -594,7 +596,7 @@ namespace Gala {
             return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
         }
 
-        private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+        private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
             var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
 
             switch (GestureSettings.get_action (gesture)) {
@@ -618,6 +620,8 @@ namespace Gala {
                 default:
                     break;
             }
+
+            return 0;
         }
 
         /**
