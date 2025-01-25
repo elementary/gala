@@ -2343,7 +2343,7 @@ namespace Gala {
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
-                
+
                 if (success) {
                     send_screenshot_notification (filename_used);
                 }
@@ -2358,7 +2358,7 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
-                
+
                 if (success) {
                     send_screenshot_notification (filename_used);
                 }
