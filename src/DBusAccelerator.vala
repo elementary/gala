@@ -175,13 +175,11 @@ namespace Gala {
             hints.set ("value", new Variant.int32 (level));
 
             notifications_manager.send.begin (
-                new NotificationsManager.NotificationData (
-                    NOTIFICATION_COMPONENT_NAME,
-                    icon,
-                    label,
-                    "",
-                    hints
-                )
+                NOTIFICATION_COMPONENT_NAME,
+                icon,
+                label,
+                "",
+                hints
             );
         }
     }
