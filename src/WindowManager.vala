@@ -2375,7 +2375,7 @@ namespace Gala {
                 actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), "Show in Files" };
             }
 
-            notifications_manager.send (
+            notifications_manager.send.begin (
                 "ScreenshotManager",
                 "image-x-generic",
                 "Screenshot taken",
