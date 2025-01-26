@@ -17,15 +17,15 @@ public class Gala.IconGroup : CanvasActor {
     private const int BACKDROP_ABSOLUTE_OPACITY = 40;
 
     /**
-        * The group has been clicked. The MultitaskingView should consider activating
-        * its workspace.
-        */
+     * The group has been clicked. The MultitaskingView should consider activating
+     * its workspace.
+     */
     public signal void selected ();
 
     private float _backdrop_opacity = 0.0f;
     /**
-        * The opacity of the backdrop/highlight.
-        */
+     * The opacity of the backdrop/highlight.
+     */
     public float backdrop_opacity {
         get {
             return _backdrop_opacity;
@@ -99,8 +99,8 @@ public class Gala.IconGroup : CanvasActor {
     }
 
     /**
-        * Override the paint handler to draw our backdrop if necessary
-        */
+     * Override the paint handler to draw our backdrop if necessary
+     */
     public override void paint (Clutter.PaintContext context) {
         if (backdrop_opacity == 0.0 || drag_action.dragging) {
             base.paint (context);
@@ -130,21 +130,21 @@ public class Gala.IconGroup : CanvasActor {
     }
 
     /**
-        * Remove all currently added WindowIconActors
-        */
+     * Remove all currently added WindowIconActors
+     */
     public void clear () {
         icon_container.destroy_all_children ();
     }
 
     /**
-        * Creates a WindowIconActor for the given window and adds it to the group
-        *
-        * @param window    The MetaWindow for which to create the WindowIconActor
-        * @param no_redraw If you add multiple windows at once you may want to consider
-        *                  settings this to true and when done calling redraw() manually
-        * @param temporary Mark the WindowIconActor as temporary. Used for windows dragged over
-        *                  the group.
-        */
+     * Creates a WindowIconActor for the given window and adds it to the group
+     *
+     * @param window    The MetaWindow for which to create the WindowIconActor
+     * @param no_redraw If you add multiple windows at once you may want to consider
+     *                  settings this to true and when done calling redraw() manually
+     * @param temporary Mark the WindowIconActor as temporary. Used for windows dragged over
+     *                  the group.
+     */
     public void add_window (Meta.Window window, bool no_redraw = false, bool temporary = false) {
         var new_window = new WindowIconActor (window);
         new_window.set_position (32, 32);
@@ -157,10 +157,10 @@ public class Gala.IconGroup : CanvasActor {
     }
 
     /**
-        * Remove the WindowIconActor for a MetaWindow from the group
-        *
-        * @param animate Whether to fade the icon out before removing it
-        */
+     * Remove the WindowIconActor for a MetaWindow from the group
+     *
+     * @param animate Whether to fade the icon out before removing it
+     */
     public void remove_window (Meta.Window window, bool animate = true) {
         foreach (unowned var child in icon_container.get_children ()) {
             unowned var icon = (WindowIconActor) child;
@@ -192,23 +192,23 @@ public class Gala.IconGroup : CanvasActor {
     }
 
     /**
-        * Sets a hovered actor for the drag action.
-        */
+     * Sets a hovered actor for the drag action.
+     */
     public void set_hovered_actor (Clutter.Actor actor) {
         drag_action.hovered = actor;
     }
 
     /**
-        * Trigger a redraw
-        */
+     * Trigger a redraw
+     */
     public void redraw () {
         content.invalidate ();
     }
 
     /**
-        * Draw the background or plus sign and do layouting. We won't lose performance here
-        * by relayouting in the same function, as it's only ever called when we invalidate it.
-        */
+     * Draw the background or plus sign and do layouting. We won't lose performance here
+     * by relayouting in the same function, as it's only ever called when we invalidate it.
+     */
     protected override void draw (Cairo.Context cr, int cr_width, int cr_height) {
         clear_effects ();
         cr.set_operator (Cairo.Operator.CLEAR);
