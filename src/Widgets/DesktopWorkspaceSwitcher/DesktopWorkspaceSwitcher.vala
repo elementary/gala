@@ -86,7 +86,7 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         return action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
     }
 
-    private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
+    private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
         var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
         var relative_dir = direction == LEFT ? -1 : 1;
 
@@ -97,17 +97,19 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
             moving = display.focus_window;
         }
 
-        animate_workspace_switch (target_index, true);
+        var initial_progress = animate_workspace_switch (target_index, true);
 
-        gesture_tracker.add_success_callback (true, (percentage, completions, calculated_duration) => {
+        gesture_tracker.add_end_callback (true, (percentage, completions, calculated_duration) => {
             /* We can just use the active index here because it was already updated before us by the animate_workspace_switch */
             workspace_manager.get_workspace_by_index (active_index).activate (display.get_current_time ());
         });
+
+        return initial_progress;
     }
 
-    public void animate_workspace_switch (int target_index, bool with_gesture) {
+    public double animate_workspace_switch (int target_index, bool with_gesture) {
         if (active_index == target_index || gesture_tracker.recognizing) { // active_index == target_index implies we've already animated e.g. via the one to one gesture
-            return;
+            return 0;
         }
 
         visible = true;
@@ -122,9 +124,9 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         x_transition.overshoot_lower_clamp = (active_index < target_index) ? - (active_index + 0.1) : - (n_workspaces - active_index - 0.9);
         x_transition.overshoot_upper_clamp = (active_index > target_index) ? (active_index + 0.1) : (n_workspaces - active_index - 0.9);
         x_transition.to_value = calculate_x (target_index);
-        x_transition.start (with_gesture, end_animation);
+        var initial_progress = x_transition.start (with_gesture, end_animation);
 
-        gesture_tracker.add_success_callback (with_gesture, (percentage, completions, calculated_duration) => {
+        gesture_tracker.add_end_callback (with_gesture, (percentage, completions, calculated_duration) => {
             completions = completions.clamp ((int) x_transition.overshoot_lower_clamp, (int) x_transition.overshoot_upper_clamp);
             active_index += completions * (target_index - active_index);
 
@@ -133,6 +135,8 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
                 moving = null;
             }
         });
+
+        return initial_progress;
     }
 
     private void build_workspace_row () {

@@ -95,8 +95,10 @@ public class Gala.GestureTracker : Object {
      * start receiving updates.
      * @param gesture the same gesture as in {@link on_gesture_detected}
      * @param timestamp the timestamp of the event that initiated the gesture or {@link Meta.CURRENT_TIME}.
+     * @return the initial percentage that should already be preapplied. This is useful
+     * if an animation was still ongoing when the gesture was started.
      */
-    public signal void on_gesture_handled (Gesture gesture, uint32 timestamp);
+    public signal double on_gesture_handled (Gesture gesture, uint32 timestamp);
 
     /**
      * Emitted right after on_gesture_detected with the initial gesture information.
@@ -135,19 +137,25 @@ public class Gala.GestureTracker : Object {
 
     private Gee.ArrayList<ulong> handlers;
 
+    private double applied_percentage;
     private double previous_percentage;
     private uint64 previous_time;
-    private double percentage_delta;
+    private double previous_delta;
     private double velocity;
+    // Used to check whether to cancel. Necessary because on_end is often called
+    // with the same percentage as the last update so this is the one before the last update.
+    private double old_previous;
 
     construct {
         settings = new GestureSettings ();
 
         handlers = new Gee.ArrayList<ulong> ();
+        applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
-        percentage_delta = 0;
+        previous_delta = 0;
         velocity = 0;
+        old_previous = 0;
     }
 
     public GestureTracker (int min_animation_duration, int max_animation_duration) {
@@ -196,18 +204,16 @@ public class Gala.GestureTracker : Object {
     }
 
     /**
-     * Connects a callback that will only be called if != 0 completions were made.
-     * If with_gesture is false or animations are disabled it will be called immediately, otherwise once {@link on_end} is emitted.
+     * Connects a callback that will be called as soon as the gesture finishes.
+     * If with_gesture is false it will be called immediately, otherwise once {@link on_end} is emitted.
      */
-    public void add_success_callback (bool with_gesture, owned OnEnd callback) {
-        if (!AnimationsSettings.get_enable_animations () || !with_gesture) {
+    public void add_end_callback (bool with_gesture, owned OnEnd callback) {
+        if (!with_gesture) {
             callback (1, 1, min_animation_duration);
         } else {
-            ulong handler_id = on_end.connect ((percentage, completions, duration) => {
-                if (completions != 0) {
-                    callback (percentage, completions, duration);
-                }
-            });
+            ulong handler_id = on_end.connect ((percentage, cancel_action, duration) =>
+                callback (percentage, cancel_action, duration)
+            );
             handlers.add (handler_id);
         }
     }
@@ -249,7 +255,7 @@ public class Gala.GestureTracker : Object {
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
         if (enabled && on_gesture_detected (gesture)) {
             backend.prepare_gesture_handling ();
-            on_gesture_handled (gesture, timestamp);
+            applied_percentage = on_gesture_handled (gesture, timestamp);
             return true;
         }
 
@@ -258,7 +264,7 @@ public class Gala.GestureTracker : Object {
 
     private void gesture_begin (double percentage, uint64 elapsed_time) {
         if (enabled) {
-            on_begin (percentage);
+            on_begin (applied_percentage);
         }
 
         recognizing = true;
@@ -267,6 +273,7 @@ public class Gala.GestureTracker : Object {
     }
 
     private void gesture_update (double percentage, uint64 elapsed_time) {
+        var updated_delta = previous_delta;
         if (elapsed_time != previous_time) {
             double distance = percentage - previous_percentage;
             double time = (double)(elapsed_time - previous_time);
@@ -275,43 +282,59 @@ public class Gala.GestureTracker : Object {
             if (velocity > MAX_VELOCITY) {
                 velocity = MAX_VELOCITY;
                 var used_percentage = MAX_VELOCITY * time + previous_percentage;
-                percentage_delta += percentage - used_percentage;
+                updated_delta += percentage - used_percentage;
             }
         }
 
+        applied_percentage += calculate_applied_delta (percentage, updated_delta);
+
         if (enabled) {
-            on_update (applied_percentage (percentage, percentage_delta));
+            on_update (applied_percentage);
         }
 
+        old_previous = previous_percentage;
         previous_percentage = percentage;
         previous_time = elapsed_time;
+        previous_delta = updated_delta;
     }
 
     private void gesture_end (double percentage, uint64 elapsed_time) {
-        double end_percentage = applied_percentage (percentage, percentage_delta);
-        int completions = (int) end_percentage;
-        bool cancel_action = (end_percentage.abs () < SUCCESS_PERCENTAGE_THRESHOLD)
-            && ((end_percentage.abs () <= previous_percentage.abs ()) && (velocity < SUCCESS_VELOCITY_THRESHOLD));
-        int calculated_duration = calculate_end_animation_duration (end_percentage, cancel_action);
+        applied_percentage += calculate_applied_delta (percentage, previous_delta);
+
+        int completions = (int) applied_percentage;
+
+        var remaining_percentage = applied_percentage - completions;
+
+        bool cancel_action = ((percentage - completions).abs () < SUCCESS_PERCENTAGE_THRESHOLD) && (velocity.abs () < SUCCESS_VELOCITY_THRESHOLD)
+            || ((percentage.abs () < old_previous.abs ()) && (velocity.abs () > SUCCESS_VELOCITY_THRESHOLD));
+
+        int calculated_duration = calculate_end_animation_duration (remaining_percentage, cancel_action);
 
         if (!cancel_action) {
-            completions += end_percentage < 0 ? -1 : 1;
+            completions += applied_percentage < 0 ? -1 : 1;
         }
 
         if (enabled) {
-            on_end (end_percentage, completions, calculated_duration);
+            on_end (applied_percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
         recognizing = false;
+        applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;
-        percentage_delta = 0;
+        previous_delta = 0;
         velocity = 0;
+        old_previous = 0;
     }
 
-    private static inline double applied_percentage (double percentage, double percentage_delta) {
-        return percentage - percentage_delta;
+    /**
+     * Calculate the delta between the new percentage and the previous one while taking into account
+     * the velocity delta which makes sure we don't go over the MAX_VELOCITY. The velocity delta we use
+     * for the calculation shouldn't be confused with this delta.
+     */
+    private inline double calculate_applied_delta (double percentage, double percentage_delta) {
+        return (percentage - percentage_delta) - (previous_percentage - previous_delta);
     }
 
     /**

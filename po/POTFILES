@@ -61,7 +61,7 @@ src/HotCorners/HotCorner.vala
 src/InternalUtils.vala
 src/KeyboardManager.vala
 src/Main.vala
-src/MediaFeedback.vala
+src/NotificationsManager.vala
 src/NotificationStack.vala
 src/PantheonShell.vala
 src/PluginManager.vala

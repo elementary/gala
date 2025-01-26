@@ -1,122 +1,109 @@
-//
-//  Copyright (C) 2014 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2014 Tom Beckmann
+ *                         2025 elementary, Inc. (https://elementary.io)
+ */
 
-namespace Gala {
-    /**
-     * More or less utility class to contain a WindowCloneContainer for each
-     * non-primary monitor. It's the pendant to the WorkspaceClone which is
-     * only placed on the primary monitor. It also draws a wallpaper behind itself
-     * as the WindowGroup is hidden while the view is active. Only used when
-     * workspaces-only-on-primary is set to true.
-     */
-    public class MonitorClone : Clutter.Actor {
-        public signal void window_selected (Meta.Window window);
+/**
+ * More or less utility class to contain a WindowCloneContainer for each
+ * non-primary monitor. It's the pendant to the WorkspaceClone which is
+ * only placed on the primary monitor. It also draws a wallpaper behind itself
+ * as the WindowGroup is hidden while the view is active. Only used when
+ * workspaces-only-on-primary is set to true.
+ */
+public class Gala.MonitorClone : Clutter.Actor {
+    public signal void window_selected (Meta.Window window);
 
-        public Meta.Display display { get; construct; }
-        public int monitor { get; construct; }
-        public GestureTracker gesture_tracker { get; construct; }
+    public Meta.Display display { get; construct; }
+    public int monitor { get; construct; }
+    public GestureTracker gesture_tracker { get; construct; }
 
-        private WindowCloneContainer window_container;
-        private BackgroundManager background;
+    private WindowCloneContainer window_container;
+    private BackgroundManager background;
 
-        public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
-            Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
-        }
+    public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
+        Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
+    }
 
-        construct {
-            reactive = true;
+    construct {
+        reactive = true;
 
-            background = new BackgroundManager (display, monitor, false);
+        background = new BackgroundManager (display, monitor, false);
 
-            var scale = display.get_monitor_scale (monitor);
+        var scale = display.get_monitor_scale (monitor);
 
-            window_container = new WindowCloneContainer (display, gesture_tracker, scale);
-            window_container.window_selected.connect ((w) => { window_selected (w); });
+        window_container = new WindowCloneContainer (display, gesture_tracker, scale);
+        window_container.window_selected.connect ((w) => { window_selected (w); });
 
-            display.window_entered_monitor.connect (window_entered);
-            display.window_left_monitor.connect (window_left);
+        display.window_entered_monitor.connect (window_entered);
+        display.window_left_monitor.connect (window_left);
 
-            unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-            foreach (unowned Meta.WindowActor window_actor in window_actors) {
-                if (window_actor.is_destroyed ())
-                    continue;
+        unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+        foreach (unowned Meta.WindowActor window_actor in window_actors) {
+            if (window_actor.is_destroyed ())
+                continue;
 
-                unowned Meta.Window window = window_actor.get_meta_window ();
-                if (window.get_monitor () == monitor) {
-                    window_entered (monitor, window);
-                }
+            unowned Meta.Window window = window_actor.get_meta_window ();
+            if (window.get_monitor () == monitor) {
+                window_entered (monitor, window);
             }
-
-            add_child (background);
-            add_child (window_container);
-
-            var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            add_action (drop);
-
-            update_allocation ();
         }
 
-        ~MonitorClone () {
-            display.window_entered_monitor.disconnect (window_entered);
-            display.window_left_monitor.disconnect (window_left);
-        }
+        add_child (background);
+        add_child (window_container);
 
-        /**
-         * Make sure the MonitorClone is at the location of the monitor on the stage
-         */
-        public void update_allocation () {
-            var monitor_geometry = display.get_monitor_geometry (monitor);
+        var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
+        add_action (drop);
 
-            set_position (monitor_geometry.x, monitor_geometry.y);
-            set_size (monitor_geometry.width, monitor_geometry.height);
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
+        update_allocation ();
+    }
 
-            var scale = display.get_monitor_scale (monitor);
-            window_container.monitor_scale = scale;
-        }
+    ~MonitorClone () {
+        display.window_entered_monitor.disconnect (window_entered);
+        display.window_left_monitor.disconnect (window_left);
+    }
 
-        /**
-         * Animate the windows from their old location to a tiled layout
-         */
-        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
-            window_container.restack_windows ();
-            window_container.open (null, with_gesture, is_cancel_animation);
-        }
+    /**
+     * Make sure the MonitorClone is at the location of the monitor on the stage
+     */
+    public void update_allocation () {
+        var monitor_geometry = display.get_monitor_geometry (monitor);
 
-        /**
-         * Animate the windows back to their old location
-         */
-        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
-            window_container.restack_windows ();
-            window_container.close (with_gesture);
-        }
+        set_position (monitor_geometry.x, monitor_geometry.y);
+        set_size (monitor_geometry.width, monitor_geometry.height);
+        window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
-        private void window_left (int window_monitor, Meta.Window window) {
-            if (window_monitor != monitor)
-                return;
+        var scale = display.get_monitor_scale (monitor);
+        window_container.monitor_scale = scale;
+    }
 
-            window_container.remove_window (window);
-        }
+    /**
+     * Animate the windows from their old location to a tiled layout
+     */
+    public void open (bool with_gesture = false, bool is_cancel_animation = false) {
+        window_container.restack_windows ();
+        window_container.open (null, with_gesture, is_cancel_animation);
+    }
 
-        private void window_entered (int window_monitor, Meta.Window window) {
-            if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
-                return;
+    /**
+        * Animate the windows back to their old location
+        */
+    public void close (bool with_gesture = false, bool is_cancel_animation = false) {
+        window_container.restack_windows ();
+        window_container.close (with_gesture);
+    }
 
-            window_container.add_window (window);
-        }
+    private void window_left (int window_monitor, Meta.Window window) {
+        if (window_monitor != monitor)
+            return;
+
+        window_container.remove_window (window);
+    }
+
+    private void window_entered (int window_monitor, Meta.Window window) {
+        if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
+            return;
+
+        window_container.add_window (window);
     }
 }

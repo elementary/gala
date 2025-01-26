@@ -88,8 +88,13 @@ public class Gala.GesturePropertyTransition : Object {
      * be set immediately on {@link GestureTracker.OnEnd} not only once the animation ends to allow for interrupting the animation by starting a new gesture.
      * done_callback will only be called if the animation finishes, not if it is interrupted e.g. by starting a new animation for the same property,
      * destroying the actor or removing the transition.
+     *
+     * @return If a transition is currently in progress for the actor and the property the percentage how far the current value
+     * is towards the to_value given the final value of the ongoing transition is returned. This is usally the case if a gesture ended but was
+     * started again before the animation finished so this should be used to set {@link GestureTracker.initial_percentage}. If no transition
+     * is in progress 0 is returned.
      */
-    public void start (bool with_gesture, owned DoneCallback? done_callback = null) {
+    public double start (bool with_gesture, owned DoneCallback? done_callback = null) {
         ref ();
 
         this.done_callback = (owned) done_callback;
@@ -97,26 +102,41 @@ public class Gala.GesturePropertyTransition : Object {
         Value current_value = {};
         actor.get_property (property, ref current_value);
 
-        actual_from_value = from_value ?? current_value;
+        Value initial_value;
+
+        unowned var old_transition = actor.get_transition (property);
+        if (old_transition != null) {
+            initial_value = old_transition.interval.final;
+        } else {
+            initial_value = current_value;
+        }
+
+        actual_from_value = from_value ?? initial_value;
 
         if (actual_from_value.type () != current_value.type ()) {
             warning ("from_value of type %s is not of the same type as the property %s which is %s. Can't animate.", from_value.type_name (), property, current_value.type_name ());
             finish ();
-            return;
+            return 0;
         }
 
         if (current_value.type () != to_value.type ()) {
             warning ("to_value of type %s is not of the same type as the property %s which is %s. Can't animate.", to_value.type_name (), property, current_value.type_name ());
             finish ();
-            return;
+            return 0;
         }
 
         // Pre calculate some things, so we don't have to do it on every update
         from_value_float = value_to_float (actual_from_value);
         to_value_float = value_to_float (to_value);
 
-        GestureTracker.OnBegin on_animation_begin = () => {
-            actor.set_property (property, actual_from_value);
+        var current_value_double = (double) value_to_float (current_value);
+        var initial_value_double = (double) value_to_float (initial_value);
+
+        var initial_percentage = ((to_value_float - initial_value_double) - (to_value_float - current_value_double)) / (to_value_float - initial_value_double);
+
+        GestureTracker.OnBegin on_animation_begin = (percentage) => {
+            var animation_value = GestureTracker.animation_value (from_value_float, to_value_float, percentage, false);
+            actor.set_property (property, value_from_float (animation_value));
         };
 
         GestureTracker.OnUpdate on_animation_update = (percentage) => {
@@ -184,6 +204,8 @@ public class Gala.GesturePropertyTransition : Object {
                 on_animation_end (1, 1, gesture_tracker.min_animation_duration);
             }
         }
+
+        return initial_percentage;
     }
 
     private void finish (bool callback = true) {
