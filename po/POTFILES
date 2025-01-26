@@ -81,7 +81,6 @@ src/Widgets/MonitorClone.vala
 src/Widgets/MultitaskingView.vala
 src/Widgets/PixelPicker.vala
 src/Widgets/PointerLocator.vala
-src/Widgets/SafeWindowClone.vala
 src/Widgets/ScreenShield.vala
 src/Widgets/SelectionArea.vala
 src/Widgets/Tooltip.vala
