@@ -289,7 +289,7 @@ public class Gala.WorkspaceManager : Object {
 
             if (Utils.get_n_windows (workspace) == 0 && workspace.index () != manager.n_workspaces - 1) {
                 remove_workspace (workspace);
-                i--;  
+                i--;
             }
         }
     }
