@@ -227,6 +227,10 @@ public class Gala.HideTracker : Object {
     }
 
     private void trigger_hide () {
+        if (hide_timeout_id != 0) {
+            return;
+        }
+
         // Don't hide if we have transients, e.g. an open popover, dialog, etc.
         var has_transients = false;
         panel.window.foreach_transient (() => {
