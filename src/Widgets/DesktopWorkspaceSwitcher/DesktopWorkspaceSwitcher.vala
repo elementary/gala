@@ -164,6 +164,10 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
                 continue;
             }
 
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                continue;
+            }
+
             var clone = new Clutter.Clone (window_actor);
             clone.x = window_actor.x - monitor_geom.x;
             clone.y = window_actor.y - monitor_geom.y;
@@ -196,6 +200,10 @@ public class Gala.DesktopWorkspaceSwitcher : Clutter.Actor {
         }
 
         if (window == moving) {
+            return true;
+        }
+
+        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
             return true;
         }
 
