@@ -16,7 +16,7 @@ public class Gala.ShellClientsManager : Object {
         instance = new ShellClientsManager (wm);
     }
 
-    public static ShellClientsManager? get_instance () {
+    public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
 
@@ -26,7 +26,7 @@ public class Gala.ShellClientsManager : Object {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -180,17 +180,37 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
-        panel_windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].hide_mode = hide_mode;
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
-        positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
+        positioned_windows[window] = new ShellWindow (window, CENTER);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    private bool is_itself_positioned (Meta.Window window) {
+    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.add_state (state, gesture_tracker, with_gesture);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.add_state (state, gesture_tracker, with_gesture);
+        }
+    }
+
+    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.remove_state (state, gesture_tracker, with_gesture);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.remove_state (state, gesture_tracker, with_gesture);
+        }
+    }
+
+    public bool is_itself_positioned (Meta.Window window) {
         return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
     }
 
