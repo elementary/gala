@@ -2325,6 +2325,10 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (clipboard);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
@@ -2339,6 +2343,10 @@ namespace Gala {
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (clipboard);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
@@ -2350,9 +2358,23 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (clipboard);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
+        }
+
+        private void send_screenshot_notification (bool clipboard) {
+            notifications_manager.send.begin (
+                "ScreenshotManager",
+                "image-x-generic",
+                _("Screenshot taken"),
+                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                new GLib.HashTable<string, Variant> (null, null)
+            );
         }
     }
 }
