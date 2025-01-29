@@ -25,8 +25,8 @@ namespace Gala {
         public const int ANIMATION_DURATION = 250;
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
+        private GestureController workspaces_gesture_controller;
         private GestureTracker multitasking_gesture_tracker;
-        private GestureTracker workspace_gesture_tracker;
 
         public WindowManagerGala wm { get; construct; }
 
@@ -44,8 +44,6 @@ namespace Gala {
 
         private GLib.Settings gala_behavior_settings;
         private Drawing.StyleManager style_manager;
-
-        private bool switching_workspace_with_gesture = false;
 
         public MultitaskingView (WindowManagerGala wm) {
             Object (wm: wm);
@@ -67,11 +65,10 @@ namespace Gala {
             multitasking_gesture_tracker.on_gesture_detected.connect (on_multitasking_gesture_detected);
             multitasking_gesture_tracker.on_gesture_handled.connect (on_multitasking_gesture_handled);
 
-            workspace_gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            workspace_gesture_tracker.enable_touchpad ();
-            workspace_gesture_tracker.enable_scroll (this, Clutter.Orientation.HORIZONTAL);
-            workspace_gesture_tracker.on_gesture_detected.connect (on_workspace_gesture_detected);
-            workspace_gesture_tracker.on_gesture_handled.connect (switch_workspace_with_gesture);
+            workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE);
+            workspaces_gesture_controller.overshoot_upper_clamp = 0.1;
+            workspaces_gesture_controller.enable_touchpad ();
+            workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
 
             workspaces = new Clutter.Actor ();
 
@@ -207,6 +204,8 @@ namespace Gala {
             for (int i = 0; i < manager.get_n_workspaces (); i++) {
                 add_workspace (i);
             }
+
+            update_targets ();
         }
 
         /**
@@ -300,81 +299,11 @@ namespace Gala {
             return 0;
         }
 
-        private bool on_workspace_gesture_detected (Gesture gesture) {
-            if (!opened) {
-                return false;
-            }
-
-            if (gesture.type == SCROLL || GestureSettings.get_action (gesture) == SWITCH_WORKSPACE) {
-                return true;
-            }
-
-            return false;
-        }
-
-        private double switch_workspace_with_gesture (Gesture gesture, uint32 timestamp) {
-            var direction = workspace_gesture_tracker.settings.get_natural_scroll_direction (gesture);
-
-            unowned var manager = display.get_workspace_manager ();
-            var num_workspaces = manager.get_n_workspaces ();
-            var relative_dir = (direction == Meta.MotionDirection.LEFT) ? -1 : 1;
-
-            unowned var active_workspace = manager.get_active_workspace ();
-
-            var target_workspace_index = active_workspace.index () + relative_dir;
-            var target_workspace_exists = target_workspace_index >= 0 && target_workspace_index < num_workspaces;
-            unowned var target_workspace = manager.get_workspace_by_index (target_workspace_index);
-
-            float initial_x = workspaces.x;
-            float target_x = 0;
-            bool is_nudge_animation = !target_workspace_exists;
-
-            if (is_nudge_animation) {
-                var workspaces_geometry = InternalUtils.get_workspaces_geometry (display);
-                target_x = initial_x + (workspaces_geometry.width * -relative_dir);
-            } else {
-                foreach (unowned var child in workspaces.get_children ()) {
-                    unowned var workspace_clone = (WorkspaceClone) child;
-                    var workspace = workspace_clone.workspace;
-
-                    if (workspace == target_workspace) {
-                        target_x = -workspace_clone.multitasking_view_x ();
-                    }
-                }
-            }
-
-            debug ("Starting MultitaskingView switch workspace animation:");
-            debug ("Active workspace index: %d", active_workspace.index ());
-            debug ("Target workspace index: %d", target_workspace_index);
-            debug ("Total number of workspaces: %d", num_workspaces);
-            debug ("Is nudge animation: %s", is_nudge_animation ? "Yes" : "No");
-            debug ("Initial X: %f", initial_x);
-            debug ("Target X: %f", target_x);
-
-            switching_workspace_with_gesture = true;
-
-            var upper_clamp = (direction == LEFT) ? (active_workspace.index () + 0.1) : (num_workspaces - active_workspace.index () - 0.9);
-            var lower_clamp = (direction == RIGHT) ? - (active_workspace.index () + 0.1) : - (num_workspaces - active_workspace.index () - 0.9);
-
-            var initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
-                overshoot_lower_clamp = lower_clamp,
-                overshoot_upper_clamp = upper_clamp
-            }.start (true);
-
-            GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
-                switching_workspace_with_gesture = false;
-
-                completions = completions.clamp ((int) lower_clamp, (int) upper_clamp);
-                manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
-            };
-
-            if (!AnimationsSettings.get_enable_animations ()) {
-                on_animation_end (1, 1, 0);
-            } else {
-                workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
-            }
-
-            return initial_percentage;
+        private void update_targets () {
+            var primary = display.get_primary_monitor ();
+            var geom = display.get_monitor_geometry (primary);
+            var to_value = geom.width - InternalUtils.scale_to_int (150, display.get_monitor_scale (primary));
+            workspaces_gesture_controller.target = new PropertyTarget (workspaces, "x", typeof (float), 0f, (float) to_value);
         }
 
         /**
@@ -385,34 +314,18 @@ namespace Gala {
          *                positions immediately.
          */
         private void update_positions (bool animate) {
-            if (switching_workspace_with_gesture) {
-                return;
-            }
-
-            unowned var manager = display.get_workspace_manager ();
-            var active_workspace = manager.get_active_workspace ();
-            var active_x = 0.0f;
-
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
-                var workspace = workspace_clone.workspace;
                 var dest_x = workspace_clone.multitasking_view_x ();
-
-                if (workspace == active_workspace) {
-                    active_x = dest_x;
-                }
-
                 workspace_clone.save_easing_state ();
                 workspace_clone.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? 200 : 0);
                 workspace_clone.x = dest_x;
                 workspace_clone.restore_easing_state ();
             }
 
-            workspaces.save_easing_state ();
-            workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            workspaces.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
-            workspaces.x = -active_x;
-            workspaces.restore_easing_state ();
+            unowned var manager = display.get_workspace_manager ();
+            workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
+            workspaces_gesture_controller.goto (-manager.get_active_workspace_index ());
 
             reposition_icon_groups (animate);
         }
