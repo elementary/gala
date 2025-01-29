@@ -74,6 +74,7 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
+    'Widgets/WorkspaceRow.vala',
 )
 
 gala_bin = executable(
