@@ -7,7 +7,7 @@
 /**
  * Container which controls the layout of a set of WindowClones.
  */
-public class Gala.WindowCloneContainer : Clutter.Actor {
+public class Gala.WindowCloneContainer : ActorTarget {
     public signal void window_selected (Meta.Window window);
     public signal void requested_close ();
 
@@ -17,7 +17,6 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
     public int padding_bottom { get; set; default = 12; }
 
     public Meta.Display display { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; }
     public bool overview_mode { get; construct; }
 
     private float _monitor_scale = 1.0f;
@@ -41,8 +40,8 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (Meta.Display display, GestureTracker gesture_tracker, float scale, bool overview_mode = false) {
-        Object (display: display, gesture_tracker: gesture_tracker, monitor_scale: scale, overview_mode: overview_mode);
+    public WindowCloneContainer (Meta.Display display, float scale, bool overview_mode = false) {
+        Object (display: display, monitor_scale: scale, overview_mode: overview_mode);
     }
 
     private void reallocate () {
@@ -67,7 +66,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
 
         var windows_ordered = InternalUtils.sort_windows (display, windows);
 
-        var new_window = new WindowClone (display, window, gesture_tracker, monitor_scale, overview_mode);
+        var new_window = new WindowClone (display, window, monitor_scale, overview_mode);
 
         new_window.selected.connect ((clone) => window_selected (clone.window));
         new_window.destroy.connect ((_new_window) => {
@@ -81,9 +80,9 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
                 current_window = null;
             }
 
-            reflow ();
+            reflow (false);
         });
-        new_window.request_reposition.connect (() => reflow ());
+        new_window.request_reposition.connect (() => reflow (false));
 
         unowned Meta.Window? target = null;
         foreach (unowned var w in windows_ordered) {
@@ -107,7 +106,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
             }
         }
 
-        reflow ();
+        reflow (false);
     }
 
     /**
@@ -117,7 +116,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
         foreach (unowned var child in get_children ()) {
             if (((WindowClone) child).window == window) {
                 remove_child (child);
-                reflow ();
+                reflow (false);
                 break;
             }
         }
@@ -127,7 +126,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
      * Sort the windows z-order by their actual stacking to make intersections
      * during animations correct.
      */
-    public void restack_windows () {
+    private void restack_windows () {
         var children = get_children ();
 
         var windows = new List<Meta.Window> ();
@@ -155,7 +154,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
      * Recalculate the tiling positions of the windows and animate them to
      * the resulting spots.
      */
-    public void reflow (bool with_gesture = false, bool is_cancel_animation = false, bool opening = false) {
+    private void reflow (bool view_toggle) {
         if (!opened) {
             return;
         }
@@ -194,7 +193,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
 
         foreach (var tilable in window_positions) {
             unowned var clone = (WindowClone) tilable.id;
-            clone.take_slot (tilable.rect, opening && !is_cancel_animation, with_gesture);
+            clone.take_slot (tilable.rect, !view_toggle);
         }
     }
 
@@ -354,49 +353,36 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
         return false;
     }
 
-    /**
-     * When opened the WindowClones are animated to a tiled layout
-     */
-    public void open (Meta.Window? selected_window, bool with_gesture, bool is_cancel_animation) {
-        if (opened) {
+    public override void start_progress (string id) {
+        if (id != MultitaskingView.GESTURE_ID) {
             return;
         }
 
-        opened = true;
+        if (!opened) {
+            if (current_window != null) {
+                current_window.active = false;
+            }
 
-        // hide the highlight when opened
-        if (selected_window != null) {
-            foreach (var child in get_children ()) {
+            for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
                 unowned var clone = (WindowClone) child;
-                if (clone.window == selected_window) {
+                if (clone.window == display.focus_window) {
                     current_window = clone;
                     break;
                 }
             }
-
-            if (current_window != null) {
-                current_window.active = false;
-            }
-        } else {
-            current_window = null;
         }
 
-        reflow (with_gesture, is_cancel_animation, true);
+        opened = true;
+
+        restack_windows ();
+        reflow (true);
     }
 
-    /**
-     * Calls the transition_to_original_state() function on each child
-     * to make them take their original locations again.
-     */
-    public void close (bool with_gesture = false) {
-        if (!opened) {
+    public override void commit_progress (string id, double to) {
+        if (id != MultitaskingView.GESTURE_ID) {
             return;
         }
 
-        opened = false;
-
-        foreach (var window in get_children ()) {
-            ((WindowClone) window).transition_to_original_state (with_gesture);
-        }
+        opened = to > 0.5;
     }
 }
