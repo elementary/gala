@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : Clutter.Actor {
+public class Gala.WindowClone : ActorTarget {
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -53,7 +53,6 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     public bool overview_mode { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; }
     private float _monitor_scale_factor = 1.0f;
     public float monitor_scale_factor {
         get {
@@ -94,11 +93,10 @@ public class Gala.WindowClone : Clutter.Actor {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (Meta.Display display, Meta.Window window, GestureTracker gesture_tracker, float scale, bool overview_mode = false) {
+    public WindowClone (Meta.Display display, Meta.Window window, float scale, bool overview_mode = false) {
         Object (
             display: display,
             window: window,
-            gesture_tracker: gesture_tracker,
             monitor_scale_factor: scale,
             overview_mode: overview_mode
         );
@@ -113,6 +111,7 @@ public class Gala.WindowClone : Clutter.Actor {
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
         window.size_changed.connect (() => request_reposition ());
+        window.position_changed.connect (update_targets);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -241,69 +240,54 @@ public class Gala.WindowClone : Clutter.Actor {
     }
 
     /**
-     * Place the window at the location of the original MetaWindow
-     *
-     * @param animate Animate the transformation of the placement
-     */
-    public void transition_to_original_state (bool with_gesture = false) {
-        var outer_rect = window.get_frame_rect ();
-
-        unowned var display = window.get_display ();
-        var monitor_geom = display.get_monitor_geometry (window.get_monitor ());
-
-        var target_x = outer_rect.x - monitor_geom.x;
-        var target_y = outer_rect.y - monitor_geom.y;
-
-        active = false;
-        update_hover_widgets (true);
-
-        new GesturePropertyTransition (this, gesture_tracker, "x", null, (float) target_x).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "y", null, (float) target_y).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "width", null, (float) outer_rect.width).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "height", null, (float) outer_rect.height).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 255, (uint8) 0).start (with_gesture);
-        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 255u, 0u).start (with_gesture, () => {
-            update_hover_widgets (false);
-            toggle_shadow (false);
-        });
-
-        if (should_fade ()) {
-            new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 0u).start (with_gesture);
-        }
-    }
-
-    /**
      * Animate the window to the given slot
      */
 #if HAS_MUTTER45
-    public void take_slot (Mtk.Rectangle rect, bool from_window_position, bool with_gesture = false) {
+    public void take_slot (Mtk.Rectangle rect, bool animate) {
 #else
-    public void take_slot (Meta.Rectangle rect, bool from_window_position, bool with_gesture = false) {
+    public void take_slot (Meta.Rectangle rect, bool animate) {
 #endif
         slot = rect;
-        active = false;
+        update_targets ();
 
-        var outer_rect = window.get_frame_rect ();
+        if (!animate) {
+            return;
+        }
 
-        float initial_width = from_window_position ? outer_rect.width : width;
-        float initial_height = from_window_position ? outer_rect.height : height;
+        save_easing_state ();
+        set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
+        set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        set_position (slot.x, slot.y);
+        set_size (slot.width, slot.height);
+        restore_easing_state ();
+    }
 
-        var monitor_geom = display.get_monitor_geometry (window.get_monitor ());
-        float intial_x = from_window_position ? outer_rect.x - monitor_geom.x : x;
-        float intial_y = from_window_position ? outer_rect.y - monitor_geom.y : y;
+    private void update_targets () {
+        remove_all_targets ();
 
+        if (slot == null) {
+            return;
+        }
+
+        var window_rect = window.get_frame_rect ();
+
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, this, "x", typeof (float), (float) window_rect.x, (float) slot.x));
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, this, "y", typeof (float), (float) window_rect.y, (float) slot.y));
+
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, this, "width", typeof (float), (float) window_rect.width, (float) slot.width));
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, this, "height", typeof (float), (float) window_rect.height, (float) slot.height));
+
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, window_icon, "opacity", typeof (uint), 0u, 255u));
+
+        add_target (new PropertyTarget (MultitaskingView.GESTURE_ID, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+    }
+
+    public override void start_progress (string id) {
         update_hover_widgets (true);
+    }
 
-        new GesturePropertyTransition (this, gesture_tracker, "x", intial_x, (float) rect.x).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "y", intial_y, (float) rect.y).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "width", (float) initial_width, (float) rect.width).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "height", (float) initial_height, (float) rect.height).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "opacity", null, 255u).start (with_gesture);
-        new GesturePropertyTransition (this, gesture_tracker, "shadow-opacity", (uint8) 0, (uint8) 255).start (with_gesture);
-        new GesturePropertyTransition (window_icon, gesture_tracker, "opacity", 0u, 255u).start (with_gesture, () => {
-            update_hover_widgets (false);
-            toggle_shadow (true);
-        });
+    public override void end_progress (string id) {
+        update_hover_widgets (false);
     }
 
     public override void allocate (Clutter.ActorBox box) {
@@ -401,25 +385,6 @@ public class Gala.WindowClone : Clutter.Actor {
         window_title.set_easing_duration (duration);
         window_title.opacity = show ? 255 : 0;
         window_title.restore_easing_state ();
-    }
-
-    private void toggle_shadow (bool show) {
-        if (get_transition ("shadow-opacity") != null) {
-            remove_transition ("shadow-opacity");
-        }
-
-        if (AnimationsSettings.get_enable_animations ()) {
-            var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
-                duration = MultitaskingView.ANIMATION_DURATION,
-                remove_on_complete = true,
-                progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD,
-                interval = new Clutter.Interval (typeof (uint8), shadow_opacity, show ? 255 : 0)
-            };
-
-            add_transition ("shadow-opacity", shadow_transition);
-        } else {
-            shadow_opacity = show ? 255 : 0;
-        }
     }
 
     /**
@@ -671,9 +636,16 @@ public class Gala.WindowClone : Clutter.Actor {
      */
     private void drag_canceled () {
         get_parent ().remove_child (this);
-        prev_parent.add_child (this); // Add above so that it is above while it animates back to its place
 
         var duration = AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
+
+        // Adding to the previous parent will automatically update it to take it's slot
+        // so to animate it we set the easing
+        save_easing_state ();
+        set_easing_duration (duration);
+        set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        prev_parent.add_child (this); // Add above so that it is above while it animates back to its place
+        restore_easing_state ();
 
         clone.set_pivot_point (0.0f, 0.0f);
         clone.save_easing_state ();

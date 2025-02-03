@@ -11,15 +11,15 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
     private const int BOTTOM_GAP = 100;
 
     public WindowManager wm { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; } // Currently only used to allow us to use GesturePropertyTransitions
+    public GestureController gesture_controller { get; construct; } // Currently only used to allow us to use GesturePropertyTransitions
 
     private ModalProxy modal_proxy;
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
     private WindowCloneContainer window_clone_container;
 
-    public WindowOverview (WindowManager wm, GestureTracker gesture_tracker) {
-        Object (wm : wm, gesture_tracker: gesture_tracker);
+    public WindowOverview (WindowManager wm, GestureController gesture_controller) {
+        Object (wm : wm, gesture_controller: gesture_controller);
     }
 
     construct {
@@ -124,7 +124,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            window_clone_container = new WindowCloneContainer (display, gesture_tracker, scale, true) {
+            window_clone_container = new WindowCloneContainer (display, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -152,7 +152,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             }
 
             container.add_window (window);
-            container.open (display.get_focus_window (), false, false);
         }
     }
 
@@ -269,10 +268,6 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             workspace.window_removed.disconnect (remove_window);
         }
         wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
-
-        foreach (unowned var child in get_children ()) {
-            ((WindowCloneContainer) child).close ();
-        }
 
         Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
             cleanup ();
