@@ -5,80 +5,88 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellWindow : PositionedWindow {
-    [Flags]
-    public enum State {
-        CUSTOM_HIDDEN,
-        MULTITASKING_VIEW,
-        DESKTOP
-    }
+public class Gala.ShellWindow : PositionedWindow, GestureTarget {
+    public const string GESTURE_ID = "shell-window";
 
-    private const State HIDING_STATES = CUSTOM_HIDDEN | MULTITASKING_VIEW;
+    public Clutter.Actor? actor { get { return window_actor; } }
 
-    private Meta.WindowActor actor;
-    private State pending_state = DESKTOP;
-    private State current_state = DESKTOP;
+    private Meta.WindowActor window_actor;
+    private double custom_progress = 0;
+    private double multitasking_view_progress = 0;
 
-    private bool gesture_ongoing = false;
+    private int animations_ongoing = 0;
+
+    private PropertyTarget property_target;
 
     public ShellWindow (Meta.Window window, Position position, Variant? position_data = null) {
         base (window, position, position_data);
     }
 
     construct {
-        actor = (Meta.WindowActor) window.get_compositor_private ();
+        window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        window_actor.notify["height"].connect (update_target);
+        notify["position"].connect (update_target);
+        update_target ();
+
+        window_actor.notify["visible"].connect (() => warning ("window actor visible changed"));
     }
 
-    public void add_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
-        pending_state |= state;
-        animate (pending_state, gesture_tracker, with_gesture);
+    private void update_target () {
+        property_target = new PropertyTarget (
+            GESTURE_ID, window_actor,
+            get_animation_property (),
+            get_property_type (),
+            calculate_value (false),
+            calculate_value (true)
+        );
     }
 
-    public void remove_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
-        pending_state &= ~state;
-        animate (pending_state, gesture_tracker, with_gesture);
+    private void update_property () {
+        var hidden_progress = double.max (custom_progress, multitasking_view_progress);
+        property_target.update (GESTURE_ID, hidden_progress);
     }
 
-    private void animate (State new_state, GestureTracker gesture_tracker, bool with_gesture) {
-        if (new_state == current_state || gesture_ongoing) {
-            return;
+    public override void start (string id) {
+        animations_ongoing++;
+        update_visibility ();
+    }
+
+    public override void update (string id, double progress) {
+        switch (id) {
+            case MultitaskingView.GESTURE_ID:
+                multitasking_view_progress = progress;
+                break;
+
+            case GESTURE_ID:
+                custom_progress = progress;
+                break;
+
+            default:
+                break;
         }
 
-        gesture_ongoing = true;
-
-        update_visibility (true);
-
-        new GesturePropertyTransition (
-            actor, gesture_tracker, get_animation_property (), null, calculate_value ((new_state & HIDING_STATES) != 0)
-        ).start (with_gesture, () => update_visibility (false));
-
-        gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
-            gesture_ongoing = false;
-
-            if (completions != 0) {
-                current_state = new_state;
-            }
-
-            if (!Meta.Util.is_wayland_compositor ()) {
-                if ((current_state & HIDING_STATES) != 0) {
-                    Utils.x11_set_window_pass_through (window);
-                } else {
-                    Utils.x11_unset_window_pass_through (window);
-                }
-            }
-
-            if (pending_state != new_state) { // We have received new state while animating
-                animate (pending_state, gesture_tracker, false);
-            } else {
-                pending_state = current_state;
-            }
-        });
+        update_property ();
     }
 
-    private void update_visibility (bool animating) {
-        var visible = (current_state & HIDING_STATES) == 0;
+    public override void end (string id) {
+        animations_ongoing--;
+        update_visibility ();
+    }
 
-        actor.visible = animating || visible;
+    private void update_visibility () {
+        var visible = double.max (multitasking_view_progress, custom_progress) < 0.1;
+        var animating = animations_ongoing > 0;
+
+        if (!Meta.Util.is_wayland_compositor ()) {
+            if (!visible) {
+                Utils.x11_set_window_pass_through (window);
+            } else {
+                Utils.x11_unset_window_pass_through (window);
+            }
+        }
+
+        window_actor.visible = animating || visible;
 
         unowned var manager = ShellClientsManager.get_instance ();
         window.foreach_transient ((transient) => {
@@ -86,9 +94,9 @@ public class Gala.ShellWindow : PositionedWindow {
                 return true;
             }
 
-            unowned var actor = (Meta.WindowActor) transient.get_compositor_private ();
+            unowned var window_actor = (Meta.WindowActor) transient.get_compositor_private ();
 
-            actor.visible = visible && !animating;
+            window_actor.visible = visible && !animating;
 
             return true;
         });
@@ -104,12 +112,22 @@ public class Gala.ShellWindow : PositionedWindow {
         }
     }
 
+    private Type get_property_type () {
+        switch (position) {
+            case TOP:
+            case BOTTOM:
+                return typeof (float);
+            default:
+                return typeof (uint);
+        }
+    }
+
     private Value calculate_value (bool hidden) {
         switch (position) {
             case TOP:
-                return hidden ? -actor.height : 0f;
+                return hidden ? -window_actor.height : 0f;
             case BOTTOM:
-                return hidden ? actor.height : 0f;
+                return hidden ? window_actor.height : 0f;
             default:
                 return hidden ? 0u : 255u;
         }

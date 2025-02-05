@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellClientsManager : Object {
+public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
     public static void init (WindowManager wm) {
@@ -19,6 +19,8 @@ public class Gala.ShellClientsManager : Object {
     public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
+
+    public Clutter.Actor? actor { get { return wm.stage; } }
 
     public WindowManager wm { get; construct; }
 
@@ -190,23 +192,33 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
+    public override void start (string id) {
         foreach (var window in positioned_windows.get_values ()) {
-            window.add_state (state, gesture_tracker, with_gesture);
+            window.start (id);
         }
 
         foreach (var window in panel_windows.get_values ()) {
-            window.add_state (state, gesture_tracker, with_gesture);
+            window.start (id);
         }
     }
 
-    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
+    public override void update (string id, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker, with_gesture);
+            window.update (id, progress);
         }
 
         foreach (var window in panel_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker, with_gesture);
+            window.update (id, progress);
+        }
+    }
+
+    public override void end (string id) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.end (id);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.end (id);
         }
     }
 
