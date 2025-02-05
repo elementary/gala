@@ -35,7 +35,7 @@ public class Gala.PanelWindow : ShellWindow {
         }
     }
 
-    private GestureTracker default_gesture_tracker;
+    private GestureController gesture_controller;
     private HideTracker? hide_tracker;
 
     private int width = -1;
@@ -50,6 +50,8 @@ public class Gala.PanelWindow : ShellWindow {
             if (window_struts.remove (window)) {
                 update_struts ();
             }
+
+            gesture_controller = null; // make it release its reference on us
         });
 
         notify["anchor"].connect (() => position = Position.from_anchor (anchor));
@@ -61,7 +63,7 @@ public class Gala.PanelWindow : ShellWindow {
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
 
-        default_gesture_tracker = new GestureTracker (ANIMATION_DURATION, ANIMATION_DURATION);
+        gesture_controller = new GestureController (GESTURE_ID, NONE, this);
 
         window.display.in_fullscreen_changed.connect (() => {
             if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
@@ -105,7 +107,7 @@ public class Gala.PanelWindow : ShellWindow {
     }
 
     private void hide () {
-        add_state (CUSTOM_HIDDEN, default_gesture_tracker, false);
+        gesture_controller.goto (1);
     }
 
     private void show () {
@@ -113,7 +115,7 @@ public class Gala.PanelWindow : ShellWindow {
             return;
         }
 
-        remove_state (CUSTOM_HIDDEN, default_gesture_tracker, false);
+        gesture_controller.goto (0);
     }
 
     private void make_exclusive () {
