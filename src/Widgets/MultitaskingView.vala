@@ -62,6 +62,8 @@ namespace Gala {
             multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, this);
             multitasking_gesture_controller.enable_touchpad ();
 
+            add_target (ShellClientsManager.get_instance ()); // For hiding the panels
+
             workspaces = new WorkspaceRow (display);
 
             workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this) {
