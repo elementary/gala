@@ -29,17 +29,17 @@ public class Gala.ShellWindow : PositionedWindow {
         actor = (Meta.WindowActor) window.get_compositor_private ();
     }
 
-    public void add_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
+    public void add_state (State state, GestureTracker gesture_tracker) {
         pending_state |= state;
-        animate (pending_state, gesture_tracker, with_gesture);
+        animate (pending_state, gesture_tracker);
     }
 
-    public void remove_state (State state, GestureTracker gesture_tracker, bool with_gesture) {
+    public void remove_state (State state, GestureTracker gesture_tracker) {
         pending_state &= ~state;
-        animate (pending_state, gesture_tracker, with_gesture);
+        animate (pending_state, gesture_tracker);
     }
 
-    private void animate (State new_state, GestureTracker gesture_tracker, bool with_gesture) {
+    private void animate (State new_state, GestureTracker gesture_tracker) {
         if (new_state == current_state || gesture_ongoing) {
             return;
         }
@@ -50,9 +50,9 @@ public class Gala.ShellWindow : PositionedWindow {
 
         new GesturePropertyTransition (
             actor, gesture_tracker, get_animation_property (), null, calculate_value ((new_state & HIDING_STATES) != 0)
-        ).start (with_gesture, () => update_visibility (false));
+        ).start (() => update_visibility (false));
 
-        gesture_tracker.add_end_callback (with_gesture, (percentage, completions) => {
+        gesture_tracker.add_end_callback ((percentage, completions) => {
             gesture_ongoing = false;
 
             if (completions != 0) {
@@ -68,7 +68,7 @@ public class Gala.ShellWindow : PositionedWindow {
             }
 
             if (pending_state != new_state) { // We have received new state while animating
-                animate (pending_state, gesture_tracker, false);
+                animate (pending_state, gesture_tracker);
             } else {
                 pending_state = current_state;
             }

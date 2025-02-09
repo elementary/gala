@@ -296,7 +296,7 @@ namespace Gala {
         }
 
         private double on_multitasking_gesture_handled (Gesture gesture, uint32 timestamp) {
-            toggle (true, false);
+            toggle (false);
             return 0;
         }
 
@@ -359,7 +359,7 @@ namespace Gala {
             var initial_percentage = new GesturePropertyTransition (workspaces, workspace_gesture_tracker, "x", null, target_x) {
                 overshoot_lower_clamp = lower_clamp,
                 overshoot_upper_clamp = upper_clamp
-            }.start (true);
+            }.start ();
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions, calculated_duration) => {
                 switching_workspace_with_gesture = false;
@@ -589,7 +589,7 @@ namespace Gala {
          * starting the modal mode and hiding the WindowGroup. Finally tells all components
          * to animate to their positions.
          */
-        private void toggle (bool with_gesture = false, bool is_cancel_animation = false) {
+        private void toggle (bool is_cancel_animation = false) {
             if (animating) {
                 return;
             }
@@ -612,9 +612,9 @@ namespace Gala {
             foreach (var container in window_containers_monitors) {
                 if (opening) {
                     container.visible = true;
-                    container.open (with_gesture, is_cancel_animation);
+                    container.open (is_cancel_animation);
                 } else {
-                    container.close (with_gesture, is_cancel_animation);
+                    container.close (is_cancel_animation);
                 }
             }
 
@@ -662,16 +662,16 @@ namespace Gala {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned WorkspaceClone workspace = (WorkspaceClone) child;
                 if (opening) {
-                    workspace.open (with_gesture, is_cancel_animation);
+                    workspace.open (is_cancel_animation);
                 } else {
-                    workspace.close (with_gesture, is_cancel_animation);
+                    workspace.close (is_cancel_animation);
                 }
             }
 
             if (opening) {
-                ShellClientsManager.get_instance ().add_state (MULTITASKING_VIEW, multitasking_gesture_tracker, with_gesture);
+                ShellClientsManager.get_instance ().add_state (MULTITASKING_VIEW, multitasking_gesture_tracker);
             } else {
-                ShellClientsManager.get_instance ().remove_state (MULTITASKING_VIEW, multitasking_gesture_tracker, with_gesture);
+                ShellClientsManager.get_instance ().remove_state (MULTITASKING_VIEW, multitasking_gesture_tracker);
             }
 
             GestureTracker.OnEnd on_animation_end = (percentage, completions) => {
@@ -694,14 +694,14 @@ namespace Gala {
                     animating = false;
 
                     if (completions == 0) {
-                        toggle (false, true);
+                        toggle (true);
                     }
 
                     return Source.REMOVE;
                 });
             };
 
-            if (!with_gesture) {
+            if (!multitasking_gesture_tracker.recognizing) {
                 on_animation_end (1, 1, 0);
             } else {
                 multitasking_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);

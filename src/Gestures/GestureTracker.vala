@@ -75,7 +75,9 @@ public class Gala.GestureTracker : Object {
      */
     public bool enabled { get; set; default = true; }
 
-    public bool recognizing { get; private set; }
+    public bool recognizing { get; private set; default = false; }
+
+    public bool has_started { get; private set; default = false; }
 
     /**
      * Emitted when a new gesture is detected.
@@ -205,10 +207,10 @@ public class Gala.GestureTracker : Object {
 
     /**
      * Connects a callback that will be called as soon as the gesture finishes.
-     * If with_gesture is false it will be called immediately, otherwise once {@link on_end} is emitted.
+     * If #this is not recognizing it will be called immediately, otherwise once {@link on_end} is emitted.
      */
-    public void add_end_callback (bool with_gesture, owned OnEnd callback) {
-        if (!with_gesture) {
+    public void add_end_callback (owned OnEnd callback) {
+        if (!recognizing || !AnimationsSettings.get_enable_animations ()) {
             callback (1, 1, min_animation_duration);
         } else {
             ulong handler_id = on_end.connect ((percentage, cancel_action, duration) =>
@@ -255,6 +257,7 @@ public class Gala.GestureTracker : Object {
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
         if (enabled && on_gesture_detected (gesture)) {
             backend.prepare_gesture_handling ();
+            recognizing = true;
             applied_percentage = on_gesture_handled (gesture, timestamp);
             return true;
         }
@@ -267,7 +270,7 @@ public class Gala.GestureTracker : Object {
             on_begin (applied_percentage);
         }
 
-        recognizing = true;
+        has_started = true;
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
@@ -314,12 +317,14 @@ public class Gala.GestureTracker : Object {
             completions += applied_percentage < 0 ? -1 : 1;
         }
 
+        recognizing = false;
+        has_started = false;
+
         if (enabled) {
             on_end (applied_percentage, completions, calculated_duration);
         }
 
         disconnect_all_handlers ();
-        recognizing = false;
         applied_percentage = 0;
         previous_percentage = 0;
         previous_time = 0;

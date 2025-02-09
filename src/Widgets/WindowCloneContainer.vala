@@ -155,7 +155,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
      * Recalculate the tiling positions of the windows and animate them to
      * the resulting spots.
      */
-    public void reflow (bool with_gesture = false, bool is_cancel_animation = false, bool opening = false) {
+    public void reflow (bool is_cancel_animation = false, bool opening = false) {
         if (!opened) {
             return;
         }
@@ -194,7 +194,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
 
         foreach (var tilable in window_positions) {
             unowned var clone = (WindowClone) tilable.id;
-            clone.take_slot (tilable.rect, opening && !is_cancel_animation, with_gesture);
+            clone.take_slot (tilable.rect, opening && !is_cancel_animation);
         }
     }
 
@@ -357,7 +357,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
     /**
      * When opened the WindowClones are animated to a tiled layout
      */
-    public void open (Meta.Window? selected_window, bool with_gesture, bool is_cancel_animation) {
+    public void open (Meta.Window? selected_window, bool is_cancel_animation) {
         if (opened) {
             return;
         }
@@ -381,14 +381,14 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
             current_window = null;
         }
 
-        reflow (with_gesture, is_cancel_animation, true);
+        reflow (is_cancel_animation, true);
     }
 
     /**
      * Calls the transition_to_original_state() function on each child
      * to make them take their original locations again.
      */
-    public void close (bool with_gesture = false) {
+    public void close () {
         if (!opened) {
             return;
         }
@@ -396,7 +396,7 @@ public class Gala.WindowCloneContainer : Clutter.Actor {
         opened = false;
 
         foreach (var window in get_children ()) {
-            ((WindowClone) window).transition_to_original_state (with_gesture);
+            ((WindowClone) window).transition_to_original_state ();
         }
     }
 }

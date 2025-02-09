@@ -152,7 +152,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             }
 
             container.add_window (window);
-            container.open (display.get_focus_window (), false, false);
+            container.open (display.get_focus_window (), false);
         }
     }
 
