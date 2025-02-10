@@ -39,7 +39,7 @@ public enum Gala.WindowFlags {
     IS_TILED
 }
 
-[DBus (name = "org.pantheon.gala")]
+[DBus (name = "io.elementary.gala")]
 public interface Gala.WMDBus : GLib.Object {
     public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
 }
@@ -53,13 +53,13 @@ public struct Gala.Daemon.MonitorLabelInfo {
     public int y;
 }
 
-[DBus (name = "org.pantheon.gala.daemon")]
+[DBus (name = "io.elementary.gala.daemon")]
 public class Gala.Daemon.DBus : GLib.Object {
-    private const string DBUS_NAME = "org.pantheon.gala";
-    private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
+    private const string DBUS_NAME = "io.elementary.gala";
+    private const string DBUS_OBJECT_PATH = "/io/elementary/gala";
 
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    private const string DAEMON_DBUS_NAME = "io.elementary.gala.daemon";
+    private const string DAEMON_DBUS_OBJECT_PATH = "/io/elementary/gala/daemon";
 
     private const string BG_MENU_ACTION_GROUP_PREFIX = "background-menu";
     private const string BG_MENU_ACTION_PREFIX = BG_MENU_ACTION_GROUP_PREFIX + ".";
