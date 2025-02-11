@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2024-12-19 16:04+0000\n"
+"PO-Revision-Date: 2025-02-12 01:16+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/>"
+"\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -301,11 +301,11 @@ msgstr "Captura de %s"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "La captura de pantalla es desa al porta-retalls"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Captura de pantalla desada a la carpeta de captures de pantalla"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
