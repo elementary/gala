@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2024-08-07 18:17+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
-"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/"
-">\n"
+"PO-Revision-Date: 2025-02-12 01:16+0000\n"
+"Last-Translator: Uwe S <saabisto@gmx.de>\n"
+"Language-Team: German <https://l10n.elementary.io/projects/desktop/gala/de/>"
+"\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -209,7 +209,7 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekannt"
 
 #: src/Dialogs/CloseDialog.vala:23
 #, c-format
@@ -239,15 +239,15 @@ msgstr "Warten"
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "»%s« möchte System-Tastenkürzel unterdrücken"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Eine Anwendung möchte System-Tastenkürzel unterdrücken"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Alle System-Tastenkürzel werden an diese Anwendung umgeleitet."
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
@@ -255,11 +255,11 @@ msgstr "Erlauben"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
-msgstr ""
+msgstr "Untersagen"
 
 #: src/DesktopIntegration.vala:133
 msgid "Window has already focus"
-msgstr ""
+msgstr "Der Fokus ist bereits auf dem Fenster"
 
 #: src/ScreenshotManager.vala:288
 msgid "Screenshots"
@@ -271,7 +271,7 @@ msgstr "Bildschirmfoto erstellt"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
 msgid "Window switcher"
-msgstr ""
+msgstr "Fensterumschalter"
 
 #: src/WindowManager.vala:2268
 #, c-format
@@ -300,11 +300,11 @@ msgstr "Bildschirmfoto von %s"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Bildschirmfoto in Zwischenablage gespeichert"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Bildschirmfoto in Bildschirmfotordner gespeichert"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
