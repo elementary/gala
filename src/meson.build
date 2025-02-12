@@ -63,6 +63,7 @@ gala_bin_sources = files(
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
+    'Widgets/PrimaryMonitorClone.vala',
     'Widgets/ScreenShield.vala',
     'Widgets/SelectionArea.vala',
     'Widgets/Tooltip.vala',
@@ -74,7 +75,6 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
     'Widgets/WorkspaceInsertThumb.vala',
-    'Widgets/WorkspaceRow.vala',
 )
 
 gala_bin = executable(

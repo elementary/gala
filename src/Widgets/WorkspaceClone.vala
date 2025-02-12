@@ -331,7 +331,7 @@ namespace Gala {
         }
 
         public override void update_progress (string id, double progress) {
-            if (id == WorkspaceRow.GESTURE_ID) {
+            if (id == PrimaryMonitorClone.GESTURE_ID) {
                 icon_group.backdrop_opacity = 1 - (float) (workspace.index () + progress).abs ().clamp (0, 1);
             }
         }

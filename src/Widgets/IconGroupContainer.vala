@@ -110,30 +110,6 @@ public class Gala.IconGroupContainer : Clutter.Actor {
         request_reposition (true);
     }
 
-    /**
-     * Calculates the width that will be occupied taking currently running animations
-     * end states into account
-     */
-    public float calculate_total_width () {
-        var spacing = InternalUtils.scale_to_int (SPACING, scale_factor);
-        var group_width = InternalUtils.scale_to_int (GROUP_WIDTH, scale_factor);
-
-        var width = 0.0f;
-        foreach (var child in get_children ()) {
-            if (child is WorkspaceInsertThumb) {
-                if (((WorkspaceInsertThumb) child).expanded)
-                    width += group_width + spacing * 2;
-                else
-                    width += spacing;
-            } else
-                width += group_width;
-        }
-
-        width += spacing;
-
-        return width;
-    }
-
     public void force_reposition () {
         var children = get_children ();
 
