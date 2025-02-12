@@ -40,7 +40,7 @@ namespace Gala {
 
         private IconGroupContainer icon_groups;
         private ActorTarget workspaces;
-        private Clutter.Actor primary_monitor_container;
+        private PrimaryMonitorClone primary_monitor_clone;
         private Clutter.BrightnessContrastEffect brightness_effect;
 
         private GLib.Settings gala_behavior_settings;
@@ -66,17 +66,6 @@ namespace Gala {
 
             add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
-            workspaces = new WorkspaceRow (display);
-
-            workspaces_gesture_controller = new GestureController (WorkspaceRow.GESTURE_ID, SWITCH_WORKSPACE, workspaces) {
-                enabled = false,
-                overshoot_upper_clamp = 0.1
-            };
-            workspaces_gesture_controller.enable_touchpad ();
-            workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
-
-            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
-
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
@@ -86,13 +75,24 @@ namespace Gala {
 
             add_child (blurred_bg);
 
+            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
+
+            workspaces = new ActorTarget () {
+                layout_manager = new Clutter.BoxLayout ()
+            };
+
             // Create a child container that will be sized to fit the primary monitor, to contain the "main"
             // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
             // stage as it contains MonitorClones for each monitor.
-            primary_monitor_container = new ActorTarget ();
-            primary_monitor_container.add_child (icon_groups);
-            primary_monitor_container.add_child (workspaces);
-            add_child (primary_monitor_container);
+            primary_monitor_clone = new PrimaryMonitorClone (display, icon_groups, workspaces);
+            add_child (primary_monitor_clone);
+
+            workspaces_gesture_controller = new GestureController (PrimaryMonitorClone.GESTURE_ID, SWITCH_WORKSPACE, primary_monitor_clone) {
+                enabled = false,
+                overshoot_upper_clamp = 0.1
+            };
+            workspaces_gesture_controller.enable_touchpad ();
+            workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -186,8 +186,8 @@ namespace Gala {
             var scale = display.get_monitor_scale (primary);
             icon_groups.scale_factor = scale;
 
-            primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
-            primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
+            primary_monitor_clone.set_position (primary_geometry.x, primary_geometry.y);
+            primary_monitor_clone.set_size (primary_geometry.width, primary_geometry.height);
 
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
@@ -288,9 +288,7 @@ namespace Gala {
                 modal_proxy = wm.push_modal (this);
                 modal_proxy.set_keybinding_filter (keybinding_filter);
 
-                var scale = display.get_monitor_scale (display.get_primary_monitor ());
                 icon_groups.force_reposition ();
-                icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
@@ -332,6 +330,11 @@ namespace Gala {
          *                positions immediately.
          */
         private void update_positions (bool animate) {
+            for (var child = workspaces.get_first_child (); child != null; child = child.get_next_sibling ()) {
+                unowned var workspace_clone = (WorkspaceClone) child;
+                workspaces.set_child_at_index (workspace_clone, workspace_clone.workspace.index ());
+            }
+
             unowned var manager = display.get_workspace_manager ();
             workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
 
@@ -339,32 +342,6 @@ namespace Gala {
                 workspaces_gesture_controller.goto (-manager.get_active_workspace_index ());
             } else {
                 workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
-            }
-
-            reposition_icon_groups (animate);
-        }
-
-        private void reposition_icon_groups (bool animate) {
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_index = manager.get_active_workspace ().index ();
-
-            if (animate) {
-                icon_groups.save_easing_state ();
-                icon_groups.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                icon_groups.set_easing_duration (200);
-            }
-
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            // make sure the active workspace's icongroup is always visible
-            var icon_groups_width = icon_groups.calculate_total_width ();
-            if (icon_groups_width > primary_monitor_container.width) {
-                icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
-                    .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
-            } else
-                icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
-
-            if (animate) {
-                icon_groups.restore_easing_state ();
             }
         }
 
