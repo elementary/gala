@@ -17,6 +17,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     public struct Workspace {
+        uint index;
         Window[] windows;
     }
 
@@ -137,6 +138,10 @@ public class Gala.DesktopIntegration : GLib.Object {
     public Workspace[] get_workspaces () throws GLib.DBusError, GLib.IOError {
         var n_workspaces = wm.get_display ().get_workspace_manager ().n_workspaces;
         var workspaces = new Workspace[n_workspaces];
+
+        for (var i = 0; i < workspaces.length; i++) {
+            workspaces[i].index = i;
+        }
         
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned var app in apps) {
@@ -173,6 +178,18 @@ public class Gala.DesktopIntegration : GLib.Object {
                 }
             }
         }
+    }
+
+    public void activate_workspace (int index) throws GLib.DBusError, GLib.IOError {
+        unowned var workspace = wm.get_display ().get_workspace_manager ().get_workspace_by_index (index);
+        if (workspace == null) {
+            critical ("...");
+            // throw error maybe...
+            return;
+        }
+
+        warning ("Activating");
+        workspace.activate (wm.get_display ().get_current_time ());
     }
 
     private bool notifying = false;
