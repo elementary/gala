@@ -16,15 +16,42 @@ public class Gala.DesktopIntegration : GLib.Object {
         GLib.HashTable<unowned string, Variant> properties;
     }
 
+    public struct Workspace {
+        Window[] windows;
+    }
+
     private unowned WindowManagerGala wm;
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
+    public signal void workspaces_changed ();
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
-        wm.get_display ().get_workspace_manager ().active_workspace_changed.connect (() => windows_changed ());
+
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (() => windows_changed ());
+
+        workspace_manager.workspaces_reordered.connect (() => workspaces_changed ());
+        workspace_manager.workspace_added.connect ((_workspace_manager, index) => {
+            workspaces_changed ();
+
+            unowned var workspace = _workspace_manager.get_workspace_by_index (index);
+            if (workspace == null) {
+                critical ("Couldn't get workspace");
+                return;
+            }
+
+            workspace.window_added.connect (() => workspaces_changed ());
+            workspace.window_removed.connect (() => workspaces_changed ());
+        });
+        workspace_manager.workspace_removed.connect (() => workspaces_changed ());
+
+        foreach (unowned var workspace in workspace_manager.get_workspaces ()) {
+            workspace.window_added.connect (() => workspaces_changed ());
+            workspace.window_removed.connect (() => workspaces_changed ());
+        }
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
@@ -105,6 +132,32 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
 
         return (owned) returned_windows;
+    }
+
+    public Workspace[] get_workspaces () throws GLib.DBusError, GLib.IOError {
+        var n_workspaces = wm.get_display ().get_workspace_manager ().n_workspaces;
+        var workspaces = new Workspace[n_workspaces];
+        
+        var apps = Gala.AppSystem.get_default ().get_running_apps ();
+        foreach (unowned var app in apps) {
+            foreach (weak Meta.Window window in app.get_windows ()) {
+                if (!is_eligible_window (window)) {
+                    continue;
+                }
+
+                var properties = new GLib.HashTable<unowned string, Variant> (str_hash, str_equal);
+                properties.insert ("app-id", new GLib.Variant.string (app.id));
+
+                var w = workspaces[window.get_workspace ().workspace_index].windows;
+                w += Window () {
+                    uid = window.get_id (),
+                    properties = properties
+                };
+                workspaces[window.get_workspace ().workspace_index].windows = w;
+            }
+        }
+
+        return (owned) workspaces;
     }
 
     public void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError {
