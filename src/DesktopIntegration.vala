@@ -20,6 +20,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
+    public signal void active_workspace_changed ();
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
@@ -27,11 +28,12 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         unowned var display = wm.get_display ();
         unowned var workspace_manager = display.get_workspace_manager ();
-        workspace_manager.active_workspace_changed.connect (() => windows_changed ());
+        workspace_manager.active_workspace_changed.connect (() => active_workspace_changed ());
         workspace_manager.workspaces_reordered.connect (() => windows_changed ());
         workspace_manager.workspace_added.connect (() => windows_changed ());
         workspace_manager.workspace_removed.connect (() => windows_changed ());
 
+        // TODO: figure out if there's a better way to handle ws rearrangement
         display.window_created.connect ((window) => {
             window.workspace_changed.connect (() => windows_changed ());
         });
@@ -90,7 +92,6 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("client-type", new GLib.Variant.uint32 (window.get_client_type ()));
                 properties.insert ("is-hidden", new GLib.Variant.boolean (window.is_hidden ()));
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
-                properties.insert ("on-active-workspace", new GLib.Variant.boolean (window.located_on_workspace (active_workspace)));
                 properties.insert ("workspace-index", new GLib.Variant.int32 (window.get_workspace ().index ()));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
@@ -146,6 +147,10 @@ public class Gala.DesktopIntegration : GLib.Object {
 
     public int get_n_workspaces () throws GLib.DBusError, GLib.IOError {
         return wm.get_display ().get_workspace_manager ().n_workspaces;
+    }
+
+    public int get_active_workspace () throws GLib.DBusError, GLib.IOError {
+        return wm.get_display ().get_workspace_manager ().get_active_workspace_index ();
     }
 
     private bool notifying = false;
