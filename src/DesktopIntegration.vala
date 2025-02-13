@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 elementary, Inc. <https://elementary.io>
+ * Copyright 2022-2025 elementary, Inc. <https://elementary.io>
  * Copyright 2022 Corentin Noël <tintou@noel.tf>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -75,7 +75,6 @@ public class Gala.DesktopIntegration : GLib.Object {
     public Window[] get_windows () throws GLib.DBusError, GLib.IOError {
         Window[] returned_windows = {};
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
-        var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (!is_eligible_window (window)) {
@@ -137,9 +136,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public void activate_workspace (int index) throws GLib.DBusError, GLib.IOError {
         unowned var workspace = wm.get_display ().get_workspace_manager ().get_workspace_by_index (index);
         if (workspace == null) {
-            critical ("...");
-            // throw error maybe...
-            return;
+            throw new IOError.NOT_FOUND ("Workspace not found");
         }
 
         workspace.activate (wm.get_display ().get_current_time ());
