@@ -144,6 +144,10 @@ public class Gala.DesktopIntegration : GLib.Object {
         workspace.activate (wm.get_display ().get_current_time ());
     }
 
+    public int get_n_workspaces () throws GLib.DBusError, GLib.IOError {
+        return wm.get_display ().get_workspace_manager ().n_workspaces;
+    }
+
     private bool notifying = false;
     private void notify_already_focused (Meta.Window window) {
         if (notifying) {
