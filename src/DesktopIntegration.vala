@@ -25,11 +25,16 @@ public class Gala.DesktopIntegration : GLib.Object {
         this.wm = wm;
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
 
-        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var display = wm.get_display ();
+        unowned var workspace_manager = display.get_workspace_manager ();
         workspace_manager.active_workspace_changed.connect (() => windows_changed ());
         workspace_manager.workspaces_reordered.connect (() => windows_changed ());
         workspace_manager.workspace_added.connect (() => windows_changed ());
         workspace_manager.workspace_removed.connect (() => windows_changed ());
+
+        display.window_created.connect ((window) => {
+            window.workspace_changed.connect (() => windows_changed ());
+        });
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
