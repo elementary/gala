@@ -52,6 +52,8 @@ gala_bin_sources = files(
     'ShellClients/PositionedWindow.vala',
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
+    'Widgets/DesktopWorkspaceSwitcher/DesktopWorkspaceClone.vala',
+    'Widgets/DesktopWorkspaceSwitcher/DesktopWorkspaceSwitcher.vala',
     'Widgets/DwellClickTimer.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
