@@ -10,12 +10,15 @@
 public class Gala.NotificationsManager : GLib.Object {
     [DBus (name = "org.freedesktop.Notifications")]
     private interface DBusNotifications : GLib.Object {
+        public signal void action_invoked (uint32 id, string action_key);
+
         public abstract async uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
     }
 
     private const int EXPIRE_TIMEOUT = 2000;
 
+    private GLib.SimpleActionGroup action_group = new GLib.SimpleActionGroup ();
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
 
@@ -29,6 +32,7 @@ public class Gala.NotificationsManager : GLib.Object {
             (obj, res) => {
                 try {
                     notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
+                    notifications.action_invoked.connect (handle_action_invoked);
                 } catch (Error e) {
                     warning ("NotificationsManager: Couldn't connect to notifications server: %s", e.message);
                     notifications = null;
@@ -42,11 +46,32 @@ public class Gala.NotificationsManager : GLib.Object {
         notifications = null;
     }
 
+    private void handle_action_invoked (uint32 id, string action_name) {
+        string name;
+        GLib.Variant? target_value;
+
+        try {
+            GLib.Action.parse_detailed_name (action_name, out name, out target_value);
+        } catch (Error e) {
+            warning ("NotificationsManager: Couldn't parse action: %s", e.message);
+            return;
+        }
+
+        if (action_group.has_action (name)) {
+            action_group.activate_action (name, target_value);
+        }
+    }
+
+    public void add_action (GLib.Action action) {
+        action_group.add_action (action);
+    }
+
     public async void send (
         string component_name,
         string icon,
         string summary,
         string body,
+        string[] actions,
         GLib.HashTable<string, Variant> hints
     ) {
         if (notifications == null) {
@@ -66,7 +91,7 @@ public class Gala.NotificationsManager : GLib.Object {
                 icon,
                 summary,
                 body,
-                {},
+                actions,
                 hints,
                 EXPIRE_TIMEOUT
             );

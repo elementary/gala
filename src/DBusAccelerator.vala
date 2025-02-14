@@ -167,6 +167,7 @@ public class Gala.DBusAccelerator {
             icon,
             label,
             "",
+            {},
             hints
         );
     }
