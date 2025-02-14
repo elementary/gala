@@ -34,6 +34,14 @@ namespace Gala {
         OUT = 6,
     }
 
+    public enum GestureAction {
+        NONE,
+        SWITCH_WORKSPACE,
+        MOVE_TO_WORKSPACE,
+        SWITCH_WINDOWS,
+        MULTITASKING_VIEW
+    }
+
     public class Gesture {
         public const float INVALID_COORD = float.MAX;
 

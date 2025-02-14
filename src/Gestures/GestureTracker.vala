@@ -23,6 +23,14 @@ public interface Gala.GestureBackend : Object {
     public signal void on_end (double delta, uint64 time);
 
     public virtual void prepare_gesture_handling () { }
+
+    /**
+     * The gesture should be cancelled. The implementation should stop emitting
+     * signals and reset any internal state. In particular it should not emit on_end.
+     * The implementation has to make sure that any further events from the same gesture will
+     * will be ignored. Once the gesture ends a new gesture should be treated as usual.
+     */
+    public virtual void cancel_gesture () { }
 }
 
 /**
