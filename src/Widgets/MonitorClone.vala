@@ -11,18 +11,17 @@
  * as the WindowGroup is hidden while the view is active. Only used when
  * workspaces-only-on-primary is set to true.
  */
-public class Gala.MonitorClone : Clutter.Actor {
+public class Gala.MonitorClone : ActorTarget {
     public signal void window_selected (Meta.Window window);
 
     public Meta.Display display { get; construct; }
     public int monitor { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; }
 
     private WindowCloneContainer window_container;
     private BackgroundManager background;
 
-    public MonitorClone (Meta.Display display, int monitor, GestureTracker gesture_tracker) {
-        Object (display: display, monitor: monitor, gesture_tracker: gesture_tracker);
+    public MonitorClone (Meta.Display display, int monitor) {
+        Object (display: display, monitor: monitor);
     }
 
     construct {
@@ -32,7 +31,7 @@ public class Gala.MonitorClone : Clutter.Actor {
 
         var scale = display.get_monitor_scale (monitor);
 
-        window_container = new WindowCloneContainer (display, gesture_tracker, scale);
+        window_container = new WindowCloneContainer (display, scale);
         window_container.window_selected.connect ((w) => { window_selected (w); });
 
         display.window_entered_monitor.connect (window_entered);
@@ -75,22 +74,6 @@ public class Gala.MonitorClone : Clutter.Actor {
 
         var scale = display.get_monitor_scale (monitor);
         window_container.monitor_scale = scale;
-    }
-
-    /**
-     * Animate the windows from their old location to a tiled layout
-     */
-    public void open (bool with_gesture = false, bool is_cancel_animation = false) {
-        window_container.restack_windows ();
-        window_container.open (null, with_gesture, is_cancel_animation);
-    }
-
-    /**
-        * Animate the windows back to their old location
-        */
-    public void close (bool with_gesture = false, bool is_cancel_animation = false) {
-        window_container.restack_windows ();
-        window_container.close (with_gesture);
     }
 
     private void window_left (int window_monitor, Meta.Window window) {
