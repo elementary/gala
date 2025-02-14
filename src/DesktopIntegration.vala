@@ -139,7 +139,13 @@ public class Gala.DesktopIntegration : GLib.Object {
             throw new IOError.NOT_FOUND ("Workspace not found");
         }
 
-        workspace.activate (wm.get_display ().get_current_time ());
+        unowned var display = wm.get_display ();
+        unowned var active_workspace_index = display.get_workspace_manager ().get_active_workspace_index ();
+        if (active_workspace_index == index) {
+            InternalUtils.bell_notify (display);
+        } else {
+            workspace.activate (display.get_current_time ());
+        }
     }
 
     public int get_n_workspaces () throws GLib.DBusError, GLib.IOError {
