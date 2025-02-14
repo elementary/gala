@@ -56,8 +56,24 @@ public class Gala.WorkspaceManager : Object {
         manager.workspace_switched.connect_after (workspace_switched);
         manager.workspace_added.connect (workspace_added);
         manager.workspace_removed.connect_after (workspace_removed);
-        display.window_entered_monitor.connect (window_entered_monitor);
         display.window_left_monitor.connect (window_left_monitor);
+
+        // FIXME: we need this workaround because Meta.Workspace.window_added fires before Meta.Display.window_added
+        //        and shell windows (e.g. notifications) are treated as normal windows
+        //        
+        //        Reported here:
+        //        https://github.com/elementary/dock/pull/361#issuecomment-2657783172
+        //
+        //        I suppose the best solution is to use Meta.Window.configure when we get newer mutter
+        //        https://github.com/elementary/gala/issues/2216
+        wm.get_display ().window_created.connect ((window) => {
+            InternalUtils.wait_for_window_actor_visible (window, () => {
+                Idle.add (() => {
+                    window_added (window.get_workspace (), window);
+                    return Source.REMOVE;
+                });
+            });
+        });
 
         // make sure the last workspace has no windows on it
         if (Meta.Prefs.get_dynamic_workspaces ()
@@ -75,7 +91,6 @@ public class Gala.WorkspaceManager : Object {
         manager.workspace_added.disconnect (workspace_added);
         manager.workspace_switched.disconnect (workspace_switched);
         manager.workspace_removed.disconnect (workspace_removed);
-        display.window_entered_monitor.disconnect (window_entered_monitor);
         display.window_left_monitor.disconnect (window_left_monitor);
     }
 
@@ -85,7 +100,6 @@ public class Gala.WorkspaceManager : Object {
             return;
         }
 
-        workspace.window_added.connect (window_added);
         workspace.window_removed.connect (window_removed);
     }
 
@@ -135,6 +149,7 @@ public class Gala.WorkspaceManager : Object {
         if ((window.window_type == Meta.WindowType.NORMAL
             || window.window_type == Meta.WindowType.DIALOG
             || window.window_type == Meta.WindowType.MODAL_DIALOG)
+            || ShellClientsManager.get_instance ().is_itself_positioned (window)
             && workspace.index () == last_workspace
         ) {
             append_workspace ();
@@ -180,12 +195,6 @@ public class Gala.WorkspaceManager : Object {
             && workspace.index () == last_workspace_index - 1
         ) {
             remove_workspace (last_workspace);
-        }
-    }
-
-    private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-        if (InternalUtils.workspaces_only_on_primary () && monitor == display.get_primary_monitor ()) {
-            window_added (window.get_workspace (), window);
         }
     }
 
@@ -243,7 +252,6 @@ public class Gala.WorkspaceManager : Object {
             return;
         }
 
-        workspace.window_added.disconnect (window_added);
         workspace.window_removed.disconnect (window_removed);
 
         workspaces_marked_removed.add (workspace);
