@@ -325,9 +325,14 @@ namespace Gala {
                 return null;
             }
 
-            var container = new Clutter.Actor ();
-            container.set_size (inner_rect.width, inner_rect.height);
-            container.content = content;
+            var container = new Clutter.Actor () {
+                content = content,
+                offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS,
+                x = inner_rect.x,
+                y = inner_rect.y,
+                width = inner_rect.width,
+                height = inner_rect.height
+            };
 
             return container;
         }
