@@ -73,7 +73,6 @@ src/SessionManager.vala
 src/ShellClients/HideTracker.vala
 src/ShellClients/ManagedClient.vala
 src/ShellClients/NotificationsClient.vala
-src/ShellClients/PanelClone.vala
 src/ShellClients/PanelWindow.vala
 src/ShellClients/ShellClientsManager.vala
 src/Widgets/DwellClickTimer.vala

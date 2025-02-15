@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-12-24 00:16+0000\n"
+"POT-Creation-Date: 2025-02-10 20:55+0000\n"
+"PO-Revision-Date: 2025-02-14 00:32+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -109,19 +109,19 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
-#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
-#: data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:124
+#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:206
 msgid "Improvements:"
 msgstr "Удосконалення:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
-#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:78 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:171 data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:208
 msgid "Updated translations"
 msgstr "Оновлені переклади"
 
@@ -137,30 +137,30 @@ msgstr "Додано інтерактивний ярлик створення з
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Виправлено збій під час використання комбінацій клавіш на плитці"
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:66
 msgid "Improved shadows performance"
 msgstr "Покращення швидкості показу тіней"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:110
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Виправлено ймовірність збою під час переміщення вікон між робочими просторами"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:111
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Виправлено анімацію сповіщень після входу в багатозадачне подання"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:126
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 "Удосконалено навігацію за допомогою комбінацій клавіш у багатозадачному "
 "режимі"
 
-#: data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:127
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Зміна кольору панелі одночасно зі зміною шпалер"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:167
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -168,23 +168,23 @@ msgstr ""
 "Зміна шпалер або перехід у режим сну відбувається з дотриманням опції "
 "\"Скоротити кількість анімацій\""
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:168
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Використовувати відповідні покажчики перетягування під час переміщення вікон"
 
-#: data/gala.metainfo.xml.in:159
+#: data/gala.metainfo.xml.in:169
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Усунуто проблему, через яку жести в багатозадачному поданні могли перестати "
 "працювати"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:170
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Поліпшувати динамічну поведінку робочого простору з кількома моніторами"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:192
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Вдосконалення роботи з ярликом переходу до робочого простору"
 
@@ -210,20 +210,16 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/DesktopIntegration.vala:133
-msgid "Window has already focus"
-msgstr "Вікно вже у фокусі"
-
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr "«%s» не відповідає"
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr "Застосунок не відповідає"
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -231,40 +227,44 @@ msgstr ""
 "Ви можете зачекати, поки застосунок відновить роботу, або примусово повністю "
 "закрити його."
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
 msgstr "Примусово вийти"
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr "Зачекати"
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
 msgstr "“%s” хоче заборонити використання системних комбінацій клавіш"
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
 msgstr "Застосунок хоче заборонити використання системних комбінацій клавіш"
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
 msgstr "Усі системні комбінації клавіш будуть перенаправлені до застосунку."
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
 msgstr "Дозволити"
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
 msgstr "Відхилити"
 
-#: src/ScreenshotManager.vala:296
+#: src/DesktopIntegration.vala:133
+msgid "Window has already focus"
+msgstr "Вікно вже у фокусі"
+
+#: src/ScreenshotManager.vala:288
 msgid "Screenshots"
 msgstr "Знімки екрана"
 
-#: src/ScreenshotManager.vala:388
+#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
 msgid "Screenshot taken"
 msgstr "Знімки екрана зроблено"
 
@@ -272,7 +272,7 @@ msgstr "Знімки екрана зроблено"
 msgid "Window switcher"
 msgstr "Перемикач вікон"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2268
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -280,23 +280,31 @@ msgstr[0] "Зміни буде автоматично відхилено за %i
 msgstr[1] "Зміни буде автоматично відхилено за %i секунди."
 msgstr[2] "Зміни буде автоматично відхилено за %i секунд."
 
-#: src/WindowManager.vala:2336
+#: src/WindowManager.vala:2275
 msgid "Keep new display settings?"
 msgstr "Зберегти нові налаштування дисплея?"
 
-#: src/WindowManager.vala:2340
+#: src/WindowManager.vala:2279
 msgid "Keep Settings"
 msgstr "Зберегти налаштування"
 
-#: src/WindowManager.vala:2341
+#: src/WindowManager.vala:2280
 msgid "Use Previous Settings"
 msgstr "Використовувати попередні налаштування"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2380
+#: src/WindowManager.vala:2319
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Знімок екрана від %s"
+
+#: src/WindowManager.vala:2375
+msgid "Screenshot is saved to clipboard"
+msgstr "Знімок екрана збережено до буфера обміну"
+
+#: src/WindowManager.vala:2375
+msgid "Screenshot saved to screenshots folder"
+msgstr "Знімок екрана збережено до теки знімків екрана"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
