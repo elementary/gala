@@ -7,14 +7,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
     private const double BACKGROUND_OPACITY = 0.7;
     private const int BORDER_WIDTH_PX = 1;
 
-    private const double START_ANGLE = 3 * Math.PI / 2;
-
-    /**
-     * Delay, in milliseconds, before showing the animation.
-     * libinput uses a timeout of 180ms when tapping is enabled. Use that value plus a safety
-     * margin so the animation is never displayed when tapping.
-     */
-    private const double DELAY_TIMEOUT = 185;
+    private const double START_ANGLE = 3 * Math.PI_2;
 
     private float scaling_factor = 1.0f;
     private int cursor_size = 24;
@@ -28,7 +21,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
 
     public Meta.Display display { get; construct; }
 
-    public double angle { get; set; }
+    public double angle { get; set; default = START_ANGLE; }
 
     public DwellClickTimer (Meta.Display display) {
         Object (display: display);
@@ -47,10 +40,10 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         pipeline = new Cogl.Pipeline (backend.get_cogl_context ());
 
         transition = new Clutter.PropertyTransition ("angle");
-        transition.set_progress_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        transition.set_progress_mode (Clutter.AnimationMode.LINEAR);
         transition.set_animatable (this);
         transition.set_from_value (START_ANGLE);
-        transition.set_to_value (START_ANGLE + (2 * Math.PI));
+        transition.set_to_value (START_ANGLE + 2 * Math.PI);
 
         transition.new_frame.connect (() => {
             queue_redraw ();
@@ -96,7 +89,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
     }
 
     public override void paint (Clutter.PaintContext context) {
-        if (angle == 0) {
+        if (angle == START_ANGLE) {
             return;
         }
 
@@ -107,7 +100,6 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
         var radius = int.min (cursor_size / 2, cursor_size / 2);
-        var end_angle = START_ANGLE + angle;
         var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
         var cr = new Cairo.Context (surface);
@@ -124,7 +116,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         cr.translate (cursor_size / 2, cursor_size / 2);
 
         cr.move_to (0, 0);
-        cr.arc (0, 0, radius - border_width, START_ANGLE, end_angle);
+        cr.arc (0, 0, radius - border_width, START_ANGLE, angle);
         cr.line_to (0, 0);
         cr.close_path ();
 
@@ -148,21 +140,5 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         } catch (Error e) {}
 
         base.paint (context);
-    }
-
-    public bool interpolate_value (string property_name, Clutter.Interval interval, double progress, out Value @value) {
-        if (property_name == "angle") {
-            @value = 0;
-
-            var elapsed_time = transition.get_elapsed_time ();
-            if (elapsed_time > DELAY_TIMEOUT) {
-                double delayed_progress = (elapsed_time - DELAY_TIMEOUT) / (transition.duration - DELAY_TIMEOUT);
-                @value = (delayed_progress * 2 * Math.PI);
-            }
-
-            return true;
-        }
-
-        return base.interpolate_value (property_name, interval, progress, out @value);
     }
 }
