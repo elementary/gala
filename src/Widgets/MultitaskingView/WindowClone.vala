@@ -117,7 +117,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
-            drag_action.destination_crossed.connect (drag_destination_crossed);
             drag_action.drag_end.connect (drag_end);
             drag_action.drag_canceled.connect (drag_canceled);
             drag_action.actor_clicked.connect (actor_clicked);
@@ -513,61 +512,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     /**
-     * When we cross an IconGroup, we animate to an even smaller size and slightly
-     * less opacity and add ourselves as temporary window to the group. When left,
-     * we reverse those steps.
-     */
-    private void drag_destination_crossed (Clutter.Actor destination, bool hovered) {
-        var icon_group = destination as IconGroup;
-        var insert_thumb = destination as WorkspaceInsertThumb;
-
-        // if we have don't dynamic workspace, we don't allow inserting
-        if (icon_group == null && insert_thumb == null
-            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
-                return;
-        }
-
-        // for an icon group, we only do animations if there is an actual movement possible
-        if (icon_group != null
-            && icon_group.workspace == window.get_workspace ()
-            && window.is_on_primary_monitor ()) {
-                return;
-        }
-
-        var scale = hovered ? 0.4 : 1.0;
-        var opacity = hovered ? 0 : 255;
-        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = Utils.get_animation_duration (duration);
-
-        window_icon.save_easing_state ();
-
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
-        window_icon.set_scale (scale, scale);
-        window_icon.set_opacity (opacity);
-
-        window_icon.restore_easing_state ();
-
-        if (insert_thumb != null) {
-            insert_thumb.set_window_thumb (window);
-        }
-
-        if (icon_group != null) {
-            if (hovered) {
-                icon_group.add_window (window, false, true);
-            } else {
-                icon_group.remove_window (window, false);
-            }
-        }
-
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE: Meta.Cursor.NO_DROP);
-#else
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
-#endif
-    }
-
-    /**
      * Depending on the destination we have different ways to find the correct destination.
      * After we found one we destroy ourselves so the dragged clone immediately disappears,
      * otherwise we cancel the drag and animate back to our old place.
@@ -582,31 +526,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         display.set_cursor (Meta.Cursor.DEFAULT);
 
-        if (destination is IconGroup) {
-            workspace = ((IconGroup) destination).workspace;
-        } else if (destination is FramedBackground) {
+        if (destination is FramedBackground) {
             workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
-        } else if (destination is WorkspaceInsertThumb) {
-            unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
-
-            var will_move = window.get_workspace ().index () != inserter.workspace_index;
-
-            if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
-                window.move_to_monitor (primary);
-                will_move = true;
-            }
-
-            InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
-
-            // if we don't actually change workspaces, the window-added/removed signals won't
-            // be emitted so we can just keep our window here
-            if (will_move) {
-                unmanaged ();
-            } else {
-                drag_canceled ();
-            }
-
-            return;
         } else if (destination is MonitorClone) {
             var monitor = ((MonitorClone) destination).monitor;
             if (window.get_monitor () != monitor) {
