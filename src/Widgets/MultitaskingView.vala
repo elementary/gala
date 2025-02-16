@@ -38,7 +38,6 @@ namespace Gala {
 
         private List<MonitorClone> window_containers_monitors;
 
-        private IconGroupContainer icon_groups;
         private ActorTarget workspaces;
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
@@ -75,8 +74,6 @@ namespace Gala {
             workspaces_gesture_controller.enable_touchpad ();
             workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
 
-            icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
-
             brightness_effect = new Clutter.BrightnessContrastEffect ();
             update_brightness_effect ();
 
@@ -90,7 +87,6 @@ namespace Gala {
             // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
             // stage as it contains MonitorClones for each monitor.
             primary_monitor_container = new ActorTarget ();
-            primary_monitor_container.add_child (icon_groups);
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
 
@@ -129,8 +125,6 @@ namespace Gala {
                         if (existing_workspaces.index (workspace_clone.workspace) < 0) {
                             workspace_clone.window_selected.disconnect (window_selected);
                             workspace_clone.selected.disconnect (activate_workspace);
-
-                            icon_groups.remove_group (workspace_clone.icon_group);
 
                             workspace_clone.destroy ();
                         }
@@ -184,7 +178,6 @@ namespace Gala {
 
             var primary_geometry = display.get_monitor_geometry (primary);
             var scale = display.get_monitor_scale (primary);
-            icon_groups.scale_factor = scale;
 
             primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
             primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
@@ -199,7 +192,6 @@ namespace Gala {
         private void update_workspaces () {
             foreach (unowned var child in workspaces.get_children ()) {
                 unowned var workspace_clone = (WorkspaceClone) child;
-                icon_groups.remove_group (workspace_clone.icon_group);
                 workspace_clone.destroy ();
             }
 
@@ -285,12 +277,8 @@ namespace Gala {
 
         public override void start_progress (string id) {
             if (!opened) {
-                modal_proxy = wm.push_modal (this);
-                modal_proxy.set_keybinding_filter (keybinding_filter);
-
-                var scale = display.get_monitor_scale (display.get_primary_monitor ());
-                icon_groups.force_reposition ();
-                icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
+                //  modal_proxy = wm.push_modal (this);
+                //  modal_proxy.set_keybinding_filter (keybinding_filter);
             } else {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
@@ -320,7 +308,7 @@ namespace Gala {
                 wm.top_window_group.show ();
                 hide ();
 
-                wm.pop_modal (modal_proxy);
+                //  wm.pop_modal (modal_proxy);
             }
         }
 
@@ -340,32 +328,6 @@ namespace Gala {
             } else {
                 workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
             }
-
-            reposition_icon_groups (animate);
-        }
-
-        private void reposition_icon_groups (bool animate) {
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_index = manager.get_active_workspace ().index ();
-
-            if (animate) {
-                icon_groups.save_easing_state ();
-                icon_groups.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                icon_groups.set_easing_duration (200);
-            }
-
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            // make sure the active workspace's icongroup is always visible
-            var icon_groups_width = icon_groups.calculate_total_width ();
-            if (icon_groups_width > primary_monitor_container.width) {
-                icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
-                    .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
-            } else
-                icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
-
-            if (animate) {
-                icon_groups.restore_easing_state ();
-            }
         }
 
         private void add_workspace (int num) {
@@ -374,7 +336,6 @@ namespace Gala {
 
             var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), scale);
             workspaces.insert_child_at_index (workspace, num);
-            icon_groups.add_group (workspace.icon_group);
 
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
@@ -406,10 +367,6 @@ namespace Gala {
 
             workspace.window_selected.disconnect (window_selected);
             workspace.selected.disconnect (activate_workspace);
-
-            if (icon_groups.contains (workspace.icon_group)) {
-                icon_groups.remove_group (workspace.icon_group);
-            }
 
             workspace.destroy ();
 
