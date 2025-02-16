@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2020, 2025 elementary, Inc. (https://elementary.io)
  */
 
-public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
+public class Gala.DwellClickTimer : Clutter.Actor {
     private const double BACKGROUND_OPACITY = 0.7;
     private const int BORDER_WIDTH_PX = 1;
 
