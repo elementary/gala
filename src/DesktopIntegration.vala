@@ -21,6 +21,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void running_applications_changed ();
     public signal void windows_changed ();
     public signal void active_workspace_changed ();
+    public signal void workspace_removed (int index);
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
@@ -34,7 +35,10 @@ public class Gala.DesktopIntegration : GLib.Object {
         });
         workspace_manager.workspaces_reordered.connect (() => windows_changed ());
         workspace_manager.workspace_added.connect (() => windows_changed ());
-        workspace_manager.workspace_removed.connect (() => windows_changed ());
+        workspace_manager.workspace_removed.connect ((index) => {
+            workspace_removed (index);
+            windows_changed ();
+        });
 
         // TODO: figure out if there's a better way to handle ws rearrangement
         display.window_created.connect ((window) => {
