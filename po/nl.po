@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2024-12-19 16:04+0000\n"
+"PO-Revision-Date: 2025-02-16 03:16+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -229,7 +229,7 @@ msgstr ""
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr "Afsluiten forceren"
+msgstr "Geforceerd afsluiten"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
@@ -299,11 +299,11 @@ msgstr "Schermafbeelding van %s"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Schermafdruk is opgeslagen op het klembord"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
