@@ -20,7 +20,6 @@ public class Gala.DesktopIntegration : GLib.Object {
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
-    public signal void n_workspaces_changed ();
     public signal void active_workspace_changed ();
     public signal void workspace_removed (int index);
 
@@ -30,7 +29,6 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         unowned var display = wm.get_display ();
         unowned var workspace_manager = display.get_workspace_manager ();
-        workspace_manager.notify["n-workspaces"].connect (() => n_workspaces_changed ());
         workspace_manager.active_workspace_changed.connect (() => {
             active_workspace_changed ();
             windows_changed (); // windows have 'on-active-workspace' property that we need to update
