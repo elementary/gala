@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 elementary, Inc. <https://elementary.io>
+ * Copyright 2022-2025 elementary, Inc. <https://elementary.io>
  * Copyright 2022 Corentin Noël <tintou@noel.tf>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -20,11 +20,30 @@ public class Gala.DesktopIntegration : GLib.Object {
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
+    public signal void active_workspace_changed ();
+    public signal void workspace_removed (int index);
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
-        wm.get_display ().get_workspace_manager ().active_workspace_changed.connect (() => windows_changed ());
+
+        unowned var display = wm.get_display ();
+        unowned var workspace_manager = display.get_workspace_manager ();
+        workspace_manager.active_workspace_changed.connect (() => {
+            active_workspace_changed ();
+            windows_changed (); // windows have 'on-active-workspace' property that we need to update
+        });
+        workspace_manager.workspaces_reordered.connect (() => windows_changed ());
+        workspace_manager.workspace_added.connect (() => windows_changed ());
+        workspace_manager.workspace_removed.connect ((index) => {
+            workspace_removed (index);
+            windows_changed ();
+        });
+
+        // TODO: figure out if there's a better way to handle ws rearrangement
+        display.window_created.connect ((window) => {
+            window.workspace_changed.connect (() => windows_changed ());
+        });
     }
 
     public RunningApplication[] get_running_applications () throws GLib.DBusError, GLib.IOError {
@@ -63,7 +82,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public Window[] get_windows () throws GLib.DBusError, GLib.IOError {
         Window[] returned_windows = {};
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
-        var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
+        unowned var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (!is_eligible_window (window)) {
@@ -81,6 +100,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("is-hidden", new GLib.Variant.boolean (window.is_hidden ()));
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
                 properties.insert ("on-active-workspace", new GLib.Variant.boolean (window.located_on_workspace (active_workspace)));
+                properties.insert ("workspace-index", new GLib.Variant.int32 (window.get_workspace ().index ()));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
 
@@ -120,6 +140,29 @@ public class Gala.DesktopIntegration : GLib.Object {
                 }
             }
         }
+    }
+
+    public void activate_workspace (int index) throws GLib.DBusError, GLib.IOError {
+        unowned var workspace = wm.get_display ().get_workspace_manager ().get_workspace_by_index (index);
+        if (workspace == null) {
+            throw new IOError.NOT_FOUND ("Workspace not found");
+        }
+
+        unowned var display = wm.get_display ();
+        unowned var active_workspace_index = display.get_workspace_manager ().get_active_workspace_index ();
+        if (active_workspace_index == index) {
+            InternalUtils.bell_notify (display);
+        } else {
+            workspace.activate (display.get_current_time ());
+        }
+    }
+
+    public int get_n_workspaces () throws GLib.DBusError, GLib.IOError {
+        return wm.get_display ().get_workspace_manager ().n_workspaces;
+    }
+
+    public int get_active_workspace () throws GLib.DBusError, GLib.IOError {
+        return wm.get_display ().get_workspace_manager ().get_active_workspace_index ();
     }
 
     private bool notifying = false;
