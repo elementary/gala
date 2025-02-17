@@ -19,7 +19,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     private unowned WindowManagerGala wm;
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
-    public signal void windows_changed ();
+    public signal void windows_changed (); // Only emitted if the number of windows changes, not if window properties change
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
@@ -65,7 +65,9 @@ public class Gala.DesktopIntegration : GLib.Object {
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
         var active_workspace = wm.get_display ().get_workspace_manager ().get_active_workspace ();
         foreach (unowned var app in apps) {
-            foreach (weak Meta.Window window in app.get_windows ()) {
+            var windows = wm.get_display ().sort_windows_by_stacking (app.get_windows ());
+            windows.reverse ();
+            foreach (weak Meta.Window window in windows) {
                 if (!is_eligible_window (window)) {
                     continue;
                 }
