@@ -16,15 +16,19 @@ public class Gala.DesktopIntegration : GLib.Object {
         GLib.HashTable<unowned string, Variant> properties;
     }
 
-    private unowned WindowManagerGala wm;
     public uint version { get; default = 1; }
     public signal void running_applications_changed ();
     public signal void windows_changed ();
     public signal void active_workspace_changed ();
     public signal void workspace_removed (int index);
+    
+    private unowned WindowManagerGala wm;
+    private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
     public DesktopIntegration (WindowManagerGala wm) {
         this.wm = wm;
+        time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
+
         wm.window_tracker.windows_changed.connect (() => windows_changed ());
 
         unowned var display = wm.get_display ();
@@ -42,7 +46,16 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         // TODO: figure out if there's a better way to handle ws rearrangement
         display.window_created.connect ((window) => {
-            window.workspace_changed.connect (() => windows_changed ());
+            time_appeared_on_workspace[window] = GLib.get_real_time ();
+
+            window.workspace_changed.connect ((_window) => {
+                time_appeared_on_workspace[_window] = GLib.get_real_time ();
+                windows_changed ();
+            });
+
+            window.unmanaging.connect ((_window) => {
+                time_appeared_on_workspace.remove (_window);
+            });
         });
     }
 
@@ -115,6 +128,10 @@ public class Gala.DesktopIntegration : GLib.Object {
 
                 if (sandboxed_app_id != null) {
                     properties.insert ("sandboxed-app-id", new GLib.Variant.string (sandboxed_app_id));
+                }
+
+                if (window in time_appeared_on_workspace && time_appeared_on_workspace[window] != null) {
+                    properties.insert ("time-appeared-on-workspace", new GLib.Variant.int64 (time_appeared_on_workspace[window]));
                 }
 
                 returned_windows += Window () {
