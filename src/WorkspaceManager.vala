@@ -289,10 +289,15 @@ public class Gala.WorkspaceManager : Object {
 
         unowned Meta.WorkspaceManager manager = wm.get_display ().get_workspace_manager ();
 
-        foreach (var workspace in manager.get_workspaces ()) {
-            var last_index = manager.get_n_workspaces () - 1;
-            if (Utils.get_n_windows (workspace) == 0 && workspace.index () != last_index) {
+        for (var i = 0; i < manager.n_workspaces; i++) {
+            unowned var workspace = manager.get_workspace_by_index (i);
+            if (workspace == null) {
+                continue;
+            }
+
+            if (Utils.get_n_windows (workspace) == 0 && workspace.index () != manager.n_workspaces - 1) {
                 remove_workspace (workspace);
+                i--;
             }
         }
     }
