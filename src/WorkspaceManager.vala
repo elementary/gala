@@ -120,7 +120,7 @@ public class Gala.WorkspaceManager : Object {
             // or else things might get broke
             DragDropAction.cancel_all_by_id ("multitaskingview-window");
 
-            remove_workspace (prev_workspace);
+            queue_remove_workspace (prev_workspace);
         }
     }
 
@@ -178,7 +178,7 @@ public class Gala.WorkspaceManager : Object {
             && Utils.get_n_windows (workspace, true, window) == 0
             && workspace != last_workspace
         ) {
-            remove_workspace (workspace);
+            queue_remove_workspace (workspace);
         }
 
         // if window is the second last and empty, make it the last workspace
@@ -187,7 +187,7 @@ public class Gala.WorkspaceManager : Object {
             && Utils.get_n_windows (workspace, true, window) == 0
             && workspace.index () == last_workspace_index - 1
         ) {
-            remove_workspace (last_workspace);
+            queue_remove_workspace (last_workspace);
         }
     }
 
@@ -221,12 +221,23 @@ public class Gala.WorkspaceManager : Object {
         manager.append_new_workspace (false, display.get_current_time ());
     }
 
+    private void queue_remove_workspace (Meta.Workspace workspace) {
+        // workspace has already been removed
+        if (workspace in workspaces_marked_removed) {
+            return;
+        }
+
+        workspaces_marked_removed.add (workspace);
+
+        Idle.add (() => remove_workspace (workspace));
+    }
+
     /**
      * Make sure we switch to a different workspace and remove the given one
      *
      * @param workspace The workspace to remove
      */
-    private void remove_workspace (Meta.Workspace workspace) {
+    private bool remove_workspace (Meta.Workspace workspace) {
         unowned Meta.Display display = workspace.get_display ();
         unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
         var time = display.get_current_time ();
@@ -246,17 +257,12 @@ public class Gala.WorkspaceManager : Object {
             }
         }
 
-        // workspace has already been removed
-        if (workspace in workspaces_marked_removed) {
-            return;
-        }
-
         workspace.window_added.disconnect (queue_window_added);
         workspace.window_removed.disconnect (window_removed);
 
-        workspaces_marked_removed.add (workspace);
-
         manager.remove_workspace (workspace, time);
+
+        return Source.REMOVE;
     }
 
     /**
@@ -292,7 +298,7 @@ public class Gala.WorkspaceManager : Object {
         foreach (var workspace in manager.get_workspaces ()) {
             var last_index = manager.get_n_workspaces () - 1;
             if (Utils.get_n_windows (workspace) == 0 && workspace.index () != last_index) {
-                remove_workspace (workspace);
+                queue_remove_workspace (workspace);
             }
         }
     }
