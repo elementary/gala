@@ -107,7 +107,7 @@ namespace Gala {
      * The latter is not added to the WorkspaceClone itself though but to a container
      * of the MultitaskingView.
      */
-    public class WorkspaceClone : Clutter.Actor {
+    public class WorkspaceClone : ActorTarget {
         /**
          * The offset of the scaled background to the bottom of the monitor bounds
          */
@@ -125,12 +125,6 @@ namespace Gala {
         private const int HOVER_ACTIVATE_DELAY = 400;
 
         /**
-         * The MultitaskingView shows the workspaces overlapping them WorkspaceClone.X_OFFSET pixels
-         * making it possible to move windows to the next/previous workspace.
-         */
-        public const int X_OFFSET = 150;
-
-        /**
          * A window has been selected, the MultitaskingView should consider activating
          * and closing the view.
          */
@@ -145,7 +139,6 @@ namespace Gala {
         public signal void selected (bool close_view);
 
         public Meta.Workspace workspace { get; construct; }
-        public GestureTracker gesture_tracker { get; construct; }
         public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
@@ -158,6 +151,7 @@ namespace Gala {
                 if (value != _scale_factor) {
                     _scale_factor = value;
                     reallocate ();
+                    update_targets ();
                 }
             }
         }
@@ -167,8 +161,8 @@ namespace Gala {
 
         private uint hover_activate_timeout = 0;
 
-        public WorkspaceClone (Meta.Workspace workspace, GestureTracker gesture_tracker, float scale) {
-            Object (workspace: workspace, gesture_tracker: gesture_tracker, scale_factor: scale);
+        public WorkspaceClone (Meta.Workspace workspace, float scale) {
+            Object (workspace: workspace, scale_factor: scale);
         }
 
         construct {
@@ -185,7 +179,7 @@ namespace Gala {
             background = new FramedBackground (display);
             background.add_action (background_click_action);
 
-            window_container = new WindowCloneContainer (display, gesture_tracker, scale_factor) {
+            window_container = new WindowCloneContainer (display, scale_factor) {
                 width = monitor_geometry.width,
                 height = monitor_geometry.height,
             };
@@ -238,13 +232,10 @@ namespace Gala {
             var listener = WindowListener.get_default ();
             listener.window_no_longer_on_all_workspaces.connect (add_window);
 
-            parent_set.connect ((old_parent) => {
-                if (old_parent != null) {
-                    old_parent.notify["x"].disconnect (update_icon_group_opacity);
-                }
+            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+            monitor_manager.monitors_changed.connect (update_targets);
 
-                get_parent ().notify["x"].connect (update_icon_group_opacity);
-            });
+            update_targets ();
         }
 
         ~WorkspaceClone () {
@@ -261,14 +252,6 @@ namespace Gala {
             background.destroy ();
             window_container.destroy ();
             icon_group.destroy ();
-        }
-
-        private void update_icon_group_opacity () {
-            var offset = (multitasking_view_x () + get_parent ().x).abs ();
-
-            var adjusted_width = width - InternalUtils.scale_to_int (X_OFFSET, scale_factor);
-
-            icon_group.backdrop_opacity = (1 - (offset / adjusted_width)).clamp (0, 1);
         }
 
         private void reallocate () {
@@ -323,120 +306,34 @@ namespace Gala {
             }
         }
 
-        /**
-         * @return The position on the X axis of this workspace.
-         */
-        public float multitasking_view_x () {
-            return workspace.index () * (width - InternalUtils.scale_to_int (X_OFFSET, scale_factor));
-        }
-
-        /**
-         * @return The amount of pixels the workspace is overlapped in the X axis.
-         */
-        private float current_x_overlap () {
-            var display = workspace.get_display ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_index = manager.get_active_workspace ().index ();
-            if (workspace.index () == active_index) {
-                return 0;
-            } else {
-                var x_offset = InternalUtils.scale_to_int (X_OFFSET, scale_factor) + WindowManagerGala.WORKSPACE_GAP;
-                return (workspace.index () < active_index) ? -x_offset : x_offset;
-            }
-        }
-
-        /**
-         * Utility function to shrink a MetaRectangle on all sides for the given amount.
-         * Negative amounts will scale it instead.
-         *
-         * @param amount The amount in px to shrink.
-         */
-#if HAS_MUTTER45
-        private static inline void shrink_rectangle (ref Mtk.Rectangle rect, int amount) {
-#else
-        private static inline void shrink_rectangle (ref Meta.Rectangle rect, int amount) {
-#endif
-            rect.x += amount;
-            rect.y += amount;
-            rect.width -= amount * 2;
-            rect.height -= amount * 2;
-        }
-
-        /**
-         * Animates the background to its scale, causes a redraw on the IconGroup and
-         * makes sure the WindowCloneContainer animates its windows to their tiled layout.
-         * Also sets the current_window of the WindowCloneContainer to the active window
-         * if it belongs to this workspace.
-         */
-        public void open (bool with_gesture = false, bool is_cancel_animation = false) {
-            if (opened) {
-                return;
-            }
-
-            opened = true;
-
-            window_container.restack_windows ();
+        private void update_targets () {
+            remove_all_targets ();
 
             unowned var display = workspace.get_display ();
 
             var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
-            var initial_x = is_cancel_animation ? x : x + current_x_overlap ();
-            var target_x = multitasking_view_x ();
 
             var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
             var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
             background.set_pivot_point (0.5f, pivot_y);
 
-            update_size (monitor);
+            var initial_width = monitor.width;
+            var target_width = monitor.width * scale + WindowManagerGala.WORKSPACE_GAP * 2;
 
-            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, (double) scale).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, (double) scale).start (with_gesture);
-
-#if HAS_MUTTER45
-            Mtk.Rectangle area = {
-#else
-            Meta.Rectangle area = {
-#endif
-                (int)Math.floorf (monitor.x + monitor.width - monitor.width * scale) / 2,
-                (int)Math.floorf (monitor.y + InternalUtils.scale_to_int (TOP_OFFSET, scale_factor)),
-                (int)Math.floorf (monitor.width * scale),
-                (int)Math.floorf (monitor.height * scale)
-            };
-            shrink_rectangle (ref area, 32);
+            add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
+            add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
+            add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
             window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
             window_container.padding_left =
                 window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
             window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
-
-            icon_group.redraw ();
-
-            Meta.Window? selected_window = display.get_workspace_manager ().get_active_workspace () == workspace ? display.get_focus_window () : null;
-            window_container.open (selected_window, with_gesture, is_cancel_animation);
         }
 
-        /**
-         * Close the view again by animating the background back to its scale and
-         * the windows back to their old locations.
-         */
-        public void close (bool with_gesture = false, bool is_cancel_animation = false) {
-            if (!opened) {
-                return;
+        public override void update_progress (GestureAction action, double progress) {
+            if (action == SWITCH_WORKSPACE) {
+                icon_group.backdrop_opacity = 1 - (float) (workspace.index () + progress).abs ().clamp (0, 1);
             }
-
-            opened = false;
-
-            window_container.restack_windows ();
-
-            var initial_x = is_cancel_animation ? x : multitasking_view_x ();
-            var target_x = multitasking_view_x () + current_x_overlap ();
-
-            new GesturePropertyTransition (this, gesture_tracker, "x", initial_x, target_x).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-x", null, 1.0d).start (with_gesture);
-            new GesturePropertyTransition (background, gesture_tracker, "scale-y", null, 1.0d).start (with_gesture);
-
-            window_container.close (with_gesture);
         }
     }
 }
