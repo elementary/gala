@@ -609,11 +609,6 @@ public class Gala.WindowClone : Clutter.Actor {
         } else if (destination is FramedBackground) {
             workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
         } else if (destination is WorkspaceInsertThumb) {
-            if (!Meta.Prefs.get_dynamic_workspaces ()) {
-                drag_canceled ();
-                return;
-            }
-
             unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
 
             var will_move = window.get_workspace ().index () != inserter.workspace_index;

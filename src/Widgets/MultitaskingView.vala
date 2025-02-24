@@ -110,37 +110,7 @@ namespace Gala {
             Meta.Prefs.add_listener ((pref) => {
                 if (pref == Meta.Preference.WORKSPACES_ONLY_ON_PRIMARY) {
                     update_monitors ();
-                    return;
                 }
-
-                if (Meta.Prefs.get_dynamic_workspaces () ||
-                    (pref != Meta.Preference.DYNAMIC_WORKSPACES && pref != Meta.Preference.NUM_WORKSPACES)) {
-                    return;
-                }
-
-                Idle.add (() => {
-                    unowned List<Meta.Workspace> existing_workspaces = null;
-                    for (int i = 0; i < manager.get_n_workspaces (); i++) {
-                        existing_workspaces.append (manager.get_workspace_by_index (i));
-                    }
-
-                    foreach (unowned var child in workspaces.get_children ()) {
-                        unowned var workspace_clone = (WorkspaceClone) child;
-                        if (existing_workspaces.index (workspace_clone.workspace) < 0) {
-                            workspace_clone.window_selected.disconnect (window_selected);
-                            workspace_clone.selected.disconnect (activate_workspace);
-
-                            icon_groups.remove_group (workspace_clone.icon_group);
-
-                            workspace_clone.destroy ();
-                        }
-                    }
-
-                    update_monitors ();
-                    update_positions (false);
-
-                    return Source.REMOVE;
-                });
             });
 
             style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
@@ -167,7 +137,7 @@ namespace Gala {
 
             var primary = display.get_primary_monitor ();
 
-            if (InternalUtils.workspaces_only_on_primary ()) {
+            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
                 for (var monitor = 0; monitor < display.get_n_monitors (); monitor++) {
                     if (monitor == primary) {
                         continue;

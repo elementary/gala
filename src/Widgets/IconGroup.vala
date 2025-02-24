@@ -282,9 +282,9 @@ public class Gala.IconGroup : CanvasActor {
         var scaled_size = InternalUtils.scale_to_int (SIZE, scale_factor);
 
         if (n_windows < 1) {
-            if (!Meta.Prefs.get_dynamic_workspaces ()
-                || workspace_index != manager.get_n_workspaces () - 1)
+            if (workspace_index != manager.get_n_workspaces () - 1) {
                 return;
+            }
 
             var buffer = new Drawing.BufferSurface (scaled_size, scaled_size);
             var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
@@ -390,7 +390,6 @@ public class Gala.IconGroup : CanvasActor {
     private Clutter.Actor? drag_begin (float click_x, float click_y) {
         unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
         if (icon_container.get_n_children () < 1 &&
-            Meta.Prefs.get_dynamic_workspaces () &&
             workspace.index () == manager.get_n_workspaces () - 1) {
             return null;
         }

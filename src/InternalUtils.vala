@@ -13,11 +13,6 @@ namespace Gala {
     }
 
     public class InternalUtils {
-        public static bool workspaces_only_on_primary () {
-            return Meta.Prefs.get_dynamic_workspaces ()
-                && Meta.Prefs.get_workspaces_only_on_primary ();
-        }
-
         /**
          * set the area where clutter can receive events
          **/
@@ -318,9 +313,8 @@ namespace Gala {
 #else
         public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
 #endif
-            if (InternalUtils.workspaces_only_on_primary ()) {
-                var primary = display.get_primary_monitor ();
-                return display.get_monitor_geometry (primary);
+            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
+                return display.get_monitor_geometry (display.get_primary_monitor ());
             } else {
                 float screen_width, screen_height;
                 display.get_size (out screen_width, out screen_height);

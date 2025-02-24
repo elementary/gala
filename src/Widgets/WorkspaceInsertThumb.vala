@@ -36,10 +36,6 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
 
         var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         drop.crossed.connect ((target, hovered) => {
-            if (!Meta.Prefs.get_dynamic_workspaces () && (target != null && target is WindowClone)) {
-                return;
-            }
-
             if (!hovered) {
                 if (expand_timeout != 0) {
                     Source.remove (expand_timeout);
