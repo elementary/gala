@@ -229,6 +229,10 @@ public class Gala.WorkspaceManager : Object {
 
         workspaces_marked_removed.add (workspace);
 
+        // We might be here because of a signal emition from the ws machinery (e.g. workspace.window_removed).
+        // Often the function emitting the signal doesn't take a ref on the ws so if we remove it right
+        // away it will be freed. But because the function often accesses it after the singal emition this leads
+        // to warnings and in some cases a crash.
         Idle.add (() => remove_workspace (workspace));
     }
 
