@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellClientsManager : Object {
+public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
     public static void init (WindowManager wm) {
@@ -19,6 +19,8 @@ public class Gala.ShellClientsManager : Object {
     public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
+
+    public Clutter.Actor? actor { get { return wm.stage; } }
 
     public WindowManager wm { get; construct; }
 
@@ -183,6 +185,15 @@ public class Gala.ShellClientsManager : Object {
         panel_windows[window].hide_mode = hide_mode;
     }
 
+    public void request_visible_in_multitasking_view (Meta.Window window) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before visible in mutltiasking view.");
+            return;
+        }
+
+        panel_windows[window].visible_in_multitasking_view = true;
+    }
+
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
         positioned_windows[window] = new ShellWindow (window, CENTER);
 
@@ -190,23 +201,13 @@ public class Gala.ShellClientsManager : Object {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void add_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
+    public override void propagate (UpdateType update_type, string id, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
-            window.add_state (state, gesture_tracker, with_gesture);
+            window.propagate (update_type, id, progress);
         }
 
         foreach (var window in panel_windows.get_values ()) {
-            window.add_state (state, gesture_tracker, with_gesture);
-        }
-    }
-
-    public void remove_state (ShellWindow.State state, GestureTracker gesture_tracker, bool with_gesture) {
-        foreach (var window in positioned_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker, with_gesture);
-        }
-
-        foreach (var window in panel_windows.get_values ()) {
-            window.remove_state (state, gesture_tracker, with_gesture);
+            window.propagate (update_type, id, progress);
         }
     }
 

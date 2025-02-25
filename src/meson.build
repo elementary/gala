@@ -36,11 +36,15 @@ gala_bin_sources = files(
     'Dialogs/AccessDialog.vala',
     'Dialogs/CloseDialog.vala',
     'Dialogs/InhibitShortcutsDialog.vala',
+    'Gestures/ActorTarget.vala',
     'Gestures/Gesture.vala',
+    'Gestures/GestureController.vala',
     'Gestures/GesturePropertyTransition.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTracker.vala',
+    'Gestures/PropertyTarget.vala',
     'Gestures/ScrollBackend.vala',
+    'Gestures/SpringTimeline.vala',
     'Gestures/ToucheggBackend.vala',
     'HotCorners/Barrier.vala',
     'HotCorners/HotCorner.vala',
@@ -53,8 +57,6 @@ gala_bin_sources = files(
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
     'Widgets/DwellClickTimer.vala',
-    'Widgets/IconGroup.vala',
-    'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
@@ -69,7 +71,7 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
-    'Widgets/WorkspaceInsertThumb.vala',
+    'Widgets/WorkspaceRow.vala',
 )
 
 gala_bin = executable(
