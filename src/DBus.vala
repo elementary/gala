@@ -5,7 +5,7 @@
  *                         2012-2014 Jacob Parker
  */
 
-[DBus (name="org.pantheon.gala")]
+[DBus (name="io.elementary.gala")]
 public class Gala.DBus {
     private static DBus? instance;
     private static WindowManagerGala wm;
@@ -14,21 +14,21 @@ public class Gala.DBus {
     public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
-        Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
+        Bus.own_name (BusType.SESSION, "io.elementary.gala", BusNameOwnerFlags.NONE,
             (connection) => {
                 if (instance == null)
                     instance = new DBus ();
 
                 try {
-                    connection.register_object ("/org/pantheon/gala", instance);
+                    connection.register_object ("/io/elementary/gala", instance);
                 } catch (Error e) { warning (e.message); }
 
                 try {
-                    connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
+                    connection.register_object ("/io/elementary/gala/DesktopInterface", new DesktopIntegration (wm));
                 } catch (Error e) { warning (e.message); }
             },
             () => {},
-            () => warning ("Could not acquire name\n") );
+            () => warning ("Could not acquire name") );
 
         Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
             (connection) => {

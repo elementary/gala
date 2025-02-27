@@ -6,11 +6,11 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    private const string DAEMON_DBUS_NAME = "io.elementary.gala.daemon";
+    private const string DAEMON_DBUS_OBJECT_PATH = "/io/elementary/gala/daemon";
     private const int SPACING = 12;
 
-    [DBus (name = "org.pantheon.gala.daemon")]
+    [DBus (name = "io.elementary.gala.daemon")]
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
         public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
