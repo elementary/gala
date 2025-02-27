@@ -74,26 +74,14 @@ namespace Gala {
          * @param new_window A window that should be moved to the new workspace
          */
         public static void insert_workspace_with_window (int index, Meta.Window new_window) {
+            unowned var manager = new_window.get_display ().get_workspace_manager ();
             unowned WorkspaceManager workspace_manager = WorkspaceManager.get_default ();
             workspace_manager.freeze_remove ();
 
+            var new_workspace = manager.append_new_workspace (false, Meta.CURRENT_TIME);
+            manager.reorder_workspace (new_workspace, index);
+
             new_window.change_workspace_by_index (index, false);
-
-            unowned List<Meta.WindowActor> actors = new_window.get_display ().get_window_actors ();
-            foreach (unowned Meta.WindowActor actor in actors) {
-                if (actor.is_destroyed ())
-                    continue;
-
-                unowned Meta.Window window = actor.get_meta_window ();
-                if (window == new_window)
-                    continue;
-
-                var current_index = window.get_workspace ().index ();
-                if (current_index >= index
-                    && !window.on_all_workspaces) {
-                    window.change_workspace_by_index (current_index + 1, true);
-                }
-            }
 
             workspace_manager.thaw_remove ();
         }
