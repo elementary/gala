@@ -183,4 +183,24 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         wm.window_overview.open (hints);
     }
+
+    public void set_workspace_permanent (int index, bool permanent) throws DBusError, IOError {
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+
+        if (index < 0 || index >= manager.n_workspaces) {
+            throw new IOError.FAILED ("Invalid workspace index");
+        }
+
+        WorkspaceManager.get_default ().set_permanent (manager.get_workspace_by_index (index), permanent);
+    }
+
+    public bool is_workspace_permanent (int index) throws DBusError, IOError {
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+
+        if (index < 0 || index >= manager.n_workspaces) {
+            throw new IOError.FAILED ("Invalid workspace index");
+        }
+
+        return WorkspaceManager.get_default ().is_permanent (manager.get_workspace_by_index (index));
+    }
 }
