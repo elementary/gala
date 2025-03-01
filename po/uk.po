@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2024-12-24 00:16+0000\n"
+"PO-Revision-Date: 2025-02-14 00:32+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementary.io/projects/desktop/gala/"
 "uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -300,11 +300,11 @@ msgstr "Знімок екрана від %s"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Знімок екрана збережено до буфера обміну"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Знімок екрана збережено до теки знімків екрана"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
