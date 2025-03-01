@@ -179,10 +179,7 @@ public class Gala.WorkspaceManager : Object {
             && workspace != last_workspace
         ) {
             queue_remove_workspace (workspace);
-        }
-
-        // if window is the second last and empty, make it the last workspace
-        if (is_active_workspace
+        } else if (is_active_workspace // if window is the second last and empty, make it the last workspace
             && remove_freeze_count < 1
             && Utils.get_n_windows (workspace, true, window) == 0
             && workspace.index () == last_workspace_index - 1
