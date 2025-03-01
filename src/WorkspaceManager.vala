@@ -85,7 +85,7 @@ public class Gala.WorkspaceManager : Object {
             return;
         }
 
-        workspace.window_added.connect (queue_window_added);
+        workspace.window_added.connect (window_added);
         workspace.window_removed.connect (window_removed);
     }
 
@@ -124,15 +124,9 @@ public class Gala.WorkspaceManager : Object {
         }
     }
 
-    private void queue_window_added (Meta.Workspace? workspace, Meta.Window window) {
-        // We get this call very early so we have to queue an idle for ShellClients
-        // that might not have checked the window/got a protocol call yet
-        Idle.add (() => window_added (workspace, window));
-    }
-
-    private bool window_added (Meta.Workspace? workspace, Meta.Window window) {
+    private void window_added (Meta.Workspace? workspace, Meta.Window window) {
         if (workspace == null || !Meta.Prefs.get_dynamic_workspaces () || window.on_all_workspaces) {
-            return Source.REMOVE;
+            return;
         }
 
         unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
@@ -145,8 +139,6 @@ public class Gala.WorkspaceManager : Object {
         ) {
             append_workspace ();
         }
-
-        return Source.REMOVE;
     }
 
     private void window_removed (Meta.Workspace? workspace, Meta.Window window) {
@@ -193,7 +185,7 @@ public class Gala.WorkspaceManager : Object {
 
     private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
         if (InternalUtils.workspaces_only_on_primary () && monitor == display.get_primary_monitor ()) {
-            queue_window_added (window.get_workspace (), window);
+            window_added (window.get_workspace (), window);
         }
     }
 
@@ -261,7 +253,7 @@ public class Gala.WorkspaceManager : Object {
             }
         }
 
-        workspace.window_added.disconnect (queue_window_added);
+        workspace.window_added.disconnect (window_added);
         workspace.window_removed.disconnect (window_removed);
 
         manager.remove_workspace (workspace, time);
