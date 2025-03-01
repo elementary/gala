@@ -21,7 +21,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void windows_changed ();
     public signal void active_workspace_changed ();
     public signal void workspace_removed (int index);
-    
+
     private unowned WindowManagerGala wm;
     private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
@@ -56,6 +56,8 @@ public class Gala.DesktopIntegration : GLib.Object {
             window.unmanaging.connect ((_window) => {
                 time_appeared_on_workspace.remove (_window);
             });
+
+            window.workspace_changed.connect (() => windows_changed ());
         });
     }
 
