@@ -28,6 +28,8 @@ public class Gala.WorkspaceManager : Object {
 
     public WindowManager wm { get; construct; }
 
+    private Settings behavior_settings;
+
     private Gee.LinkedList<Meta.Workspace> workspaces_marked_removed;
     private int remove_freeze_count = 0;
 
@@ -37,8 +39,22 @@ public class Gala.WorkspaceManager : Object {
 
     construct {
         workspaces_marked_removed = new Gee.LinkedList<Meta.Workspace> ();
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
+
         unowned Meta.Display display = wm.get_display ();
         unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
+
+        for (int i = 0; i < behavior_settings.get_int ("permanent-workspaces"); i++) {
+            Meta.Workspace workspace;
+            if (i < manager.get_n_workspaces ()) {
+                workspace = manager.get_workspace_by_index (i);
+            } else {
+                workspace = manager.append_new_workspace (false, display.get_current_time ());
+            }
+            workspace.set_data<bool> ("permanent", true);
+        }
+
+        append_workspace ();
 
         // There are some empty workspace at startup
         cleanup ();
@@ -58,13 +74,6 @@ public class Gala.WorkspaceManager : Object {
         manager.workspace_removed.connect_after (workspace_removed);
         display.window_entered_monitor.connect (window_entered_monitor);
         display.window_left_monitor.connect (window_left_monitor);
-
-        // make sure the last workspace has no windows on it
-        if (Meta.Prefs.get_dynamic_workspaces ()
-            && Utils.get_n_windows (manager.get_workspace_by_index (manager.get_n_workspaces () - 1)) > 0
-        ) {
-            append_workspace ();
-        }
     }
 
     ~WorkspaceManager () {
@@ -114,6 +123,7 @@ public class Gala.WorkspaceManager : Object {
         var prev_workspace = manager.get_workspace_by_index (from);
         if (Utils.get_n_windows (prev_workspace) < 1
             && from != manager.get_n_workspaces () - 1
+            && !is_permanent (prev_workspace)
         ) {
 
             // If we're about to remove a workspace, cancel any DnD going on in the multitasking view
@@ -177,15 +187,14 @@ public class Gala.WorkspaceManager : Object {
             && remove_freeze_count < 1
             && Utils.get_n_windows (workspace, true, window) == 0
             && workspace != last_workspace
+            && !is_permanent (workspace)
         ) {
             queue_remove_workspace (workspace);
-        }
-
-        // if window is the second last and empty, make it the last workspace
-        if (is_active_workspace
+        } else if (is_active_workspace // if window is the second last and empty, make it the last workspace
             && remove_freeze_count < 1
             && Utils.get_n_windows (workspace, true, window) == 0
             && workspace.index () == last_workspace_index - 1
+            && !is_permanent (workspace)
         ) {
             queue_remove_workspace (last_workspace);
         }
@@ -301,9 +310,29 @@ public class Gala.WorkspaceManager : Object {
 
         foreach (var workspace in manager.get_workspaces ()) {
             var last_index = manager.get_n_workspaces () - 1;
-            if (Utils.get_n_windows (workspace) == 0 && workspace.index () != last_index) {
+            if (Utils.get_n_windows (workspace) == 0 && workspace.index () != last_index && !is_permanent (workspace)) {
                 queue_remove_workspace (workspace);
             }
         }
+    }
+
+    public void set_permanent (Meta.Workspace workspace, bool permanent) {
+        workspace.set_data<bool> ("permanent", permanent);
+
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+        int n_permanent = 0;
+        foreach (var ws in manager.get_workspaces ()) {
+            if (ws.get_data<bool> ("permanent")) {
+                n_permanent++;
+            }
+        }
+
+        behavior_settings.set_int ("permanent-workspaces", n_permanent);
+
+        cleanup ();
+    }
+
+    public bool is_permanent (Meta.Workspace workspace) {
+        return workspace.get_data<bool> ("permanent");
     }
 }

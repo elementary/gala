@@ -107,6 +107,11 @@
       <summary>What action should be performed on Super + Scroll</summary>
       <description></description>
     </key>
+    <key type="i" name="permanent-workspaces">
+      <default>0</default>
+      <summary>How many workspaces should be permanent</summary>
+      <description></description>
+    </key>
   </schema>
 
   <schema path="/io/elementary/desktop/wm/keybindings/" id="io.elementary.desktop.wm.keybindings">
