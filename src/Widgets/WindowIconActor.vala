@@ -52,7 +52,7 @@ public class Gala.WindowIconActor : Clutter.Actor {
         set {
             if (_temporary && !value) {
                 remove_transition ("pulse");
-            } else if (!_temporary && value && AnimationsSettings.get_enable_animations ()) {
+            } else if (!_temporary && value && Meta.Prefs.get_gnome_animations ()) {
                 var transition = new Clutter.TransitionGroup () {
                     duration = 800,
                     auto_reverse = true,
@@ -134,7 +134,7 @@ public class Gala.WindowIconActor : Clutter.Actor {
 
         new_icon.save_easing_state ();
         new_icon.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        new_icon.set_easing_duration (AnimationsSettings.get_animation_duration (500));
+        new_icon.set_easing_duration (Utils.get_animation_duration (500));
         new_icon.restore_easing_state ();
 
         if (icon == null) {

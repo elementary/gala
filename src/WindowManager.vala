@@ -648,7 +648,7 @@ namespace Gala {
         }
 
         private void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
@@ -709,7 +709,7 @@ namespace Gala {
             }
 
             unowned var bottom_actor = (Meta.WindowActor) bottom_window.get_compositor_private ();
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 animate_bottom_window_scale (bottom_actor);
             }
 
@@ -737,7 +737,7 @@ namespace Gala {
                 }
 
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     var op_trans = new Clutter.KeyframeTransition ("opacity") {
                         duration = fade_out_duration,
                         remove_on_complete = true,
@@ -1144,7 +1144,7 @@ namespace Gala {
             tile_preview.set_size (rect.width, rect.height);
             tile_preview.show ();
 
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 tile_preview.save_easing_state ();
                 tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 tile_preview.set_easing_duration (duration);
@@ -1199,7 +1199,7 @@ namespace Gala {
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
             }
         }
@@ -1247,7 +1247,7 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            if (!AnimationsSettings.get_enable_animations () ||
+            if (!Meta.Prefs.get_gnome_animations () ||
                 actor.get_meta_window ().window_type != Meta.WindowType.NORMAL) {
                 minimize_completed (actor);
                 return;
@@ -1317,7 +1317,7 @@ namespace Gala {
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
@@ -1405,7 +1405,7 @@ namespace Gala {
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 actor.show ();
                 unminimize_completed (actor);
                 return;
@@ -1465,7 +1465,7 @@ namespace Gala {
                 return;
             }
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 map_completed (actor);
 
                 if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
@@ -1584,13 +1584,13 @@ namespace Gala {
             actor.remove_all_transitions ();
 
             if (NotificationStack.is_notification (window)) {
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     destroying.add (actor);
                 }
 
                 notification_stack.destroy_notification (actor);
 
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     ulong destroy_handler_id = 0UL;
                     destroy_handler_id = actor.transitions_completed.connect (() => {
                         actor.disconnect (destroy_handler_id);
@@ -1604,7 +1604,7 @@ namespace Gala {
                 return;
             }
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {
@@ -1693,7 +1693,7 @@ namespace Gala {
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
@@ -2052,7 +2052,7 @@ namespace Gala {
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()
+            if (!Meta.Prefs.get_gnome_animations ()
                 || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
                 || animating_switch_workspace
                 || workspace_view.is_opened ()

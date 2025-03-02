@@ -226,7 +226,7 @@ namespace Gala {
         }
 
         public void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
@@ -338,7 +338,7 @@ namespace Gala {
                 manager.get_workspace_by_index (active_workspace.index () + completions * relative_dir).activate (display.get_current_time ());
             };
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 on_animation_end (1, 1, 0);
             } else {
                 workspace_gesture_tracker.connect_handlers (null, null, (owned) on_animation_end);
@@ -373,14 +373,14 @@ namespace Gala {
                 }
 
                 workspace_clone.save_easing_state ();
-                workspace_clone.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? 200 : 0);
+                workspace_clone.set_easing_duration ((animate && Meta.Prefs.get_gnome_animations ()) ? 200 : 0);
                 workspace_clone.x = dest_x;
                 workspace_clone.restore_easing_state ();
             }
 
             workspaces.save_easing_state ();
             workspaces.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-            workspaces.set_easing_duration ((animate && AnimationsSettings.get_enable_animations ()) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
+            workspaces.set_easing_duration ((animate && Meta.Prefs.get_gnome_animations ()) ? AnimationDuration.WORKSPACE_SWITCH_MIN : 0);
             workspaces.x = -active_x;
             workspaces.restore_easing_state ();
 
@@ -565,7 +565,7 @@ namespace Gala {
             }
 
             // we don't want to handle cancel animation when animation are off
-            if (is_cancel_animation && !AnimationsSettings.get_enable_animations ()) {
+            if (is_cancel_animation && !Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
