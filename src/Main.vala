@@ -1,21 +1,13 @@
-//
-//  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2025 elementary, Inc. (https://elementary.io)
+ *                         2012 Tom Beckmann
+ *                         2012 Rico Tzschichholz
+ */
 
 namespace Gala {
+    private const int SCHED_RESET_ON_FORK = 0x40000000;
+
     private const OptionEntry[] OPTIONS = {
         { "version", 0, OptionFlags.NO_ARG, OptionArg.CALLBACK, (void*) print_version, "Print version", null },
         { null }
@@ -31,6 +23,15 @@ namespace Gala {
         GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
         GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
         GLib.Intl.textdomain (Config.GETTEXT_PACKAGE);
+
+        var param = Posix.Sched.Param () {
+            sched_priority = Posix.Sched.get_priority_min (Posix.Sched.Algorithm.RR)
+        };
+
+        var retval = Posix.Sched.setscheduler (0, Posix.Sched.Algorithm.RR | SCHED_RESET_ON_FORK, ref param);
+        if (retval != 0) {
+            warning ("Failed to set RT scheduler.");
+        }
 
         var ctx = new Meta.Context ("Mutter(Gala)");
         ctx.add_option_entries (Gala.OPTIONS, Config.GETTEXT_PACKAGE);
