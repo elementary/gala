@@ -477,11 +477,10 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             var active_workspace_index = manager.get_active_workspace_index ();
             var index = active_workspace_index + direction;
-            var dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
 
             if (index < 0) {
-                index = manager.get_n_workspaces () - 1 - dynamic_offset;
-            } else if (index > manager.get_n_workspaces () - 1 - dynamic_offset) {
+                index = manager.get_n_workspaces () - 2;
+            } else if (index > manager.get_n_workspaces () - 2) {
                 index = 0;
             }
 
@@ -799,7 +798,7 @@ namespace Gala {
             unowned var active = manager.get_active_workspace ();
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
+            if (Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
                 InternalUtils.bell_notify (display);
                 return;
             }
@@ -1872,7 +1871,7 @@ namespace Gala {
             float screen_width, screen_height;
             unowned var display = get_display ();
             var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
+            var move_primary_only = Meta.Prefs.get_workspaces_only_on_primary ();
             var monitor_geom = display.get_monitor_geometry (primary);
             var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
             var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
@@ -2172,10 +2171,8 @@ namespace Gala {
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
             // Show the real wallpaper again
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
+            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
+                unowned var background = background_group.get_child_at_index (display.get_primary_monitor ());
                 background.show ();
             } else {
                 ((BackgroundContainer) background_group).set_black_background (true);
