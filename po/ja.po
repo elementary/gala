@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2024-12-22 20:56+0000\n"
+"PO-Revision-Date: 2025-03-01 16:01+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -193,7 +193,7 @@ msgstr "すべての開いているウィンドウとワークスペースを参
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr "そのほか"
+msgstr "その他"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -291,11 +291,11 @@ msgstr "スクリーンショット %s"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "スクリーンショットをクリップボードに保存しました"
 
 #: src/WindowManager.vala:2375
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "スクリーンショットを“スクリーンショット”フォルダーに保存しました"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
