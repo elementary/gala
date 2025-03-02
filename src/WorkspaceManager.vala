@@ -98,18 +98,8 @@ public class Gala.WorkspaceManager : Object {
     }
 
     private void workspace_switched (Meta.WorkspaceManager manager, int from, int to, Meta.MotionDirection direction) {
-        // remove empty workspaces after we switched away from them unless it's the last one
-        var prev_workspace = manager.get_workspace_by_index (from);
-        if (Utils.get_n_windows (prev_workspace) < 1
-            && from != manager.get_n_workspaces () - 1
-        ) {
-
-            // If we're about to remove a workspace, cancel any DnD going on in the multitasking view
-            // or else things might get broke
-            DragDropAction.cancel_all_by_id ("multitaskingview-window");
-
-            queue_remove_workspace (prev_workspace);
-        }
+        // remove empty workspaces after we switched away from them
+        maybe_remove_workspace (manager.get_workspace_by_index (from), null);
     }
 
     private void queue_window_added (Meta.Workspace? workspace, Meta.Window window) {
@@ -142,11 +132,6 @@ public class Gala.WorkspaceManager : Object {
             return;
         }
 
-        unowned Meta.WorkspaceManager manager = workspace.get_display ().get_workspace_manager ();
-        bool is_active_workspace = workspace == manager.get_active_workspace ();
-        var last_workspace_index = manager.get_n_workspaces () - 1;
-        unowned var last_workspace = manager.get_workspace_by_index (last_workspace_index);
-
         if (window.window_type != Meta.WindowType.NORMAL
             && window.window_type != Meta.WindowType.DIALOG
             && window.window_type != Meta.WindowType.MODAL_DIALOG
@@ -159,24 +144,7 @@ public class Gala.WorkspaceManager : Object {
             return;
         }
 
-        // remove it right away if it was the active workspace and it's not the very last
-        // or we are in modal-mode
-        if ((!is_active_workspace || wm.is_modal ())
-            && remove_freeze_count < 1
-            && Utils.get_n_windows (workspace, true, window) == 0
-            && workspace != last_workspace
-        ) {
-            queue_remove_workspace (workspace);
-        }
-
-        // if window is the second last and empty, make it the last workspace
-        if (is_active_workspace
-            && remove_freeze_count < 1
-            && Utils.get_n_windows (workspace, true, window) == 0
-            && workspace.index () == last_workspace_index - 1
-        ) {
-            queue_remove_workspace (last_workspace);
-        }
+        maybe_remove_workspace (workspace, window);
     }
 
     private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
@@ -196,6 +164,28 @@ public class Gala.WorkspaceManager : Object {
         unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
 
         manager.append_new_workspace (false, display.get_current_time ());
+    }
+
+    private void maybe_remove_workspace (Meta.Workspace workspace, Meta.Window? window) {
+        unowned var manager = workspace.get_display ().get_workspace_manager ();
+        var is_active_workspace = workspace == manager.get_active_workspace ();
+        var last_workspace_index = manager.get_n_workspaces () - 1 - workspaces_marked_removed.size;
+
+        // remove it right away if it was the active workspace and it's not the very last
+        // or we are in modal-mode
+        if ((!is_active_workspace || wm.is_modal ())
+            && remove_freeze_count < 1
+            && Utils.get_n_windows (workspace, true, window) == 0
+            && workspace.index () != last_workspace_index
+        ) {
+            queue_remove_workspace (workspace);
+        } else if (is_active_workspace // if window is the second last and empty, make it the last workspace
+            && remove_freeze_count < 1
+            && Utils.get_n_windows (workspace, true, window) == 0
+            && workspace.index () == last_workspace_index - 1
+        ) {
+            queue_remove_workspace (manager.get_workspace_by_index (last_workspace_index));
+        }
     }
 
     private void queue_remove_workspace (Meta.Workspace workspace) {
@@ -273,10 +263,7 @@ public class Gala.WorkspaceManager : Object {
         unowned Meta.WorkspaceManager manager = wm.get_display ().get_workspace_manager ();
 
         foreach (var workspace in manager.get_workspaces ()) {
-            var last_index = manager.get_n_workspaces () - 1;
-            if (Utils.get_n_windows (workspace) == 0 && workspace.index () != last_index) {
-                queue_remove_workspace (workspace);
-            }
+            maybe_remove_workspace (workspace, null);
         }
     }
 }
