@@ -168,7 +168,7 @@ public class Gala.IconGroup : CanvasActor {
                 if (animate) {
                     icon.save_easing_state ();
                     icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                    icon.set_easing_duration (AnimationsSettings.get_animation_duration (200));
+                    icon.set_easing_duration (Utils.get_animation_duration (200));
                     icon.opacity = 0;
                     icon.restore_easing_state ();
 

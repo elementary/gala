@@ -451,5 +451,12 @@ namespace Gala {
             regions.remove (window);
             X.Fixes.destroy_region (xdisplay, region);
         }
+
+        /**
+         * Utility that returns the given duration or 0 if animations are disabled.
+         */
+        public static uint get_animation_duration (uint duration) {
+            return Meta.Prefs.get_gnome_animations () ? duration : 0;
+        }
     }
 }

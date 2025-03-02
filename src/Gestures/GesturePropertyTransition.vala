@@ -167,7 +167,7 @@ public class Gala.GesturePropertyTransition : Object {
 
             actor.save_easing_state ();
             actor.set_easing_mode (EASE_OUT_QUAD);
-            actor.set_easing_duration (AnimationsSettings.get_animation_duration (calculated_duration));
+            actor.set_easing_duration (Utils.get_animation_duration (calculated_duration));
             actor.set_property (property, value_from_float (target_value));
             actor.restore_easing_state ();
 
@@ -179,14 +179,14 @@ public class Gala.GesturePropertyTransition : Object {
             }
         };
 
-        if (with_gesture && AnimationsSettings.get_enable_animations ()) {
+        if (with_gesture && Meta.Prefs.get_gnome_animations ()) {
             gesture_tracker.connect_handlers (on_animation_begin, on_animation_update, on_animation_end);
         } else {
             on_animation_begin (0);
             if (overshoot_upper_clamp < 1) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (EASE_OUT_QUAD);
-                actor.set_easing_duration (AnimationsSettings.get_animation_duration (gesture_tracker.min_animation_duration));
+                actor.set_easing_duration (Utils.get_animation_duration (gesture_tracker.min_animation_duration));
                 actor.set_property (property, value_from_float ((float) overshoot_upper_clamp * (to_value_float - from_value_float) + from_value_float));
                 actor.restore_easing_state ();
 

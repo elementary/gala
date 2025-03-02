@@ -46,7 +46,7 @@ public class Gala.WindowClone : Clutter.Actor {
     public bool active {
         set {
             active_shape.save_easing_state ();
-            active_shape.set_easing_duration (AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION));
+            active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
         }
@@ -386,7 +386,7 @@ public class Gala.WindowClone : Clutter.Actor {
             in_slot_animation = animating;
         }
 
-        var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         var show = has_pointer && !in_slot_animation;
 
@@ -408,7 +408,7 @@ public class Gala.WindowClone : Clutter.Actor {
             remove_transition ("shadow-opacity");
         }
 
-        if (AnimationsSettings.get_enable_animations ()) {
+        if (Meta.Prefs.get_gnome_animations ()) {
             var shadow_transition = new Clutter.PropertyTransition ("shadow-opacity") {
                 duration = MultitaskingView.ANIMATION_DURATION,
                 remove_on_complete = true,
@@ -503,7 +503,7 @@ public class Gala.WindowClone : Clutter.Actor {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
-        var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
@@ -565,7 +565,7 @@ public class Gala.WindowClone : Clutter.Actor {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = AnimationsSettings.get_animation_duration (duration);
+        duration = Utils.get_animation_duration (duration);
 
         window_icon.save_easing_state ();
 
@@ -668,7 +668,7 @@ public class Gala.WindowClone : Clutter.Actor {
         get_parent ().remove_child (this);
         prev_parent.add_child (this); // Add above so that it is above while it animates back to its place
 
-        var duration = AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
         clone.set_pivot_point (0.0f, 0.0f);
         clone.save_easing_state ();

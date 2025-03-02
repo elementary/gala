@@ -60,13 +60,13 @@ public class Gala.Zoom : Object {
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
-        zoom (SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+        zoom (SHORTCUT_DELTA, true, Meta.Prefs.get_gnome_animations ());
     }
 
     [CCode (instance_pos = -1)]
     private void zoom_out (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding) {
-        zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+        zoom (-SHORTCUT_DELTA, true, Meta.Prefs.get_gnome_animations ());
     }
 
     private bool on_gesture_detected (Gesture gesture) {
@@ -93,9 +93,9 @@ public class Gala.Zoom : Object {
         var d = dx.abs () > dy.abs () ? dx : dy;
 
         if (d > 0) {
-            zoom (SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+            zoom (SHORTCUT_DELTA, true, Meta.Prefs.get_gnome_animations ());
         } else if (d < 0) {
-            zoom (-SHORTCUT_DELTA, true, AnimationsSettings.get_enable_animations ());
+            zoom (-SHORTCUT_DELTA, true, Meta.Prefs.get_gnome_animations ());
         }
 
         return Clutter.EVENT_STOP;
@@ -111,7 +111,7 @@ public class Gala.Zoom : Object {
             var zoom_level = GestureTracker.animation_value (initial_zoom, target_zoom, percentage);
             var delta = zoom_level - current_zoom;
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 if (delta.abs () >= SHORTCUT_DELTA) {
                     delta = (delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA;
                 } else {
