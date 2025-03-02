@@ -193,7 +193,7 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
 
             notifications_manager = new NotificationsManager ();
-            screenshot_manager = new ScreenshotManager (this);
+            screenshot_manager = new ScreenshotManager (this, notifications_manager);
             DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
@@ -477,11 +477,10 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             var active_workspace_index = manager.get_active_workspace_index ();
             var index = active_workspace_index + direction;
-            var dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
 
             if (index < 0) {
-                index = manager.get_n_workspaces () - 1 - dynamic_offset;
-            } else if (index > manager.get_n_workspaces () - 1 - dynamic_offset) {
+                index = manager.get_n_workspaces () - 2;
+            } else if (index > manager.get_n_workspaces () - 2) {
                 index = 0;
             }
 
@@ -799,7 +798,7 @@ namespace Gala {
             unowned var active = manager.get_active_workspace ();
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
+            if (Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
                 InternalUtils.bell_notify (display);
                 return;
             }
@@ -1871,7 +1870,7 @@ namespace Gala {
             float screen_width, screen_height;
             unowned var display = get_display ();
             var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
+            var move_primary_only = Meta.Prefs.get_workspaces_only_on_primary ();
             var monitor_geom = display.get_monitor_geometry (primary);
             var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
             var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
@@ -2171,10 +2170,8 @@ namespace Gala {
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
 
             // Show the real wallpaper again
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
+            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
+                unowned var background = background_group.get_child_at_index (display.get_primary_monitor ());
                 background.show ();
             } else {
                 ((BackgroundContainer) background_group).set_black_background (true);
@@ -2324,6 +2321,10 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (filename_used);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
@@ -2338,6 +2339,10 @@ namespace Gala {
                 int x, y, w, h;
                 yield screenshot_manager.select_area (out x, out y, out w, out h);
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (filename_used);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
@@ -2349,9 +2354,32 @@ namespace Gala {
                 bool success = false;
                 string filename_used = "";
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
+
+                if (success) {
+                    send_screenshot_notification (filename_used);
+                }
             } catch (Error e) {
                 // Ignore this error
             }
+        }
+
+        private void send_screenshot_notification (string filename_used) {
+            var clipboard = filename_used == null;
+
+            string[] actions = {};
+            if (!clipboard) {
+                /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
+            }
+
+            notifications_manager.send.begin (
+                "ScreenshotManager",
+                "image-x-generic",
+                _("Screenshot taken"),
+                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                actions,
+                new GLib.HashTable<string, Variant> (null, null)
+            );
         }
     }
 }

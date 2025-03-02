@@ -45,11 +45,13 @@ src/Background/SystemBackground.vala
 src/ColorFilters/ColorblindnessCorrectionEffect.vala
 src/ColorFilters/FilterManager.vala
 src/ColorFilters/MonochromeEffect.vala
+src/Dialogs/AccessDialog.vala
+src/Dialogs/CloseDialog.vala
+src/Dialogs/InhibitShortcutsDialog.vala
 src/DaemonManager.vala
 src/DBusAccelerator.vala
 src/DBus.vala
 src/DesktopIntegration.vala
-src/Dialogs.vala
 src/Gestures/GestureSettings.vala
 src/Gestures/GestureTracker.vala
 src/Gestures/Gesture.vala
@@ -71,7 +73,6 @@ src/SessionManager.vala
 src/ShellClients/HideTracker.vala
 src/ShellClients/ManagedClient.vala
 src/ShellClients/NotificationsClient.vala
-src/ShellClients/PanelClone.vala
 src/ShellClients/PanelWindow.vala
 src/ShellClients/ShellClientsManager.vala
 src/Widgets/DwellClickTimer.vala
@@ -81,7 +82,6 @@ src/Widgets/MonitorClone.vala
 src/Widgets/MultitaskingView.vala
 src/Widgets/PixelPicker.vala
 src/Widgets/PointerLocator.vala
-src/Widgets/SafeWindowClone.vala
 src/Widgets/ScreenShield.vala
 src/Widgets/SelectionArea.vala
 src/Widgets/Tooltip.vala

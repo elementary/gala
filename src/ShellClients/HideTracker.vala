@@ -37,17 +37,15 @@ public class Gala.HideTracker : Object {
         Object (display: display, panel: panel);
     }
 
-    ~HideTracker () {
-        if (hide_timeout_id != 0) {
-            Source.remove (hide_timeout_id);
-        }
-
-        if (update_timeout_id != 0) {
-            Source.remove (update_timeout_id);
-        }
-    }
-
     construct {
+        panel.window.unmanaging.connect_after (() => {
+            // The timeouts hold refs on us so we stay connected to signal handlers that might
+            // access the panel which was already freed. To prevent that make sure we reset
+            // the timeouts so that we get freed immediately
+            reset_hide_timeout ();
+            reset_update_timeout ();
+        });
+
         // Can't be local otherwise we get a memory leak :(
         // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
         current_focus_window = display.focus_window;
@@ -150,6 +148,13 @@ public class Gala.HideTracker : Object {
             update_timeout_id = 0;
             return Source.REMOVE;
         });
+    }
+
+    private void reset_update_timeout () {
+        if (update_timeout_id != 0) {
+            Source.remove (update_timeout_id);
+            update_timeout_id = 0;
+        }
     }
 
     public void update_overlap () {

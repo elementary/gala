@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-12-18 21:23+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
 "PO-Revision-Date: 2024-10-26 22:46+0000\n"
 "Last-Translator: Diogo Pessoa <diogopessoabr@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
@@ -108,19 +108,19 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
-#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
-#: data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:124
+#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:206
 msgid "Improvements:"
 msgstr "Melhorias:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
-#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:78 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:171 data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:208
 msgid "Updated translations"
 msgstr "Traduções atualizadas"
 
@@ -138,29 +138,29 @@ msgstr ""
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Corrigir possíveis falhas ao capturar telas"
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:66
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "Melhorar as sombras nas janelas para aplicações antigas"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:110
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "Corrige uma potencial falha ao mover janelas entre espaços de trabalho"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:111
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Corrige animação de notificação ao entrar na visão multitarefa"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:126
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Melhore a navegação pelo teclado no modo multitarefa"
 
-#: data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:127
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Alterar a cor do painel durante a transição do papel de parede"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:167
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -168,23 +168,23 @@ msgstr ""
 "Alterar o papel de parede ou suspender agora respeita a opção \"Reduzir "
 "Movimento\""
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:168
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Use os ponteiros de arrastar e soltar apropriados ao mover janelas"
 
-#: data/gala.metainfo.xml.in:159
+#: data/gala.metainfo.xml.in:169
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Corrigido um problema em que os gestos na visualização multitarefa podiam "
 "parar de funcionar"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:170
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Melhore o comportamento dos espaços de trabalho dinâmicos com vários "
 "monitores"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:192
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Melhoria do funcionamento do atalho de mover para a área de trabalho"
 
@@ -210,20 +210,16 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Desconhecido"
 
-#: src/DesktopIntegration.vala:133
-msgid "Window has already focus"
-msgstr "A janela já está focada"
-
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s” não está respondendo"
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr "A aplicação não está respondendo"
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -231,40 +227,44 @@ msgstr ""
 "Você pode optar por esperar um momento para continuar ou forçar o "
 "encerramento da aplicação."
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
 msgstr "Forçar encerramento"
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr "Aguardar"
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
 msgstr "“%s” quer inibir os atalhos do sistema"
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
 msgstr "Uma aplicação quer inibir os atalhos do sistema"
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
 msgstr "Todos os atalhos do sistema serão direcionados para a aplicação."
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
 msgstr "Permitir"
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
 msgstr "Recusar"
 
-#: src/ScreenshotManager.vala:296
+#: src/DesktopIntegration.vala:176
+msgid "Window has already focus"
+msgstr "A janela já está focada"
+
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "Capturas de tela"
 
-#: src/ScreenshotManager.vala:388
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "Captura de tela realizada"
 
@@ -272,30 +272,43 @@ msgstr "Captura de tela realizada"
 msgid "Window switcher"
 msgstr "Seletor de janela"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "As alterações serão revertidas automaticamente após %i segundo."
 msgstr[1] "As alterações serão revertidas automaticamente após %i segundos."
 
-#: src/WindowManager.vala:2336
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "Manter as novas configurações de tela?"
 
-#: src/WindowManager.vala:2340
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "Manter configurações"
 
-#: src/WindowManager.vala:2341
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "Usar as configurações anteriores"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2380
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de tela de %s"
+
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr ""
+
+#: src/WindowManager.vala:2380
+msgid "Screenshot is saved to clipboard"
+msgstr ""
+
+#: src/WindowManager.vala:2380
+msgid "Screenshot saved to screenshots folder"
+msgstr ""
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"

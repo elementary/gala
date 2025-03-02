@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-12-18 21:23+0000\n"
-"PO-Revision-Date: 2024-12-19 16:04+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"PO-Revision-Date: 2025-02-16 03:16+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
 "Language: nl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -108,19 +108,19 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:53
-#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:81
-#: data/gala.metainfo.xml.in:98 data/gala.metainfo.xml.in:114
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:180
-#: data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
+#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:124
+#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:206
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:68 data/gala.metainfo.xml.in:83
-#: data/gala.metainfo.xml.in:102 data/gala.metainfo.xml.in:118
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:183
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:78 data/gala.metainfo.xml.in:93
+#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:128
+#: data/gala.metainfo.xml.in:171 data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:208
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
@@ -136,31 +136,31 @@ msgstr "Interactieve schermafdruk snelkoppeling toegevoegd"
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Een crash verholpen bij het gebruiken van tegelen-snelkoppelingen"
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:66
 msgid "Improved shadows performance"
 msgstr "Verbeterde schaduwen-prestaties"
 
-#: data/gala.metainfo.xml.in:100
+#: data/gala.metainfo.xml.in:110
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Een mogelijke crash verholpen wanneer vensters worden bewogen tussen "
 "werkruimtes"
 
-#: data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:111
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "De notificatie animatie verholpen wanneer multitaskingweergave wordt "
 "opgeroepen"
 
-#: data/gala.metainfo.xml.in:116
+#: data/gala.metainfo.xml.in:126
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Verbeter toetsenbordnavigatie in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:117
+#: data/gala.metainfo.xml.in:127
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Verander paneelkleur tegelijk met achtergrondovergang"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:167
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -168,22 +168,22 @@ msgstr ""
 "De bureaubladachtergrond veranderen of schakelen naar de slaapstand "
 "respecteert de \"Beperk bewegende elementen\" optie"
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:168
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Gebruik passende klikken-en-slepen aanwijzers wanneer vensters versleept "
 "worden"
 
-#: data/gala.metainfo.xml.in:159
+#: data/gala.metainfo.xml.in:169
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Verbeter de fout wanneer gebaren in de multitasking weergave niet meer werken"
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:170
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Verbeter dynamische werkruimtes gedrag met meerdere schermen"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:192
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Verbeter omgaan met verplaats-naar-werkruimte sneltoets"
 
@@ -210,20 +210,16 @@ msgctxt "program"
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: src/DesktopIntegration.vala:133
-msgid "Window has already focus"
-msgstr "Window heeft al de focus"
-
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s” reageert niet"
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr "Applicatie reageert niet"
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -231,40 +227,44 @@ msgstr ""
 "U kunt proberen om enige tijd te wachten totdat de applicatie weer reageert, "
 "of u kunt de applicatie geforceerd afsluiten."
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr "Afsluiten forceren"
+msgstr "Geforceerd afsluiten"
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr "Wachten"
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
 msgstr "“%s” wil systeemsneltoetsen verhinderen"
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
 msgstr "Een applicatie wil systeemsneltoetsen verhinderen"
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
 msgstr "Alle systeemsneltoetsen zullen worden doorverwezen naar de applicatie."
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
 msgstr "Sta toe"
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
 msgstr "Weigeren"
 
-#: src/ScreenshotManager.vala:296
+#: src/DesktopIntegration.vala:176
+msgid "Window has already focus"
+msgstr "Window heeft al de focus"
+
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "Schermafbeeldingen"
 
-#: src/ScreenshotManager.vala:388
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "Schermafbeelding genomen"
 
@@ -272,30 +272,43 @@ msgstr "Schermafbeelding genomen"
 msgid "Window switcher"
 msgstr "Vensterwisselaar"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Wijzigingen worden na %i seconde automatisch teruggedraaid."
 msgstr[1] "Wijzigingen worden na %i seconden automatisch teruggedraaid."
 
-#: src/WindowManager.vala:2336
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "Nieuwe weergave-instellingen bewaren?"
 
-#: src/WindowManager.vala:2340
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "Instellingen behouden"
 
-#: src/WindowManager.vala:2341
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "Vorige instellingen gebruiken"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2380
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Schermafbeelding van %s"
+
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr ""
+
+#: src/WindowManager.vala:2380
+msgid "Screenshot is saved to clipboard"
+msgstr "Schermafdruk is opgeslagen op het klembord"
+
+#: src/WindowManager.vala:2380
+msgid "Screenshot saved to screenshots folder"
+msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
