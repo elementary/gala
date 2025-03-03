@@ -78,6 +78,7 @@ namespace Gala {
             ctx.start ();
             if (ctx.get_compositor_type () == Meta.CompositorType.WAYLAND) {
                 Gala.init_pantheon_shell (ctx);
+                Gala.init_pantheon_blur (ctx);
             }
         } catch (Error e) {
             stderr.printf ("Failed to start: %s\n", e.message);

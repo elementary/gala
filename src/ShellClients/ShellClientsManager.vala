@@ -152,11 +152,11 @@ public class Gala.ShellClientsManager : Object {
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        Timeout.add (5000, () => {
-            unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-            actor.add_effect (new BackgroundBlurEffect (actor, 18, 0.8f));
-            return Source.REMOVE;
-        });
+        //  Timeout.add (5000, () => {
+        //      unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
+        //      actor.add_effect (new BackgroundBlurEffect (actor, 18, 0.8f));
+        //      return Source.REMOVE;
+        //  });
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
 

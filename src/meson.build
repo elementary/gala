@@ -1,5 +1,6 @@
 gala_bin_sources = files(
     'BackgroundBlurEffect.vala',
+    'BlurManager.vala',
     'DaemonManager.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
@@ -9,7 +10,6 @@ gala_bin_sources = files(
     'Main.vala',
     'NotificationsManager.vala',
     'NotificationStack.vala',
-    'PantheonShell.vala',
     'PluginManager.vala',
     'ScreenSaverManager.vala',
     'ScreenshotManager.vala',
@@ -53,6 +53,8 @@ gala_bin_sources = files(
     'ShellClients/PositionedWindow.vala',
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
+    'WaylandProtocols/PantheonBlur.vala',
+    'WaylandProtocols/PantheonShell.vala',
     'Widgets/DwellClickTimer.vala',
     'Widgets/IconGroup.vala',
     'Widgets/IconGroupContainer.vala',
@@ -76,7 +78,7 @@ gala_bin_sources = files(
 gala_bin = executable(
     'gala',
     gala_bin_sources,
-    dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep],
+    dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep, pantheon_blur_dep],
     include_directories: config_inc_dir,
     install_rpath: mutter_typelib_dir,
     install: true,

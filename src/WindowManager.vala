@@ -143,6 +143,7 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
+            BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
