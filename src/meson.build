@@ -1,7 +1,8 @@
 gala_bin_sources = files(
+    'BackgroundBlurEffect.vala',
+    'DaemonManager.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
-    'DaemonManager.vala',
     'DesktopIntegration.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',

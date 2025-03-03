@@ -410,6 +410,20 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
+
+            //  Timeout.add (5000, () => {
+            //      var actor = new Clutter.Actor () {
+            //          x = 400,
+            //          y = 400,
+            //          width = 250,
+            //          height = 100
+            //      };
+            //      actor.add_effect (new BackgroundBlurEffect (actor, 18, 0.8f));
+
+            //      ui_group.add_child (actor);
+                
+            //      return Source.REMOVE;
+            //  });
         }
 
         private void init_a11y () {
