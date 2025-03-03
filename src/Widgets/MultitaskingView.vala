@@ -67,7 +67,6 @@ namespace Gala {
             workspaces = new WorkspaceRow (display);
 
             workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this) {
-                enabled = false,
                 overshoot_upper_clamp = 0.1
             };
             workspaces_gesture_controller.enable_touchpad ();
@@ -95,10 +94,18 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
             manager.workspace_removed.connect (remove_workspace);
-            manager.workspaces_reordered.connect (() => update_positions (false));
-            manager.workspace_switched.connect_after ((from, to, direction) => {
-                update_positions (opened);
-            });
+            manager.workspaces_reordered.connect (() => reposition_icon_groups (false));
+            manager.workspace_switched.connect (on_workspace_switched);
+
+            manager.bind_property (
+                "n-workspaces",
+                workspaces_gesture_controller,
+                "overshoot-lower-clamp",
+                DEFAULT,
+                (binding, from_value, ref to_value) => {
+                    to_value.set_double (-from_value.get_int () - 0.1 + 1);
+                }
+            );
 
             window_containers_monitors = new List<MonitorClone> ();
             update_monitors ();
@@ -252,42 +259,36 @@ namespace Gala {
         }
 
         public override void start_progress (GestureAction action) {
-            if (action != MULTITASKING_VIEW) {
-                return;
-            }
-
             if (!opened) {
+                opened = true;
+
+                wm.background_group.hide ();
+                wm.window_group.hide ();
+                wm.top_window_group.hide ();
+                show ();
+                grab_key_focus ();
+
                 modal_proxy = wm.push_modal (this);
                 modal_proxy.set_keybinding_filter (keybinding_filter);
 
                 var scale = display.get_monitor_scale (display.get_primary_monitor ());
                 icon_groups.force_reposition ();
                 icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
-            } else {
+                reposition_icon_groups (false);
+            } else if (action == MULTITASKING_VIEW) {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
-
-            wm.kill_switch_workspace ();
-            wm.background_group.hide ();
-            wm.window_group.hide ();
-            wm.top_window_group.hide ();
-            show ();
-            grab_key_focus ();
-
-            update_positions (opened);
-            workspaces_gesture_controller.cancel_gesture ();
-
-            opened = true;
         }
 
         public override void commit_progress (GestureAction action, double to) {
             switch (action) {
                 case MULTITASKING_VIEW:
-                    opened = to > 0.5;
-                    workspaces_gesture_controller.enabled = opened;
+                    opened = to > 0.5 || workspaces_gesture_controller.recognizing;
+                    workspaces_gesture_controller.cancel_gesture ();
                     break;
 
                 case SWITCH_WORKSPACE:
+                    opened = get_current_commit (MULTITASKING_VIEW) > 0.5 || multitasking_gesture_controller.recognizing;
                     unowned var workspace_manager = display.get_workspace_manager ();
                     workspace_manager.get_workspace_by_index ((int) (-to)).activate (display.get_current_time ());
                     break;
@@ -298,38 +299,16 @@ namespace Gala {
         }
 
         public override void end_progress (GestureAction action) {
-            if (action != MULTITASKING_VIEW) {
-                return;
-            }
-
             if (!opened) {
                 wm.background_group.show ();
                 wm.window_group.show ();
                 wm.top_window_group.show ();
                 hide ();
 
-                wm.pop_modal (modal_proxy);
+                if (wm.modal_proxy_valid (modal_proxy)) {
+                    wm.pop_modal (modal_proxy);
+                }
             }
-        }
-
-        /**
-         * Places the WorkspaceClones, moves the view so that the active one is shown
-         * and does the same for the IconGroups.
-         *
-         * @param animate Whether to animate the movement or have all elements take their
-         *                positions immediately.
-         */
-        private void update_positions (bool animate) {
-            unowned var manager = display.get_workspace_manager ();
-            workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
-
-            if (animate) {
-                workspaces_gesture_controller.goto (-manager.get_active_workspace_index ());
-            } else {
-                workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
-            }
-
-            reposition_icon_groups (animate);
         }
 
         private void reposition_icon_groups (bool animate) {
@@ -367,7 +346,7 @@ namespace Gala {
             workspace.window_selected.connect (window_selected);
             workspace.selected.connect (activate_workspace);
 
-            update_positions (false);
+            reposition_icon_groups (false);
         }
 
         private void remove_workspace (int num) {
@@ -401,7 +380,13 @@ namespace Gala {
 
             workspace.destroy ();
 
-            update_positions (opened);
+            reposition_icon_groups (opened);
+        }
+
+        private void on_workspace_switched (int from, int to) {
+            if ((int) (-get_current_commit (SWITCH_WORKSPACE)) != to) {
+                workspaces_gesture_controller.goto (-to);
+            }
         }
 
         /**

@@ -354,11 +354,9 @@ public class Gala.WindowCloneContainer : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action != MULTITASKING_VIEW) {
-            return;
-        }
-
         if (!opened) {
+            opened = true;
+
             if (current_window != null) {
                 current_window.active = false;
             }
@@ -370,19 +368,26 @@ public class Gala.WindowCloneContainer : ActorTarget {
                     break;
                 }
             }
+
+            restack_windows ();
+            reflow (true);
+        } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
+            restack_windows ();
         }
-
-        opened = true;
-
-        restack_windows ();
-        reflow (true);
     }
 
     public override void commit_progress (GestureAction action, double to) {
-        if (action != MULTITASKING_VIEW) {
-            return;
-        }
+        switch (action) {
+            case MULTITASKING_VIEW:
+                opened = to > 0.5;
+                break;
 
-        opened = to > 0.5;
+            case SWITCH_WORKSPACE:
+                opened = get_current_commit (MULTITASKING_VIEW) > 0.5;
+                break;
+
+            default:
+                break;
+        }
     }
 }
