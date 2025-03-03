@@ -318,7 +318,7 @@ namespace Gala {
             background.set_pivot_point (0.5f, pivot_y);
 
             var initial_width = monitor.width;
-            var target_width = monitor.width * scale + WindowManagerGala.WORKSPACE_GAP * 2;
+            var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
 
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
             add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
