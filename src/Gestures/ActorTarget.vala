@@ -18,10 +18,12 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
     }
 
     private double[] current_progress;
+    private double[] current_commit;
     private Gee.List<GestureTarget> targets;
 
     construct {
         current_progress = new double[GestureAction.N_ACTIONS];
+        current_commit = new double[GestureAction.N_ACTIONS];
         targets = new Gee.ArrayList<GestureTarget> ();
 
         child_added.connect (on_child_added);
@@ -29,7 +31,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
 
     private void sync_target (GestureTarget target) {
         for (int action = 0; action < current_progress.length; action++) {
-            target.propagate (COMMIT, action, current_progress[action]);
+            target.propagate (COMMIT, action, current_commit[action]);
             target.propagate (UPDATE, action, current_progress[action]);
         }
     }
@@ -51,13 +53,21 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
         return current_progress[action];
     }
 
+    public double get_current_commit (GestureAction action) {
+        return current_commit[action];
+    }
+
     public virtual void start_progress (GestureAction action) {}
     public virtual void update_progress (GestureAction action, double progress) {}
     public virtual void commit_progress (GestureAction action, double to) {}
     public virtual void end_progress (GestureAction action) {}
 
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
-        current_progress[action] = progress;
+        if (update_type == COMMIT) {
+            current_commit[action] = progress;
+        } else {
+            current_progress[action] = progress;
+        }
 
         switch (update_type) {
             case START:
