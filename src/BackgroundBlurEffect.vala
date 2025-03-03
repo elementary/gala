@@ -294,8 +294,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     public override void paint_node (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags) {
-        warning ("OwO, repainting");
-
         if (radius <= 0) {
             // fallback to drawing actor
             add_actor_node (node);

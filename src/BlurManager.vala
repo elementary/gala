@@ -6,14 +6,21 @@
  */
 
 public class Gala.BlurManager : Object {
+    private struct Constraints {
+        Clutter.BindConstraint x_constraint;
+        Clutter.BindConstraint y_constraint;
+        Clutter.BindConstraint width_constraint;
+        Clutter.BindConstraint height_constraint;
+    }
+
     private static BlurManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManager wm, Clutter.Actor group) {
         if (instance != null) {
             return;
         }
 
-        instance = new BlurManager (wm);
+        instance = new BlurManager (wm, group);
     }
 
     public static unowned BlurManager? get_instance () {
@@ -21,33 +28,66 @@ public class Gala.BlurManager : Object {
     }
 
     public WindowManager wm { get; construct; }
+    public Clutter.Actor group { get; construct; }
 
-    private Gee.List<Meta.Window> blurred_windows = new Gee.ArrayList<Meta.Window> (null);
+    private GLib.HashTable<Meta.Window, Constraints?> blurred_windows = new GLib.HashTable<Meta.Window, Constraints?> (null, null);
 
-    private BlurManager (WindowManager wm) {
-        Object (wm: wm);
+    private BlurManager (WindowManager wm, Clutter.Actor group) {
+        Object (wm: wm, group: group);
     }
 
     /**
-     * The size given here is only used for the hide mode. I.e. struts
-     * and collision detection with other windows use this size. By default
-     * or if set to -1 the size of the window is used.
-     *
-     * TODO: Maybe use for strut only?
      */
     public void set_region (Meta.Window window, uint x, uint y, uint width, uint height) {
-        if (window in blurred_windows) {
+        unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        if (window_actor == null) {
+            warning ("Cannot blur actor: Actor is null");
             return;
         }
 
-        blurred_windows.add (window);
-        unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-        if (actor == null) {
-            critical ("Cannot blur actor: Actor is null");
+        if (window_actor.width == 0 || window_actor.height == 0) {
+            warning ("Cannot blur actor: Actor's size is invalid");
+            return;
         }
 
-        actor.add_effect (new BackgroundBlurEffect (actor, 18, 1.0f));
+        var constraints = blurred_windows[window];
+        if (constraints != null) {
+            constraints.x_constraint.offset = x;
+            constraints.y_constraint.offset = y;
+            constraints.width_constraint.offset = width - window_actor.width;
+            constraints.height_constraint.offset = height - window_actor.height;
+
+            return;
+        }
+
+        var x_constraint = new Clutter.BindConstraint (
+            window_actor, Clutter.BindCoordinate.X, x
+        );
+        var y_constraint = new Clutter.BindConstraint (
+            window_actor, Clutter.BindCoordinate.Y, y
+        );
+        var width_constraint = new Clutter.BindConstraint (
+            window_actor, Clutter.BindCoordinate.WIDTH, width
+        );
+        var height_constraint = new Clutter.BindConstraint (
+            window_actor, Clutter.BindCoordinate.HEIGHT, height
+        );
+
+        var bg_actor = new Clutter.Actor ();
+        bg_actor.add_effect (new BackgroundBlurEffect (bg_actor, 18, 1.0f));
+        bg_actor.add_constraint (x_constraint);
+        bg_actor.add_constraint (y_constraint);
+        bg_actor.add_constraint (width_constraint);
+        bg_actor.add_constraint (height_constraint);
+        
+        blurred_windows[window] = Constraints () {
+            x_constraint = x_constraint,
+            y_constraint = y_constraint,
+            width_constraint = width_constraint,
+            height_constraint = height_constraint
+        };
+        
+        wm.background_group.add_child (bg_actor);
     }
 
     //X11 only

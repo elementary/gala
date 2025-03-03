@@ -38,6 +38,8 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
+        public Clutter.Actor blur_group { get; private set; }
+
         /**
          * The group that contains all WindowActors that make shell elements, that is all windows reported as
          * ShellClientsManager.is_positioned_window.
@@ -143,11 +145,11 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
-            BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
-
+            
             show_stage ();
+            BlurManager.init (this, shell_group);
 
             init_a11y ();
 
@@ -249,6 +251,9 @@ namespace Gala {
             ui_group.reactive = true;
             update_ui_group_size ();
             stage.add_child (ui_group);
+
+            blur_group = new Clutter.Actor ();
+            ui_group.add_child (blur_group);
 
             window_group = display.get_window_group ();
             stage.remove_child (window_group);
@@ -411,20 +416,6 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
-
-            //  Timeout.add (5000, () => {
-            //      var actor = new Clutter.Actor () {
-            //          x = 400,
-            //          y = 400,
-            //          width = 250,
-            //          height = 100
-            //      };
-            //      actor.add_effect (new BackgroundBlurEffect (actor, 18, 0.8f));
-
-            //      ui_group.add_child (actor);
-                
-            //      return Source.REMOVE;
-            //  });
         }
 
         private void init_a11y () {
