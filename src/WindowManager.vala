@@ -109,11 +109,6 @@ namespace Gala {
 
         private GestureTracker gesture_tracker;
 
-        /**
-         * Amount of pixels to move on the nudge animation.
-         */
-        public const int NUDGE_GAP = 32;
-
         construct {
             gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
             gesture_tracker.enable_touchpad ();
