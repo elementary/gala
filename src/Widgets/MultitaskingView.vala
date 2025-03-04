@@ -41,8 +41,6 @@ namespace Gala {
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
 
-        private StaticWindowContainer static_windows;
-
         private GLib.Settings gala_behavior_settings;
         private Drawing.StyleManager style_manager;
 
@@ -93,8 +91,7 @@ namespace Gala {
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
 
-            static_windows = StaticWindowContainer.init (display, workspaces_gesture_controller);
-            add_child (static_windows);
+            add_child (StaticWindowContainer.init (display, workspaces_gesture_controller));
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
