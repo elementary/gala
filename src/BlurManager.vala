@@ -7,10 +7,9 @@
 
 public class Gala.BlurManager : Object {
     private struct Constraints {
+        Clutter.Actor actor;
         Clutter.BindConstraint x_constraint;
         Clutter.BindConstraint y_constraint;
-        Clutter.BindConstraint width_constraint;
-        Clutter.BindConstraint height_constraint;
     }
 
     private static BlurManager instance;
@@ -46,16 +45,15 @@ public class Gala.BlurManager : Object {
         }
 
         if (window_actor.width == 0 || window_actor.height == 0) {
-            warning ("Cannot blur actor: Actor's size is invalid");
+            warning ("Cannot blur actor: Actor size is invalid");
             return;
         }
 
         var constraints = blurred_windows[window];
         if (constraints != null) {
+            constraints.actor.set_size (width, height);
             constraints.x_constraint.offset = x;
             constraints.y_constraint.offset = y;
-            constraints.width_constraint.offset = width - window_actor.width;
-            constraints.height_constraint.offset = height - window_actor.height;
 
             return;
         }
@@ -66,28 +64,24 @@ public class Gala.BlurManager : Object {
         var y_constraint = new Clutter.BindConstraint (
             window_actor, Clutter.BindCoordinate.Y, y
         );
-        var width_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.WIDTH, width
-        );
-        var height_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.HEIGHT, height
-        );
 
-        var bg_actor = new Clutter.Actor ();
-        bg_actor.add_effect (new BackgroundBlurEffect (bg_actor, 18, 1.0f));
-        bg_actor.add_constraint (x_constraint);
-        bg_actor.add_constraint (y_constraint);
-        bg_actor.add_constraint (width_constraint);
-        bg_actor.add_constraint (height_constraint);
+        var blurred_actor = new Clutter.Actor () {
+            width = width,
+            height = height,
+            background_color = Clutter.Color.from_string ("black")
+        };
+        //  blurred_actor.add_effect (new RoundedCornersEffect (9 + 4, 1.0f));
+        blurred_actor.add_effect (new BackgroundBlurEffect (blurred_actor, 12, 0.7f));
+        blurred_actor.add_constraint (x_constraint);
+        blurred_actor.add_constraint (y_constraint);
         
         blurred_windows[window] = Constraints () {
+            actor = blurred_actor,
             x_constraint = x_constraint,
             y_constraint = y_constraint,
-            width_constraint = width_constraint,
-            height_constraint = height_constraint
         };
         
-        wm.background_group.add_child (bg_actor);
+        wm.background_group.add_child (blurred_actor);
     }
 
     //X11 only

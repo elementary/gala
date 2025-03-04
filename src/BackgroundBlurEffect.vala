@@ -31,7 +31,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private Cogl.Framebuffer brightness_framebuffer;
     private Cogl.Pipeline brightness_pipeline;
     private Cogl.Texture brightness_texture;
-    private int brightness_uniform;
 
     private int counter = 0;
 
@@ -65,8 +64,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                 Cogl.SnippetHook.FRAGMENT, "uniform float brightness;", "cogl_color_out.rgb *= brightness;"
             )
         );
-
-        brightness_uniform = brightness_pipeline.get_uniform_location ("brightness");
     }
 
     private void update_actor_box (Clutter.PaintContext paint_context, ref Clutter.ActorBox source_actor_box) {
@@ -124,12 +121,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         }
 
         return downscale_factor;
-    }
-
-    private void update_brightness () {
-        if (brightness_uniform > -1) {
-            brightness_pipeline.set_uniform_1f (brightness_uniform, brightness);
-        }
     }
 
     private void setup_projection_matrix (Cogl.Framebuffer framebuffer, float width, float height) {
@@ -241,8 +232,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         float width, height;
         actor.get_size (out width, out height);
 
-        update_brightness ();
-
         var brightness_node = new Clutter.LayerNode.to_framebuffer (brightness_framebuffer, brightness_pipeline);
         node.add_child (brightness_node);
         brightness_node.add_rectangle ({ 0.0f, 0.0f, width, height });
@@ -282,7 +271,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         background_node.add_rectangle ({ 0.0f, 0.0f, texture_width / downscale_factor, texture_height / downscale_factor });
 
         /* Blit node */
-        var blit_node = new Clutter.BlitNode (paint_context.get_stage_view ().get_framebuffer ());
+        var blit_node = new Clutter.BlitNode (paint_context.get_framebuffer ());
         background_node.add_child (blit_node);
         blit_node.add_blit_rectangle (
             (int) transformed_x,
