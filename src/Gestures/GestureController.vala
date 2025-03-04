@@ -43,6 +43,9 @@ public class Gala.GestureController : Object {
         }
     }
 
+    private Variant? _action_info;
+    public Variant action_info { get { return _action_info; } }
+
     public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
     public double overshoot_upper_clamp { get; construct set; default = 1d; }
@@ -125,7 +128,7 @@ public class Gala.GestureController : Object {
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
-        recognizing = enabled && (GestureSettings.get_action (gesture) == action
+        recognizing = enabled && (GestureSettings.get_action (gesture, out _action_info) == action
             || backend == scroll_backend && GestureSettings.get_action (gesture) == NONE);
 
         if (recognizing) {
@@ -217,24 +220,30 @@ public class Gala.GestureController : Object {
         target.propagate (COMMIT, action, clamped_to);
 
         if (progress == to) {
-            target.propagate (END, action, calculate_bounded_progress ());
+            finished ();
             return;
         }
 
         if (!AnimationsSettings.get_enable_animations ()) {
             progress = clamped_to;
-            target.propagate (END, action, calculate_bounded_progress ());
+            finished ();
             return;
         }
 
         var spring = new SpringTimeline (target.actor, progress, clamped_to, velocity, 1, 1, 1000);
         spring.progress.connect ((value) => progress = value);
-        spring.stopped.connect (() => {
-            target.propagate (END, action, calculate_bounded_progress ());
-            timeline = null;
-        });
+        spring.stopped.connect (finished);
 
         timeline = spring;
+    }
+
+    private void finished (bool is_finished = true) {
+        target.propagate (END, action, calculate_bounded_progress ());
+        timeline = null;
+
+        if (is_finished) {
+            _action_info = null;
+        }
     }
 
     /**

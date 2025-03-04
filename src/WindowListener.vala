@@ -53,6 +53,7 @@ public class Gala.WindowListener : Object {
         return instance;
     }
 
+    public signal void window_on_all_workspaces (Meta.Window window);
     public signal void window_no_longer_on_all_workspaces (Meta.Window window);
 
     private Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
@@ -83,10 +84,11 @@ public class Gala.WindowListener : Object {
     }
 
     private void window_on_all_workspaces_changed (Meta.Window window) {
-        if (window.on_all_workspaces)
-            return;
-
-        window_no_longer_on_all_workspaces (window);
+        if (window.on_all_workspaces) {
+            window_on_all_workspaces (window);
+        } else {
+            window_no_longer_on_all_workspaces (window);
+        }
     }
 
     private void window_maximized_changed (Meta.Window window) {

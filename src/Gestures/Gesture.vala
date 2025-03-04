@@ -37,7 +37,6 @@ namespace Gala {
     public enum GestureAction {
         NONE,
         SWITCH_WORKSPACE,
-        MOVE_TO_WORKSPACE,
         SWITCH_WINDOWS,
         MULTITASKING_VIEW,
         DOCK,

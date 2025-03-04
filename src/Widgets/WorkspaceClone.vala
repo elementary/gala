@@ -229,8 +229,8 @@ namespace Gala {
                 }
             }
 
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.connect (add_window);
+            var static_windows = StaticWindowContainer.get_instance ();
+            static_windows.window_changed.connect (on_window_static_changed);
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_targets);
@@ -245,9 +245,6 @@ namespace Gala {
             display.window_left_monitor.disconnect (window_left_monitor);
             workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
-
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.disconnect (add_window);
 
             background.destroy ();
             window_container.destroy ();
@@ -293,6 +290,14 @@ namespace Gala {
         private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
             if (monitor == display.get_primary_monitor ())
                 remove_window (window);
+        }
+
+        private void on_window_static_changed (Meta.Window window, bool is_static) {
+            if (is_static) {
+                remove_window (window);
+            } else {
+                add_window (window);
+            }
         }
 
 #if HAS_MUTTER45

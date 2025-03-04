@@ -41,6 +41,8 @@ namespace Gala {
         private Clutter.Actor primary_monitor_container;
         private Clutter.BrightnessContrastEffect brightness_effect;
 
+        private StaticWindowContainer static_windows;
+
         private GLib.Settings gala_behavior_settings;
         private Drawing.StyleManager style_manager;
 
@@ -90,6 +92,9 @@ namespace Gala {
             primary_monitor_container.add_child (icon_groups);
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
+
+            static_windows = StaticWindowContainer.init (display, workspaces_gesture_controller);
+            add_child (static_windows);
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -258,6 +263,12 @@ namespace Gala {
             workspaces.add_transition ("nudge", nudge);
         }
 
+        public void kill_switch_workspace () {
+            // Not really a kill (we let the animation finish)
+            // but since we only use clones that's ok
+            workspaces_gesture_controller.cancel_gesture ();
+        }
+
         public override void start_progress (GestureAction action) {
             if (!opened) {
                 opened = true;
@@ -381,6 +392,8 @@ namespace Gala {
             workspace.destroy ();
 
             reposition_icon_groups (opened);
+
+            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
         }
 
         private void on_workspace_switched (int from, int to) {

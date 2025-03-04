@@ -83,11 +83,7 @@ namespace Gala {
 
         private Clutter.Actor? tile_preview;
 
-        private Meta.Window? moving; //place for the window that is being moved over
-
         private DaemonManager daemon_manager;
-
-        private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
 
@@ -112,18 +108,11 @@ namespace Gala {
         private GLib.Settings new_behavior_settings;
 
         private GestureTracker gesture_tracker;
-        private bool animating_switch_workspace = false;
-        private bool switch_workspace_with_gesture = false;
 
         /**
          * Amount of pixels to move on the nudge animation.
          */
         public const int NUDGE_GAP = 32;
-
-        /**
-         * Gap to show between workspaces while switching between them.
-         */
-        public const int WORKSPACE_GAP = 24;
 
         construct {
             gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
@@ -144,7 +133,6 @@ namespace Gala {
         public override void start () {
             ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
-            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
@@ -590,36 +578,11 @@ namespace Gala {
                 return false;
             }
 
-            var action = GestureSettings.get_action (gesture);
-            switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
+            return GestureSettings.get_action (gesture) == SWITCH_WINDOWS && !window_switcher.opened;
         }
 
         private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
-            var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-
-            switch (GestureSettings.get_action (gesture)) {
-                case MOVE_TO_WORKSPACE:
-                    unowned var display = get_display ();
-                    unowned var manager = display.get_workspace_manager ();
-                    unowned var active_workspace = manager.get_active_workspace ();
-                    unowned var target_workspace = active_workspace.get_neighbor (direction);
-
-                    move_window (display.focus_window, target_workspace, timestamp);
-                    break;
-
-                case SWITCH_WORKSPACE:
-                    switch_to_next_workspace (direction, timestamp);
-                    break;
-
-                case SWITCH_WINDOWS:
-                    window_switcher.handle_gesture (gesture.direction);
-                    break;
-
-                default:
-                    break;
-            }
-
+            window_switcher.handle_gesture (gesture.direction);
             return 0;
         }
 
@@ -627,10 +590,6 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            if (animating_switch_workspace) {
-                return;
-            }
-
             unowned var display = get_display ();
             unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
             unowned var neighbor = active_workspace.get_neighbor (direction);
@@ -639,44 +598,8 @@ namespace Gala {
                 neighbor.activate (timestamp);
             } else {
                 // if we didn't switch, show a nudge-over animation if one is not already in progress
-                if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
-                    ((MultitaskingView) workspace_view).play_nudge_animation (direction);
-                } else {
-                    play_nudge_animation (direction);
-                }
+                ((MultitaskingView) workspace_view).play_nudge_animation (direction);
             }
-        }
-
-        private void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
-                return;
-            }
-
-            animating_switch_workspace = true;
-
-            unowned var display = get_display ();
-            unowned var active_index = display.get_workspace_manager ().get_active_workspace_index ();
-            prepare_workspace_switch (active_index, active_index, direction);
-
-            var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-
-            var to_value = monitor_geom.width + WORKSPACE_GAP * monitor_scale;
-
-            if (direction == RIGHT) {
-                to_value *= -1;
-            }
-
-            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, to_value) {
-                overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture);
-
-            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, to_value) {
-                overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture, () => {
-                switch_workspace_animation_finished (direction, false, true);
-                animating_switch_workspace = false;
-            });
         }
 
         private void update_input_area () {
@@ -809,13 +732,7 @@ namespace Gala {
                 return;
             }
 
-            moving = window;
-
-            if (!window.is_on_all_workspaces ()) {
-                window.change_workspace (workspace);
-            }
-
-            workspace.activate_with_focus (window, timestamp);
+            StaticWindowContainer.get_instance ().move_window (window, workspace.index ());
         }
 
         /**
@@ -1858,379 +1775,12 @@ namespace Gala {
             end_animation (ref maximizing, actor);
         }
 
-        /*workspace switcher*/
-        private List<Clutter.Actor>? windows;
-        private List<Clutter.Actor>? parents;
-        private List<Clutter.Actor>? tmp_actors;
-        private Clutter.Actor? out_group;
-        private Clutter.Actor? in_group;
-        private Clutter.Actor? wallpaper;
-        private Clutter.Actor? wallpaper_clone;
-
-        private void prepare_workspace_switch (int from, int to, Meta.MotionDirection direction) {
-            float screen_width, screen_height;
-            unowned var display = get_display ();
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = Meta.Prefs.get_workspaces_only_on_primary ();
-            var monitor_geom = display.get_monitor_geometry (primary);
-            var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
-            var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
-
-            display.get_size (out screen_width, out screen_height);
-
-            unowned var manager = display.get_workspace_manager ();
-            unowned var workspace_from = manager.get_workspace_by_index (from);
-            unowned var workspace_to = from != to ? manager.get_workspace_by_index (to) : null;
-
-            var main_container = new Clutter.Actor ();
-            var background_actor = new Clutter.Clone (system_background.background_actor);
-            var static_windows = new Clutter.Actor ();
-            if (workspace_to != null) {
-                in_group = new Clutter.Actor ();
-            }
-            out_group = new Clutter.Actor ();
-            windows = new List<Meta.WindowActor> ();
-            parents = new List<Clutter.Actor> ();
-            tmp_actors = new List<Clutter.Clone> ();
-
-            tmp_actors.prepend (main_container);
-            tmp_actors.prepend (background_actor);
-            if (in_group != null) {
-                tmp_actors.prepend (in_group);
-            }
-            tmp_actors.prepend (out_group);
-            tmp_actors.prepend (static_windows);
-
-            window_group.add_child (main_container);
-
-            // prepare wallpaper
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
-                background.hide ();
-                wallpaper = new Clutter.Clone (background);
-            } else {
-                background_group.hide ();
-                ((BackgroundContainer) background_group).set_black_background (false);
-                wallpaper = new Clutter.Clone (background_group);
-            }
-            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
-            tmp_actors.prepend (wallpaper);
-
-            if (workspace_to != null) {
-                wallpaper_clone = new Clutter.Clone (wallpaper);
-                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
-                tmp_actors.prepend (wallpaper_clone);
-            }
-
-            // pack all containers
-            main_container.add_child (background_actor);
-            main_container.add_child (wallpaper);
-            if (wallpaper_clone != null) {
-                main_container.add_child (wallpaper_clone);
-            }
-            main_container.add_child (out_group);
-            if (in_group != null) {
-                main_container.add_child (in_group);
-            }
-            main_container.add_child (static_windows);
-
-            unowned var grabbed_window = window_grab_tracker.current_window;
-            var to_has_fullscreened = false;
-            var from_has_fullscreened = false;
-
-            // collect all windows and put them in the appropriate containers
-            var slist = new GLib.SList<Meta.Window> ();
-            display.list_all_windows ().@foreach ((win) => {
-                slist.append (win);
-            });
-            foreach (unowned var window in display.sort_windows_by_stacking (slist)) {
-                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-                if (actor.is_destroyed ()) {
-                    continue;
-                }
-
-                if (!window.showing_on_its_workspace () ||
-                    move_primary_only && !window.is_on_primary_monitor () ||
-                    actor.get_parent () == shell_group
-                ) {
-                    continue;
-                }
-
-                if (window.on_all_workspaces || window == moving || window == grabbed_window) {
-                    // notifications use their own group and are always on top
-                    if (NotificationStack.is_notification (window)) {
-                        continue;
-                    }
-
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-
-                    InternalUtils.clutter_actor_reparent (actor, static_windows);
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-
-                    // Don't fade docks and moving/grabbed windows they just stay where they are
-                    if (window.window_type == DOCK || window == moving || window == grabbed_window) {
-                        continue;
-                    }
-
-                    // windows that are on all workspaces will be faded out and back in
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 0;
-                    actor.restore_easing_state ();
-
-                    continue;
-                }
-
-                if (window.get_workspace () == workspace_from) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    InternalUtils.clutter_actor_reparent (actor, out_group);
-
-                    if (window.fullscreen)
-                        from_has_fullscreened = true;
-
-                } else if (workspace_to != null && window.get_workspace () == workspace_to) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    InternalUtils.clutter_actor_reparent (actor, in_group);
-
-                    if (window.fullscreen)
-                        to_has_fullscreened = true;
-
-                }
-            }
-
-            main_container.clip_to_allocation = true;
-            main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
-            main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
-            main_container.width = move_primary_only ? monitor_geom.width : screen_width;
-            main_container.height = move_primary_only ? monitor_geom.height : screen_height;
-
-            var monitor_scale = display.get_monitor_scale (primary);
-            var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            if (workspace_to != null) {
-                x2 += WORKSPACE_GAP * monitor_scale;
-            }
-            if (direction == Meta.MotionDirection.RIGHT) {
-                x2 = -x2;
-            }
-
-            out_group.x = 0.0f;
-            wallpaper.x = 0.0f;
-            wallpaper.y += clone_offset_y;
-            wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
-
-            if (in_group != null && wallpaper_clone != null) {
-                in_group.x = -x2;
-                wallpaper_clone.x = -x2;
-                wallpaper_clone.y += clone_offset_y;
-                wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
-            }
-
-            // The wallpapers need to move upwards inside the container to match their
-            // original position before/after the transition.
-            if (move_primary_only) {
-                wallpaper.y = -monitor_geom.y;
-                if (wallpaper_clone != null) {
-                    wallpaper_clone.y = -monitor_geom.y;
-                }
-            }
-
-            out_group.clip_to_allocation = true;
-            out_group.width = move_primary_only ? monitor_geom.width : screen_width;
-            out_group.height = move_primary_only ? monitor_geom.height : screen_height;
-
-            if (in_group != null) {
-                in_group.clip_to_allocation = out_group.clip_to_allocation;
-                in_group.width = out_group.width;
-                in_group.height = out_group.height;
-            }
-        }
-
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()
-                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || animating_switch_workspace
-                || workspace_view.is_opened ()
-                || window_overview.is_opened ()) {
-                animating_switch_workspace = false;
-                switch_workspace_completed ();
-                return;
-            }
-
-            animating_switch_workspace = true;
-
-            prepare_workspace_switch (from, to, direction);
-
-            var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-
-            var x2 = -in_group.x;
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureTracker.animation_value (0.0f, x2, percentage, true);
-                var x_in = GestureTracker.animation_value (-x2, 0.0f, percentage, true);
-
-                out_group.x = x_out;
-                in_group.x = x_in;
-
-                wallpaper.x = x_out;
-                wallpaper_clone.x = x_in;
-            };
-
-            GestureTracker.OnEnd on_animation_end = (percentage, completions, duration) => {
-                if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
-                    switch_workspace_animation_finished (direction, completions == 0);
-                    return;
-                }
-
-                out_group.save_easing_state ();
-                out_group.set_easing_mode (animation_mode);
-                out_group.set_easing_duration (duration);
-
-                in_group.save_easing_state ();
-                in_group.set_easing_mode (animation_mode);
-                in_group.set_easing_duration (duration);
-
-                wallpaper_clone.save_easing_state ();
-                wallpaper_clone.set_easing_mode (animation_mode);
-                wallpaper_clone.set_easing_duration (duration);
-
-                wallpaper.save_easing_state ();
-                wallpaper.set_easing_mode (animation_mode);
-                wallpaper.set_easing_duration (duration);
-
-                out_group.x = completions * x2;
-                out_group.restore_easing_state ();
-
-                in_group.x = completions == 0 ? -x2 : 0.0f;
-                in_group.restore_easing_state ();
-
-                wallpaper.x = completions == 0 ? 0.0f : x2;
-                wallpaper.restore_easing_state ();
-
-                wallpaper_clone.x = completions == 0 ? -x2 : 0.0f;
-                wallpaper_clone.restore_easing_state ();
-
-                var transition = in_group.get_transition ("x");
-                if (transition != null) {
-                    transition.completed.connect (() => {
-                        switch_workspace_animation_finished (direction, completions == 0);
-                    });
-                } else {
-                    switch_workspace_animation_finished (direction, completions == 0);
-                }
-            };
-
-            if (!switch_workspace_with_gesture) {
-                on_animation_end (1, 1, AnimationDuration.WORKSPACE_SWITCH_MIN);
-            } else {
-                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
-            }
-        }
-
-        private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
-                bool cancel_action, bool is_nudge_animation = false) {
-            if (!animating_switch_workspace) {
-                return;
-            }
-
-            end_switch_workspace ();
-
-            if (!is_nudge_animation) {
-                switch_workspace_completed ();
-            }
-
-            animating_switch_workspace = cancel_action;
-
-            if (cancel_action) {
-                var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
-                    ? Meta.MotionDirection.RIGHT
-                    : Meta.MotionDirection.LEFT;
-                unowned Meta.Display display = get_display ();
-                unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-                unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
-
-                if (moving != null) {
-                    move_window (moving, neighbor, Meta.CURRENT_TIME);
-                } else {
-                    neighbor.activate (display.get_current_time ());
-                }
-            } else {
-                moving = null;
-            }
-        }
-
-        private void end_switch_workspace () {
-            if ((windows == null || parents == null) && tmp_actors == null)
-                return;
-
-            unowned var display = get_display ();
-            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-
-            // Show the real wallpaper again
-            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
-                unowned var background = background_group.get_child_at_index (display.get_primary_monitor ());
-                background.show ();
-            } else {
-                ((BackgroundContainer) background_group).set_black_background (true);
-                background_group.show ();
-            }
-
-            for (var i = 0; i < windows.length (); i++) {
-                unowned var actor = windows.nth_data (i);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                unowned Meta.WindowActor? window = actor as Meta.WindowActor;
-                if (window == null) {
-                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
-                    continue;
-                }
-
-                unowned Meta.Window? meta_window = window.get_meta_window ();
-                if (!window.is_destroyed ()) {
-                    InternalUtils.clutter_actor_reparent (actor, parents.nth_data (i));
-                }
-
-                kill_window_effects (window);
-
-                if (meta_window != null
-                    && meta_window.get_workspace () != active_workspace
-                    && !meta_window.is_on_all_workspaces ())
-                    window.hide ();
-
-                // some static windows may have been faded out
-                if (actor.opacity < 255U) {
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-                }
-            }
-
-            if (tmp_actors != null) {
-                foreach (var actor in tmp_actors) {
-                    actor.destroy ();
-                }
-                tmp_actors = null;
-            }
-
-            windows = null;
-            parents = null;
-
-            out_group = null;
-            in_group = null;
-            wallpaper = null;
-            wallpaper_clone = null;
-
-            switch_workspace_with_gesture = false;
-            animating_switch_workspace = false;
+            switch_workspace_completed ();
         }
 
         public override void kill_switch_workspace () {
-            end_switch_workspace ();
+            ((MultitaskingView) workspace_view).kill_switch_workspace ();
         }
 
         public override void locate_pointer () {
