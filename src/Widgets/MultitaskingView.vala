@@ -225,7 +225,7 @@ namespace Gala {
         }
 
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
-            var relative_direction = direction == Meta.MotionDirection.LEFT ? 1 : -1;
+            var relative_direction = direction == LEFT ? 1 : -1;
             workspaces_gesture_controller.goto (get_current_commit (SWITCH_WORKSPACE) + relative_direction);
         }
 
@@ -280,7 +280,10 @@ namespace Gala {
         }
 
         public override void end_progress (GestureAction action) {
-            if (!opened) {
+            if (!opened
+                && (action == workspaces_gesture_controller.action || !workspaces_gesture_controller.animating)
+                && (action == multitasking_gesture_controller.action || !multitasking_gesture_controller.animating)
+            ) {
                 wm.background_group.show ();
                 wm.window_group.show ();
                 wm.top_window_group.show ();

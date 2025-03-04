@@ -69,6 +69,7 @@ public class Gala.GestureController : Object {
     }
 
     public bool recognizing { get; private set; }
+    public bool animating { get { return recognizing || timeline != null; } }
 
     private ToucheggBackend? touchpad_backend;
     private ScrollBackend? scroll_backend;
@@ -187,7 +188,7 @@ public class Gala.GestureController : Object {
 
         recognizing = false;
 
-        finish (velocity, Math.round (to));
+        finish (velocity * direction_multiplier, Math.round (to));
 
         gesture_progress = 0;
         previous_percentage = 0;
@@ -259,7 +260,7 @@ public class Gala.GestureController : Object {
         }
 
         prepare ();
-        finish (0.005, to);
+        finish ((to > progress ? 1 : -1) * 5, to);
     }
 
     public void cancel_gesture () {
