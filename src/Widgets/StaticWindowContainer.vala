@@ -82,16 +82,11 @@ public class Gala.StaticWindowContainer : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action == SWITCH_WORKSPACE && (bool) workspace_controller.action_info && display.focus_window != null) {
+        if (action == SWITCH_WORKSPACE
+            && workspace_controller.action_info != null && (bool) workspace_controller.action_info
+            && display.focus_window != null
+        ) {
             start_move (display.focus_window);
-
-            if (Utils.get_n_windows (moving_window.get_workspace (), true, moving_window) == 0) {
-                workspace_controller.overshoot_lower_clamp++;
-            }
-        }
-
-        if (action == SWITCH_WORKSPACE && moving_window != null) {
-            WorkspaceManager.get_default ().freeze_remove ();
         }
     }
 
@@ -108,10 +103,6 @@ public class Gala.StaticWindowContainer : ActorTarget {
             var window = moving_window;
             moving_window = null;
             check_window_changed (window);
-
-            display.get_workspace_manager ().notify_property ("n-workspaces"); // Recalculate clamps for the controller
-
-            WorkspaceManager.get_default ().thaw_remove ();
         }
     }
 }

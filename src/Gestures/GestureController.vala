@@ -44,7 +44,7 @@ public class Gala.GestureController : Object {
     }
 
     private Variant? _action_info;
-    public Variant action_info { get { return _action_info; } }
+    public Variant? action_info { get { return _action_info; } }
 
     public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }

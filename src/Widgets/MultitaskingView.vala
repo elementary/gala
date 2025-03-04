@@ -289,6 +289,10 @@ namespace Gala {
             } else if (action == MULTITASKING_VIEW) {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
+
+            if (action == SWITCH_WORKSPACE) {
+                WorkspaceManager.get_default ().freeze_remove ();
+            }
         }
 
         public override void commit_progress (GestureAction action, double to) {
@@ -319,6 +323,10 @@ namespace Gala {
                 if (wm.modal_proxy_valid (modal_proxy)) {
                     wm.pop_modal (modal_proxy);
                 }
+            }
+
+            if (action == SWITCH_WORKSPACE) {
+                WorkspaceManager.get_default ().thaw_remove ();
             }
         }
 
