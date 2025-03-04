@@ -39,7 +39,7 @@ public class Gala.GestureController : Object {
         get { return _target; }
         set {
             _target = value;
-            target.propagate (UPDATE, action, calculate_bounded_progress ());
+            target.propagate (UPDATE, action, progress);
         }
     }
 
@@ -55,7 +55,7 @@ public class Gala.GestureController : Object {
         get { return _progress; }
         set {
             _progress = value;
-            target.propagate (UPDATE, action, calculate_bounded_progress ());
+            target.propagate (UPDATE, action, value);
         }
     }
 
@@ -74,6 +74,7 @@ public class Gala.GestureController : Object {
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
+    private double gesture_progress;
     private double previous_percentage;
     private uint64 previous_time;
     private double previous_delta;
@@ -84,22 +85,6 @@ public class Gala.GestureController : Object {
 
     public GestureController (GestureAction action, GestureTarget target) {
         Object (action: action, target: target);
-    }
-
-    private double calculate_bounded_progress () {
-        var lower_clamp_int = (int) overshoot_lower_clamp;
-        var upper_clamp_int = (int) overshoot_upper_clamp;
-
-        double stretched_percentage = 0;
-        if (_progress < lower_clamp_int) {
-            stretched_percentage = (_progress - lower_clamp_int) * - (overshoot_lower_clamp - lower_clamp_int);
-        } else if (_progress > upper_clamp_int) {
-            stretched_percentage = (_progress - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
-        }
-
-        var clamped = _progress.clamp (lower_clamp_int, upper_clamp_int);
-
-        return clamped + stretched_percentage;
     }
 
     public void enable_touchpad () {
@@ -124,7 +109,7 @@ public class Gala.GestureController : Object {
             timeline = null;
         }
 
-        target.propagate (START, action, calculate_bounded_progress ());
+        target.propagate (START, action, progress);
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -157,6 +142,7 @@ public class Gala.GestureController : Object {
 
         prepare ();
 
+        gesture_progress = progress;
         previous_percentage = percentage;
         previous_time = elapsed_time;
     }
@@ -179,7 +165,7 @@ public class Gala.GestureController : Object {
             }
         }
 
-        progress += calculate_applied_delta (percentage, updated_delta);
+        update_gesture_progress (percentage, updated_delta);
 
         previous_percentage = percentage;
         previous_time = elapsed_time;
@@ -191,7 +177,7 @@ public class Gala.GestureController : Object {
             return;
         }
 
-        progress += calculate_applied_delta (percentage, previous_delta);
+        update_gesture_progress (percentage, previous_delta);
 
         var to = progress;
 
@@ -203,6 +189,7 @@ public class Gala.GestureController : Object {
 
         finish (velocity, Math.round (to));
 
+        gesture_progress = 0;
         previous_percentage = 0;
         previous_time = 0;
         previous_delta = 0;
@@ -210,8 +197,22 @@ public class Gala.GestureController : Object {
         direction_multiplier = 0;
     }
 
-    private inline double calculate_applied_delta (double percentage, double percentage_delta) {
-        return ((percentage - percentage_delta) - (previous_percentage - previous_delta)) * direction_multiplier;
+    private void update_gesture_progress (double percentage, double percentage_delta) {
+        gesture_progress += ((percentage - percentage_delta) - (previous_percentage - previous_delta)) * direction_multiplier;
+
+        var lower_clamp_int = (int) overshoot_lower_clamp;
+        var upper_clamp_int = (int) overshoot_upper_clamp;
+
+        double stretched_percentage = 0;
+        if (gesture_progress < lower_clamp_int) {
+            stretched_percentage = (gesture_progress - lower_clamp_int) * - (overshoot_lower_clamp - lower_clamp_int);
+        } else if (gesture_progress > upper_clamp_int) {
+            stretched_percentage = (gesture_progress - upper_clamp_int) * (overshoot_upper_clamp - upper_clamp_int);
+        }
+
+        var clamped = gesture_progress.clamp (lower_clamp_int, upper_clamp_int);
+
+        progress = clamped + stretched_percentage;
     }
 
     private void finish (double velocity, double to) {
@@ -238,7 +239,7 @@ public class Gala.GestureController : Object {
     }
 
     private void finished (bool is_finished = true) {
-        target.propagate (END, action, calculate_bounded_progress ());
+        target.propagate (END, action, progress);
         timeline = null;
 
         if (is_finished) {
