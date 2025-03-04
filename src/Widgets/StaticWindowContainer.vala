@@ -32,8 +32,8 @@ public class Gala.StaticWindowContainer : ActorTarget {
         display.grab_op_end.connect (on_grab_op_end);
 
         unowned var window_listener = WindowListener.get_default ();
-        window_listener.window_on_all_workspaces.connect (check_window_changed);
-        window_listener.window_no_longer_on_all_workspaces.connect (check_window_changed);
+        window_listener.window_on_all_workspaces.connect (on_all_workspaces_changed);
+        window_listener.window_no_longer_on_all_workspaces.connect (on_all_workspaces_changed);
     }
 
     private void on_grab_op_begin (Meta.Window window, Meta.GrabOp op) {
@@ -48,6 +48,14 @@ public class Gala.StaticWindowContainer : ActorTarget {
     private void on_grab_op_end (Meta.Window window, Meta.GrabOp op) {
         grabbed_window = null;
         check_window_changed (window);
+    }
+
+    private void on_all_workspaces_changed (Meta.Window window) {
+        // We have to wait for shell clients here
+        Idle.add (() => {
+            check_window_changed (window);
+            return Source.REMOVE;
+        });
     }
 
     public void move_window (Meta.Window window, int workspace_index) {
