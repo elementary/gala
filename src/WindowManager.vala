@@ -590,16 +590,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            unowned var display = get_display ();
-            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-            unowned var neighbor = active_workspace.get_neighbor (direction);
-
-            if (neighbor != active_workspace) {
-                neighbor.activate (timestamp);
-            } else {
-                // if we didn't switch, show a nudge-over animation if one is not already in progress
-                ((MultitaskingView) workspace_view).play_nudge_animation (direction);
-            }
+            ((MultitaskingView) workspace_view).switch_to_next_workspace (direction);
         }
 
         private void update_input_area () {

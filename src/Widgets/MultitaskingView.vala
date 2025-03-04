@@ -219,45 +219,14 @@ namespace Gala {
                     break;
             }
 
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-            var active_workspace = manager.get_active_workspace ();
-            var new_workspace = active_workspace.get_neighbor (direction);
-
-            if (active_workspace != new_workspace) {
-                new_workspace.activate (scroll_event.get_time ());
-            } else {
-                play_nudge_animation (direction);
-            }
+            switch_to_next_workspace (direction);
 
             return true;
         }
 
-        public void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
-                return;
-            }
-
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var nudge_gap = InternalUtils.scale_to_int (WindowManagerGala.NUDGE_GAP, scale);
-
-            float dest = nudge_gap;
-            if (direction == Meta.MotionDirection.RIGHT) {
-                dest *= -1;
-            }
-
-            double[] keyframes = { 0.5 };
-            GLib.Value[] x = { dest };
-
-            var nudge = new Clutter.KeyframeTransition ("translation-x") {
-                duration = AnimationDuration.NUDGE,
-                remove_on_complete = true,
-                progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
-            };
-            nudge.set_from_value (0.0f);
-            nudge.set_to_value (0.0f);
-            nudge.set_key_frames (keyframes);
-            nudge.set_values (x);
-            workspaces.add_transition ("nudge", nudge);
+        public void switch_to_next_workspace (Meta.MotionDirection direction) {
+            var relative_direction = direction == Meta.MotionDirection.LEFT ? 1 : -1;
+            workspaces_gesture_controller.goto (get_current_commit (SWITCH_WORKSPACE) + relative_direction);
         }
 
         public void kill_switch_workspace () {
