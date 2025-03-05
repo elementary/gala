@@ -233,7 +233,7 @@ public class Gala.GestureController : Object {
 
         var spring = new SpringTimeline (target.actor, progress, clamped_to, velocity, 1, 1, 1000);
         spring.progress.connect ((value) => progress = value);
-        spring.stopped.connect (finished);
+        spring.stopped.connect_after (finished);
 
         timeline = spring;
     }

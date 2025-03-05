@@ -73,6 +73,16 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
             current_progress[action] = progress;
         }
 
+        foreach (var target in targets) {
+            target.propagate (update_type, action, progress);
+        }
+
+        for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
+            if (child is ActorTarget) {
+                child.propagate (update_type, action, progress);
+            }
+        }
+
         switch (update_type) {
             case START:
                 ongoing_animations++;
@@ -88,16 +98,6 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
                 ongoing_animations--;
                 end_progress (action);
                 break;
-        }
-
-        foreach (var target in targets) {
-            target.propagate (update_type, action, progress);
-        }
-
-        for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
-            if (child is ActorTarget) {
-                child.propagate (update_type, action, progress);
-            }
         }
     }
 
