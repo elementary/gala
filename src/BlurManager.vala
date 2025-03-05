@@ -52,6 +52,7 @@ public class Gala.BlurManager : Object {
     }
 
     /**
+     * Blurs the given region of the given window.
      */
     public void set_region (Meta.Window window, uint x, uint y, uint width, uint height, uint clip_radius) {
         unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
@@ -85,7 +86,7 @@ public class Gala.BlurManager : Object {
             x = scaled_x,
             y = scaled_y,
             width = scaled_width,
-            height = scaled_width
+            height = scaled_height
         };
         blurred_actor.add_effect (blur_effect);
         
@@ -131,8 +132,6 @@ public class Gala.BlurManager : Object {
         if (window.mutter_hints == null) {
             return;
         }
-
-        warning ("Parsing mutter hints");
 
         var mutter_hints = window.mutter_hints.split (":");
         foreach (var mutter_hint in mutter_hints) {
