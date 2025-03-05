@@ -257,6 +257,10 @@ namespace Gala {
                 icon_groups.force_reposition ();
                 icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
                 reposition_icon_groups (false);
+
+                if (action != MULTITASKING_VIEW) {
+                    icon_groups.hide ();
+                }
             } else if (action == MULTITASKING_VIEW) {
                 DragDropAction.cancel_all_by_id ("multitaskingview-window");
             }
@@ -302,6 +306,7 @@ namespace Gala {
                 wm.background_group.show ();
                 wm.window_group.show ();
                 wm.top_window_group.show ();
+                icon_groups.show ();
                 hide ();
 
                 if (wm.modal_proxy_valid (modal_proxy)) {
