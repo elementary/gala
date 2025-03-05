@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-03-02 14:11+0000\n"
-"PO-Revision-Date: 2025-02-13 10:16+0000\n"
+"PO-Revision-Date: 2025-03-05 10:01+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
-"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/"
-">\n"
+"Language-Team: French <https://l10n.elementary.io/projects/desktop/gala/fr/>"
+"\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -309,7 +309,7 @@ msgstr "Captures d'écran de %s"
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
 #: src/WindowManager.vala:2373
 msgid "Show in Files"
-msgstr ""
+msgstr "Afficher dans Fichiers"
 
 #: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
