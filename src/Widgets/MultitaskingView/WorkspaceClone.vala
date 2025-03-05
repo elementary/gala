@@ -263,7 +263,7 @@ namespace Gala {
         private void add_window (Meta.Window window) {
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
-                || window.on_all_workspaces
+                || StaticWindowContainer.get_instance (workspace.get_display ()).is_static (window)
                 || !window.is_on_primary_monitor ())
                 return;
 

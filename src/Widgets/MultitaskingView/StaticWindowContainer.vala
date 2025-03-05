@@ -71,8 +71,7 @@ public class Gala.StaticWindowContainer : ActorTarget {
     }
 
     private void check_window_changed (Meta.Window window) {
-        var is_static = (window == grabbed_window || window == moving_window || window.on_all_workspaces) &&
-            !ShellClientsManager.get_instance ().is_positioned_window (window);
+        var is_static = is_static (window) && !ShellClientsManager.get_instance ().is_positioned_window (window);
 
         Clutter.Actor? clone = null;
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
@@ -84,10 +83,14 @@ public class Gala.StaticWindowContainer : ActorTarget {
 
         if (!is_static && clone != null) {
             remove_child (clone);
-        } else if (is_static && clone == null) {
+        } else if (is_static && !window.on_all_workspaces && clone == null) {
             add_child (new StaticWindowClone (window));
         }
 
         window_changed (window, is_static);
+    }
+
+    public bool is_static (Meta.Window window) {
+        return window == grabbed_window || window == moving_window || window.on_all_workspaces;
     }
 }
