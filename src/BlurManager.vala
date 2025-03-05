@@ -98,21 +98,11 @@ public class Gala.BlurManager : Object {
 
         window_actor.insert_child_below (blurred_actor, null);
 
+        // When window is created it may be 0x0, and we cannot calculate CSD decorations size.
+        // To avoid that we listen to actor's width property and recalculate decorations size.
         ulong invalid_size_handler = 0;
-        if (window_actor.width == 0 || window_actor.height == 0) {
-            invalid_size_handler = window_actor.notify["width"].connect ((_obj, pspec) => {
-                var _window_actor = (Meta.WindowActor) _obj;
-                var _window = _window_actor.meta_window;
-
-                var _blur_data = blurred_windows[_window];
-                if (_blur_data == null) {
-                    return;
-                }
-
-                _window_actor.disconnect (_blur_data.invalid_size_handler);
-                _blur_data.invalid_size_handler = 0;
-                set_region (_window, _blur_data.x, _blur_data.y, _blur_data.width, _blur_data.height, _blur_data.clip_radius);
-            });
+        if (window_actor.width == 0) {
+            invalid_size_handler = window_actor.notify["width"].connect (on_size_updated);
         }
 
         blurred_windows[window] = BlurData () {
@@ -125,15 +115,20 @@ public class Gala.BlurManager : Object {
             height = height,
             clip_radius = clip_radius
         };
+    }
 
-        window.unmanaging.connect ((_window) => {
-            var _blur_data = blurred_windows[_window];
-            var _blurred_actor = _blur_data.actor;
-            unowned var parent = _blurred_actor.get_parent ();
-            if (parent != null) {
-                parent.remove_child (_blurred_actor);
-            }
-        });
+    private void on_size_updated (GLib.Object obj, GLib.ParamSpec pspec) {
+        var window_actor = (Meta.WindowActor) obj;
+        var window = window_actor.meta_window;
+
+        var blur_data = blurred_windows[window];
+        if (blur_data == null) {
+            return;
+        }
+
+        window_actor.disconnect (blur_data.invalid_size_handler);
+        blur_data.invalid_size_handler = 0;
+        set_region (window, blur_data.x, blur_data.y, blur_data.width, blur_data.height, blur_data.clip_radius);
     }
 
     private void update_monitors () {
