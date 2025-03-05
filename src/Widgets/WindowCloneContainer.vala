@@ -72,7 +72,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         new_window.destroy.connect ((_new_window) => {
             // make sure to release reference if the window is selected
             if (_new_window == current_window) {
-                select_next_window (Meta.MotionDirection.RIGHT);
+                select_next_window (Meta.MotionDirection.RIGHT, false);
             }
 
             // if window is still selected, reset the selection
@@ -215,16 +215,16 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 requested_close ();
                 break;
             case Clutter.Key.Down:
-                select_next_window (Meta.MotionDirection.DOWN);
+                select_next_window (Meta.MotionDirection.DOWN, true);
                 break;
             case Clutter.Key.Up:
-                select_next_window (Meta.MotionDirection.UP);
+                select_next_window (Meta.MotionDirection.UP, true);
                 break;
             case Clutter.Key.Left:
-                select_next_window (Meta.MotionDirection.LEFT);
+                select_next_window (Meta.MotionDirection.LEFT, true);
                 break;
             case Clutter.Key.Right:
-                select_next_window (Meta.MotionDirection.RIGHT);
+                select_next_window (Meta.MotionDirection.RIGHT, true);
                 break;
             case Clutter.Key.Return:
             case Clutter.Key.KP_Enter:
@@ -243,7 +243,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
      *
      * @param direction The MetaMotionDirection in which to search for windows for.
      */
-    public void select_next_window (Meta.MotionDirection direction) {
+    public void select_next_window (Meta.MotionDirection direction, bool user_action) {
         if (get_n_children () < 1) {
             return;
         }
@@ -326,7 +326,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         }
 
         if (closest == null) {
-            if (current_window != null) {
+            if (current_window != null && user_action) {
                 InternalUtils.bell_notify (display);
                 current_window.active = true;
             }
@@ -337,7 +337,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
             current_window.active = false;
         }
 
-        closest.active = true;
+        if (user_action) {
+            closest.active = true;
+        }
+
         current_window = closest;
     }
 
