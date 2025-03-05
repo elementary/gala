@@ -10,6 +10,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     public float blur_radius { get; construct; }
     public float clip_radius { get; construct; }
+    public float monitor_scale { get; construct set; }
 
     private float downscale_factor;
 
@@ -32,8 +33,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private int frame_counter = 0;
 
-    public BackgroundBlurEffect (float blur_radius, float clip_radius) {
-        Object (blur_radius: blur_radius, clip_radius: clip_radius);
+    public BackgroundBlurEffect (float blur_radius, float clip_radius, float monitor_scale) {
+        Object (blur_radius: blur_radius, clip_radius: clip_radius, monitor_scale: monitor_scale);
     }
 
     construct {
@@ -141,8 +142,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private void update_bounds () {
-        warning ("Updating bounds");
-
         float[] bounds = {
             0.0f,
             0.0f,
@@ -157,8 +156,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private void update_pixel_step () requires (actor != null) {
         float[] pixel_step = {
-            1.0f / (actor.width * 1.0f),
-            1.0f / (actor.height * 1.0f)
+            1.0f / (actor.width * monitor_scale),
+            1.0f / (actor.height * monitor_scale)
         };
 
         round_pipeline.set_uniform_float (round_pixel_step_location, 2, 1, &pixel_step[0]);
@@ -378,11 +377,11 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     public override void paint_node (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags) {
-        //  if (blur_radius <= 0) {
-        //      // fallback to drawing actor
-        //      add_actor_node (node);
-        //      return;
-        //  }
+        if (blur_radius <= 0) {
+            // fallback to drawing actor
+            add_actor_node (node);
+            return;
+        }
 
         Clutter.ActorBox source_actor_box = {};
         update_actor_box (paint_context, ref source_actor_box);

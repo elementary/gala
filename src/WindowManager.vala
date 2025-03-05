@@ -38,7 +38,9 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        public Clutter.Actor blur_group { get; private set; }
+        public Clutter.Actor blur_window_group { get; private set; }
+
+        public Clutter.Actor blur_shell_group { get; private set; }
 
         /**
          * The group that contains all WindowActors that make shell elements, that is all windows reported as
@@ -149,7 +151,7 @@ namespace Gala {
             window_grab_tracker = new WindowGrabTracker (get_display ());
             
             show_stage ();
-            BlurManager.init (this, shell_group);
+            BlurManager.init (this);
 
             init_a11y ();
 
@@ -252,8 +254,8 @@ namespace Gala {
             update_ui_group_size ();
             stage.add_child (ui_group);
 
-            blur_group = new Clutter.Actor ();
-            ui_group.add_child (blur_group);
+            blur_window_group = new Clutter.Actor ();
+            ui_group.add_child (blur_window_group);
 
             window_group = display.get_window_group ();
             stage.remove_child (window_group);
@@ -298,6 +300,9 @@ namespace Gala {
                 window_overview = new WindowOverview (this, gesture_tracker);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
+
+            blur_shell_group = new Clutter.Actor ();
+            ui_group.add_child (blur_shell_group);
 
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();

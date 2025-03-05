@@ -8,31 +8,38 @@
 public class Gala.BlurManager : Object {
     private struct Constraints {
         Clutter.Actor actor;
+        BackgroundBlurEffect blur_effect;
         Clutter.BindConstraint x_constraint;
         Clutter.BindConstraint y_constraint;
+        uint x;
+        uint y;
+        uint width;
+        uint height;
     }
 
     private static BlurManager instance;
 
-    public static void init (WindowManager wm, Clutter.Actor group) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
 
-        instance = new BlurManager (wm, group);
+        instance = new BlurManager (wm);
     }
 
     public static unowned BlurManager? get_instance () {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
-    public Clutter.Actor group { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private GLib.HashTable<Meta.Window, Constraints?> blurred_windows = new GLib.HashTable<Meta.Window, Constraints?> (null, null);
 
-    private BlurManager (WindowManager wm, Clutter.Actor group) {
-        Object (wm: wm, group: group);
+    private BlurManager (WindowManagerGala wm) {
+        Object (wm: wm);
+
+        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (update_monitors);
     }
 
     /**
@@ -49,37 +56,79 @@ public class Gala.BlurManager : Object {
             return;
         }
 
+        var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
+        var scaled_x = Utils.scale_to_int ((int) x, monitor_scaling_factor);
+        var scaled_y = Utils.scale_to_int ((int) y, monitor_scaling_factor);
+        var scaled_width = Utils.scale_to_int ((int) width, monitor_scaling_factor);
+        var scaled_height = Utils.scale_to_int ((int) height, monitor_scaling_factor);
+
         var constraints = blurred_windows[window];
         if (constraints != null) {
-            constraints.actor.set_size (width, height);
-            constraints.x_constraint.offset = x;
-            constraints.y_constraint.offset = y;
+            constraints.x_constraint.offset = scaled_x;
+            constraints.y_constraint.offset = scaled_y;
+            constraints.actor.set_size (scaled_width, scaled_height);
+            constraints.blur_effect.monitor_scale = monitor_scaling_factor;
+            constraints.x = x;
+            constraints.y = y;
+            constraints.width = width;
+            constraints.height = height;
 
             return;
         }
 
         var x_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.X, x
+            window_actor, Clutter.BindCoordinate.X, scaled_x
         );
         var y_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.Y, y
+            window_actor, Clutter.BindCoordinate.Y, scaled_y
         );
 
+        var blur_effect = new BackgroundBlurEffect (12, 12, monitor_scaling_factor);
+
         var blurred_actor = new Clutter.Actor () {
-            width = width,
-            height = height
+            width = scaled_width,
+            height = scaled_width
         };
-        blurred_actor.add_effect (new BackgroundBlurEffect (12, 12));
+        blurred_actor.add_effect (blur_effect);
         blurred_actor.add_constraint (x_constraint);
         blurred_actor.add_constraint (y_constraint);
         
         blurred_windows[window] = Constraints () {
             actor = blurred_actor,
+            blur_effect = blur_effect,
             x_constraint = x_constraint,
             y_constraint = y_constraint,
+            x = x,
+            y = y,
+            width = width,
+            height = height
         };
-        
-        wm.background_group.add_child (blurred_actor);
+
+        window_actor.bind_property ("translation-x", blurred_actor, "translation-x", GLib.BindingFlags.DEFAULT);
+        window_actor.bind_property ("translation-y", blurred_actor, "translation-y", GLib.BindingFlags.DEFAULT);
+
+        if (window_actor.get_parent () == wm.shell_group) {
+            wm.blur_shell_group.add_child (blurred_actor);
+        } else if (window_actor.get_parent () == wm.window_group) {
+            wm.blur_window_group.add_child (blurred_actor);
+        }
+    }
+
+    private void update_monitors () {
+        foreach (unowned var window in blurred_windows.get_keys ()) {
+            var constraints = blurred_windows[window];
+
+            var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
+            var scaled_x = Utils.scale_to_int ((int) constraints.x, monitor_scaling_factor);
+            var scaled_y = Utils.scale_to_int ((int) constraints.y, monitor_scaling_factor);
+            var scaled_width = Utils.scale_to_int ((int) constraints.width, monitor_scaling_factor);
+            var scaled_height = Utils.scale_to_int ((int) constraints.height, monitor_scaling_factor);
+
+            constraints.x_constraint.offset = scaled_x;
+            constraints.y_constraint.offset = scaled_y;
+            constraints.actor.set_size (scaled_width, scaled_height);
+            constraints.blur_effect.monitor_scale = monitor_scaling_factor;
+        }
     }
 
     //X11 only
