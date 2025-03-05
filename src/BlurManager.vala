@@ -9,8 +9,6 @@ public class Gala.BlurManager : Object {
     private struct Constraints {
         Clutter.Actor actor;
         BackgroundBlurEffect blur_effect;
-        Clutter.BindConstraint x_constraint;
-        Clutter.BindConstraint y_constraint;
         uint x;
         uint y;
         uint width;
@@ -44,6 +42,11 @@ public class Gala.BlurManager : Object {
     private BlurManager (WindowManagerGala wm) {
         Object (wm: wm);
 
+        wm.get_display ().window_created.connect ((window) => {
+            window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
+            parse_mutter_hints (window);
+        });
+
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_monitors);
     }
@@ -57,11 +60,6 @@ public class Gala.BlurManager : Object {
             return;
         }
 
-        if (window_actor.width == 0 || window_actor.height == 0) {
-            warning ("Cannot blur actor: Actor size is invalid");
-            return;
-        }
-
         var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
         var scaled_x = Utils.scale_to_int ((int) x, monitor_scaling_factor);
         var scaled_y = Utils.scale_to_int ((int) y, monitor_scaling_factor);
@@ -70,10 +68,9 @@ public class Gala.BlurManager : Object {
 
         var constraints = blurred_windows[window];
         if (constraints != null) {
-            constraints.x_constraint.offset = scaled_x;
-            constraints.y_constraint.offset = scaled_y;
-            constraints.actor.set_size (scaled_width, scaled_height);
             constraints.blur_effect.monitor_scale = monitor_scaling_factor;
+            constraints.actor.set_position (scaled_x, scaled_y);
+            constraints.actor.set_size (scaled_width, scaled_height);
             constraints.x = x;
             constraints.y = y;
             constraints.width = width;
@@ -82,42 +79,35 @@ public class Gala.BlurManager : Object {
             return;
         }
 
-        var x_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.X, scaled_x
-        );
-        var y_constraint = new Clutter.BindConstraint (
-            window_actor, Clutter.BindCoordinate.Y, scaled_y
-        );
-
         var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, clip_radius + CLIP_RADIUS_OFFSET, monitor_scaling_factor);
 
         var blurred_actor = new Clutter.Actor () {
+            x = scaled_x,
+            y = scaled_y,
             width = scaled_width,
             height = scaled_width
         };
         blurred_actor.add_effect (blur_effect);
-        blurred_actor.add_constraint (x_constraint);
-        blurred_actor.add_constraint (y_constraint);
         
         blurred_windows[window] = Constraints () {
             actor = blurred_actor,
             blur_effect = blur_effect,
-            x_constraint = x_constraint,
-            y_constraint = y_constraint,
             x = x,
             y = y,
             width = width,
             height = height
         };
 
-        window_actor.bind_property ("translation-x", blurred_actor, "translation-x", GLib.BindingFlags.DEFAULT);
-        window_actor.bind_property ("translation-y", blurred_actor, "translation-y", GLib.BindingFlags.DEFAULT);
+        window_actor.insert_child_below (blurred_actor, null);
 
-        if (window_actor.get_parent () == wm.shell_group) {
-            wm.blur_shell_group.add_child (blurred_actor);
-        } else if (window_actor.get_parent () == wm.window_group) {
-            wm.blur_window_group.add_child (blurred_actor);
-        }
+        window.unmanaging.connect ((_window) => {
+            var _constraints = blurred_windows[_window];
+            var _blurred_actor = _constraints.actor;
+            unowned var parent = _blurred_actor.get_parent ();
+            if (parent != null) {
+                parent.remove_child (_blurred_actor);
+            }
+        });
     }
 
     private void update_monitors () {
@@ -130,91 +120,55 @@ public class Gala.BlurManager : Object {
             var scaled_width = Utils.scale_to_int ((int) constraints.width, monitor_scaling_factor);
             var scaled_height = Utils.scale_to_int ((int) constraints.height, monitor_scaling_factor);
 
-            constraints.x_constraint.offset = scaled_x;
-            constraints.y_constraint.offset = scaled_y;
+            constraints.actor.set_position (scaled_x, scaled_y);
             constraints.actor.set_size (scaled_width, scaled_height);
             constraints.blur_effect.monitor_scale = monitor_scaling_factor;
         }
     }
 
     //X11 only
-    //  private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
-    //      if (window.mutter_hints == null) {
-    //          return;
-    //      }
+    private void parse_mutter_hints (Meta.Window window) {
+        if (window.mutter_hints == null) {
+            return;
+        }
 
-    //      var mutter_hints = window.mutter_hints.split (":");
-    //      foreach (var mutter_hint in mutter_hints) {
-    //          var split = mutter_hint.split ("=");
+        warning ("Parsing mutter hints");
 
-    //          if (split.length != 2) {
-    //              continue;
-    //          }
+        var mutter_hints = window.mutter_hints.split (":");
+        foreach (var mutter_hint in mutter_hints) {
+            var split = mutter_hint.split ("=");
 
-    //          var key = split[0];
-    //          var val = split[1];
+            if (split.length != 2) {
+                continue;
+            }
 
-    //          switch (key) {
-    //              case "anchor":
-    //                  int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
-    //                  if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
-    //                      //FIXME: Next major release change dock and wingpanel calls to get rid of this
-    //                      Pantheon.Desktop.Anchor parsed = TOP;
-    //                      switch ((Meta.Side) meta_side_parsed) {
-    //                          case BOTTOM:
-    //                              parsed = BOTTOM;
-    //                              break;
+            var key = split[0];
+            var val = split[1];
 
-    //                          case LEFT:
-    //                              parsed = LEFT;
-    //                              break;
+            switch (key) {
+                case "blur":
+                    var split_val = val.split (",");
+                    if (split_val.length != 5) {
+                        break;
+                    }
 
-    //                          case RIGHT:
-    //                              parsed = RIGHT;
-    //                              break;
+                    uint parsed_x = 0, parsed_y = 0, parsed_width = 0, parsed_height = 0, parsed_clip_radius = 0;
+                    if (
+                        uint.try_parse (split_val[0], out parsed_x) &&
+                        uint.try_parse (split_val[1], out parsed_y) &&
+                        uint.try_parse (split_val[2], out parsed_width) &&
+                        uint.try_parse (split_val[3], out parsed_height) &&
+                        uint.try_parse (split_val[4], out parsed_clip_radius)
+                    ) {
+                        set_region (window, parsed_x, parsed_y, parsed_width, parsed_height, parsed_clip_radius);
+                    } else {
+                        warning ("Failed to parse %s as width and height", val);
+                    }
 
-    //                          default:
-    //                              break;
-    //                      }
-
-    //                      set_anchor (window, parsed);
-    //                      // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
-    //                      // but on X the window was already shown when we get here so we have to call again to instantly apply it.
-    //                      set_anchor (window, parsed);
-    //                  } else {
-    //                      warning ("Failed to parse %s as anchor", val);
-    //                  }
-    //                  break;
-
-    //              case "hide-mode":
-    //                  int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
-    //                  if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 4) {
-    //                      set_hide_mode (window, parsed);
-    //                  } else {
-    //                      warning ("Failed to parse %s as hide mode", val);
-    //                  }
-    //                  break;
-
-    //              case "size":
-    //                  var split_val = val.split (",");
-    //                  if (split_val.length != 2) {
-    //                      break;
-    //                  }
-    //                  int parsed_width, parsed_height = 0; //set to 0 because vala doesn't realize height will be set too
-    //                  if (int.try_parse (split_val[0], out parsed_width) && int.try_parse (split_val[1], out parsed_height)) {
-    //                      set_size (window, parsed_width, parsed_height);
-    //                  } else {
-    //                      warning ("Failed to parse %s as width and height", val);
-    //                  }
-    //                  break;
-
-    //              case "centered":
-    //                  make_centered (window);
-    //                  break;
-
-    //              default:
-    //                  break;
-    //          }
-    //      }
-    //  }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }
