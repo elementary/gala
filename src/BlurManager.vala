@@ -67,11 +67,9 @@ public class Gala.BlurManager : Object {
 
         var blurred_actor = new Clutter.Actor () {
             width = width,
-            height = height,
-            background_color = Clutter.Color.from_string ("black")
+            height = height
         };
-        //  blurred_actor.add_effect (new RoundedCornersEffect (9 + 4, 1.0f));
-        blurred_actor.add_effect (new BackgroundBlurEffect (blurred_actor, 12, 0.7f));
+        blurred_actor.add_effect (new BackgroundBlurEffect (12, 12));
         blurred_actor.add_constraint (x_constraint);
         blurred_actor.add_constraint (y_constraint);
         
