@@ -229,7 +229,7 @@ namespace Gala {
                 }
             }
 
-            var static_windows = StaticWindowContainer.get_instance ();
+            var static_windows = StaticWindowContainer.get_instance (display);
             static_windows.window_changed.connect (on_window_static_changed);
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();

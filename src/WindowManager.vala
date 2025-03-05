@@ -718,7 +718,7 @@ namespace Gala {
                 return;
             }
 
-            StaticWindowContainer.get_instance ().move_window (window, workspace.index ());
+            ((MultitaskingView) workspace_view).move_window (window, workspace);
         }
 
         /**

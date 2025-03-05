@@ -4,27 +4,20 @@
  */
 
 public class Gala.StaticWindowContainer : ActorTarget {
-    private static StaticWindowContainer? instance;
-
-    public static StaticWindowContainer init (Meta.Display display, GestureController workspace_controller) {
-        instance = new StaticWindowContainer (display, workspace_controller);
-        return instance;
-    }
-
-    public static StaticWindowContainer get_instance () {
-        return instance;
+    private static GLib.Once<StaticWindowContainer> instance;
+    public static StaticWindowContainer get_instance (Meta.Display display) {
+        return instance.once (() => { return new StaticWindowContainer (display); });
     }
 
     public signal void window_changed (Meta.Window window, bool is_static);
 
     public Meta.Display display { get; construct; }
-    public GestureController workspace_controller { get; construct; }
 
-    private Meta.Window? grabbed_window;
-    private Meta.Window? moving_window;
+    public Meta.Window? grabbed_window { get; private set; }
+    public Meta.Window? moving_window { get; private set; }
 
-    private StaticWindowContainer (Meta.Display display, GestureController workspace_controller) {
-        Object (display: display, workspace_controller: workspace_controller);
+    private StaticWindowContainer (Meta.Display display) {
+        Object (display: display);
     }
 
     construct {
@@ -58,13 +51,18 @@ public class Gala.StaticWindowContainer : ActorTarget {
         });
     }
 
-    public void move_window (Meta.Window window, int workspace_index) {
-        start_move (window);
-        workspace_controller.goto (-workspace_index);
+    public void notify_window_moving (Meta.Window window) {
+        moving_window = window;
+        check_window_changed (window);
     }
 
-    private void start_move (Meta.Window window) {
-        moving_window = window;
+    public void notify_move_ended () {
+        if (moving_window == null) {
+            return;
+        }
+
+        var window = moving_window;
+        moving_window = null;
         check_window_changed (window);
     }
 
@@ -87,30 +85,5 @@ public class Gala.StaticWindowContainer : ActorTarget {
         }
 
         window_changed (window, is_static);
-    }
-
-    public override void start_progress (GestureAction action) {
-        if (action == SWITCH_WORKSPACE
-            && workspace_controller.action_info != null && (bool) workspace_controller.action_info
-            && display.focus_window != null
-        ) {
-            start_move (display.focus_window);
-        }
-    }
-
-    public override void commit_progress (GestureAction action, double to) {
-        if (action == SWITCH_WORKSPACE && moving_window != null) {
-            unowned var workspace = display.get_workspace_manager ().get_workspace_by_index ((int) (-to));
-            moving_window.change_workspace (workspace);
-            workspace.activate_with_focus (moving_window, Meta.CURRENT_TIME);
-        }
-    }
-
-    public override void end_progress (GestureAction action) {
-        if (action == SWITCH_WORKSPACE && moving_window != null) {
-            var window = moving_window;
-            moving_window = null;
-            check_window_changed (window);
-        }
     }
 }

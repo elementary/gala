@@ -91,7 +91,7 @@ namespace Gala {
             primary_monitor_container.add_child (workspaces);
             add_child (primary_monitor_container);
 
-            add_child (StaticWindowContainer.init (display, workspaces_gesture_controller));
+            add_child (StaticWindowContainer.get_instance (display));
 
             unowned var manager = display.get_workspace_manager ();
             manager.workspace_added.connect (add_workspace);
@@ -224,6 +224,11 @@ namespace Gala {
             return true;
         }
 
+        public void move_window (Meta.Window window, Meta.Workspace workspace) {
+            StaticWindowContainer.get_instance (display).notify_window_moving (window);
+            workspaces_gesture_controller.goto (-workspace.index ());
+        }
+
         public void switch_to_next_workspace (Meta.MotionDirection direction) {
             var relative_direction = direction == LEFT ? 1 : -1;
             workspaces_gesture_controller.goto (get_current_commit (SWITCH_WORKSPACE) + relative_direction);
@@ -258,6 +263,13 @@ namespace Gala {
 
             if (action == SWITCH_WORKSPACE) {
                 WorkspaceManager.get_default ().freeze_remove ();
+
+                if (workspaces_gesture_controller.action_info != null
+                    && (bool) workspaces_gesture_controller.action_info
+                    && display.focus_window != null
+                ) {
+                    StaticWindowContainer.get_instance (display).notify_window_moving (display.focus_window);
+                }
             }
         }
 
@@ -270,8 +282,14 @@ namespace Gala {
 
                 case SWITCH_WORKSPACE:
                     opened = get_current_commit (MULTITASKING_VIEW) > 0.5 || multitasking_gesture_controller.recognizing;
-                    unowned var workspace_manager = display.get_workspace_manager ();
-                    workspace_manager.get_workspace_by_index ((int) (-to)).activate (display.get_current_time ());
+                    unowned var target_workspace = display.get_workspace_manager ().get_workspace_by_index ((int) (-to));
+                    var moving_window = StaticWindowContainer.get_instance (display).moving_window;
+                    if (moving_window != null) {
+                        moving_window.change_workspace (target_workspace);
+                        target_workspace.activate_with_focus (moving_window, display.get_current_time ());
+                    } else {
+                        target_workspace.activate (display.get_current_time ());
+                    }
                     break;
 
                 default:
@@ -293,6 +311,7 @@ namespace Gala {
 
             if (action == SWITCH_WORKSPACE) {
                 WorkspaceManager.get_default ().thaw_remove ();
+                StaticWindowContainer.get_instance (display).notify_move_ended ();
             }
         }
 
