@@ -98,6 +98,12 @@
 
       <arg name="hide_mode" type="uint" enum="hide_mode" summary="hide mode"/>
     </request>
+
+    <request name="request_visible_in_multitasking_view">
+      <description summary="request visible in multitasking view">
+        Tell the shell that the panel would like to be visible in the multitasking view.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
