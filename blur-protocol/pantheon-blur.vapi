@@ -23,7 +23,7 @@ namespace Pantheon.Blur {
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Create (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
     [CCode (has_target = false, has_typedef = false)]
-    public delegate void SetRegion (Wl.Client client, Wl.Resource resource, uint x, uint y, uint width, uint height);
+    public delegate void SetRegion (Wl.Client client, Wl.Resource resource, uint x, uint y, uint width, uint height, uint clip_radius);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }

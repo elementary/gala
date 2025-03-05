@@ -37,6 +37,7 @@
       <arg name="y" type="uint" />
       <arg name="width" type="uint" />
       <arg name="height" type="uint" />
+      <arg name="clip_radius" type="uint" />
     </request>
   </interface>
 </protocol>

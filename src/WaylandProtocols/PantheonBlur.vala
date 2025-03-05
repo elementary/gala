@@ -87,7 +87,7 @@ namespace Gala {
         );
     }
 
-    internal static void set_region (Wl.Client client, Wl.Resource resource, uint x, int y, uint width, uint height) {
+    internal static void set_region (Wl.Client client, Wl.Resource resource, uint x, int y, uint width, uint height, uint clip_radius) {
         unowned BlurSurface? blur_surface = resource.get_user_data<BlurSurface> ();
         if (blur_surface.wayland_surface == null) {
             warning ("Window tried to set anchor but wayland surface is null.");
@@ -101,7 +101,7 @@ namespace Gala {
             return;
         }
 
-        BlurManager.get_instance ().set_region (window, x, y, width, height);
+        BlurManager.get_instance ().set_region (window, x, y, width, height, clip_radius);
     }
 
     internal static void destroy_blur_surface (Wl.Client client, Wl.Resource resource) {

@@ -17,6 +17,12 @@ public class Gala.BlurManager : Object {
         uint height;
     }
 
+    /**
+    * Our rounded corners effect is antialiased, so we need to add a small offset to have proper corners
+    */
+    private const int CLIP_RADIUS_OFFSET = 2;
+    private const int BLUR_RADIUS = 12;
+
     private static BlurManager instance;
 
     public static void init (WindowManagerGala wm) {
@@ -44,7 +50,7 @@ public class Gala.BlurManager : Object {
 
     /**
      */
-    public void set_region (Meta.Window window, uint x, uint y, uint width, uint height) {
+    public void set_region (Meta.Window window, uint x, uint y, uint width, uint height, uint clip_radius) {
         unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
         if (window_actor == null) {
             warning ("Cannot blur actor: Actor is null");
@@ -83,7 +89,7 @@ public class Gala.BlurManager : Object {
             window_actor, Clutter.BindCoordinate.Y, scaled_y
         );
 
-        var blur_effect = new BackgroundBlurEffect (12, 12, monitor_scaling_factor);
+        var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, clip_radius + CLIP_RADIUS_OFFSET, monitor_scaling_factor);
 
         var blurred_actor = new Clutter.Actor () {
             width = scaled_width,
