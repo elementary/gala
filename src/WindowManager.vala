@@ -147,6 +147,7 @@ namespace Gala {
             window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
+            BlurManager.init (this);
 
             init_a11y ();
 
