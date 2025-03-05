@@ -24,9 +24,7 @@ public class Gala.StaticWindowContainer : ActorTarget {
         display.grab_op_begin.connect (on_grab_op_begin);
         display.grab_op_end.connect (on_grab_op_end);
 
-        unowned var window_listener = WindowListener.get_default ();
-        window_listener.window_on_all_workspaces.connect (on_all_workspaces_changed);
-        window_listener.window_no_longer_on_all_workspaces.connect (on_all_workspaces_changed);
+        WindowListener.get_default ().window_on_all_workspaces_changed.connect (on_all_workspaces_changed);
     }
 
     private void on_grab_op_begin (Meta.Window window, Meta.GrabOp op) {
