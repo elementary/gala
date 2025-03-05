@@ -5,6 +5,11 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
+/**
+ * A exact clone of a window (same position and size). This is used for static
+ * windows (e.g. on all workspaces or moving) and fades out while the multitasking view
+ * is being opened.
+ */
 public class Gala.StaticWindowClone : ActorTarget {
     public Meta.Window window { get; construct; }
 

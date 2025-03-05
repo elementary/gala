@@ -3,6 +3,12 @@
  * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
  */
 
+/**
+ * Holds clones of static windows (e.g. on all workspaces or being moved)
+ * in the multitasking view and fades them out while opening the multitasking view.
+ * The window container use this to know whether a window became static (they shouldn't show it anymore)
+ * or isn't static anymore (they have to show it now).
+ */
 public class Gala.StaticWindowContainer : ActorTarget {
     private static GLib.Once<StaticWindowContainer> instance;
     public static StaticWindowContainer get_instance (Meta.Display display) {
