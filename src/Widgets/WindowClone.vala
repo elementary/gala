@@ -283,15 +283,11 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (true);
-        }
+        update_hover_widgets (true);
     }
 
     public override void end_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (true);
-        }
+        update_hover_widgets (false);
     }
 
     public override void allocate (Clutter.ActorBox box) {
