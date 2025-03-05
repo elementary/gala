@@ -280,10 +280,7 @@ namespace Gala {
         }
 
         public override void end_progress (GestureAction action) {
-            if (!opened
-                && (action == workspaces_gesture_controller.action || !workspaces_gesture_controller.animating)
-                && (action == multitasking_gesture_controller.action || !multitasking_gesture_controller.animating)
-            ) {
+            if (!opened && !animating) {
                 wm.background_group.show ();
                 wm.window_group.show ();
                 wm.top_window_group.show ();

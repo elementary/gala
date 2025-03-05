@@ -69,7 +69,6 @@ public class Gala.GestureController : Object {
     }
 
     public bool recognizing { get; private set; }
-    public bool animating { get { return recognizing || timeline != null; } }
 
     private ToucheggBackend? touchpad_backend;
     private ScrollBackend? scroll_backend;

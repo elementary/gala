@@ -17,9 +17,13 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
         }
     }
 
+    public bool animating { get { return ongoing_animations > 0; } }
+
     private double[] current_progress;
     private double[] current_commit;
     private Gee.List<GestureTarget> targets;
+
+    private int ongoing_animations = 0;
 
     construct {
         current_progress = new double[GestureAction.N_ACTIONS];
@@ -71,6 +75,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
 
         switch (update_type) {
             case START:
+                ongoing_animations++;
                 start_progress (action);
                 break;
             case UPDATE:
@@ -80,6 +85,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
                 commit_progress (action, progress);
                 break;
             case END:
+                ongoing_animations--;
                 end_progress (action);
                 break;
         }
