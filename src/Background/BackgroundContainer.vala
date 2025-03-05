@@ -28,21 +28,18 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
             }
         });
 
-        set_black_background (true);
+#if HAS_MUTTER47
+        background_color = Cogl.Color.from_string ("Black");
+#else
+        background_color = Clutter.Color.from_string ("Black");
+#endif
+
         update ();
     }
 
     ~BackgroundContainer () {
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.disconnect (update);
-    }
-
-    public void set_black_background (bool black) {
-#if HAS_MUTTER47
-        set_background_color (black ? Cogl.Color.from_string ("Black") : null);
-#else
-        set_background_color (black ? Clutter.Color.from_string ("Black") : null);
-#endif
     }
 
     private void update () {
