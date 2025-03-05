@@ -145,7 +145,7 @@ namespace Gala {
             ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
             window_grab_tracker = new WindowGrabTracker (get_display ());
-            
+
             show_stage ();
             BlurManager.init (this);
 

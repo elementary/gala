@@ -169,16 +169,16 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         float width, height;
 
         var stage_view = paint_context.get_stage_view ();
-    
+
         actor.get_transformed_position (out origin_x, out origin_y);
         actor.get_transformed_size (out width, out height);
-    
+
         if (stage_view != null) {
             Mtk.Rectangle stage_view_layout = {};
-    
+
             box_scale_factor = stage_view.get_scale ();
             stage_view.get_layout (ref stage_view_layout);
-    
+
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
         } else {
@@ -186,12 +186,12 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
              * with stage-view scaling though.
              */
         }
-    
+
         source_actor_box.set_origin (origin_x, origin_y);
         source_actor_box.set_size (width, height);
-    
+
         source_actor_box.scale (box_scale_factor);
-      
+
         Clutter.ActorBox.clamp_to_pixel (ref source_actor_box);
     }
 
@@ -355,7 +355,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private void paint_background (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.ActorBox source_actor_box) {
         float transformed_x, transformed_y, transformed_width, transformed_height;
-      
+
         source_actor_box.get_origin (out transformed_x, out transformed_y);
         source_actor_box.get_size (out transformed_width, out transformed_height);
 

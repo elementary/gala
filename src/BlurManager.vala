@@ -89,7 +89,7 @@ public class Gala.BlurManager : Object {
             height = scaled_height
         };
         blurred_actor.add_effect (blur_effect);
-        
+
         blurred_windows[window] = Constraints () {
             actor = blurred_actor,
             blur_effect = blur_effect,
