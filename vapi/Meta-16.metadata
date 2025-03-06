@@ -1,0 +1,181 @@
+* skip=false
+*.* skip=false
+* cheader_filename="meta/main.h"
+
+Backend cheader_filename="meta/meta-backend.h"
+Backend.gpu_added skip
+Background cheader_filename="meta/meta-background.h"
+Background.set_file.file nullable
+BackgroundContent.new symbol_type="constructor"
+BackgroundActor cheader_filename="meta/meta-background-actor.h"
+BackgroundContent cheader_filename="meta/meta-background-content.h"
+BackgroundGroup cheader_filename="meta/meta-background-group.h"
+BackgroundImage cheader_filename="meta/meta-background-image.h"
+BackgroundImageCache cheader_filename="meta/meta-background-image.h"
+Barrier cheader_filename="meta/barrier.h"
+BarrierDirection cheader_filename="meta/barrier.h"
+BarrierEvent cheader_filename="meta/barrier.h"
+BarrierFlags cheader_filename="meta/barrier.h"
+ButtonFunction cheader_filename="meta/common.h"
+ButtonLayout cheader_filename="meta/common.h"
+Compositor cheader_filename="meta/compositor.h"
+CompEffect cheader_filename="meta/compositor.h"
+CloseDialog cheader_filename="meta/meta-close-dialog.h"
+CloseDialogResponse cheader_filename="meta/meta-close-dialog.h"
+Context cheader_filename="meta/meta-context.h"
+CompositorType cheader_filename="meta/meta-enums.h"
+Cursor cheader_filename="meta/common.h"
+CursorTracker cheader_filename="meta/meta-cursor-tracker.h"
+CursorTracker.get_pointer.mods out
+DebugControl cheader_filename="meta/meta-debug-control.h"
+DebugTopic cheader_filename="meta/util.h"
+DebugPaintFlag cheader_filename="meta/util.h"
+Direction cheader_filename="meta/common.h"
+Display cheader_filename="meta/display.h"
+Display.focus_window#signal name="do_focus_window"
+DisplayCorner cheader_filename="meta/display.h"
+DisplayDirection cheader_filename="meta/display.h"
+Dnd cheader_filename="meta/meta-dnd.h"
+EdgeType cheader_filename="meta/boxes.h"
+Edge cheader_filename="meta/boxes.h"
+FrameBorders cheader_filename="meta/common.h"
+FrameType cheader_filename="meta/common.h"
+GrabOp cheader_filename="meta/common.h"
+Gravity cheader_filename="meta/common.h"
+Group cheader_filename="meta/meta-x11-types.h"
+IdleMonitor cheader_filename="meta/meta-idle-monitor.h"
+IdleMonitorWatchFunc cheader_filename="meta/meta-idle-monitor.h"
+InhibitShortcutsDialog cheader_filename="meta/meta-inhibit-shortcuts-dialog.h"
+InhibitShortcutsDialogResponse cheader_filename="meta/meta-inhibit-shortcuts-dialog.h"
+KeyboardA11yFlags cheader_filename="meta/meta-enums.h"
+KeyBinding cheader_filename="meta/keybindings.h"
+keybindings_set_custom_handler parent="Meta.KeyBinding" name="set_custom_handler" cheader_filename="meta/keybindings.h"
+KeyBindingAction cheader_filename="meta/prefs.h"
+KeyBindingFlags cheader_filename="meta/prefs.h"
+KeyHandlerFunc cheader_filename="meta/prefs.h"
+KeyHandlerFunc.event type="Clutter.KeyEvent?"
+KeyHandlerFunc.window nullable
+LaunchContext cheader_filename="meta/meta-launch-context.h"
+Laters cheader_filename="meta/types.h"
+LaterType cheader_filename="meta/util.h"
+MaximizeFlags cheader_filename="meta/window.h"
+MultiTexture cheader_filename="meta/meta-multi-texture.h"
+MultiTextureFormat cheader_filename="meta/meta-multi-texture-format.h"
+MonitorManager cheader_filename="meta/meta-monitor-manager.h"
+MonitorSwitchConfigType cheader_filename="meta/meta-monitor-manager.h"
+MotionDirection cheader_filename="meta/common.h"
+Orientation cheader_filename="meta/meta-orientation-manager.h"
+OrientationManager cheader_filename="meta/meta-orientation-manager.h"
+PadDirection cheader_filename="meta/display.h"
+PadFeatureType cheader_filename="meta/display.h"
+Plugin cheader_filename="meta/meta-plugin.h"
+PowerSaveChangeReason cheader_filename="meta/meta-monitor-manager.h"
+Preference cheader_filename="meta/prefs.h"
+PrefsChangedFunc cheader_filename="meta/prefs.h"
+RemoteAccessController cheader_filename="meta/meta-remote-access-controller.h"
+RemoteAccessHandle cheader_filename="meta/meta-remote-access-controller.h"
+Selection cheader_filename="meta/meta-selection.h"
+SelectionSource cheader_filename="meta/meta-selection-source.h"
+SelectionSourceMemory cheader_filename="meta/meta-selection-source-memory.h"
+SelectionType cheader_filename="meta/meta-selection-source.h"
+Settings cheader_filename="meta/meta-settings.h"
+ShapedTexture cheader_filename="meta/meta-shaped-texture.h"
+Side cheader_filename="meta/common.h"
+SizeChange cheader_filename="meta/compositor.h"
+SoundPlayer cheader_filename="meta/meta-sound-player.h"
+StartupNotification cheader_filename="meta/meta-startup-notification.h"
+StartupNotification.changed.object type="Meta.StartupSequence"
+StartupNotification.get_sequences type_arguments="Meta.StartupSequence"
+StartupSequence cheader_filename="meta/meta-startup-notification.h"
+StackLayer cheader_filename="meta/common.h"
+Stage cheader_filename="meta/meta-stage.h"
+Strut cheader_filename="meta/boxes.h"
+TabList cheader_filename="meta/display.h"
+TabShowType cheader_filename="meta/display.h"
+WaylandClient cheader_filename="meta/meta-wayland-client.h"
+WaylandCompositor cheader_filename="meta/meta-wayland-compositor.h"
+Workspace cheader_filename="meta/workspace.h"
+WorkspaceManager cheader_filename="meta/meta-workspace-manager.h"
+Window cheader_filename="meta/window.h"
+Window.focus#signal name="focused"
+Window.suspend_state skip
+Window.main_monitor skip
+WindowActor cheader_filename="meta/meta-window-actor.h"
+WindowClientType cheader_filename="meta/window.h"
+WindowForeachFunc cheader_filename="meta/window.h"
+WindowGroup cheader_filename="meta/meta-window-group.h"
+WindowMenuType cheader_filename="meta/compositor.h"
+WindowType cheader_filename="meta/window.h"
+X11Display cheader_filename="meta/meta-x11-display.h"
+X11Display.add_event_func skip
+X11DisplayEventFunc skip
+X11Display.set_stage_input_region.rects type="X.Xrectangle[]" array_length_idx=1
+
+WaylandSurface.scanout_candidate skip
+WaylandSurface.main_monitor skip
+
+// As per https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2287
+MonitorManager.monitor_privacy_screen_changed skip
+
+prefs_* parent="Meta.Prefs" name="prefs_(.+)" cheader_filename="meta/prefs.h"
+
+g_utf8_strndup skip
+
+preference_to_string cheader_filename="meta/prefs.h"
+frame_type_to_string cheader_filename="meta/util.h"
+topic_to_string parent="Meta.DebugTopic" name="to_string" cheader_filename="meta/util.h"
+
+CURRENT_TIME cheader_filename="meta/common.h"
+PRIORITY_RESIZE cheader_filename="meta/common.h"
+PRIORITY_BEFORE_REDRAW cheader_filename="meta/common.h"
+PRIORITY_REDRAW cheader_filename="meta/common.h"
+PRIORITY_PREFS_NOTIFY cheader_filename="meta/common.h"
+VIRTUAL_CORE_POINTER_ID cheader_filename="meta/common.h"
+VIRTUAL_CORE_KEYBOARD_ID cheader_filename="meta/common.h"
+
+Display.window_visibility_updated
+	.object name="unplaced" type="GLib.List<unowned Meta.Window>"
+	.p0 name="should_show" type="GLib.List<unowned Meta.Window>"
+	.p1 name="should_hide" type="GLib.List<unowned Meta.Window>"
+
+Compositor.get_window_actors type_arguments="Meta.WindowActor"
+
+add_verbose_topic parent="Meta.Util" cheader_filename="meta/util.h"
+bug parent="Meta.Util" cheader_filename="meta/util.h"
+external_binding_name_for_action parent="Meta.Util" cheader_filename="meta/util.h"
+fatal parent="Meta.Util" cheader_filename="meta/util.h"
+is_verbose parent="Meta.Util" cheader_filename="meta/util.h"
+is_wayland_compositor parent="Meta.Util" cheader_filename="meta/util.h"
+pop_no_msg_prefix parent="Meta.Util" cheader_filename="meta/util.h"
+push_no_msg_prefix parent="Meta.Util" cheader_filename="meta/util.h"
+remove_verbose_topic parent="Meta.Util" cheader_filename="meta/util.h"
+unsigned_long_equal parent="Meta.Util" name="ulong_equal" cheader_filename="meta/util.h"
+unsigned_long_equal.v1 type="ulong?"
+unsigned_long_equal.v2 type="ulong?"
+unsigned_long_hash parent="Meta.Util" name="ulong_hash" cheader_filename="meta/util.h"
+unsigned_long_hash.v type="ulong?"
+warning parent="Meta.Util" cheader_filename="meta/util.h"
+create_context parent="Meta.Context" name="new" symbol_type="constructor" cheader_filename="meta/meta-context.h"
+
+Plugin.create_close_dialog unowned=false nullable
+Plugin.create_inhibit_shortcuts_dialog unowned=false
+
+BackgroundActor sealed
+BackgroundContent sealed
+BackgroundImage sealed
+BackgroundImageCache sealed
+Background sealed
+Dnd sealed
+IdleMonitor sealed
+LaunchContext sealed
+RemoteAccessController sealed
+SelectionSourceMemory sealed
+Selection sealed
+ShapedTexture sealed
+SoundPlayer sealed
+Stage sealed
+StartupNotification sealed
+WaylandClient sealed
+WindowGroup sealed
+WorkspaceManager sealed
+X11Display sealed

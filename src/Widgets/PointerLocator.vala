@@ -137,7 +137,11 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
         stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
         fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
 
+#if HAS_MUTTER48
+        unowned var tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
         unowned var tracker = display.get_cursor_tracker ();
+#endif
         Graphene.Point coords = {};
         tracker.get_pointer (out coords, null);
 

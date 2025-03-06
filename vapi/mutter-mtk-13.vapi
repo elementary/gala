@@ -15,6 +15,9 @@ namespace Mtk {
 		public static Mtk.Region create_rectangles (Mtk.Rectangle rects, int n_rects);
 		public Mtk.Region crop_and_scale (Graphene.Rect src_rect, int dst_width, int dst_height);
 		public bool equal (Mtk.Region other);
+#if HAS_MUTTER48
+		public void get_box (int nth, int x1, int y1, int x2, int y2);
+#endif
 		public Mtk.Rectangle? get_extents ();
 		public Mtk.Rectangle? get_rectangle (int nth);
 		public void intersect (Mtk.Region other);
@@ -44,6 +47,10 @@ namespace Mtk {
 		[CCode (has_construct_function = false, type = "MtkRectangle*")]
 		public Rectangle (int x, int y, int width, int height);
 		public int area ();
+#if HAS_MUTTER48
+		public bool contains_point (int x, int y);
+		public bool contains_pointf (float x, float y);
+#endif
 		public bool contains_rect (Mtk.Rectangle inner_rect);
 		public Mtk.Rectangle? copy ();
 		public bool could_fit_rect (Mtk.Rectangle inner_rect);
@@ -107,7 +114,13 @@ namespace Mtk {
 		FLIPPED_90,
 		FLIPPED_180,
 		FLIPPED_270;
+#if HAS_MUTTER48
+		public static Mtk.MonitorTransform from_string (string name);
+#endif
 		public Mtk.MonitorTransform invert ();
+#if HAS_MUTTER48
+		public unowned string to_string ();
+#endif
 		public Mtk.MonitorTransform transform (Mtk.MonitorTransform other);
 		public void transform_matrix (Graphene.Matrix matrix);
 		public void transform_point (int area_width, int area_height, int point_x, int point_y);
@@ -128,6 +141,10 @@ namespace Mtk {
 		GROW,
 		ROUND
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static void compute_viewport_matrix (Graphene.Matrix matrix, int width, int height, float scale, Mtk.MonitorTransform transform, Graphene.Rect src_rect);
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]
 	public static Mtk.Rectangle rectangle_from_graphene_rect (Graphene.Rect rect, Mtk.RoundingStrategy rounding_strategy);
