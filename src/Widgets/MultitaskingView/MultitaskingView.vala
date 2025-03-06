@@ -272,7 +272,16 @@ namespace Gala {
                     && (bool) workspaces_gesture_controller.action_info
                     && display.focus_window != null
                 ) {
-                    StaticWindowContainer.get_instance (display).notify_window_moving (display.focus_window);
+                    var moving = display.focus_window;
+
+                    StaticWindowContainer.get_instance (display).notify_window_moving (moving);
+
+                    // Prevent moving to the last workspace if second last would be empty
+                    if (moving.get_workspace ().index () == display.get_workspace_manager ().n_workspaces - 2 &&
+                        Utils.get_n_windows (moving.get_workspace (), true, moving) == 0
+                    ) {
+                        workspaces_gesture_controller.overshoot_lower_clamp += 1;
+                    }
                 }
             }
         }
@@ -309,14 +318,13 @@ namespace Gala {
                 icon_groups.show ();
                 hide ();
 
-                if (wm.modal_proxy_valid (modal_proxy)) {
-                    wm.pop_modal (modal_proxy);
-                }
+                wm.pop_modal (modal_proxy);
             }
 
             if (action == SWITCH_WORKSPACE) {
                 WorkspaceManager.get_default ().thaw_remove ();
                 StaticWindowContainer.get_instance (display).notify_move_ended ();
+                display.get_workspace_manager ().notify_property ("n-workspaces"); //Recalc overshoot bounds
             }
         }
 
