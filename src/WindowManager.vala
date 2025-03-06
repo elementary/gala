@@ -290,7 +290,7 @@ namespace Gala {
             if (plugin_manager.window_overview_provider == null
                 || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
             ) {
-                window_overview = new WindowOverview (this, gesture_tracker);
+                window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
