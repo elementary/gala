@@ -117,6 +117,23 @@ public class Gala.BlurManager : Object {
         };
     }
 
+    public void remove_blur (Meta.Window window) {
+        var blur_data = blurred_windows[window];
+        if (blur_data == null) {
+            return;
+        }
+
+        var actor = blur_data.actor;
+        actor.remove_effect (blur_data.blur_effect);
+
+        unowned var parent = actor.get_parent ();
+        if (parent != null) {
+            parent.remove_child (actor);
+        }
+
+        blurred_windows.remove (window);
+    }
+
     private void on_size_updated (GLib.Object obj, GLib.ParamSpec pspec) {
         var window_actor = (Meta.WindowActor) obj;
         var window = window_actor.meta_window;

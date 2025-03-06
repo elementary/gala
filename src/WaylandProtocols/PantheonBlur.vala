@@ -17,7 +17,7 @@ namespace Gala {
         }
 
         wayland_pantheon_blur_manager_interface = {
-            create
+            get_blur
         };
 
         wayland_pantheon_blur_interface = {
@@ -56,18 +56,16 @@ namespace Gala {
         resource.get_user_data<GLib.Object> ().unref ();
     }
 
-    internal static void create (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
+    internal static void get_blur (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
         unowned GLib.Object? wayland_surface = surface_resource.get_user_data<GLib.Object> ();
         BlurSurface? blur_surface = wayland_surface.get_qdata (BlurSurface.quark);
         if (blur_surface != null) {
             surface_resource.post_error (
                 Wl.DisplayError.INVALID_OBJECT,
-                "io_elementary_pantheon_blur_manager_v1_interface::create already requested"
+                "io_elementary_pantheon_blur_manager_v1_interface::get_blur already requested"
             );
             return;
         }
-
-        //  wayland_surface.get ("window", out window, null);
 
         blur_surface = new BlurSurface (wayland_surface);
         unowned var blur_resource = client.create_resource (
@@ -90,14 +88,14 @@ namespace Gala {
     internal static void set_region (Wl.Client client, Wl.Resource resource, uint x, int y, uint width, uint height, uint clip_radius) {
         unowned BlurSurface? blur_surface = resource.get_user_data<BlurSurface> ();
         if (blur_surface.wayland_surface == null) {
-            warning ("Window tried to set anchor but wayland surface is null.");
+            warning ("Window tried to set blur region but wayland surface is null.");
             return;
         }
 
         Meta.Window? window;
         blur_surface.wayland_surface.get ("window", out window, null);
         if (window == null) {
-            warning ("Window tried to set anchor but wayland surface had no associated window.");
+            warning ("Window tried to set blur region but wayland surface had no associated window.");
             return;
         }
 
@@ -105,6 +103,23 @@ namespace Gala {
     }
 
     internal static void destroy_blur_surface (Wl.Client client, Wl.Resource resource) {
+        unowned BlurSurface? blur_surface = resource.get_user_data<BlurSurface> ();
+
+        if (blur_surface.wayland_surface == null) {
+            warning ("Window tried to set blur region but wayland surface is null.");
+            resource.destroy ();
+            return;
+        }
+
+        Meta.Window? window;
+        blur_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set blur region but wayland surface had no associated window.");
+            resource.destroy ();
+            return;
+        }
+
+        BlurManager.get_instance ().remove_blur (window);
         resource.destroy ();
     }
 }
