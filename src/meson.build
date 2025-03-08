@@ -58,8 +58,6 @@ gala_bin_sources = files(
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
     'Widgets/DwellClickTimer.vala',
-    'Widgets/IconGroup.vala',
-    'Widgets/IconGroupContainer.vala',
     'Widgets/MonitorClone.vala',
     'Widgets/MultitaskingView.vala',
     'Widgets/PixelPicker.vala',
@@ -74,7 +72,6 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
     'Widgets/WorkspaceClone.vala',
-    'Widgets/WorkspaceInsertThumb.vala',
     'Widgets/WorkspaceRow.vala',
 )
 

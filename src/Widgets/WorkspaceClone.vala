@@ -139,7 +139,6 @@ namespace Gala {
         public signal void selected (bool close_view);
 
         public Meta.Workspace workspace { get; construct; }
-        public IconGroup icon_group { get; private set; }
         public WindowCloneContainer window_container { get; private set; }
 
         private float _scale_factor = 1.0f;
@@ -186,12 +185,6 @@ namespace Gala {
             window_container.window_selected.connect ((w) => { window_selected (w); });
             window_container.requested_close.connect (() => selected (true));
 
-            icon_group = new IconGroup (display, workspace, scale_factor);
-            icon_group.selected.connect (() => selected (true));
-
-            var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-            icon_group.add_action (icons_drop_action);
-
             var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
             background.add_action (background_drop_action);
             background_drop_action.crossed.connect ((target, hovered) => {
@@ -225,7 +218,6 @@ namespace Gala {
                     && !window.on_all_workspaces
                     && window.is_on_primary_monitor ()) {
                     window_container.add_window (window);
-                    icon_group.add_window (window, true);
                 }
             }
 
@@ -251,11 +243,9 @@ namespace Gala {
 
             background.destroy ();
             window_container.destroy ();
-            icon_group.destroy ();
         }
 
         private void reallocate () {
-            icon_group.scale_factor = scale_factor;
             window_container.monitor_scale = scale_factor;
         }
 
@@ -275,7 +265,6 @@ namespace Gala {
                     return;
 
             window_container.add_window (window);
-            icon_group.add_window (window);
         }
 
         /**
@@ -283,7 +272,6 @@ namespace Gala {
          */
         private void remove_window (Meta.Window window) {
             window_container.remove_window (window);
-            icon_group.remove_window (window, opened);
         }
 
         private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
@@ -328,12 +316,6 @@ namespace Gala {
             window_container.padding_left =
                 window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
             window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
-        }
-
-        public override void update_progress (GestureAction action, double progress) {
-            if (action == SWITCH_WORKSPACE) {
-                icon_group.backdrop_opacity = 1 - (float) (workspace.index () + progress).abs ().clamp (0, 1);
-            }
         }
     }
 }
