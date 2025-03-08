@@ -46,7 +46,7 @@ public class Gala.WindowClone : ActorTarget {
     public bool active {
         set {
             active_shape.save_easing_state ();
-            active_shape.set_easing_duration (AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION));
+            active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
             active_shape.restore_easing_state ();
         }
@@ -247,7 +247,7 @@ public class Gala.WindowClone : ActorTarget {
 
         if (animate) {
             save_easing_state ();
-            set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
+            set_easing_duration (Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
             set_easing_mode (EASE_OUT_QUAD);
         }
 
@@ -374,7 +374,7 @@ public class Gala.WindowClone : ActorTarget {
             in_slot_animation = animating;
         }
 
-        var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         var show = has_pointer && !in_slot_animation;
 
@@ -472,7 +472,7 @@ public class Gala.WindowClone : ActorTarget {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
-        var duration = AnimationsSettings.get_animation_duration (FADE_ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
@@ -534,7 +534,7 @@ public class Gala.WindowClone : ActorTarget {
         var scale = hovered ? 0.4 : 1.0;
         var opacity = hovered ? 0 : 255;
         uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = AnimationsSettings.get_animation_duration (duration);
+        duration = Utils.get_animation_duration (duration);
 
         window_icon.save_easing_state ();
 
@@ -636,7 +636,7 @@ public class Gala.WindowClone : ActorTarget {
     private void drag_canceled () {
         get_parent ().remove_child (this);
 
-        var duration = AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
+        var duration = Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
         // Adding to the previous parent will automatically update it to take it's slot
         // so to animate it we set the easing

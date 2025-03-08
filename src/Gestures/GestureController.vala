@@ -141,7 +141,7 @@ public class Gala.GestureController : Object {
                 direction_multiplier = -1;
             }
 
-            if (snap && !AnimationsSettings.get_enable_animations ()) {
+            if (snap && !Meta.Prefs.get_gnome_animations ()) {
                 prepare ();
                 finish (0, progress + direction_multiplier);
                 recognizing = false;
@@ -231,7 +231,7 @@ public class Gala.GestureController : Object {
             return;
         }
 
-        if (!AnimationsSettings.get_enable_animations ()) {
+        if (!Meta.Prefs.get_gnome_animations ()) {
             progress = clamped_to;
             target.propagate (END, action, calculate_bounded_progress ());
             return;
