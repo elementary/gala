@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2016 Rico Tzschichholz, Santiago León O.
+//                2025 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,17 +22,11 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
-        private static ScreenshotManager? instance;
-
         [DBus (visible = false)]
-        public static unowned ScreenshotManager init (WindowManager wm) {
-            if (instance == null)
-                instance = new ScreenshotManager (wm);
+        public WindowManager wm { get; construct; }
+        [DBus (visible = false)]
+        public NotificationsManager notifications_manager { get; construct; }
 
-            return instance;
-        }
-
-        private WindowManager wm;
         private Settings desktop_settings;
 
         private string prev_font_regular;
@@ -39,12 +34,30 @@ namespace Gala {
         private string prev_font_mono;
         private uint conceal_timeout;
 
-        construct {
-            desktop_settings = new Settings ("org.gnome.desktop.interface");
+        [DBus (visible = false)]
+        public ScreenshotManager (WindowManager wm, NotificationsManager notifications_manager) {
+            Object (wm: wm, notifications_manager: notifications_manager);
         }
 
-        private ScreenshotManager (WindowManager _wm) {
-            wm = _wm;
+        construct {
+            desktop_settings = new Settings ("org.gnome.desktop.interface");
+
+            var show_in_files_action = new GLib.SimpleAction ("show-in-files", GLib.VariantType.STRING);
+            show_in_files_action.activate.connect (show_in_files);
+            notifications_manager.add_action (show_in_files_action);
+        }
+
+        private void show_in_files (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
+            var files_list = new GLib.List<GLib.File> ();
+            files_list.append (GLib.File.new_for_path (variant.get_string ()));
+
+            var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+
+            try {
+                files_appinfo.launch (files_list, null);
+            } catch (Error e) {
+                warning (e.message);
+            }
         }
 
         public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {
@@ -155,7 +168,7 @@ namespace Gala {
             var rect = window.get_frame_rect ();
 #if HAS_MUTTER45
             if (!include_frame) {
-#if else
+#else
             if ((include_frame && window.is_client_decorated ()) ||
                 (!include_frame && !window.is_client_decorated ())) {
 #endif

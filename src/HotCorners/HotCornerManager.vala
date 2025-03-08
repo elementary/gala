@@ -92,20 +92,16 @@ public class Gala.HotCornerManager : Object {
     private void run_custom_action (string hot_corner_position) {
         string command = "";
         var line = behavior_settings.get_string ("hotcorner-custom-command");
-        if (line == "")
+        if (line == "") {
             return;
+        }
 
         var parts = line.split (";;");
-        // keep compatibility to old version where only one command was possible
-        if (parts.length == 1) {
-            command = line;
-        } else {
-            // find specific actions
-            foreach (unowned var part in parts) {
-                var details = part.split (":");
-                if (details[0] == hot_corner_position) {
-                    command = details[1];
-                }
+        // find specific actions
+        foreach (unowned var part in parts) {
+            var details = part.split (":", 2);
+            if (details[0] == hot_corner_position) {
+                command = details[1];
             }
         }
 

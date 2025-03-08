@@ -13,15 +13,7 @@ public class Gala.Tooltip : CanvasActor {
      */
     private Clutter.Text text_actor;
 
-    /**
-     * Maximum width of the Tooltip.
-     * @see set_max_width
-     */
-    public float max_width;
-
     construct {
-        max_width = 200;
-
 #if HAS_MUTTER47
         Cogl.Color text_color = {
 #else
@@ -49,21 +41,6 @@ public class Gala.Tooltip : CanvasActor {
 
     public void set_text (string new_text) {
         text_actor.text = new_text;
-    }
-
-    public void set_max_width (float new_max_width) {
-        max_width = new_max_width;
-
-        queue_relayout ();
-    }
-
-    protected override void allocate (Clutter.ActorBox box) {
-        if (box.get_width () > max_width) {
-            box.set_origin (box.get_x () + ((box.get_width () - max_width) / 2), box.get_y ());
-            box.set_size (max_width, box.get_height ());
-        }
-
-        base.allocate (box);
     }
 
     protected override void draw (Cairo.Context ctx, int width, int height) {

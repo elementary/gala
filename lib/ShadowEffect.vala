@@ -55,20 +55,30 @@ public class Gala.ShadowEffect : Clutter.Effect {
     public int border_radius { get; set; default = 9;}
 
     private int shadow_size;
-    private Cogl.Pipeline pipeline;
+    private Cogl.Pipeline? pipeline;
     private string? current_key = null;
 
     public ShadowEffect (string css_class = "") {
         Object (css_class: css_class);
     }
 
-    construct {
-        pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-    }
-
     ~ShadowEffect () {
         if (current_key != null) {
             decrement_shadow_users (current_key);
+        }
+    }
+
+    public override void set_actor (Clutter.Actor? actor) {
+        base.set_actor (actor);
+
+        if (actor != null) {
+#if HAS_MUTTER47
+            pipeline = new Cogl.Pipeline (actor.context.get_backend ().get_cogl_context ());
+#else
+            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#endif
+        } else {
+            pipeline = null;
         }
     }
 

@@ -16,17 +16,7 @@ public class Gala.HideTracker : Object {
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
 
-    private Pantheon.Desktop.HideMode _hide_mode = NEVER;
-    public Pantheon.Desktop.HideMode hide_mode {
-        get {
-            return _hide_mode;
-        }
-        set {
-            _hide_mode = value;
-
-            setup_barrier ();
-        }
-    }
+    public Pantheon.Desktop.HideMode hide_mode { get; set; }
 
     private Clutter.PanAction pan_action;
 
@@ -47,17 +37,15 @@ public class Gala.HideTracker : Object {
         Object (display: display, panel: panel);
     }
 
-    ~HideTracker () {
-        if (hide_timeout_id != 0) {
-            Source.remove (hide_timeout_id);
-        }
-
-        if (update_timeout_id != 0) {
-            Source.remove (update_timeout_id);
-        }
-    }
-
     construct {
+        panel.window.unmanaging.connect_after (() => {
+            // The timeouts hold refs on us so we stay connected to signal handlers that might
+            // access the panel which was already freed. To prevent that make sure we reset
+            // the timeouts so that we get freed immediately
+            reset_hide_timeout ();
+            reset_update_timeout ();
+        });
+
         // Can't be local otherwise we get a memory leak :(
         // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
         current_focus_window = display.focus_window;
@@ -97,6 +85,16 @@ public class Gala.HideTracker : Object {
         pan_action.pan.connect (on_pan);
 
         display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
+
+        panel.notify["anchor"].connect (setup_barrier);
+
+        var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => {
+            setup_barrier (); //Make sure barriers are still on the primary monitor
+            schedule_update ();
+        });
+
+        setup_barrier ();
     }
 
 #if !HAS_MUTTER45
@@ -152,7 +150,14 @@ public class Gala.HideTracker : Object {
         });
     }
 
-    private void update_overlap () {
+    private void reset_update_timeout () {
+        if (update_timeout_id != 0) {
+            Source.remove (update_timeout_id);
+            update_timeout_id = 0;
+        }
+    }
+
+    public void update_overlap () {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
@@ -227,6 +232,10 @@ public class Gala.HideTracker : Object {
     }
 
     private void trigger_hide () {
+        if (hide_timeout_id != 0) {
+            return;
+        }
+
         // Don't hide if we have transients, e.g. an open popover, dialog, etc.
         var has_transients = false;
         panel.window.foreach_transient (() => {

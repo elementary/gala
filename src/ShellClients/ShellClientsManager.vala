@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellClientsManager : Object {
+public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
     public static void init (WindowManager wm) {
@@ -16,9 +16,11 @@ public class Gala.ShellClientsManager : Object {
         instance = new ShellClientsManager (wm);
     }
 
-    public static ShellClientsManager? get_instance () {
+    public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
+
+    public Clutter.Actor? actor { get { return wm.stage; } }
 
     public WindowManager wm { get; construct; }
 
@@ -26,7 +28,7 @@ public class Gala.ShellClientsManager : Object {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, WindowPositioner> positioned_windows = new GLib.HashTable<Meta.Window, WindowPositioner> (null, null);
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -143,16 +145,16 @@ public class Gala.ShellClientsManager : Object {
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
 
-    public void set_anchor (Meta.Window window, Meta.Side side) {
+    public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
-            panel_windows[window].update_anchor (side);
+            panel_windows[window].anchor = anchor;
             return;
         }
 
         make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        panel_windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, anchor);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
@@ -180,18 +182,28 @@ public class Gala.ShellClientsManager : Object {
             return;
         }
 
-        panel_windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].hide_mode = hide_mode;
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
-        positioned_windows[window] = new WindowPositioner (wm.get_display (), window, CENTER);
+        positioned_windows[window] = new ShellWindow (window, CENTER);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    private bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows);
+    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.propagate (update_type, action, progress);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.propagate (update_type, action, progress);
+        }
+    }
+
+    public bool is_itself_positioned (Meta.Window window) {
+        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
     }
 
     public bool is_positioned_window (Meta.Window window) {
@@ -226,8 +238,30 @@ public class Gala.ShellClientsManager : Object {
 
             switch (key) {
                 case "anchor":
-                    int parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
-                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 15) {
+                    int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
+                    if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
+                        //FIXME: Next major release change dock and wingpanel calls to get rid of this
+                        Pantheon.Desktop.Anchor parsed = TOP;
+                        switch ((Meta.Side) meta_side_parsed) {
+                            case BOTTOM:
+                                parsed = BOTTOM;
+                                break;
+
+                            case LEFT:
+                                parsed = LEFT;
+                                break;
+
+                            case RIGHT:
+                                parsed = RIGHT;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        set_anchor (window, parsed);
+                        // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
+                        // but on X the window was already shown when we get here so we have to call again to instantly apply it.
                         set_anchor (window, parsed);
                     } else {
                         warning ("Failed to parse %s as anchor", val);
