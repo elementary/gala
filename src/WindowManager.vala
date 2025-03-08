@@ -1317,7 +1317,6 @@ namespace Gala {
             unowned var window = actor.get_meta_window ();
             if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
                 || window.fullscreen && behavior_settings.get_boolean ("move-fullscreened-workspace")) {
-                warning ("Moving to next ws");
                 move_window_to_next_ws (window);
             }
 
