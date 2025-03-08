@@ -138,10 +138,6 @@ namespace Gala {
         }
     }
 
-    static void unref_obj_on_destroy (Wl.Resource resource) {
-        resource.get_user_data<GLib.Object> ().unref ();
-    }
-
     internal static void get_panel (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
         unowned GLib.Object? wayland_surface = surface_resource.get_user_data<GLib.Object> ();
         PanelSurface? panel_surface = wayland_surface.get_qdata (PanelSurface.quark);
