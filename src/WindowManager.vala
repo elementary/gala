@@ -1210,14 +1210,12 @@ namespace Gala {
                 return;
             }
 
-            Meta.SizeChange? which_change_local = which_change;
-            which_change = null;
-
             unowned var window = actor.get_meta_window ();
             var new_rect = window.get_frame_rect ();
 
-            switch (which_change_local) {
+            switch (which_change) {
                 case Meta.SizeChange.MAXIMIZE:
+                case Meta.SizeChange.FULLSCREEN:
                     // don't animate resizing of two tiled windows with mouse drag
                     if (window.get_tile_match () != null && !window.maximized_horizontally) {
                         var old_end = old_rect_size_change.x + old_rect_size_change.width;
@@ -1228,14 +1226,10 @@ namespace Gala {
                             break;
                         }
                     }
+
                     maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 case Meta.SizeChange.UNMAXIMIZE:
-                    unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-                    break;
-                case Meta.SizeChange.FULLSCREEN:
-                    maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-                    break;
                 case Meta.SizeChange.UNFULLSCREEN:
                     unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
@@ -1243,6 +1237,7 @@ namespace Gala {
                     break;
             }
 
+            which_change = null;
             size_change_completed (actor);
         }
 
@@ -1317,13 +1312,6 @@ namespace Gala {
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
-                return;
-            }
-
-            var duration = AnimationDuration.SNAP;
-
-            kill_window_effects (actor);
 
             unowned var window = actor.get_meta_window ();
             if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
@@ -1331,77 +1319,87 @@ namespace Gala {
                 move_window_to_next_ws (window);
             }
 
-            if (window.window_type == Meta.WindowType.NORMAL) {
-                if (latest_window_snapshot == null) {
-                    return;
-                }
+            kill_window_effects (actor);
 
-                maximizing.add (actor);
-                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
+            if (!AnimationsSettings.get_enable_animations () ||
+                latest_window_snapshot == null ||
+                window.window_type != Meta.WindowType.NORMAL) {
+                return;
+            }
 
-                ui_group.add_child (latest_window_snapshot);
+            var duration = AnimationDuration.SNAP;
 
-                // FIMXE that's a hacky part. There is a short moment right after maximized_completed
-                //       where the texture is screwed up and shows things it's not supposed to show,
-                //       resulting in flashing. Waiting here transparently shortly fixes that issue. There
-                //       appears to be no signal that would inform when that moment happens.
-                //       We can't spend arbitrary amounts of time transparent since the overlay fades away,
-                //       about a third has proven to be a solid time. So this fix will only apply for
-                //       durations >= FLASH_PREVENT_TIMEOUT*3
-                const int FLASH_PREVENT_TIMEOUT = 80;
-                var delay = 0;
-                if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
-                    actor.opacity = 0;
-                    delay = FLASH_PREVENT_TIMEOUT;
-                    Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
-                        actor.opacity = 255;
-                        return false;
-                    });
-                }
+            maximizing.add (actor);
+            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
-                var scale_x = (double) ew / old_rect_size_change.width;
-                var scale_y = (double) eh / old_rect_size_change.height;
+            ui_group.add_child (latest_window_snapshot);
 
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                latest_window_snapshot.set_easing_duration (duration);
-                latest_window_snapshot.set_position (ex, ey);
-                latest_window_snapshot.set_scale (scale_x, scale_y);
-
-                // the opacity animation is special, since we have to wait for the
-                // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_delay (delay);
-                latest_window_snapshot.set_easing_duration (duration - delay);
-                latest_window_snapshot.opacity = 0;
-                latest_window_snapshot.restore_easing_state ();
-
-                ulong maximize_old_handler_id = 0UL;
-                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
-                    snapshot.disconnect (maximize_old_handler_id);
-                    snapshot.destroy ();
-                    actor.set_translation (0.0f, 0.0f, 0.0f);
-                });
-
-                latest_window_snapshot = null;
-
-                actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
-                actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                actor.set_easing_duration (duration);
-                actor.set_scale (1.0f, 1.0f);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-                actor.restore_easing_state ();
-
-                ulong handler_id = 0UL;
-                handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (handler_id);
-                    maximizing.remove (actor);
+            // FIMXE that's a hacky part. There is a short moment right after maximized_completed
+            //       where the texture is screwed up and shows things it's not supposed to show,
+            //       resulting in flashing. Waiting here transparently shortly fixes that issue. There
+            //       appears to be no signal that would inform when that moment happens.
+            //       We can't spend arbitrary amounts of time transparent since the overlay fades away,
+            //       about a third has proven to be a solid time. So this fix will only apply for
+            //       durations >= FLASH_PREVENT_TIMEOUT*3
+            const int FLASH_PREVENT_TIMEOUT = 80;
+            var delay = 0;
+            if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
+                actor.opacity = 0;
+                delay = FLASH_PREVENT_TIMEOUT;
+                Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
+                    actor.opacity = 255;
+                    return false;
                 });
             }
+
+            var scale_x = (double) ew / old_rect_size_change.width;
+            var scale_y = (double) eh / old_rect_size_change.height;
+
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            latest_window_snapshot.set_easing_duration (duration);
+            latest_window_snapshot.set_position (ex, ey);
+            latest_window_snapshot.set_scale (scale_x, scale_y);
+            latest_window_snapshot.restore_easing_state ();
+
+            // the opacity animation is special, since we have to wait for the
+            // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_delay (delay);
+            latest_window_snapshot.set_easing_duration (duration - delay);
+            latest_window_snapshot.opacity = 0;
+            latest_window_snapshot.restore_easing_state ();
+
+            ulong maximize_old_handler_id = 0;
+            maximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
+                snapshot.disconnect (maximize_old_handler_id);
+
+                actor.set_translation (0.0f, 0.0f, 0.0f);
+
+                unowned var parent = snapshot.get_parent ();
+                if (parent != null) {
+                    parent.remove_child (snapshot);
+                }
+            });
+
+            latest_window_snapshot = null;
+
+            actor.set_pivot_point (0.0f, 0.0f);
+            actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
+            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
+
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            actor.set_easing_duration (duration);
+            actor.set_scale (1.0f, 1.0f);
+            actor.set_translation (0.0f, 0.0f, 0.0f);
+            actor.restore_easing_state ();
+
+            ulong handler_id = 0UL;
+            handler_id = actor.transitions_completed.connect (() => {
+                actor.disconnect (handler_id);
+                maximizing.remove (actor);
+            });
         }
 
         public override void unminimize (Meta.WindowActor actor) {
@@ -1693,76 +1691,76 @@ namespace Gala {
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            unowned var window = actor.get_meta_window ();
+            move_window_to_old_ws (window);
+
+            kill_window_effects (actor);
+
+            if (!AnimationsSettings.get_enable_animations () ||
+                latest_window_snapshot == null ||
+                window.window_type != Meta.WindowType.NORMAL) {
                 return;
             }
 
             var duration = AnimationDuration.SNAP;
 
-            kill_window_effects (actor);
-            unowned var window = actor.get_meta_window ();
+            float offset_x, offset_y;
+            var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
-            move_window_to_old_ws (window);
-
-            if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y;
-                var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
-
-                if (unmaximized_window_geometry != null) {
-                    offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
-                    offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-                } else {
-                    offset_x = 0;
-                    offset_y = 0;
-                }
-
-                if (latest_window_snapshot == null) {
-                    return;
-                }
-
-                unmaximizing.add (actor);
-
-                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
-
-                ui_group.add_child (latest_window_snapshot);
-
-                var scale_x = (float) ew / old_rect_size_change.width;
-                var scale_y = (float) eh / old_rect_size_change.height;
-
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                latest_window_snapshot.set_easing_duration (duration);
-                latest_window_snapshot.set_position (ex, ey);
-                latest_window_snapshot.set_scale (scale_x, scale_y);
-                latest_window_snapshot.opacity = 0U;
-                latest_window_snapshot.restore_easing_state ();
-
-                ulong unmaximize_old_handler_id = 0UL;
-                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
-                    snapshot.disconnect (unmaximize_old_handler_id);
-                    snapshot.destroy ();
-                });
-
-                latest_window_snapshot = null;
-
-                actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_position (ex, ey);
-                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
-                actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                actor.set_easing_duration (duration);
-                actor.set_scale (1.0f, 1.0f);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-                actor.restore_easing_state ();
-
-                ulong handler_id = 0UL;
-                handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (handler_id);
-                    unmaximizing.remove (actor);
-                });
+            if (unmaximized_window_geometry != null) {
+                offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
+                offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
+            } else {
+                offset_x = 0;
+                offset_y = 0;
             }
+
+            unmaximizing.add (actor);
+
+            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
+
+            ui_group.add_child (latest_window_snapshot);
+
+            var scale_x = (float) ew / old_rect_size_change.width;
+            var scale_y = (float) eh / old_rect_size_change.height;
+
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            latest_window_snapshot.set_easing_duration (duration);
+            latest_window_snapshot.set_position (ex, ey);
+            latest_window_snapshot.set_scale (scale_x, scale_y);
+            latest_window_snapshot.opacity = 0U;
+            latest_window_snapshot.restore_easing_state ();
+
+            ulong unmaximize_old_handler_id = 0;
+            unmaximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
+                snapshot.disconnect (unmaximize_old_handler_id);
+
+                unowned var parent = snapshot.get_parent ();
+                if (parent != null) {
+                    parent.remove_child (snapshot);
+                }
+            });
+
+            latest_window_snapshot = null;
+
+            actor.set_pivot_point (0.0f, 0.0f);
+            actor.set_position (ex, ey);
+            actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
+            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
+
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            actor.set_easing_duration (duration);
+            actor.set_scale (1.0f, 1.0f);
+            actor.set_translation (0.0f, 0.0f, 0.0f);
+            actor.restore_easing_state ();
+
+            ulong handler_id = 0UL;
+            handler_id = actor.transitions_completed.connect (() => {
+                actor.disconnect (handler_id);
+                unmaximizing.remove (actor);
+            });
         }
 
         private void move_window_to_next_ws (Meta.Window window) {
