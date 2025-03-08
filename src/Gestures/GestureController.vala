@@ -183,6 +183,8 @@ public class Gala.GestureController : Object {
             return;
         }
 
+        recognizing = false;
+
         update_gesture_progress (percentage, previous_delta);
 
         var to = progress;
