@@ -61,23 +61,20 @@ public class Gala.BlurManager : Object {
             return;
         }
 
+        var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
+
         var buffer_rect = window.get_buffer_rect ();
         var frame_rect = window.get_frame_rect ();
-        var x_compensation = frame_rect.x - buffer_rect.x;
-        var y_compensation = frame_rect.y - buffer_rect.y;
+        var x_compensation = (frame_rect.x - buffer_rect.x) / monitor_scaling_factor;
+        var y_compensation = (frame_rect.y - buffer_rect.y) / monitor_scaling_factor;
 
-        var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
-        var scaled_x = Utils.scale_to_int ((int) x, monitor_scaling_factor) + x_compensation;
-        var scaled_y = Utils.scale_to_int ((int) y, monitor_scaling_factor) + y_compensation;
-        var scaled_width = Utils.scale_to_int ((int) width, monitor_scaling_factor);
-        var scaled_height = Utils.scale_to_int ((int) height, monitor_scaling_factor);
-        var scaled_clip_radius = Utils.scale_to_int ((int) clip_radius, monitor_scaling_factor);
+        var scaled_clip_radius = clip_radius;
 
         var blur_data = blurred_windows[window];
         if (blur_data != null) {
             blur_data.blur_effect.monitor_scale = monitor_scaling_factor;
-            blur_data.actor.set_position (scaled_x, scaled_y);
-            blur_data.actor.set_size (scaled_width, scaled_height);
+            blur_data.actor.set_position (x + x_compensation, y + y_compensation);
+            blur_data.actor.set_size (width, height);
             blur_data.x = x;
             blur_data.y = y;
             blur_data.width = width;
@@ -89,16 +86,16 @@ public class Gala.BlurManager : Object {
         var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, scaled_clip_radius + CLIP_RADIUS_OFFSET, monitor_scaling_factor);
 
         var blurred_actor = new Clutter.Actor () {
-            x = scaled_x,
-            y = scaled_y,
-            width = scaled_width,
-            height = scaled_height
+            x = x + x_compensation,
+            y = y + y_compensation,
+            width = width,
+            height = height
         };
         blurred_actor.add_effect (blur_effect);
 
         window_actor.insert_child_below (blurred_actor, null);
 
-        // When window is created it may be 0x0, and we cannot calculate CSD decorations size.
+        // When window is created its size may be 0x0, and we cannot calculate CSD decorations size.
         // To avoid that we listen to actor's width property and recalculate decorations size.
         ulong invalid_size_handler = 0;
         if (window_actor.width == 0) {
@@ -152,14 +149,7 @@ public class Gala.BlurManager : Object {
         foreach (unowned var window in blurred_windows.get_keys ()) {
             var blur_data = blurred_windows[window];
 
-            var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
-            var scaled_x = Utils.scale_to_int ((int) blur_data.x, monitor_scaling_factor);
-            var scaled_y = Utils.scale_to_int ((int) blur_data.y, monitor_scaling_factor);
-            var scaled_width = Utils.scale_to_int ((int) blur_data.width, monitor_scaling_factor);
-            var scaled_height = Utils.scale_to_int ((int) blur_data.height, monitor_scaling_factor);
-
-            blur_data.actor.set_position (scaled_x, scaled_y);
-            blur_data.actor.set_size (scaled_width, scaled_height);
+            var monitor_scaling_factor = window.display.get_monitor_scale (window.get_monitor ());
             blur_data.blur_effect.monitor_scale = monitor_scaling_factor;
         }
     }

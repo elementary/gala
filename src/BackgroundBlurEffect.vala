@@ -145,8 +145,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         float[] bounds = {
             0.0f,
             0.0f,
-            actor.width,
-            actor.height
+            InternalUtils.scale_to_int ((int) actor.width, monitor_scale),
+            InternalUtils.scale_to_int ((int) actor.height, monitor_scale)
         };
 
         round_pipeline.set_uniform_float (round_bounds_location, 4, 1, &bounds[0]);
