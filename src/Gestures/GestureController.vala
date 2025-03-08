@@ -50,6 +50,12 @@ public class Gala.GestureController : Object {
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
     public double overshoot_upper_clamp { get; construct set; default = 1d; }
 
+    /**
+     * When disabled gesture progress will stay where the gesture ended and not snap to full integers values.
+     * This will also cause the controller to emit smooth progress information even if animations are disabled.
+     */
+    public bool snap { get; construct set; default = true; }
+
     private double _progress = 0;
     public double progress {
         get { return _progress; }
@@ -117,13 +123,13 @@ public class Gala.GestureController : Object {
             || backend == scroll_backend && GestureSettings.get_action (gesture) == NONE);
 
         if (recognizing) {
-            if (gesture.direction == UP || gesture.direction == RIGHT) {
+            if (gesture.direction == UP || gesture.direction == RIGHT || gesture.direction == OUT) {
                 direction_multiplier = 1;
             } else {
                 direction_multiplier = -1;
             }
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (snap && !AnimationsSettings.get_enable_animations ()) {
                 prepare ();
                 finish (0, progress + direction_multiplier);
                 recognizing = false;
@@ -181,13 +187,15 @@ public class Gala.GestureController : Object {
 
         var to = progress;
 
-        if (velocity.abs () > SUCCESS_VELOCITY_THRESHOLD) {
-            to += (velocity > 0 ? direction_multiplier : -direction_multiplier) * 0.5;
+        if (snap) {
+            if (velocity.abs () > SUCCESS_VELOCITY_THRESHOLD) {
+                to += (velocity > 0 ? direction_multiplier : -direction_multiplier) * 0.5;
+            }
+
+            to = Math.round (to);
         }
 
-        recognizing = false;
-
-        finish (velocity * direction_multiplier, Math.round (to));
+        finish (velocity * direction_multiplier, to);
 
         gesture_progress = 0;
         previous_percentage = 0;
