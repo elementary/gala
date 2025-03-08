@@ -41,6 +41,7 @@ namespace Gala {
         SWITCH_WINDOWS,
         MULTITASKING_VIEW,
         DOCK,
+        ZOOM,
         N_ACTIONS
     }
 

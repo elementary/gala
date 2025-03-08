@@ -224,7 +224,7 @@ namespace Gala {
         }
 
         public void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 return;
             }
 
