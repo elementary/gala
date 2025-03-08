@@ -325,9 +325,14 @@ namespace Gala {
                 return null;
             }
 
-            var container = new Clutter.Actor ();
-            container.set_size (inner_rect.width, inner_rect.height);
-            container.content = content;
+            var container = new Clutter.Actor () {
+                content = content,
+                offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS,
+                x = inner_rect.x,
+                y = inner_rect.y,
+                width = inner_rect.width,
+                height = inner_rect.height
+            };
 
             return container;
         }
@@ -450,6 +455,13 @@ namespace Gala {
 
             regions.remove (window);
             X.Fixes.destroy_region (xdisplay, region);
+        }
+
+        /**
+         * Utility that returns the given duration or 0 if animations are disabled.
+         */
+        public static uint get_animation_duration (uint duration) {
+            return Meta.Prefs.get_gnome_animations () ? duration : 0;
         }
     }
 }
