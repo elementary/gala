@@ -1196,19 +1196,17 @@ namespace Gala {
 #else
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
 #endif
-            if (!AnimationsSettings.get_enable_animations ()) {
-                return;
-            }
-
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
-            latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            if (AnimationsSettings.get_enable_animations ()) {
+                latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+            }
         }
 
         // size_changed gets called after frame_rect has updated
         public override void size_changed (Meta.WindowActor actor) {
-            if (!AnimationsSettings.get_enable_animations () || which_change == null) {
+            if (which_change == null) {
                 return;
             }
 
@@ -1314,9 +1312,12 @@ namespace Gala {
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
+            warning ("Maximize");
+
             unowned var window = actor.get_meta_window ();
             if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
                 || window.fullscreen && behavior_settings.get_boolean ("move-fullscreened-workspace")) {
+                warning ("Moving to next ws");
                 move_window_to_next_ws (window);
             }
 
