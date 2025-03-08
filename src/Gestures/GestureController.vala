@@ -130,9 +130,9 @@ public class Gala.GestureController : Object {
             }
 
             if (snap && !Meta.Prefs.get_gnome_animations ()) {
+                recognizing = false;
                 prepare ();
                 finish (0, progress + direction_multiplier);
-                recognizing = false;
             }
 
             recognizing_backend = backend;
