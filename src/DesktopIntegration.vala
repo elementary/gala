@@ -47,8 +47,6 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         // TODO: figure out if there's a better way to handle ws rearrangement
         display.window_created.connect ((window) => {
-            window.workspace_changed.connect (() => windows_changed ());
-
             time_appeared_on_workspace[window] = GLib.get_monotonic_time ();
 
             window.workspace_changed.connect ((_window) => {
