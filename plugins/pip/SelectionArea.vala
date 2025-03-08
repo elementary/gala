@@ -93,12 +93,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
 
         var confirm_button_pixbuf = Gala.Utils.get_confirm_button_pixbuf (CONFIRM_BUTTON_SIZE);
         if (confirm_button_pixbuf != null) {
-            confirm_button_img = new Cairo.ImageSurface (Cairo.Format.ARGB32, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
-            Cairo.Context img_ctx = new Cairo.Context (confirm_button_img);
-
-            Gdk.cairo_set_source_pixbuf (img_ctx, confirm_button_pixbuf, 0, 0);
-            img_ctx.rectangle (0.0, 0.0, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
-            img_ctx.paint ();
+            confirm_button_img = new Cairo.ImageSurface.for_data (confirm_button_pixbuf.get_pixels (), Cairo.Format.ARGB32, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE, confirm_button_pixbuf.rowstride);
         }
     }
 
@@ -315,33 +310,40 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         // Draws a full-screen colored rectangle with a smaller transparent
         // rectangle inside with border with handlers
         ctx.save ();
-
         ctx.set_operator (Cairo.Operator.CLEAR);
         ctx.paint ();
-
         ctx.restore ();
 
         //  if (!dragging) {
         //      return;
         //  }
 
-        ctx.set_operator (Cairo.Operator.SOURCE);
-
+        
         // Full-screen rectangle
+        ctx.save ();
+        ctx.set_operator (Cairo.Operator.OVER);
         ctx.rectangle (0, 0, width, height);
-        ctx.set_source_rgba (0.0, 0.0, 0.0, 0.0);
+        ctx.set_source_rgba (0.0, 0.0, 0.0, 0.5);
         ctx.fill ();
+        ctx.restore ();
 
         // Transparent rectangle
         int x, y, w, h;
         get_selection_rectangle (out x, out y, out w, out h);
 
+        ctx.save ();
+        ctx.set_operator (Cairo.Operator.SOURCE);
         ctx.rectangle (x, y, w, h);
-        ctx.set_source_rgba (0.1, 0.1, 0.1, 0.2);
+        ctx.set_source_rgba (0.0, 0.0, 0.0, 0.0);
         ctx.fill ();
+        ctx.restore ();
 
+        ctx.save ();
+
+        // Border
+        ctx.set_operator (Cairo.Operator.OVER);
         ctx.rectangle (x, y, w, h);
-        ctx.set_source_rgb (0.7, 0.7, 0.7);
+        ctx.set_source_rgba (0.7, 0.7, 0.7, 0.7);
         ctx.set_line_width (1.0);
         ctx.stroke ();
 
@@ -355,18 +357,22 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         ctx.arc (end_point.x, end_point.y, HANDLER_RADIUS, 0.0, 2.0 * Math.PI);
         ctx.fill ();
 
+        ctx.restore ();
+
+
         // Confirm button
         if (confirm_button_img != null) {
             var img_x = ((start_point.x + end_point.x) / 2) - (CONFIRM_BUTTON_SIZE / 2);
             var img_y = ((start_point.y + end_point.y) / 2) - (CONFIRM_BUTTON_SIZE / 2);
 
+            ctx.save ();
+            ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.set_source_surface (confirm_button_img, img_x, img_y);
             ctx.rectangle (img_x, img_y, CONFIRM_BUTTON_SIZE, CONFIRM_BUTTON_SIZE);
             ctx.clip ();
             ctx.paint ();
+            ctx.fill ();
+            ctx.restore ();
         }
-
-        // Hide the masked part of the actor
-        clone.set_clip (start_point.x - clone.x, start_point.y - clone.y, w, h);
     }
 }
