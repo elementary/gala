@@ -193,7 +193,7 @@ namespace Gala {
             unowned Meta.Display display = get_display ();
 
             notifications_manager = new NotificationsManager ();
-            screenshot_manager = new ScreenshotManager (this);
+            screenshot_manager = new ScreenshotManager (this, notifications_manager);
             DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
@@ -289,7 +289,7 @@ namespace Gala {
             if (plugin_manager.window_overview_provider == null
                 || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
             ) {
-                window_overview = new WindowOverview (this, gesture_tracker);
+                window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
@@ -2324,7 +2324,7 @@ namespace Gala {
                 yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
@@ -2342,7 +2342,7 @@ namespace Gala {
                 yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
@@ -2357,19 +2357,28 @@ namespace Gala {
                 yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
 
                 if (success) {
-                    send_screenshot_notification (clipboard);
+                    send_screenshot_notification (filename_used);
                 }
             } catch (Error e) {
                 // Ignore this error
             }
         }
 
-        private void send_screenshot_notification (bool clipboard) {
+        private void send_screenshot_notification (string filename_used) {
+            var clipboard = filename_used == null;
+
+            string[] actions = {};
+            if (!clipboard) {
+                /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
+            }
+
             notifications_manager.send.begin (
                 "ScreenshotManager",
                 "image-x-generic",
                 _("Screenshot taken"),
                 clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
+                actions,
                 new GLib.HashTable<string, Variant> (null, null)
             );
         }

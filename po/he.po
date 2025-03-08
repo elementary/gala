@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2025-02-12 01:16+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"PO-Revision-Date: 2025-03-04 08:11+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementary.io/projects/desktop/gala/he/>"
 "\n"
@@ -241,15 +241,15 @@ msgstr "לאפשר"
 msgid "Deny"
 msgstr "לסרב"
 
-#: src/DesktopIntegration.vala:133
+#: src/DesktopIntegration.vala:176
 msgid "Window has already focus"
 msgstr "החלון כבר ממוקד"
 
-#: src/ScreenshotManager.vala:288
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "המסך צולם"
 
@@ -257,36 +257,41 @@ msgstr "המסך צולם"
 msgid "Window switcher"
 msgstr "בורר חלונות"
 
-#: src/WindowManager.vala:2268
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "השינויים יוחזרו לקדמותם אוטומטית לאחר שנייה."
 msgstr[1] "השינויים יוחזרו לקדמותם אוטומטית לאחר %i שניות."
 
-#: src/WindowManager.vala:2275
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "לשמור את הגדרות התצוגה החדשות?"
 
-#: src/WindowManager.vala:2279
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "לשמור את ההגדרות"
 
-#: src/WindowManager.vala:2280
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "להשתמש בהגדרות הקודמות"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2319
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ־%s"
 
-#: src/WindowManager.vala:2375
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr "הצגה בקבצים"
+
+#: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
 msgstr "צילום המסך נשמר ללוח הגזירים"
 
-#: src/WindowManager.vala:2375
+#: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
 msgstr "צילום המסך נשמר לתיקיית צילומי המסך"
 

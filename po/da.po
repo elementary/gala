@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-02-10 20:55+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
 "PO-Revision-Date: 2020-08-25 13:13+0000\n"
 "Last-Translator: Kaj Printz Madsen <kajprintz@gmail.com>\n"
 "Language-Team: Danish <https://l10n.elementary.io/projects/desktop/gala/da/"
@@ -258,15 +258,15 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:133
+#: src/DesktopIntegration.vala:176
 msgid "Window has already focus"
 msgstr ""
 
-#: src/ScreenshotManager.vala:288
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "Skærmbilleder"
 
-#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 #, fuzzy
 #| msgid "Screenshots"
 msgid "Screenshot taken"
@@ -276,41 +276,46 @@ msgstr "Skærmbilleder"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2268
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2275
+#: src/WindowManager.vala:2272
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Skærmindstillinger…"
 
-#: src/WindowManager.vala:2279
+#: src/WindowManager.vala:2276
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Systemindstillinger…"
 
-#: src/WindowManager.vala:2280
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2319
+#: src/WindowManager.vala:2316
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
 msgstr "Skærmbilleder"
 
-#: src/WindowManager.vala:2375
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr ""
+
+#: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/WindowManager.vala:2375
+#: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-02-10 20:55+0000\n"
-"PO-Revision-Date: 2025-02-12 01:16+0000\n"
-"Last-Translator: Italo Felipe Capasso Ballesteros <edwood.grant@gmail.com>\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"PO-Revision-Date: 2025-03-02 19:10+0000\n"
+"Last-Translator: Italo Felipe Capasso Ballesteros <italo@gp-mail.com>\n"
 "Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/>"
 "\n"
 "Language: es\n"
@@ -262,15 +262,15 @@ msgstr "Permitir"
 msgid "Deny"
 msgstr "Denegar"
 
-#: src/DesktopIntegration.vala:133
+#: src/DesktopIntegration.vala:176
 msgid "Window has already focus"
 msgstr "La ventana ya está enfocada"
 
-#: src/ScreenshotManager.vala:288
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "Capturas de pantalla"
 
-#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "Se tomó una captura de pantalla"
 
@@ -278,36 +278,41 @@ msgstr "Se tomó una captura de pantalla"
 msgid "Window switcher"
 msgstr "Selector de ventanas"
 
-#: src/WindowManager.vala:2268
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Los cambios se revertirán automáticamente después de %i segundo."
 msgstr[1] "Los cambios se revertirán automáticamente después de %i segundos."
 
-#: src/WindowManager.vala:2275
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "¿Desea conservar la nueva configuración de pantalla?"
 
-#: src/WindowManager.vala:2279
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "Conservar configuración"
 
-#: src/WindowManager.vala:2280
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "Usar configuración previa"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2319
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
 
-#: src/WindowManager.vala:2375
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr "Mostar en Archivos"
+
+#: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
 msgstr "La captura se guardó en el portapapeles"
 
-#: src/WindowManager.vala:2375
+#: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
 msgstr "Captura guardada en la carpeta «Capturas de pantalla»"
 

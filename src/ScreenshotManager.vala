@@ -22,7 +22,11 @@ namespace Gala {
 
     [DBus (name="org.gnome.Shell.Screenshot")]
     public class ScreenshotManager : Object {
-        private WindowManager wm;
+        [DBus (visible = false)]
+        public WindowManager wm { get; construct; }
+        [DBus (visible = false)]
+        public NotificationsManager notifications_manager { get; construct; }
+
         private Settings desktop_settings;
 
         private string prev_font_regular;
@@ -31,12 +35,29 @@ namespace Gala {
         private uint conceal_timeout;
 
         [DBus (visible = false)]
-        public ScreenshotManager (WindowManager _wm) {
-            wm = _wm;
+        public ScreenshotManager (WindowManager wm, NotificationsManager notifications_manager) {
+            Object (wm: wm, notifications_manager: notifications_manager);
         }
 
         construct {
             desktop_settings = new Settings ("org.gnome.desktop.interface");
+
+            var show_in_files_action = new GLib.SimpleAction ("show-in-files", GLib.VariantType.STRING);
+            show_in_files_action.activate.connect (show_in_files);
+            notifications_manager.add_action (show_in_files_action);
+        }
+
+        private void show_in_files (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
+            var files_list = new GLib.List<GLib.File> ();
+            files_list.append (GLib.File.new_for_path (variant.get_string ()));
+
+            var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+
+            try {
+                files_appinfo.launch (files_list, null);
+            } catch (Error e) {
+                warning (e.message);
+            }
         }
 
         public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {
