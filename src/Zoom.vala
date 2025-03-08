@@ -63,7 +63,7 @@ public class Gala.Zoom : Object, GestureTarget {
 
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) 
+        Clutter.KeyEvent event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true);
     }
 
@@ -109,7 +109,7 @@ public class Gala.Zoom : Object, GestureTarget {
 
             case UPDATE:
                 var target_zoom = (float) progress * 10 + 1;
-                if (!AnimationsSettings.get_enable_animations ()) {
+                if (!Meta.Prefs.get_gnome_animations ()) {
                     var delta = target_zoom - current_zoom;
                     if (delta.abs () >= SHORTCUT_DELTA - float.EPSILON) {
                         target_zoom = current_zoom + ((delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA);

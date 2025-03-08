@@ -247,7 +247,7 @@ public class Gala.WindowClone : ActorTarget {
 
         if (animate) {
             save_easing_state ();
-            set_easing_duration (AnimationsSettings.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
+            set_easing_duration (Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
             set_easing_mode (EASE_OUT_QUAD);
         }
 
