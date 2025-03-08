@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-02-10 20:55+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
 "PO-Revision-Date: 2024-12-02 05:14+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
@@ -248,15 +248,15 @@ msgstr "Salli"
 msgid "Deny"
 msgstr "Estä"
 
-#: src/DesktopIntegration.vala:133
+#: src/DesktopIntegration.vala:176
 msgid "Window has already focus"
 msgstr "Ikkunalla on jo kohdistus"
 
-#: src/ScreenshotManager.vala:288
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "Kuvakaappaukset"
 
-#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "Kuvakaappaus otettu"
 
@@ -264,36 +264,41 @@ msgstr "Kuvakaappaus otettu"
 msgid "Window switcher"
 msgstr "Ikkunavaihdin"
 
-#: src/WindowManager.vala:2268
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Muutokset perutaan automaattisesti %i sekunnin jälkeen."
 msgstr[1] "Muutokset perutaan automaattisesti %i sekunnin jälkeen."
 
-#: src/WindowManager.vala:2275
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "Säilytetäänkö uudet näyttöasetukset?"
 
-#: src/WindowManager.vala:2279
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "Säilytä asetukset"
 
-#: src/WindowManager.vala:2280
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "Käytä aiempia asetuksia"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2319
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Kuvakaappaus - %s"
 
-#: src/WindowManager.vala:2375
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr ""
+
+#: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/WindowManager.vala:2375
+#: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 

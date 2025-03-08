@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-02-10 20:55+0000\n"
+"POT-Creation-Date: 2025-03-02 14:11+0000\n"
 "PO-Revision-Date: 2024-08-07 18:17+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -255,15 +255,15 @@ msgstr "允许"
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:133
+#: src/DesktopIntegration.vala:176
 msgid "Window has already focus"
 msgstr ""
 
-#: src/ScreenshotManager.vala:288
+#: src/ScreenshotManager.vala:309
 msgid "Screenshots"
 msgstr "屏幕截图"
 
-#: src/ScreenshotManager.vala:380 src/WindowManager.vala:2374
+#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
 msgid "Screenshot taken"
 msgstr "已截屏"
 
@@ -271,35 +271,40 @@ msgstr "已截屏"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2268
+#: src/WindowManager.vala:2265
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "变更将在 %i 秒后撤销。"
 
-#: src/WindowManager.vala:2275
+#: src/WindowManager.vala:2272
 msgid "Keep new display settings?"
 msgstr "要保留新的显示设置吗？"
 
-#: src/WindowManager.vala:2279
+#: src/WindowManager.vala:2276
 msgid "Keep Settings"
 msgstr "保留设置"
 
-#: src/WindowManager.vala:2280
+#: src/WindowManager.vala:2277
 msgid "Use Previous Settings"
 msgstr "恢复原有设置"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2319
+#: src/WindowManager.vala:2316
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"
 
-#: src/WindowManager.vala:2375
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/WindowManager.vala:2373
+msgid "Show in Files"
+msgstr ""
+
+#: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/WindowManager.vala:2375
+#: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
