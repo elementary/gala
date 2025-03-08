@@ -1312,7 +1312,6 @@ namespace Gala {
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            warning ("Maximize");
 
             unowned var window = actor.get_meta_window ();
             if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
