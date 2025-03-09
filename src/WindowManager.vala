@@ -130,6 +130,7 @@ namespace Gala {
             daemon_manager = new DaemonManager (get_display ());
 
             show_stage ();
+            BlurManager.init (this);
 
             init_a11y ();
 
