@@ -18,6 +18,8 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
+
         /**
          * {@inheritDoc}
          */
@@ -1771,20 +1773,78 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
-            if (!is_modal ())
+            if (!is_modal ()) {
                 return false;
+            }
+
+            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+            switch (action) {
+                case Meta.KeyBindingAction.OVERLAY_KEY:
+                    if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
+                        return action_filter (MULTITASKING_VIEW);
+                    }
+                    break;
+                case Meta.KeyBindingAction.WORKSPACE_1:
+                case Meta.KeyBindingAction.WORKSPACE_2:
+                case Meta.KeyBindingAction.WORKSPACE_3:
+                case Meta.KeyBindingAction.WORKSPACE_4:
+                case Meta.KeyBindingAction.WORKSPACE_5:
+                case Meta.KeyBindingAction.WORKSPACE_6:
+                case Meta.KeyBindingAction.WORKSPACE_7:
+                case Meta.KeyBindingAction.WORKSPACE_8:
+                case Meta.KeyBindingAction.WORKSPACE_9:
+                case Meta.KeyBindingAction.WORKSPACE_10:
+                case Meta.KeyBindingAction.WORKSPACE_11:
+                case Meta.KeyBindingAction.WORKSPACE_12:
+                case Meta.KeyBindingAction.WORKSPACE_LEFT:
+                case Meta.KeyBindingAction.WORKSPACE_RIGHT:
+                    return action_filter (SWITCH_WORKSPACE);
+                case Meta.KeyBindingAction.SHOW_DESKTOP:
+                    return action_filter (MULTITASKING_VIEW);
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_GROUP:
+                case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
+                    return action_filter (SWITCH_WINDOWS);
+                default:
+                    break;
+            }
+
+            switch (binding.get_name ()) {
+                case "cycle-workspaces-next":
+                case "cycle-workspaces-previous":
+                case "switch-to-workspace-first":
+                case "switch-to-workspace-last":
+                    return action_filter (SWITCH_WORKSPACE);
+                case "zoom-in":
+                case "zoom-out":
+                    return action_filter (ZOOM);
+                default:
+                    break;
+            }
 
             var modal_proxy = modal_stack.peek_head ();
             if (modal_proxy == null) {
                 return false;
             }
 
-           unowned var filter = modal_proxy.get_keybinding_filter ();
+            unowned var filter = modal_proxy.get_keybinding_filter ();
             if (filter == null) {
                 return false;
             }
 
             return filter (binding);
+        }
+
+        public bool action_filter (GestureAction action) {
+            if (!is_modal ()) {
+                return false;
+            }
+
+            return modal_stack.peek_head ().filter_action (action);
         }
 
         public override void confirm_display_change () {

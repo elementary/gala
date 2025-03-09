@@ -26,7 +26,7 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
     construct {
         visible = false;
         reactive = true;
-        gesture_controller = new GestureController (MULTITASKING_VIEW, this) {
+        gesture_controller = new GestureController (MULTITASKING_VIEW, this, wm) {
             enabled = false
         };
     }
@@ -121,6 +121,7 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
 
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
+        modal_proxy.allow_actions ({ ZOOM });
 
         unowned var display = wm.get_display ();
 
@@ -174,8 +175,6 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
 
         switch (binding.get_name ()) {
             case "expose-all-windows":
-            case "zoom-in":
-            case "zoom-out":
                 return false;
             default:
                 break;
