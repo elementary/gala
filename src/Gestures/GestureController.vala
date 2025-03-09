@@ -87,7 +87,7 @@ public class Gala.GestureController : Object {
     private double velocity;
     private int direction_multiplier;
 
-    private Clutter.Timeline? timeline;
+    private SpringTimeline? timeline;
 
     public GestureController (GestureAction action, GestureTarget target) {
         Object (action: action, target: target);
@@ -264,7 +264,10 @@ public class Gala.GestureController : Object {
      * If you don't want animation but an immediate jump, you should set {@link progress} directly.
      */
     public void goto (double to) {
-        if (progress == to || recognizing) {
+        var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+        if (progress == to || recognizing ||
+            timeline != null && clamped_to == timeline.value_to // Only allow overshoot if there's no ongoing overshoot animation to prevent stacking
+        ) {
             return;
         }
 
