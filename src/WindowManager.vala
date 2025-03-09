@@ -275,7 +275,7 @@ namespace Gala {
             }
 
             if (plugin_manager.window_switcher_provider == null) {
-                window_switcher = new WindowSwitcher (this, gesture_tracker);
+                window_switcher = new WindowSwitcher (this);
                 ui_group.add_child (window_switcher);
 
                 Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
@@ -592,7 +592,7 @@ namespace Gala {
 
             var action = GestureSettings.get_action (gesture);
             switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
+            return switch_workspace_with_gesture;
         }
 
         private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
@@ -610,10 +610,6 @@ namespace Gala {
 
                 case SWITCH_WORKSPACE:
                     switch_to_next_workspace (direction, timestamp);
-                    break;
-
-                case SWITCH_WINDOWS:
-                    window_switcher.handle_gesture (gesture.direction);
                     break;
 
                 default:
