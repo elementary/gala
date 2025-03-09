@@ -122,8 +122,8 @@ public class Gala.GestureController : Object {
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
         var recognized_action = GestureSettings.get_action (gesture, out _action_info);
-        recognizing = enabled && !wm.action_filter (recognized_action) &&
-            (recognized_action == action || backend == scroll_backend && recognized_action == NONE);
+        recognizing = enabled && (!wm.action_filter (recognized_action) && recognized_action == action ||
+            backend == scroll_backend && recognized_action == NONE);
 
         if (recognizing) {
             if (gesture.direction == UP || gesture.direction == RIGHT || gesture.direction == OUT) {
