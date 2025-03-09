@@ -6,6 +6,8 @@
  */
 
 public class Gala.WorkspaceRow : ActorTarget {
+    public const int WORKSPACE_GAP = 24;
+
     public Meta.Display display { get; construct; }
 
     public WorkspaceRow (Meta.Display display) {
@@ -26,7 +28,7 @@ public class Gala.WorkspaceRow : ActorTarget {
             float preferred_width;
             child.get_preferred_width (-1, null, out preferred_width);
 
-            var child_x = (float) Math.round ((progress + index) * preferred_width);
+            var child_x = (float) Math.round ((progress + index) * (preferred_width + WORKSPACE_GAP));
 
             child.allocate_preferred_size (child_x, 0);
 
