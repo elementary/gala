@@ -34,7 +34,7 @@ public class Gala.Zoom : Object, GestureTarget {
         display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
         display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
 
-        gesture_controller = new GestureController (ZOOM, this) {
+        gesture_controller = new GestureController (ZOOM, this, wm) {
             snap = false
         };
         gesture_controller.enable_touchpad ();

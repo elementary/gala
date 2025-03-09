@@ -63,6 +63,9 @@ namespace Gala {
      */
     public class ModalProxy : Object {
         public Clutter.Grab? grab { get; set; }
+
+        private GestureAction[] allowed_actions;
+
         /**
          * A function which is called whenever a keybinding is pressed. If you supply a custom
          * one you can filter out those that'd you like to be passed through and block all others.
@@ -86,6 +89,14 @@ namespace Gala {
          */
         public void allow_all_keybindings () {
             _keybinding_filter = null;
+        }
+
+        public void allow_actions (GestureAction[] actions) {
+            allowed_actions = actions;
+        }
+
+        public bool filter_action (GestureAction action) {
+            return !(action in allowed_actions);
         }
     }
 
@@ -176,5 +187,11 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        /**
+         * Checks whether the action should currently be prohibited.
+         * @return true if the action is should be prohibited, false otherwise
+         */
+        public abstract bool action_filter (GestureAction action);
     }
 }
