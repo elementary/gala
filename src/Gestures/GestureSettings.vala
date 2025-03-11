@@ -70,7 +70,8 @@ public class Gala.GestureSettings : Object {
         return gala_settings.get_string (setting_id);
     }
 
-    public static GestureAction get_action (Gesture gesture) {
+    public static GestureAction get_action (Gesture gesture, out Variant? action_info = null) {
+        action_info = null;
         var fingers = gesture.fingers;
 
         switch (gesture.type) {
@@ -86,7 +87,8 @@ public class Gala.GestureSettings : Object {
 
                     if (fingers == 3 && three_finger_swipe_horizontal == "move-to-workspace" ||
                         fingers == 4 && four_finger_swipe_horizontal == "move-to-workspace") {
-                        return MOVE_TO_WORKSPACE;
+                        action_info = true;
+                        return SWITCH_WORKSPACE;
                     }
 
 
