@@ -242,6 +242,23 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         current_icon = (WindowSwitcherIcon) container.get_child_at_index (current_index);
     }
 
+    private void select_icon (WindowSwitcherIcon? icon) {
+        if (icon == null) {
+            gesture_controller.progress = 0;
+            current_icon = null;
+            return;
+        }
+
+        int index = 0;
+        for (var child = container.get_first_child (); child != null; child = child.get_next_sibling ()) {
+            if (child == icon) {
+                gesture_controller.progress = index / 10d;
+                break;
+            }
+            index++;
+        }
+    }
+
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
@@ -303,31 +320,32 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
+        select_icon (null);
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
         }
 
-        unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
-        if (current_window == null) {
-            current_icon = null;
-        }
-
         container.remove_all_children ();
 
+        unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
             var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
-            if (window == current_window) {
-                current_icon = icon;
-            }
-
             add_icon (icon);
+
+            if (window == current_window) {
+                select_icon (icon);
+                warning ("Selected current: %s", window.title);
+            }
         }
 
         return true;
     }
 
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+        select_icon (null);
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
@@ -335,7 +353,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         if (current_window == null) {
-            current_icon = null;
             return false;
         }
 
@@ -346,11 +363,11 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
                 var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
-                if (window == current_window) {
-                    current_icon = icon;
-                }
-
                 add_icon (icon);
+
+                if (window == current_window) {
+                    select_icon (icon);
+                }
             }
         }
 
@@ -363,7 +380,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
 
         icon.motion_event.connect ((_icon, event) => {
             if (current_icon != _icon && !gesture_controller.recognizing) {
-                current_icon = (WindowSwitcherIcon) _icon;
+                select_icon ((WindowSwitcherIcon) _icon);
             }
 
             return Clutter.EVENT_PROPAGATE;
@@ -379,8 +396,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         if (opened) {
             return;
         }
-
-        gesture_controller.progress = 0;
 
         //Although we are setting visible via the opacity notify handler anyway
         //we have to set it here manually otherwise the size gotten via get_preferred_size is wrong
