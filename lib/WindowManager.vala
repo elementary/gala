@@ -16,9 +16,16 @@
 //
 
 namespace Gala {
+    namespace ActionKeys {
+        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
+        public const string OVERLAY_ACTION = "overlay-action";
+        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
+        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
+    }
+
     public enum ActionType {
         NONE = 0,
-        SHOW_WORKSPACE_VIEW,
+        SHOW_MULTITASKING_VIEW,
         MAXIMIZE_CURRENT,
         HIDE_CURRENT,
         OPEN_LAUNCHER,
@@ -119,11 +126,6 @@ namespace Gala {
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
 
         /**
-         * View that allows to see and manage all your windows and desktops.
-         */
-        public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
-
-        /**
          * Enters the modal mode, which means that all events are directed to the stage instead
          * of the windows. This is the only way to receive keyboard events besides shortcut listeners.
          *
@@ -176,5 +178,12 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        /**
+         * Gets action command from gsettings and executes it.
+         *
+         * @param action_key The gsettings key of action. Available keys are stored in ActionKeys
+         */
+        public abstract void launch_action (string action_key);
     }
 }
