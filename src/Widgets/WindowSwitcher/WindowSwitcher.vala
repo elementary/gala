@@ -49,6 +49,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         }
     }
 
+    private double previous_progress = 0d;
+
     private float scaling_factor = 1.0f;
 
     public WindowSwitcher (WindowManager wm) {
@@ -230,7 +232,11 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             return;
         }
 
-        if (container.get_n_children () == 1 && current_icon != null) {
+        var is_step = ((int) (previous_progress / GESTURE_STEP) - (int) (progress / GESTURE_STEP)).abs () >= 1;
+
+        previous_progress = progress;
+
+        if (container.get_n_children () == 1 && current_icon != null && is_step) {
             InternalUtils.bell_notify (wm.get_display ());
             return;
         }
@@ -241,7 +247,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             current_index = container.get_n_children () + current_index;
         }
 
-        current_icon = (WindowSwitcherIcon) container.get_child_at_index (current_index);
+        var new_icon = (WindowSwitcherIcon) container.get_child_at_index (current_index);
+        if (new_icon != current_icon) {
+            current_icon = new_icon;
+        }
     }
 
     private void select_icon (WindowSwitcherIcon? icon) {
