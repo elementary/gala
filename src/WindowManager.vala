@@ -52,9 +52,9 @@ namespace Gala {
         public Meta.BackgroundGroup background_group { get; protected set; }
 
         /**
-         * {@inheritDoc}
+         * View that allows to see and manage all your windows and desktops.
          */
-        public Gala.ActivatableComponent workspace_view { get; protected set; }
+        public MultitaskingView multitasking_view { get; protected set; }
 
         public PointerLocator pointer_locator { get; private set; }
 
@@ -107,14 +107,7 @@ namespace Gala {
         private GLib.Settings behavior_settings;
         private GLib.Settings new_behavior_settings;
 
-        private GestureTracker gesture_tracker;
-
         construct {
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            gesture_tracker.enable_touchpad ();
-            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
-            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
-
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -250,15 +243,11 @@ namespace Gala {
             plugin_manager.initialize (this);
             plugin_manager.regions_changed.connect (update_input_area);
 
-            if (plugin_manager.workspace_view_provider == null
-                || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null
-            ) {
-                workspace_view = new MultitaskingView (this);
-                ui_group.add_child ((Clutter.Actor) workspace_view);
-            }
+            multitasking_view = new MultitaskingView (this);
+            ui_group.add_child (multitasking_view);
 
             if (plugin_manager.window_switcher_provider == null) {
-                window_switcher = new WindowSwitcher (this, gesture_tracker);
+                window_switcher = new WindowSwitcher (this);
                 ui_group.add_child (window_switcher);
 
                 Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
@@ -333,10 +322,10 @@ namespace Gala {
             });
 
             Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (workspace_view.is_opened ()) {
-                    workspace_view.close ();
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
                 } else {
-                    workspace_view.open ();
+                    multitasking_view.open ();
                 }
             });
 
@@ -532,24 +521,11 @@ namespace Gala {
             KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
         }
 
-        private bool on_gesture_detected (Gesture gesture) {
-            if (workspace_view.is_opened ()) {
-                return false;
-            }
-
-            return GestureSettings.get_action (gesture) == SWITCH_WINDOWS && !window_switcher.opened;
-        }
-
-        private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
-            window_switcher.handle_gesture (gesture.direction);
-            return 0;
-        }
-
         /**
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            ((MultitaskingView) workspace_view).switch_to_next_workspace (direction);
+            multitasking_view.switch_to_next_workspace (direction);
         }
 
         private void update_input_area () {
@@ -682,7 +658,7 @@ namespace Gala {
                 return;
             }
 
-            ((MultitaskingView) workspace_view).move_window (window, workspace);
+            multitasking_view.move_window (window, workspace);
         }
 
         /**
@@ -804,14 +780,11 @@ namespace Gala {
             unowned var current = display.get_focus_window ();
 
             switch (type) {
-                case ActionType.SHOW_WORKSPACE_VIEW:
-                    if (workspace_view == null)
-                        break;
-
-                    if (workspace_view.is_opened ())
-                        workspace_view.close ();
+                case ActionType.SHOW_MULTITASKING_VIEW:
+                    if (multitasking_view.is_opened ())
+                        multitasking_view.close ();
                     else
-                        workspace_view.open ();
+                        multitasking_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
@@ -1727,7 +1700,7 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            ((MultitaskingView) workspace_view).kill_switch_workspace ();
+            multitasking_view.kill_switch_workspace ();
         }
 
         public override void locate_pointer () {
