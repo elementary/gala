@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-03-02 14:11+0000\n"
-"PO-Revision-Date: 2024-12-21 09:16+0000\n"
+"PO-Revision-Date: 2025-03-08 12:45+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
-">\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
+"\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.10.2\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -301,15 +301,15 @@ msgstr "Zrzut ekranu z %s"
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
 #: src/WindowManager.vala:2373
 msgid "Show in Files"
-msgstr ""
+msgstr "Pokaż w Plikach"
 
 #: src/WindowManager.vala:2380
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Zrzut ekranu zapisany do schowka"
 
 #: src/WindowManager.vala:2380
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
