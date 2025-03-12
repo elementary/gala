@@ -14,6 +14,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
+    private const double GESTURE_STEP = 0.1;
 
     public WindowManager wm { get; construct; }
     public bool opened { get; private set; default = false; }
@@ -60,6 +61,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         gesture_controller = new GestureController (SWITCH_WINDOWS, this) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
+            snap = false
         };
         gesture_controller.enable_touchpad ();
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
@@ -233,7 +235,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             return;
         }
 
-        var current_index = (int) ((progress - (int) progress) * 10) % container.get_n_children ();
+        var current_index = (int) (progress / GESTURE_STEP) % container.get_n_children ();
 
         if (current_index < 0) {
             current_index = container.get_n_children () + current_index;
@@ -252,7 +254,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         int index = 0;
         for (var child = container.get_first_child (); child != null; child = child.get_next_sibling ()) {
             if (child == icon) {
-                gesture_controller.progress = index / 10d;
+                gesture_controller.progress = index * GESTURE_STEP;
                 break;
             }
             index++;
@@ -336,7 +338,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
 
             if (window == current_window) {
                 select_icon (icon);
-                warning ("Selected current: %s", window.title);
             }
         }
 
@@ -482,7 +483,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private void next_window (bool backward) {
-        gesture_controller.progress += backward ? -0.1 : 0.1;
+        gesture_controller.progress += backward ? -GESTURE_STEP : GESTURE_STEP;
     }
 
     private void update_caption_text () {
