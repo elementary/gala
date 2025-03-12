@@ -16,6 +16,13 @@
 //
 
 namespace Gala {
+    namespace ActionKeys {
+        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
+        public const string OVERLAY_ACTION = "overlay-action";
+        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
+        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
+    }
+
     public enum ActionType {
         NONE = 0,
         SHOW_WORKSPACE_VIEW,
@@ -50,14 +57,6 @@ namespace Gala {
         ON_ALL_WORKSPACES,
         CAN_CLOSE,
         IS_TILED
-    }
-
-    [CCode (has_type_id = false)]
-    public class ActionKeys {
-        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
-        public const string OVERLAY_ACTION = "overlay-action";
-        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
-        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
     }
 
     /**
