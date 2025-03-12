@@ -16,6 +16,13 @@
 //
 
 namespace Gala {
+    namespace ActionKeys {
+        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
+        public const string OVERLAY_ACTION = "overlay-action";
+        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
+        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
+    }
+
     public enum ActionType {
         NONE = 0,
         SHOW_MULTITASKING_VIEW,
@@ -171,5 +178,12 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        /**
+         * Gets action command from gsettings and executes it.
+         *
+         * @param action_key The gsettings key of action. Available keys are stored in ActionKeys
+         */
+        public abstract void launch_action (string action_key);
     }
 }

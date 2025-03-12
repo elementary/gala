@@ -305,14 +305,6 @@ namespace Gala {
             display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
-            display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("interactive-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
                     window_overview.close ();
@@ -322,11 +314,11 @@ namespace Gala {
             });
 
             display.overlay_key.connect (() => {
-                launch_action ("overlay-action");
+                launch_action (ActionKeys.OVERLAY_ACTION);
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
-                launch_action ("toggle-recording-action");
+                launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
             });
 
             Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
@@ -414,7 +406,7 @@ namespace Gala {
             ui_group.set_size (max_width, max_height);
         }
 
-        private void launch_action (string action_key) {
+        public void launch_action (string action_key) {
             try {
                 var action = behavior_settings.get_string (action_key);
                 if (action != null) {
@@ -520,41 +512,13 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            launch_action ("panel-main-menu-action");
+            launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
         }
 
         [CCode (instance_pos = -1)]
         private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
-        }
-
-        [CCode (instance_pos = -1)]
-        private void handle_screenshot (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            switch (binding.get_name ()) {
-                case "screenshot":
-                    screenshot_screen.begin ();
-                    break;
-                case "interactive-screenshot":
-                    launch_action ("interactive-screenshot-action");
-                    break;
-                case "area-screenshot":
-                    screenshot_area.begin ();
-                    break;
-                case "window-screenshot":
-                    screenshot_current_window.begin ();
-                    break;
-                case "screenshot-clip":
-                    screenshot_screen.begin (true);
-                    break;
-                case "area-screenshot-clip":
-                    screenshot_area.begin (true);
-                    break;
-                case "window-screenshot-clip":
-                    screenshot_current_window.begin (true);
-                    break;
-            }
         }
 
         /**
@@ -897,7 +861,7 @@ namespace Gala {
                         current.@delete (Meta.CURRENT_TIME);
                     break;
                 case ActionType.OPEN_LAUNCHER:
-                    launch_action ("panel-main-menu-action");
+                    launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null) {
@@ -928,7 +892,7 @@ namespace Gala {
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
-                    screenshot_current_window.begin ();
+                    screenshot_manager.handle_screenshot_current_window_shortcut.begin (false);
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -1814,79 +1778,6 @@ namespace Gala {
 
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
-        }
-
-        private string generate_screenshot_filename () {
-            var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
-            /// TRANSLATORS: %s represents a timestamp here
-            return _("Screenshot from %s").printf (date_time);
-        }
-
-        private async void screenshot_current_window (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-                yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
-
-                if (success) {
-                    send_screenshot_notification (filename_used);
-                }
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private async void screenshot_area (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-
-                int x, y, w, h;
-                yield screenshot_manager.select_area (out x, out y, out w, out h);
-                yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
-
-                if (success) {
-                    send_screenshot_notification (filename_used);
-                }
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private async void screenshot_screen (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-                yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
-
-                if (success) {
-                    send_screenshot_notification (filename_used);
-                }
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private void send_screenshot_notification (string filename_used) {
-            var clipboard = filename_used == null;
-
-            string[] actions = {};
-            if (!clipboard) {
-                /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-                actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
-            }
-
-            notifications_manager.send.begin (
-                "ScreenshotManager",
-                "image-x-generic",
-                _("Screenshot taken"),
-                clipboard ? _("Screenshot is saved to clipboard") : _("Screenshot saved to screenshots folder"),
-                actions,
-                new GLib.HashTable<string, Variant> (null, null)
-            );
         }
     }
 }
