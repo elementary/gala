@@ -60,7 +60,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, this) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
