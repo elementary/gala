@@ -5,7 +5,7 @@
 
 public enum Gala.ActionType {
     NONE = 0,
-    SHOW_WORKSPACE_VIEW,
+    SHOW_MULTITASKING_VIEW,
     MAXIMIZE_CURRENT,
     HIDE_CURRENT,
     OPEN_LAUNCHER,
