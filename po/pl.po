@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"POT-Creation-Date: 2025-03-12 22:19+0000\n"
 "PO-Revision-Date: 2025-03-08 12:45+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
-"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/>"
-"\n"
+"Language-Team: Polish <https://l10n.elementary.io/projects/desktop/gala/pl/"
+">\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -256,23 +256,42 @@ msgstr "Zezwól"
 msgid "Deny"
 msgstr "Odmów"
 
-#: src/DesktopIntegration.vala:176
+#: src/DesktopIntegration.vala:194
 msgid "Window has already focus"
 msgstr "Okno ma już fokus"
 
-#: src/ScreenshotManager.vala:309
-msgid "Screenshots"
-msgstr "Zrzuty ekranu"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:79
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Zrzut ekranu z %s"
 
-#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:137
+msgid "Show in Files"
+msgstr "Pokaż w Plikach"
+
+#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot is saved to clipboard"
+msgstr "Zrzut ekranu zapisany do schowka"
+
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot saved to screenshots folder"
+msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
+
+#: src/ScreenshotManager.vala:409
+msgid "Screenshots"
+msgstr "Zrzuty ekranu"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:1735
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -280,36 +299,17 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:2272
+#: src/WindowManager.vala:1742
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:2276
+#: src/WindowManager.vala:1746
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:2277
+#: src/WindowManager.vala:1747
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2316
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Zrzut ekranu z %s"
-
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/WindowManager.vala:2373
-msgid "Show in Files"
-msgstr "Pokaż w Plikach"
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot is saved to clipboard"
-msgstr "Zrzut ekranu zapisany do schowka"
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot saved to screenshots folder"
-msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
