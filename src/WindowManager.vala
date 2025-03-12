@@ -107,14 +107,7 @@ namespace Gala {
         private GLib.Settings behavior_settings;
         private GLib.Settings new_behavior_settings;
 
-        private GestureTracker gesture_tracker;
-
         construct {
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            gesture_tracker.enable_touchpad ();
-            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
-            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
-
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -258,7 +251,7 @@ namespace Gala {
             }
 
             if (plugin_manager.window_switcher_provider == null) {
-                window_switcher = new WindowSwitcher (this, gesture_tracker);
+                window_switcher = new WindowSwitcher (this);
                 ui_group.add_child (window_switcher);
 
                 Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
@@ -530,19 +523,6 @@ namespace Gala {
         private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
-        }
-
-        private bool on_gesture_detected (Gesture gesture) {
-            if (workspace_view.is_opened ()) {
-                return false;
-            }
-
-            return GestureSettings.get_action (gesture) == SWITCH_WINDOWS && !window_switcher.opened;
-        }
-
-        private double on_gesture_handled (Gesture gesture, uint32 timestamp) {
-            window_switcher.handle_gesture (gesture.direction);
-            return 0;
         }
 
         /**
