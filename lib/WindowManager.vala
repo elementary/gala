@@ -59,14 +59,6 @@ namespace Gala {
         IS_TILED
     }
 
-    [CCode (has_type_id = false)]
-    public class ActionKeys {
-        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
-        public const string OVERLAY_ACTION = "overlay-action";
-        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
-        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
-    }
-
     /**
      * Function that should return true if the given shortcut should be blocked.
      */
