@@ -25,7 +25,7 @@ namespace Gala {
 
     public enum ActionType {
         NONE = 0,
-        SHOW_WORKSPACE_VIEW,
+        SHOW_MULTITASKING_VIEW,
         MAXIMIZE_CURRENT,
         HIDE_CURRENT,
         OPEN_LAUNCHER,
@@ -124,11 +124,6 @@ namespace Gala {
          * The background group is a container for the background actors forming the wallpaper
          */
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
-         * View that allows to see and manage all your windows and desktops.
-         */
-        public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
 
         /**
          * Enters the modal mode, which means that all events are directed to the stage instead
