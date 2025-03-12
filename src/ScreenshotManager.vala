@@ -137,11 +137,22 @@ public class Gala.ScreenshotManager : Object {
 
         string[] actions = {};
         if (!clipboard) {
+            var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+            var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
+
             actions = {
-                /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-                GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files"),
-                /// TRANSLATORS: 'Photos' is the name of image viewer used by elementary OS
-                GLib.Action.print_detailed_name ("open-in-photos", new Variant ("s", filename_used)), _("Open in Photos")
+                GLib.Action.print_detailed_name (
+                    "show-in-files",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of file manager
+                    _("Show in %s").printf (files_appinfo.get_display_name ()
+                ),
+                GLib.Action.print_detailed_name (
+                    "open-in-photos",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of image viewer
+                    _("Open in %s").printf (photos_appinfo.get_display_name ()
+                )
             };
         }
 
