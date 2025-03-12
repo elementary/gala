@@ -53,7 +53,6 @@ src/DBusAccelerator.vala
 src/DBus.vala
 src/DesktopIntegration.vala
 src/Gestures/GestureSettings.vala
-src/Gestures/GestureTracker.vala
 src/Gestures/Gesture.vala
 src/Gestures/ScrollBackend.vala
 src/Gestures/ToucheggBackend.vala
