@@ -44,11 +44,7 @@ public class Gala.DaemonManager : GLib.Object {
     private async void start_wayland () {
         var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
         try {
-#if HAS_MUTTER44
             daemon_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
-#else
-            daemon_client = new Meta.WaylandClient (subprocess_launcher);
-#endif
             string[] args = {"gala-daemon"};
             var subprocess = daemon_client.spawnv (display, args);
 

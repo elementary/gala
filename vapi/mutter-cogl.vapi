@@ -226,11 +226,9 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_pipeline")]
 		[Version (since = "2.0")]
 		public bool is_pipeline ();
-#if HAS_MUTTER43
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_snippet")]
 		[Version (since = "1.10")]
 		public bool is_snippet ();
-#endif
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_texture")]
 		public bool is_texture ();
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_is_texture_2d")]
@@ -286,12 +284,10 @@ namespace Cogl {
 		[CCode (has_construct_function = false)]
 		[Version (since = "2.0")]
 		public Pipeline (Cogl.Context context);
-#if HAS_MUTTER43
 		[Version (since = "1.10")]
 		public void add_layer_snippet (int layer, Cogl.Snippet snippet);
 		[Version (since = "1.10")]
 		public void add_snippet (Cogl.Snippet snippet);
-#endif
 		[Version (since = "2.0")]
 		public Cogl.Pipeline copy ();
 		[Version (since = "2.0")]
@@ -306,14 +302,7 @@ namespace Cogl {
 		public Cogl.PipelineCullFaceMode get_cull_face_mode ();
 		[Version (since = "2.0")]
 		public Cogl.Winding get_front_face_winding ();
-#if HAS_MUTTER44
 		public void get_layer_filters (int layer_index, out Cogl.PipelineFilter min_filter, out Cogl.PipelineFilter mag_filter);
-#else
-		[Version (since = "1.10")]
-		public Cogl.PipelineFilter get_layer_mag_filter (int layer_index);
-		[Version (since = "1.10")]
-		public Cogl.PipelineFilter get_layer_min_filter (int layer_index);
-#endif
 		[Version (since = "2.0")]
 		public bool get_layer_point_sprite_coords_enabled (int layer_index);
 		[Version (since = "1.10")]
@@ -480,7 +469,6 @@ namespace Cogl {
 		[Version (deprecated = true, deprecated_since = "1.16")]
 		public void source (string source);
 	}
-#if HAS_MUTTER43
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_snippet_get_gtype ()")]
 	public class Snippet : Cogl.Object {
 		[CCode (has_construct_function = false)]
@@ -505,7 +493,6 @@ namespace Cogl {
 		[Version (since = "1.10")]
 		public void set_replace (string replace);
 	}
-#endif
 	[CCode (cheader_filename = "cogl/cogl.h", lower_case_csuffix = "texture_2d", type_id = "cogl_texture_2d_get_gtype ()")]
 	public class Texture2D : Cogl.Object, Cogl.Texture {
 		[CCode (has_construct_function = false)]
@@ -538,17 +525,6 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_texture_get_gtype ()")]
 	public interface Texture : Cogl.Object {
 		public bool allocate () throws GLib.Error;
-#if !HAS_MUTTER43
-		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_bitmap")]
-		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_bitmap", since = "1.0")]
-		public static Cogl.Texture from_bitmap (Cogl.Bitmap bitmap, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
-		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_data")]
-		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_data", since = "0.8")]
-		public static Cogl.Texture from_data (int width, int height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, int rowstride, [CCode (array_length = false)] uint8[] data);
-		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_texture_new_from_file")]
-		[Version (deprecated = true, deprecated_since = "1.18", replacement = "Texture.new_from_file", since = "0.8")]
-		public static Cogl.Texture from_file (string filename, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format) throws GLib.Error;
-#endif
 		[Version (since = "1.18")]
 		public Cogl.TextureComponents get_components ();
 		public int get_data (Cogl.PixelFormat format, uint rowstride, [CCode (array_length = false)] uint8[] data);
@@ -559,14 +535,6 @@ namespace Cogl {
 		public bool get_premultiplied ();
 		public uint get_width ();
 		public bool is_sliced ();
-#if !HAS_MUTTER43
-		[Version (deprecated = true, deprecated_since = "1.18", since = "1.0")]
-		public static Cogl.Texture new_from_bitmap (Cogl.Bitmap bitmap, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format);
-		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
-		public static Cogl.Texture new_from_data (int width, int height, Cogl.TextureFlags flags, Cogl.PixelFormat format, Cogl.PixelFormat internal_format, int rowstride, [CCode (array_length = false)] uint8[] data);
-		[Version (deprecated = true, deprecated_since = "1.18", since = "0.8")]
-		public static Cogl.Texture new_from_file (string filename, Cogl.TextureFlags flags, Cogl.PixelFormat internal_format) throws GLib.Error;
-#endif
 		[Version (since = "1.18")]
 		public void set_components (Cogl.TextureComponents components);
 		public bool set_data (Cogl.PixelFormat format, int rowstride, [CCode (array_length = false)] uint8[] data, int level) throws GLib.Error;
@@ -898,21 +866,13 @@ namespace Cogl {
 		RG_88,
 		RGB_888,
 		BGR_888,
-#if HAS_MUTTER45
 		RGBX_8888,
-#endif
 		RGBA_8888,
-#if HAS_MUTTER45
 		BGRX_8888,
-#endif
 		BGRA_8888,
-#if HAS_MUTTER45
 		XRGB_8888,
-#endif
 		ARGB_8888,
-#if HAS_MUTTER45
 		XBGR_8888,
-#endif
 		ABGR_8888,
 		RGBA_1010102,
 		BGRA_1010102,
@@ -920,13 +880,9 @@ namespace Cogl {
 		ARGB_2101010,
 		XBGR_2101010,
 		ABGR_2101010,
-#if HAS_MUTTER45
 		RGBX_FP_16161616,
-#endif
 		RGBA_FP_16161616,
-#if HAS_MUTTER45
 		BGRX_FP_16161616,
-#endif
 		BGRA_FP_16161616,
 		XRGB_FP_16161616,
 		ARGB_FP_16161616,
@@ -969,7 +925,6 @@ namespace Cogl {
 		VERTEX,
 		FRAGMENT
 	}
-#if HAS_MUTTER43
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SNIPPET_HOOK_", has_type_id = false)]
 	[Version (since = "1.10")]
 	public enum SnippetHook {
@@ -983,7 +938,6 @@ namespace Cogl {
 		LAYER_FRAGMENT,
 		TEXTURE_LOOKUP
 	}
-#endif
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_STEREO_", has_type_id = false)]
 	public enum StereoMode {
 		BOTH,
@@ -999,17 +953,6 @@ namespace Cogl {
 		RGBA,
 		DEPTH
 	}
-#if !HAS_MUTTER43
-	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_TEXTURE_", has_type_id = false)]
-	[Flags]
-	[Version (since = "1.0")]
-	public enum TextureFlags {
-		NONE,
-		NO_AUTO_MIPMAP,
-		NO_SLICING,
-		NO_ATLAS
-	}
-#endif
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_VERTICES_MODE_", has_type_id = false)]
 	[Version (since = "1.0")]
 	public enum VerticesMode {
@@ -1137,18 +1080,10 @@ namespace Cogl {
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	[Version (since = "1.0")]
 	public static void flush ();
-#if !HAS_MUTTER44
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	[Version (deprecated = true, deprecated_since = "1.16", since = "1.0")]
-	public static GLib.OptionGroup get_option_group ();
-#endif
-#if HAS_MUTTER45
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static bool is_tracing ();
-#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_disabled_on_thread (GLib.MainContext main_context);
-#if HAS_MUTTER45
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void set_tracing_enabled_on_thread (GLib.MainContext main_context, string group);
 	[CCode (cheader_filename = "cogl/cogl.h")]
@@ -1157,12 +1092,6 @@ namespace Cogl {
 	public static bool start_tracing_with_path (string filename) throws GLib.Error;
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void stop_tracing ();
-#else
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void set_tracing_enabled_on_thread (GLib.MainContext main_context, string group, string filename);
-	[CCode (cheader_filename = "cogl/cogl.h")]
-	public static void set_tracing_enabled_on_thread_with_fd (GLib.MainContext main_context, string group, int fd);
-#endif
 	[CCode (cheader_filename = "cogl/cogl.h")]
 	public static void trace_describe (Cogl.TraceHead head, string description);
 	[CCode (cheader_filename = "cogl/cogl.h")]

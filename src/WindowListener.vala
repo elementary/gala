@@ -17,13 +17,8 @@
 
 public class Gala.WindowListener : Object {
     public struct WindowGeometry {
-#if HAS_MUTTER45
         Mtk.Rectangle inner;
         Mtk.Rectangle outer;
-#else
-        Meta.Rectangle inner;
-        Meta.Rectangle outer;
-#endif
     }
 
     private static WindowListener? instance = null;

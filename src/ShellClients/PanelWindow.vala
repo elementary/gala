@@ -76,11 +76,7 @@ public class Gala.PanelWindow : ShellWindow {
         });
     }
 
-#if HAS_MUTTER45
     public Mtk.Rectangle get_custom_window_rect () {
-#else
-    public Meta.Rectangle get_custom_window_rect () {
-#endif
         var window_rect = window.get_frame_rect ();
 
         if (width > 0) {

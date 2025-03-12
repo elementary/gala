@@ -507,11 +507,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         }
     }
 
-#if HAS_MUTTER45
     private bool container_mouse_release (Clutter.Event event) {
-#else
-    private bool container_mouse_release (Clutter.ButtonEvent event) {
-#endif
         if (opened && event.get_button () == Clutter.Button.PRIMARY && !gesture_controller.recognizing) {
             close_switcher (event.get_time ());
         }
@@ -519,11 +515,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         return true;
     }
 
-#if HAS_MUTTER45
     public override bool key_release_event (Clutter.Event event) {
-#else
-    public override bool key_release_event (Clutter.KeyEvent event) {
-#endif
         if ((get_current_modifiers () & modifier_mask) == 0 && !gesture_controller.recognizing) {
             close_switcher (event.get_time ());
         }
@@ -531,11 +523,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         return Clutter.EVENT_PROPAGATE;
     }
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         switch (event.get_key_symbol ()) {
             case Clutter.Key.Right:
                 if (!gesture_controller.recognizing) {

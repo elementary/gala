@@ -162,11 +162,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         }
     }
 
-#if HAS_MUTTER45
     public override bool enter_event (Clutter.Event event) {
-#else
-    public override bool enter_event (Clutter.CrossingEvent event) {
-#endif
         var duration = Utils.get_animation_duration (300);
 
         close_button.save_easing_state ();
@@ -182,11 +178,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         return Clutter.EVENT_PROPAGATE;
     }
 
-#if HAS_MUTTER45
     public override bool leave_event (Clutter.Event event) {
-#else
-    public override bool leave_event (Clutter.CrossingEvent event) {
-#endif
         var duration = Utils.get_animation_duration (300);
 
         close_button.save_easing_state ();
@@ -220,11 +212,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         display.set_cursor (Meta.Cursor.DEFAULT);
     }
 
-#if HAS_MUTTER45
     private bool on_resize_button_press (Clutter.Event event) {
-#else
-    private bool on_resize_button_press (Clutter.ButtonEvent event) {
-#endif
         if (resizing || event.get_button () != Clutter.Button.PRIMARY) {
             return Clutter.EVENT_STOP;
         }
