@@ -255,6 +255,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 }
             }
         }
+
         throw new GLib.IOError.NOT_FOUND ("Window not found");
     }
 }
