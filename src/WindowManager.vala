@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2012-2014 Tom Beckmann, Rico Tzschichholz
+//                2025 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,6 +18,8 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
+
         /**
          * {@inheritDoc}
          */
@@ -37,7 +40,13 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        public Clutter.Actor notification_group { get; protected set; }
+        /**
+         * The group that contains all WindowActors that make shell elements, that is all windows reported as
+         * ShellClientsManager.is_positioned_window.
+         * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
+         * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
+         */
+        public Clutter.Actor shell_group { get; private set; }
 
         /**
          * {@inheritDoc}
@@ -45,9 +54,9 @@ namespace Gala {
         public Meta.BackgroundGroup background_group { get; protected set; }
 
         /**
-         * {@inheritDoc}
+         * View that allows to see and manage all your windows and desktops.
          */
-        public Gala.ActivatableComponent workspace_view { get; protected set; }
+        public MultitaskingView multitasking_view { get; protected set; }
 
         public PointerLocator pointer_locator { get; private set; }
 
@@ -65,6 +74,10 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
+        private NotificationsManager notifications_manager;
+
+        private ScreenshotManager screenshot_manager;
+
         /**
          * Allow to zoom in/out the entire desktop.
          */
@@ -72,11 +85,7 @@ namespace Gala {
 
         private Clutter.Actor? tile_preview;
 
-        private Meta.Window? moving; //place for the window that is being moved over
-
         private DaemonManager daemon_manager;
-
-        private WindowGrabTracker window_grab_tracker;
 
         private NotificationStack notification_stack;
 
@@ -90,38 +99,13 @@ namespace Gala {
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
         private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         private Meta.SizeChange? which_change = null;
-#if HAS_MUTTER45
         private Mtk.Rectangle old_rect_size_change;
-#else
-        private Meta.Rectangle old_rect_size_change;
-#endif
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
         private GLib.Settings new_behavior_settings;
 
-        private GestureTracker gesture_tracker;
-        private bool animating_switch_workspace = false;
-        private bool switch_workspace_with_gesture = false;
-
-        private signal void window_created (Meta.Window window);
-
-        /**
-         * Amount of pixels to move on the nudge animation.
-         */
-        public const int NUDGE_GAP = 32;
-
-        /**
-         * Gap to show between workspaces while switching between them.
-         */
-        public const int WORKSPACE_GAP = 24;
-
         construct {
-            gesture_tracker = new GestureTracker (AnimationDuration.WORKSPACE_SWITCH_MIN, AnimationDuration.WORKSPACE_SWITCH);
-            gesture_tracker.enable_touchpad ();
-            gesture_tracker.on_gesture_detected.connect (on_gesture_detected);
-            gesture_tracker.on_gesture_handled.connect (on_gesture_handled);
-
             info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
                 license = "GPLv3", description = "A nice elementary window manager"};
 
@@ -135,7 +119,6 @@ namespace Gala {
         public override void start () {
             ShellClientsManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
-            window_grab_tracker = new WindowGrabTracker (get_display ());
 
             show_stage ();
 
@@ -183,9 +166,9 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
-            DBus.init (this);
-            DBusAccelerator.init (display);
-            MediaFeedback.init ();
+            notifications_manager = new NotificationsManager ();
+            screenshot_manager = new ScreenshotManager (this, notifications_manager);
+            DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
             KeyboardManager.init (display);
@@ -253,28 +236,16 @@ namespace Gala {
             stage.remove_child (top_window_group);
             ui_group.add_child (top_window_group);
 
-#if HAS_MUTTER44
-            var feedback_group = display.get_compositor ().get_feedback_group ();
-#else
-            var feedback_group = display.get_feedback_group ();
-#endif
-            stage.remove_child (feedback_group);
-            ui_group.add_child (feedback_group);
-
             // Initialize plugins and add default components if no plugin overrides them
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
             plugin_manager.regions_changed.connect (update_input_area);
 
-            if (plugin_manager.workspace_view_provider == null
-                || (workspace_view = (plugin_manager.get_plugin (plugin_manager.workspace_view_provider) as ActivatableComponent)) == null
-            ) {
-                workspace_view = new MultitaskingView (this);
-                ui_group.add_child ((Clutter.Actor) workspace_view);
-            }
+            multitasking_view = new MultitaskingView (this);
+            ui_group.add_child (multitasking_view);
 
             if (plugin_manager.window_switcher_provider == null) {
-                window_switcher = new WindowSwitcher (this, gesture_tracker);
+                window_switcher = new WindowSwitcher (this);
                 ui_group.add_child (window_switcher);
 
                 Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
@@ -288,13 +259,17 @@ namespace Gala {
             if (plugin_manager.window_overview_provider == null
                 || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
             ) {
-                window_overview = new WindowOverview (this, gesture_tracker);
+                window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
 
             // Add the remaining components that should be on top
-            notification_group = new Clutter.Actor ();
-            ui_group.add_child (notification_group);
+            shell_group = new Clutter.Actor ();
+            ui_group.add_child (shell_group);
+
+            var feedback_group = display.get_compositor ().get_feedback_group ();
+            stage.remove_child (feedback_group);
+            ui_group.add_child (feedback_group);
 
             pointer_locator = new PointerLocator (display);
             ui_group.add_child (pointer_locator);
@@ -324,14 +299,6 @@ namespace Gala {
             display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
-            display.add_keybinding ("screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("interactive-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("window-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-            display.add_keybinding ("area-screenshot-clip", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_screenshot);
-
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
                     window_overview.close ();
@@ -341,18 +308,18 @@ namespace Gala {
             });
 
             display.overlay_key.connect (() => {
-                launch_action ("overlay-action");
+                launch_action (ActionKeys.OVERLAY_ACTION);
             });
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
-                launch_action ("toggle-recording-action");
+                launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
             });
 
             Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (workspace_view.is_opened ()) {
-                    workspace_view.close ();
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
                 } else {
-                    workspace_view.open ();
+                    multitasking_view.open ();
                 }
             });
 
@@ -381,11 +348,13 @@ namespace Gala {
 
             update_input_area ();
 
-            display.window_created.connect ((window) => window_created (window));
-
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
             stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
+
+            display.window_created.connect ((window) =>
+                InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
+            );
 
             stage.show ();
 
@@ -431,7 +400,7 @@ namespace Gala {
             ui_group.set_size (max_width, max_height);
         }
 
-        private void launch_action (string action_key) {
+        public void launch_action (string action_key) {
             try {
                 var action = behavior_settings.get_string (action_key);
                 if (action != null) {
@@ -466,18 +435,17 @@ namespace Gala {
             unowned var manager = display.get_workspace_manager ();
             var active_workspace_index = manager.get_active_workspace_index ();
             var index = active_workspace_index + direction;
-            var dynamic_offset = Meta.Prefs.get_dynamic_workspaces () ? 1 : 0;
 
             if (index < 0) {
-                index = manager.get_n_workspaces () - 1 - dynamic_offset;
-            } else if (index > manager.get_n_workspaces () - 1 - dynamic_offset) {
+                index = manager.get_n_workspaces () - 2;
+            } else if (index > manager.get_n_workspaces () - 2) {
                 index = 0;
             }
 
             if (active_workspace_index != index) {
                 manager.get_workspace_by_index (index).activate (event.get_time ());
             } else {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
             }
         }
 
@@ -538,7 +506,7 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            launch_action ("panel-main-menu-action");
+            launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
         }
 
         [CCode (instance_pos = -1)]
@@ -547,126 +515,11 @@ namespace Gala {
             KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
         }
 
-        [CCode (instance_pos = -1)]
-        private void handle_screenshot (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            switch (binding.get_name ()) {
-                case "screenshot":
-                    screenshot_screen.begin ();
-                    break;
-                case "interactive-screenshot":
-                    launch_action ("interactive-screenshot-action");
-                    break;
-                case "area-screenshot":
-                    screenshot_area.begin ();
-                    break;
-                case "window-screenshot":
-                    screenshot_current_window.begin ();
-                    break;
-                case "screenshot-clip":
-                    screenshot_screen.begin (true);
-                    break;
-                case "area-screenshot-clip":
-                    screenshot_area.begin (true);
-                    break;
-                case "window-screenshot-clip":
-                    screenshot_current_window.begin (true);
-                    break;
-            }
-        }
-
-        private bool on_gesture_detected (Gesture gesture) {
-            if (workspace_view.is_opened ()) {
-                return false;
-            }
-
-            var action = GestureSettings.get_action (gesture);
-            switch_workspace_with_gesture = action == SWITCH_WORKSPACE || action == MOVE_TO_WORKSPACE;
-            return switch_workspace_with_gesture || (action == SWITCH_WINDOWS && !window_switcher.opened);
-        }
-
-        private void on_gesture_handled (Gesture gesture, uint32 timestamp) {
-            var direction = gesture_tracker.settings.get_natural_scroll_direction (gesture);
-
-            switch (GestureSettings.get_action (gesture)) {
-                case MOVE_TO_WORKSPACE:
-                    unowned var display = get_display ();
-                    unowned var manager = display.get_workspace_manager ();
-
-                    moving = display.focus_window;
-                    if (moving != null) {
-                        moving.change_workspace (manager.get_active_workspace ().get_neighbor (direction));
-                    }
-                    switch_to_next_workspace (direction, timestamp);
-                    break;
-
-                case SWITCH_WORKSPACE:
-                    switch_to_next_workspace (direction, timestamp);
-                    break;
-
-                case SWITCH_WINDOWS:
-                    window_switcher.handle_gesture (gesture.direction);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
         /**
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            if (animating_switch_workspace) {
-                return;
-            }
-
-            unowned var display = get_display ();
-            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-            unowned var neighbor = active_workspace.get_neighbor (direction);
-
-            if (neighbor != active_workspace) {
-                neighbor.activate (timestamp);
-            } else {
-                // if we didn't switch, show a nudge-over animation if one is not already in progress
-                if (workspace_view.is_opened () && workspace_view is MultitaskingView) {
-                    ((MultitaskingView) workspace_view).play_nudge_animation (direction);
-                } else {
-                    play_nudge_animation (direction);
-                }
-            }
-        }
-
-        private void play_nudge_animation (Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()) {
-                return;
-            }
-
-            animating_switch_workspace = true;
-
-            unowned var display = get_display ();
-            unowned var active_index = display.get_workspace_manager ().get_active_workspace_index ();
-            prepare_workspace_switch (active_index, active_index, direction);
-
-            var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
-            var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-
-            var to_value = monitor_geom.width + WORKSPACE_GAP * monitor_scale;
-
-            if (direction == RIGHT) {
-                to_value *= -1;
-            }
-
-            new GesturePropertyTransition (out_group, gesture_tracker, "x", 0f, to_value) {
-                overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture);
-
-            new GesturePropertyTransition (wallpaper, gesture_tracker, "x", 0f, to_value) {
-                overshoot_upper_clamp = 0.1
-            }.start (switch_workspace_with_gesture, () => {
-                switch_workspace_animation_finished (direction, false, true);
-                animating_switch_workspace = false;
-            });
+            multitasking_view.switch_to_next_workspace (direction);
         }
 
         private void update_input_area () {
@@ -699,7 +552,7 @@ namespace Gala {
             }
 
             unowned var bottom_actor = (Meta.WindowActor) bottom_window.get_compositor_private ();
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 animate_bottom_window_scale (bottom_actor);
             }
 
@@ -727,7 +580,7 @@ namespace Gala {
                 }
 
                 unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     var op_trans = new Clutter.KeyframeTransition ("opacity") {
                         duration = fade_out_duration,
                         remove_on_complete = true,
@@ -788,24 +641,18 @@ namespace Gala {
             unowned var active = manager.get_active_workspace ();
 
             // don't allow empty workspaces to be created by moving, if we have dynamic workspaces
-            if (Meta.Prefs.get_dynamic_workspaces () && Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+            if (Utils.get_n_windows (active) == 1 && workspace.index () == manager.n_workspaces - 1) {
+                InternalUtils.bell_notify (display);
                 return;
             }
 
             // don't allow moving into non-existing workspaces
             if (active == workspace) {
-                Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+                InternalUtils.bell_notify (display);
                 return;
             }
 
-            moving = window;
-
-            if (!window.is_on_all_workspaces ()) {
-                window.change_workspace (workspace);
-            }
-
-            workspace.activate_with_focus (window, timestamp);
+            multitasking_view.move_window (window, workspace);
         }
 
         /**
@@ -927,14 +774,11 @@ namespace Gala {
             unowned var current = display.get_focus_window ();
 
             switch (type) {
-                case ActionType.SHOW_WORKSPACE_VIEW:
-                    if (workspace_view == null)
-                        break;
-
-                    if (workspace_view.is_opened ())
-                        workspace_view.close ();
+                case ActionType.SHOW_MULTITASKING_VIEW:
+                    if (multitasking_view.is_opened ())
+                        multitasking_view.close ();
                     else
-                        workspace_view.open ();
+                        multitasking_view.open ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
@@ -954,20 +798,16 @@ namespace Gala {
                     if (current != null && current.allows_move ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_MOVING);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
@@ -1011,7 +851,7 @@ namespace Gala {
                         current.@delete (Meta.CURRENT_TIME);
                     break;
                 case ActionType.OPEN_LAUNCHER:
-                    launch_action ("panel-main-menu-action");
+                    launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (window_overview == null) {
@@ -1042,7 +882,7 @@ namespace Gala {
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
-                    screenshot_current_window.begin ();
+                    screenshot_manager.handle_screenshot_current_window_shortcut.begin (false);
                     break;
                 default:
                     warning ("Trying to run unknown action");
@@ -1096,11 +936,7 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER45
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
-#else
-        public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
-#endif
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
                 var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
@@ -1134,7 +970,7 @@ namespace Gala {
             tile_preview.set_size (rect.width, rect.height);
             tile_preview.show ();
 
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 tile_preview.save_easing_state ();
                 tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
                 tile_preview.set_easing_duration (duration);
@@ -1156,73 +992,32 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER45
         public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Mtk.Rectangle rect) {
-#else
-        public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect) {
-#endif
             show_window_menu (window, menu, rect.x, rect.y);
+        }
+
+        private void check_shell_window (Meta.WindowActor actor) {
+            unowned var window = actor.get_meta_window ();
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                InternalUtils.clutter_actor_reparent (actor, shell_group);
+            }
+
+            if (NotificationStack.is_notification (window)) {
+                notification_stack.show_notification (actor);
+            }
         }
 
         /*
          * effects
          */
 
-        private void handle_fullscreen_window (Meta.Window window, Meta.SizeChange which_change) {
-            // Only handle windows which are located on the primary monitor
-            if (!window.is_on_primary_monitor () || !behavior_settings.get_boolean ("move-fullscreened-workspace"))
-                return;
-
-            // Due to how this is implemented, by relying on the functionality
-            // offered by the dynamic workspace handler, let's just bail out
-            // if that's not available.
-            if (!Meta.Prefs.get_dynamic_workspaces ())
-                return;
-
-            unowned Meta.Display display = get_display ();
-            var time = display.get_current_time ();
-            unowned Meta.Workspace win_ws = window.get_workspace ();
-            unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-
-            if (which_change == Meta.SizeChange.FULLSCREEN) {
-                // Do nothing if the current workspace would be empty
-                if (Utils.get_n_windows (win_ws) <= 1)
-                    return;
-
-                var old_ws_index = win_ws.index ();
-                var new_ws_index = old_ws_index + 1;
-                InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-                unowned var new_ws = manager.get_workspace_by_index (new_ws_index);
-                window.change_workspace (new_ws);
-                new_ws.activate_with_focus (window, time);
-
-                ws_assoc.insert (window, old_ws_index);
-            } else if (ws_assoc.contains (window)) {
-                var old_ws_index = ws_assoc.get (window);
-                var new_ws_index = win_ws.index ();
-
-                if (new_ws_index != old_ws_index && old_ws_index < manager.get_n_workspaces ()) {
-                    unowned var old_ws = manager.get_workspace_by_index (old_ws_index);
-                    window.change_workspace (old_ws);
-                    old_ws.activate_with_focus (window, time);
-                }
-
-                ws_assoc.remove (window);
-            }
-        }
-
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
-#if HAS_MUTTER45
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-#else
-        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
-#endif
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
-            if (AnimationsSettings.get_enable_animations ()) {
+            if (Meta.Prefs.get_gnome_animations ()) {
                 latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
             }
         }
@@ -1233,14 +1028,12 @@ namespace Gala {
                 return;
             }
 
-            Meta.SizeChange? which_change_local = which_change;
-            which_change = null;
-
             unowned var window = actor.get_meta_window ();
             var new_rect = window.get_frame_rect ();
 
-            switch (which_change_local) {
+            switch (which_change) {
                 case Meta.SizeChange.MAXIMIZE:
+                case Meta.SizeChange.FULLSCREEN:
                     // don't animate resizing of two tiled windows with mouse drag
                     if (window.get_tile_match () != null && !window.maximized_horizontally) {
                         var old_end = old_rect_size_change.x + old_rect_size_change.width;
@@ -1251,24 +1044,23 @@ namespace Gala {
                             break;
                         }
                     }
+
                     maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 case Meta.SizeChange.UNMAXIMIZE:
-                    unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
-                    break;
-                case Meta.SizeChange.FULLSCREEN:
                 case Meta.SizeChange.UNFULLSCREEN:
-                    handle_fullscreen_window (window, which_change_local);
+                    unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
                     break;
                 default:
                     break;
             }
 
+            which_change = null;
             size_change_completed (actor);
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            if (!AnimationsSettings.get_enable_animations () ||
+            if (!Meta.Prefs.get_gnome_animations () ||
                 actor.get_meta_window ().window_type != Meta.WindowType.NORMAL) {
                 minimize_completed (actor);
                 return;
@@ -1282,11 +1074,7 @@ namespace Gala {
             int width, height;
             get_display ().get_size (out width, out height);
 
-#if HAS_MUTTER45
             Mtk.Rectangle icon = {};
-#else
-            Meta.Rectangle icon = {};
-#endif
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
                 float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
@@ -1338,94 +1126,97 @@ namespace Gala {
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            unowned var window = actor.get_meta_window ();
+            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
+                || window.fullscreen && behavior_settings.get_boolean ("move-fullscreened-workspace")) {
+                move_window_to_next_ws (window);
+            }
+
+            kill_window_effects (actor);
+
+            if (!Meta.Prefs.get_gnome_animations () ||
+                latest_window_snapshot == null ||
+                window.window_type != Meta.WindowType.NORMAL) {
                 return;
             }
 
             var duration = AnimationDuration.SNAP;
 
-            kill_window_effects (actor);
+            maximizing.add (actor);
+            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
 
-            unowned var window = actor.get_meta_window ();
-            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) {
-                move_window_to_next_ws (window);
+            ui_group.add_child (latest_window_snapshot);
+
+            // FIMXE that's a hacky part. There is a short moment right after maximized_completed
+            //       where the texture is screwed up and shows things it's not supposed to show,
+            //       resulting in flashing. Waiting here transparently shortly fixes that issue. There
+            //       appears to be no signal that would inform when that moment happens.
+            //       We can't spend arbitrary amounts of time transparent since the overlay fades away,
+            //       about a third has proven to be a solid time. So this fix will only apply for
+            //       durations >= FLASH_PREVENT_TIMEOUT*3
+            const int FLASH_PREVENT_TIMEOUT = 80;
+            var delay = 0;
+            if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
+                actor.opacity = 0;
+                delay = FLASH_PREVENT_TIMEOUT;
+                Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
+                    actor.opacity = 255;
+                    return false;
+                });
             }
 
-            if (window.window_type == Meta.WindowType.NORMAL) {
-                if (latest_window_snapshot == null) {
-                    return;
-                }
+            var scale_x = (double) ew / old_rect_size_change.width;
+            var scale_y = (double) eh / old_rect_size_change.height;
 
-                maximizing.add (actor);
-                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            latest_window_snapshot.set_easing_duration (duration);
+            latest_window_snapshot.set_position (ex, ey);
+            latest_window_snapshot.set_scale (scale_x, scale_y);
+            latest_window_snapshot.restore_easing_state ();
 
-                ui_group.add_child (latest_window_snapshot);
+            // the opacity animation is special, since we have to wait for the
+            // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_delay (delay);
+            latest_window_snapshot.set_easing_duration (duration - delay);
+            latest_window_snapshot.opacity = 0;
+            latest_window_snapshot.restore_easing_state ();
 
-                // FIMXE that's a hacky part. There is a short moment right after maximized_completed
-                //       where the texture is screwed up and shows things it's not supposed to show,
-                //       resulting in flashing. Waiting here transparently shortly fixes that issue. There
-                //       appears to be no signal that would inform when that moment happens.
-                //       We can't spend arbitrary amounts of time transparent since the overlay fades away,
-                //       about a third has proven to be a solid time. So this fix will only apply for
-                //       durations >= FLASH_PREVENT_TIMEOUT*3
-                const int FLASH_PREVENT_TIMEOUT = 80;
-                var delay = 0;
-                if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
-                    actor.opacity = 0;
-                    delay = FLASH_PREVENT_TIMEOUT;
-                    Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
-                        actor.opacity = 255;
-                        return false;
-                    });
-                }
+            ulong maximize_old_handler_id = 0;
+            maximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
+                snapshot.disconnect (maximize_old_handler_id);
 
-                var scale_x = (double) ew / old_rect_size_change.width;
-                var scale_y = (double) eh / old_rect_size_change.height;
-
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                latest_window_snapshot.set_easing_duration (duration);
-                latest_window_snapshot.set_position (ex, ey);
-                latest_window_snapshot.set_scale (scale_x, scale_y);
-
-                // the opacity animation is special, since we have to wait for the
-                // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_delay (delay);
-                latest_window_snapshot.set_easing_duration (duration - delay);
-                latest_window_snapshot.opacity = 0;
-                latest_window_snapshot.restore_easing_state ();
-
-                ulong maximize_old_handler_id = 0UL;
-                maximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
-                    snapshot.disconnect (maximize_old_handler_id);
-                    snapshot.destroy ();
-                    actor.set_translation (0.0f, 0.0f, 0.0f);
-                });
-
-                latest_window_snapshot = null;
-
-                actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
-                actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                actor.set_easing_duration (duration);
-                actor.set_scale (1.0f, 1.0f);
                 actor.set_translation (0.0f, 0.0f, 0.0f);
-                actor.restore_easing_state ();
 
-                ulong handler_id = 0UL;
-                handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (handler_id);
-                    maximizing.remove (actor);
-                });
-            }
+                unowned var parent = snapshot.get_parent ();
+                if (parent != null) {
+                    parent.remove_child (snapshot);
+                }
+            });
+
+            latest_window_snapshot = null;
+
+            actor.set_pivot_point (0.0f, 0.0f);
+            actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
+            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
+
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            actor.set_easing_duration (duration);
+            actor.set_scale (1.0f, 1.0f);
+            actor.set_translation (0.0f, 0.0f, 0.0f);
+            actor.restore_easing_state ();
+
+            ulong handler_id = 0UL;
+            handler_id = actor.transitions_completed.connect (() => {
+                actor.disconnect (handler_id);
+                maximizing.remove (actor);
+            });
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 actor.show ();
                 unminimize_completed (actor);
                 return;
@@ -1479,17 +1270,13 @@ namespace Gala {
             actor.remove_all_transitions ();
             actor.show ();
 
-            // Notifications are a special case and have to be always be handled
-            // (also regardless of the animation setting)
+            // Notifications initial animation is handled by the notification stack
             if (NotificationStack.is_notification (window)) {
-                clutter_actor_reparent (actor, notification_group);
-                notification_stack.show_notification (actor);
-
                 map_completed (actor);
                 return;
             }
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 map_completed (actor);
 
                 if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
@@ -1605,18 +1392,16 @@ namespace Gala {
         public override void destroy (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
-            ws_assoc.remove (window);
-
             actor.remove_all_transitions ();
 
             if (NotificationStack.is_notification (window)) {
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     destroying.add (actor);
                 }
 
                 notification_stack.destroy_notification (actor);
 
-                if (AnimationsSettings.get_enable_animations ()) {
+                if (Meta.Prefs.get_gnome_animations ()) {
                     ulong destroy_handler_id = 0UL;
                     destroy_handler_id = actor.transitions_completed.connect (() => {
                         actor.disconnect (destroy_handler_id);
@@ -1630,7 +1415,7 @@ namespace Gala {
                 return;
             }
 
-            if (!AnimationsSettings.get_enable_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations ()) {
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {
@@ -1719,82 +1504,76 @@ namespace Gala {
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            if (!AnimationsSettings.get_enable_animations ()) {
+            unowned var window = actor.get_meta_window ();
+            move_window_to_old_ws (window);
+
+            kill_window_effects (actor);
+
+            if (!Meta.Prefs.get_gnome_animations () ||
+                latest_window_snapshot == null ||
+                window.window_type != Meta.WindowType.NORMAL) {
                 return;
             }
 
             var duration = AnimationDuration.SNAP;
 
-            kill_window_effects (actor);
-            unowned var window = actor.get_meta_window ();
+            float offset_x, offset_y;
+            var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
 
-            if (behavior_settings.get_boolean ("move-maximized-workspace")) {
-                move_window_to_old_ws (window);
+            if (unmaximized_window_geometry != null) {
+                offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
+                offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
+            } else {
+                offset_x = 0;
+                offset_y = 0;
             }
 
-            if (window.window_type == Meta.WindowType.NORMAL) {
-                float offset_x, offset_y;
-                var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
+            unmaximizing.add (actor);
 
-                if (unmaximized_window_geometry != null) {
-                    offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
-                    offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-                } else {
-                    offset_x = 0;
-                    offset_y = 0;
+            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
+
+            ui_group.add_child (latest_window_snapshot);
+
+            var scale_x = (float) ew / old_rect_size_change.width;
+            var scale_y = (float) eh / old_rect_size_change.height;
+
+            latest_window_snapshot.save_easing_state ();
+            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            latest_window_snapshot.set_easing_duration (duration);
+            latest_window_snapshot.set_position (ex, ey);
+            latest_window_snapshot.set_scale (scale_x, scale_y);
+            latest_window_snapshot.opacity = 0U;
+            latest_window_snapshot.restore_easing_state ();
+
+            ulong unmaximize_old_handler_id = 0;
+            unmaximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
+                snapshot.disconnect (unmaximize_old_handler_id);
+
+                unowned var parent = snapshot.get_parent ();
+                if (parent != null) {
+                    parent.remove_child (snapshot);
                 }
+            });
 
-                if (latest_window_snapshot == null) {
-                    return;
-                }
+            latest_window_snapshot = null;
 
-                unmaximizing.add (actor);
+            actor.set_pivot_point (0.0f, 0.0f);
+            actor.set_position (ex, ey);
+            actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
+            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
-                // FIXME: Gtk windows don't want to go out of bounds of screen when unmaximizing, so place them manually
-                // This is OS 7 (Mutter 42) specific, this was not needed in OS 6
-                window.move_frame (true, ex, ey);
+            actor.save_easing_state ();
+            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            actor.set_easing_duration (duration);
+            actor.set_scale (1.0f, 1.0f);
+            actor.set_translation (0.0f, 0.0f, 0.0f);
+            actor.restore_easing_state ();
 
-                latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
-
-                ui_group.add_child (latest_window_snapshot);
-
-                var scale_x = (float) ew / old_rect_size_change.width;
-                var scale_y = (float) eh / old_rect_size_change.height;
-
-                latest_window_snapshot.save_easing_state ();
-                latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                latest_window_snapshot.set_easing_duration (duration);
-                latest_window_snapshot.set_position (ex, ey);
-                latest_window_snapshot.set_scale (scale_x, scale_y);
-                latest_window_snapshot.opacity = 0U;
-                latest_window_snapshot.restore_easing_state ();
-
-                ulong unmaximize_old_handler_id = 0UL;
-                unmaximize_old_handler_id = latest_window_snapshot.transitions_completed.connect ((snapshot) => {
-                    snapshot.disconnect (unmaximize_old_handler_id);
-                    snapshot.destroy ();
-                });
-
-                latest_window_snapshot = null;
-
-                actor.set_pivot_point (0.0f, 0.0f);
-                actor.set_position (ex, ey);
-                actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
-                actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                actor.set_easing_duration (duration);
-                actor.set_scale (1.0f, 1.0f);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-                actor.restore_easing_state ();
-
-                ulong handler_id = 0UL;
-                handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (handler_id);
-                    unmaximizing.remove (actor);
-                });
-            }
+            ulong handler_id = 0UL;
+            handler_id = actor.transitions_completed.connect (() => {
+                actor.disconnect (handler_id);
+                unmaximizing.remove (actor);
+            });
         }
 
         private void move_window_to_next_ws (Meta.Window window) {
@@ -1819,6 +1598,10 @@ namespace Gala {
             unowned var new_ws = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
             window.change_workspace (new_ws);
             new_ws.activate_with_focus (window, time);
+
+            if (!(window in ws_assoc)) {
+                window.unmanaged.connect (move_window_to_old_ws);
+            }
 
             ws_assoc[window] = old_ws_index;
         }
@@ -1848,6 +1631,8 @@ namespace Gala {
             }
 
             ws_assoc.remove (window);
+
+            window.unmanaged.disconnect (move_window_to_old_ws);
         }
 
         // Cancel attached animation of an actor and reset it
@@ -1884,413 +1669,12 @@ namespace Gala {
             end_animation (ref maximizing, actor);
         }
 
-        /*workspace switcher*/
-        private List<Clutter.Actor>? windows;
-        private List<Clutter.Actor>? parents;
-        private List<Clutter.Actor>? tmp_actors;
-        private ulong switch_workspace_window_created_id = 0;
-        private Clutter.Actor? out_group;
-        private Clutter.Actor? in_group;
-        private Clutter.Actor? wallpaper;
-        private Clutter.Actor? wallpaper_clone;
-
-        private void prepare_workspace_switch (int from, int to, Meta.MotionDirection direction) {
-            float screen_width, screen_height;
-            unowned var display = get_display ();
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            var monitor_geom = display.get_monitor_geometry (primary);
-            var clone_offset_x = move_primary_only ? monitor_geom.x : 0.0f;
-            var clone_offset_y = move_primary_only ? monitor_geom.y : 0.0f;
-
-            display.get_size (out screen_width, out screen_height);
-
-            unowned var manager = display.get_workspace_manager ();
-            unowned var workspace_from = manager.get_workspace_by_index (from);
-            unowned var workspace_to = from != to ? manager.get_workspace_by_index (to) : null;
-
-            var main_container = new Clutter.Actor ();
-            var background_actor = new Clutter.Clone (system_background.background_actor);
-            var static_windows = new Clutter.Actor ();
-            if (workspace_to != null) {
-                in_group = new Clutter.Actor ();
-            }
-            out_group = new Clutter.Actor ();
-            windows = new List<Meta.WindowActor> ();
-            parents = new List<Clutter.Actor> ();
-            tmp_actors = new List<Clutter.Clone> ();
-
-            tmp_actors.prepend (main_container);
-            tmp_actors.prepend (background_actor);
-            if (in_group != null) {
-                tmp_actors.prepend (in_group);
-            }
-            tmp_actors.prepend (out_group);
-            tmp_actors.prepend (static_windows);
-
-            window_group.add_child (main_container);
-
-            // prepare wallpaper
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
-                background.hide ();
-                wallpaper = new Clutter.Clone (background);
-            } else {
-                background_group.hide ();
-                ((BackgroundContainer) background_group).set_black_background (false);
-                wallpaper = new Clutter.Clone (background_group);
-            }
-            wallpaper.add_effect (new Gala.ShadowEffect ("workspace"));
-            tmp_actors.prepend (wallpaper);
-
-            if (workspace_to != null) {
-                wallpaper_clone = new Clutter.Clone (wallpaper);
-                wallpaper_clone.add_effect (new Gala.ShadowEffect ("workspace"));
-                tmp_actors.prepend (wallpaper_clone);
-            }
-
-            // pack all containers
-            main_container.add_child (background_actor);
-            main_container.add_child (wallpaper);
-            if (wallpaper_clone != null) {
-                main_container.add_child (wallpaper_clone);
-            }
-            main_container.add_child (out_group);
-            if (in_group != null) {
-                main_container.add_child (in_group);
-            }
-            main_container.add_child (static_windows);
-
-            // if we have a move action, pack that window to the static ones
-            if (moving != null) {
-                unowned var moving_actor = (Meta.WindowActor) moving.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
-            unowned var grabbed_window = window_grab_tracker.current_window;
-
-            if (grabbed_window != null) {
-                unowned var moving_actor = (Meta.WindowActor) grabbed_window.get_compositor_private ();
-
-                windows.prepend (moving_actor);
-                parents.prepend (moving_actor.get_parent ());
-
-                moving_actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                clutter_actor_reparent (moving_actor, static_windows);
-            }
-
-            var to_has_fullscreened = false;
-            var from_has_fullscreened = false;
-
-            // collect all windows and put them in the appropriate containers
-            var slist = new GLib.SList<Meta.Window> ();
-            display.list_all_windows ().@foreach ((win) => {
-                slist.append (win);
-            });
-            foreach (unowned var window in display.sort_windows_by_stacking (slist)) {
-                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-
-                if (actor.is_destroyed ()) {
-                    continue;
-                }
-
-                if (!window.showing_on_its_workspace () ||
-                    move_primary_only && !window.is_on_primary_monitor () ||
-                    window == moving ||
-                    window == grabbed_window) {
-
-                    continue;
-                }
-
-                if (window.on_all_workspaces) {
-                    // notifications use their own group and are always on top
-                    if (NotificationStack.is_notification (window)) {
-                        continue;
-                    }
-
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-
-                    clutter_actor_reparent (actor, static_windows);
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-
-                    // Don't fade docks they just stay where they are
-                    if (window.window_type == DOCK) {
-                        continue;
-                    }
-
-                    // windows that are on all workspaces will be faded out and back in
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 0;
-                    actor.restore_easing_state ();
-
-                    continue;
-                }
-
-                if (window.get_workspace () == workspace_from) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, out_group);
-
-                    if (window.fullscreen)
-                        from_has_fullscreened = true;
-
-                } else if (workspace_to != null && window.get_workspace () == workspace_to) {
-                    windows.append (actor);
-                    parents.append (actor.get_parent ());
-                    actor.set_translation (-clone_offset_x, -clone_offset_y, 0);
-                    clutter_actor_reparent (actor, in_group);
-
-                    if (window.fullscreen)
-                        to_has_fullscreened = true;
-
-                }
-            }
-
-            main_container.clip_to_allocation = true;
-            main_container.x = move_primary_only ? monitor_geom.x : 0.0f;
-            main_container.y = move_primary_only ? monitor_geom.y : 0.0f;
-            main_container.width = move_primary_only ? monitor_geom.width : screen_width;
-            main_container.height = move_primary_only ? monitor_geom.height : screen_height;
-
-            var monitor_scale = display.get_monitor_scale (primary);
-            var x2 = move_primary_only ? monitor_geom.width : screen_width;
-            if (workspace_to != null) {
-                x2 += WORKSPACE_GAP * monitor_scale;
-            }
-            if (direction == Meta.MotionDirection.RIGHT) {
-                x2 = -x2;
-            }
-
-            out_group.x = 0.0f;
-            wallpaper.x = 0.0f;
-            wallpaper.y += clone_offset_y;
-            wallpaper.set_translation (-clone_offset_x, 0.0f, 0.0f);
-
-            if (in_group != null && wallpaper_clone != null) {
-                in_group.x = -x2;
-                wallpaper_clone.x = -x2;
-                wallpaper_clone.y += clone_offset_y;
-                wallpaper_clone.set_translation (-clone_offset_x, 0.0f, 0.0f);
-            }
-
-            // The wallpapers need to move upwards inside the container to match their
-            // original position before/after the transition.
-            if (move_primary_only) {
-                wallpaper.y = -monitor_geom.y;
-                if (wallpaper_clone != null) {
-                    wallpaper_clone.y = -monitor_geom.y;
-                }
-            }
-
-            out_group.clip_to_allocation = true;
-            out_group.width = move_primary_only ? monitor_geom.width : screen_width;
-            out_group.height = move_primary_only ? monitor_geom.height : screen_height;
-
-            if (in_group != null) {
-                in_group.clip_to_allocation = out_group.clip_to_allocation;
-                in_group.width = out_group.width;
-                in_group.height = out_group.height;
-            }
-        }
-
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
-            if (!AnimationsSettings.get_enable_animations ()
-                || (direction != Meta.MotionDirection.LEFT && direction != Meta.MotionDirection.RIGHT)
-                || animating_switch_workspace
-                || workspace_view.is_opened ()
-                || window_overview.is_opened ()) {
-                animating_switch_workspace = false;
-                switch_workspace_completed ();
-                return;
-            }
-
-            animating_switch_workspace = true;
-
-            prepare_workspace_switch (from, to, direction);
-
-            // while a workspace is being switched mutter doesn't map windows
-            // TODO: currently only notifications are handled here, other windows should be too
-            switch_workspace_window_created_id = window_created.connect ((window) => {
-                if (NotificationStack.is_notification (window)) {
-                    InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                        clutter_actor_reparent (actor, notification_group);
-                        notification_stack.show_notification (actor);
-                    });
-                }
-            });
-
-            var animation_mode = Clutter.AnimationMode.EASE_OUT_CUBIC;
-
-            var x2 = -in_group.x;
-            GestureTracker.OnUpdate on_animation_update = (percentage) => {
-                var x_out = GestureTracker.animation_value (0.0f, x2, percentage, true);
-                var x_in = GestureTracker.animation_value (-x2, 0.0f, percentage, true);
-
-                out_group.x = x_out;
-                in_group.x = x_in;
-
-                wallpaper.x = x_out;
-                wallpaper_clone.x = x_in;
-            };
-
-            GestureTracker.OnEnd on_animation_end = (percentage, completions, duration) => {
-                if (switch_workspace_with_gesture && (percentage == 1 || percentage == 0)) {
-                    switch_workspace_animation_finished (direction, completions == 0);
-                    return;
-                }
-
-                out_group.save_easing_state ();
-                out_group.set_easing_mode (animation_mode);
-                out_group.set_easing_duration (duration);
-
-                in_group.save_easing_state ();
-                in_group.set_easing_mode (animation_mode);
-                in_group.set_easing_duration (duration);
-
-                wallpaper_clone.save_easing_state ();
-                wallpaper_clone.set_easing_mode (animation_mode);
-                wallpaper_clone.set_easing_duration (duration);
-
-                wallpaper.save_easing_state ();
-                wallpaper.set_easing_mode (animation_mode);
-                wallpaper.set_easing_duration (duration);
-
-                out_group.x = completions * x2;
-                out_group.restore_easing_state ();
-
-                in_group.x = completions == 0 ? -x2 : 0.0f;
-                in_group.restore_easing_state ();
-
-                wallpaper.x = completions == 0 ? 0.0f : x2;
-                wallpaper.restore_easing_state ();
-
-                wallpaper_clone.x = completions == 0 ? -x2 : 0.0f;
-                wallpaper_clone.restore_easing_state ();
-
-                var transition = in_group.get_transition ("x");
-                if (transition != null) {
-                    transition.completed.connect (() => {
-                        switch_workspace_animation_finished (direction, completions == 0);
-                    });
-                } else {
-                    switch_workspace_animation_finished (direction, completions == 0);
-                }
-            };
-
-            if (!switch_workspace_with_gesture) {
-                on_animation_end (1, 1, AnimationDuration.WORKSPACE_SWITCH_MIN);
-            } else {
-                gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
-            }
-        }
-
-        private void switch_workspace_animation_finished (Meta.MotionDirection animation_direction,
-                bool cancel_action, bool is_nudge_animation = false) {
-            if (!animating_switch_workspace) {
-                return;
-            }
-
-            if (switch_workspace_window_created_id > 0) {
-                disconnect (switch_workspace_window_created_id);
-                switch_workspace_window_created_id = 0;
-            }
-            end_switch_workspace ();
-            if (!is_nudge_animation) {
-                switch_workspace_completed ();
-            }
-
-            animating_switch_workspace = cancel_action;
-
-            if (cancel_action) {
-                var cancel_direction = (animation_direction == Meta.MotionDirection.LEFT)
-                    ? Meta.MotionDirection.RIGHT
-                    : Meta.MotionDirection.LEFT;
-                unowned Meta.Display display = get_display ();
-                unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-                unowned var neighbor = active_workspace.get_neighbor (cancel_direction);
-                neighbor.activate (display.get_current_time ());
-            }
-        }
-
-        private void end_switch_workspace () {
-            if (windows == null || parents == null)
-                return;
-
-            unowned var display = get_display ();
-            unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-
-            // Show the real wallpaper again
-            var primary = display.get_primary_monitor ();
-            var move_primary_only = InternalUtils.workspaces_only_on_primary ();
-            if (move_primary_only) {
-                unowned var background = background_group.get_child_at_index (primary);
-                background.show ();
-            } else {
-                ((BackgroundContainer) background_group).set_black_background (true);
-                background_group.show ();
-            }
-
-            for (var i = 0; i < windows.length (); i++) {
-                unowned var actor = windows.nth_data (i);
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                unowned Meta.WindowActor? window = actor as Meta.WindowActor;
-                if (window == null) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
-                    continue;
-                }
-
-                unowned Meta.Window? meta_window = window.get_meta_window ();
-                if (!window.is_destroyed ()) {
-                    clutter_actor_reparent (actor, parents.nth_data (i));
-                }
-
-                kill_window_effects (window);
-
-                if (meta_window != null
-                    && meta_window.get_workspace () != active_workspace
-                    && !meta_window.is_on_all_workspaces ())
-                    window.hide ();
-
-                // some static windows may have been faded out
-                if (actor.opacity < 255U) {
-                    actor.save_easing_state ();
-                    actor.set_easing_duration (300);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-                }
-            }
-
-            if (tmp_actors != null) {
-                foreach (var actor in tmp_actors) {
-                    actor.destroy ();
-                }
-                tmp_actors = null;
-            }
-
-            windows = null;
-            parents = null;
-            moving = null;
-
-            out_group = null;
-            in_group = null;
-            wallpaper = null;
-            wallpaper_clone = null;
-
-            switch_workspace_with_gesture = false;
-            animating_switch_workspace = false;
+            switch_workspace_completed ();
         }
 
         public override void kill_switch_workspace () {
-            end_switch_workspace ();
+            multitasking_view.kill_switch_workspace ();
         }
 
         public override void locate_pointer () {
@@ -2298,15 +1682,65 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
-            if (!is_modal ())
+            if (!is_modal ()) {
                 return false;
+            }
+
+            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+            switch (action) {
+                case Meta.KeyBindingAction.OVERLAY_KEY:
+                    if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
+                        return filter_action (MULTITASKING_VIEW);
+                    }
+                    break;
+                case Meta.KeyBindingAction.WORKSPACE_1:
+                case Meta.KeyBindingAction.WORKSPACE_2:
+                case Meta.KeyBindingAction.WORKSPACE_3:
+                case Meta.KeyBindingAction.WORKSPACE_4:
+                case Meta.KeyBindingAction.WORKSPACE_5:
+                case Meta.KeyBindingAction.WORKSPACE_6:
+                case Meta.KeyBindingAction.WORKSPACE_7:
+                case Meta.KeyBindingAction.WORKSPACE_8:
+                case Meta.KeyBindingAction.WORKSPACE_9:
+                case Meta.KeyBindingAction.WORKSPACE_10:
+                case Meta.KeyBindingAction.WORKSPACE_11:
+                case Meta.KeyBindingAction.WORKSPACE_12:
+                case Meta.KeyBindingAction.WORKSPACE_LEFT:
+                case Meta.KeyBindingAction.WORKSPACE_RIGHT:
+                    return filter_action (SWITCH_WORKSPACE);
+                case Meta.KeyBindingAction.SHOW_DESKTOP:
+                    return filter_action (MULTITASKING_VIEW);
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_GROUP:
+                case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
+                    return filter_action (SWITCH_WINDOWS);
+                default:
+                    break;
+            }
+
+            switch (binding.get_name ()) {
+                case "cycle-workspaces-next":
+                case "cycle-workspaces-previous":
+                case "switch-to-workspace-first":
+                case "switch-to-workspace-last":
+                    return filter_action (SWITCH_WORKSPACE);
+                case "zoom-in":
+                case "zoom-out":
+                    return filter_action (ZOOM);
+                default:
+                    break;
+            }
 
             var modal_proxy = modal_stack.peek_head ();
             if (modal_proxy == null) {
                 return false;
             }
 
-           unowned var filter = modal_proxy.get_keybinding_filter ();
+            unowned var filter = modal_proxy.get_keybinding_filter ();
             if (filter == null) {
                 return false;
             }
@@ -2314,13 +1748,17 @@ namespace Gala {
             return filter (binding);
         }
 
+        public bool filter_action (GestureAction action) {
+            if (!is_modal ()) {
+                return false;
+            }
+
+            return modal_stack.peek_head ().filter_action (action);
+        }
+
         public override void confirm_display_change () {
-#if HAS_MUTTER44
             unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
             var timeout = monitor_manager.get_display_configuration_timeout ();
-#else
-            var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
-#endif
             var summary = ngettext (
                 "Changes will automatically revert after %i second.",
                 "Changes will automatically revert after %i seconds.",
@@ -2369,64 +1807,5 @@ namespace Gala {
         public override unowned Meta.PluginInfo? plugin_info () {
             return info;
         }
-
-        private string generate_screenshot_filename () {
-            var date_time = new GLib.DateTime.now_local ().format ("%Y-%m-%d %H.%M.%S");
-            /// TRANSLATORS: %s represents a timestamp here
-            return _("Screenshot from %s").printf (date_time);
-        }
-
-        private async void screenshot_current_window (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
-                yield screenshot_manager.screenshot_window (true, false, true, filename, out success, out filename_used);
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private async void screenshot_area (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-
-                unowned var screenshot_manager = ScreenshotManager.init (this);
-
-                int x, y, w, h;
-                yield screenshot_manager.select_area (out x, out y, out w, out h);
-                yield screenshot_manager.screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private async void screenshot_screen (bool clipboard = false) {
-            try {
-                string filename = clipboard ? "" : generate_screenshot_filename ();
-                bool success = false;
-                string filename_used = "";
-                unowned var screenshot_manager = ScreenshotManager.init (this);
-                yield screenshot_manager.screenshot (false, true, filename, out success, out filename_used);
-            } catch (Error e) {
-                // Ignore this error
-            }
-        }
-
-        private static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
-            if (actor == new_parent)
-                return;
-
-            actor.ref ();
-            actor.get_parent ().remove_child (actor);
-            new_parent.add_child (actor);
-            actor.unref ();
-        }
     }
-
-    [CCode (cname="clutter_x11_get_stage_window")]
-    public extern X.Window x_get_stage_window (Clutter.Actor stage);
 }

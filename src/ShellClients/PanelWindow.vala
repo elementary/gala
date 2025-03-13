@@ -5,22 +5,44 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : Object {
+public class Gala.PanelWindow : ShellWindow {
+    private const int ANIMATION_DURATION = 250;
+
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
-    public Meta.Window window { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
-    private WindowPositioner window_positioner;
+    public Pantheon.Desktop.HideMode hide_mode {
+        get {
+            return hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode;
+        }
+        set {
+            if (value == NEVER) {
+                hide_tracker = null;
+                show ();
+                make_exclusive ();
+                return;
+            } else if (hide_tracker == null) {
+                unmake_exclusive ();
 
-    private PanelClone clone;
+                hide_tracker = new HideTracker (wm.get_display (), this);
+                hide_tracker.hide.connect (hide);
+                hide_tracker.show.connect (show);
+            }
+
+            hide_tracker.hide_mode = value;
+        }
+    }
+
+    private GestureController gesture_controller;
+    private HideTracker? hide_tracker;
 
     private int width = -1;
     private int height = -1;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
-        Object (wm: wm, window: window, anchor: anchor);
+        Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
 
     construct {
@@ -28,31 +50,33 @@ public class Gala.PanelWindow : Object {
             if (window_struts.remove (window)) {
                 update_struts ();
             }
+
+            gesture_controller = null; // make it release its reference on us
         });
 
-        window.stick ();
+        notify["anchor"].connect (() => position = Position.from_anchor (anchor));
 
-        clone = new PanelClone (wm, this);
-
-        unowned var display = wm.get_display ();
-
-        unowned var workspace_manager = display.get_workspace_manager ();
+        unowned var workspace_manager = window.display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
 
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
 
-        window_positioner = new WindowPositioner (display, window, WindowPositioner.Position.from_anchor (anchor));
+        gesture_controller = new GestureController (DOCK, this, wm);
 
-        notify["anchor"].connect (() => window_positioner.position = WindowPositioner.Position.from_anchor (anchor));
+        window.display.in_fullscreen_changed.connect (() => {
+            if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
+                hide ();
+            } else if (hide_mode == NEVER) {
+                show ();
+            } else {
+                hide_tracker.update_overlap ();
+            }
+        });
     }
 
-#if HAS_MUTTER45
     public Mtk.Rectangle get_custom_window_rect () {
-#else
-    public Meta.Rectangle get_custom_window_rect () {
-#endif
         var window_rect = window.get_frame_rect ();
 
         if (width > 0) {
@@ -78,14 +102,16 @@ public class Gala.PanelWindow : Object {
         update_strut ();
     }
 
-    public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
-        clone.hide_mode = hide_mode;
+    private void hide () {
+        gesture_controller.goto (1);
+    }
 
-        if (hide_mode == NEVER) {
-            make_exclusive ();
-        } else {
-            unmake_exclusive ();
+    private void show () {
+        if (window.display.get_monitor_in_fullscreen (window.get_monitor ())) {
+            return;
         }
+
+        gesture_controller.goto (0);
     }
 
     private void make_exclusive () {
@@ -93,7 +119,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void update_strut () {
-        if (clone.hide_mode != NEVER) {
+        if (hide_mode != NEVER) {
             return;
         }
 

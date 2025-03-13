@@ -305,11 +305,7 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
-#if HAS_MUTTER45
             Mtk.Rectangle inner_rect
-#else
-            Meta.Rectangle inner_rect
-#endif
         ) {
             Clutter.Content content;
 
@@ -325,9 +321,14 @@ namespace Gala {
                 return null;
             }
 
-            var container = new Clutter.Actor ();
-            container.set_size (inner_rect.width, inner_rect.height);
-            container.content = content;
+            var container = new Clutter.Actor () {
+                content = content,
+                offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS,
+                x = inner_rect.x,
+                y = inner_rect.y,
+                width = inner_rect.width,
+                height = inner_rect.height
+            };
 
             return container;
         }
@@ -339,11 +340,7 @@ namespace Gala {
          */
         [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
         public static int get_ui_scaling_factor () {
-#if HAS_MUTTER44
             return 1;
-#else
-            return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#endif
         }
 
         /**
@@ -450,6 +447,13 @@ namespace Gala {
 
             regions.remove (window);
             X.Fixes.destroy_region (xdisplay, region);
+        }
+
+        /**
+         * Utility that returns the given duration or 0 if animations are disabled.
+         */
+        public static uint get_animation_duration (uint duration) {
+            return Meta.Prefs.get_gnome_animations () ? duration : 0;
         }
     }
 }

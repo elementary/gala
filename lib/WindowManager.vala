@@ -16,9 +16,16 @@
 //
 
 namespace Gala {
+    namespace ActionKeys {
+        public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
+        public const string OVERLAY_ACTION = "overlay-action";
+        public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
+        public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
+    }
+
     public enum ActionType {
         NONE = 0,
-        SHOW_WORKSPACE_VIEW,
+        SHOW_MULTITASKING_VIEW,
         MAXIMIZE_CURRENT,
         HIDE_CURRENT,
         OPEN_LAUNCHER,
@@ -63,6 +70,9 @@ namespace Gala {
      */
     public class ModalProxy : Object {
         public Clutter.Grab? grab { get; set; }
+
+        private GestureAction[] allowed_actions;
+
         /**
          * A function which is called whenever a keybinding is pressed. If you supply a custom
          * one you can filter out those that'd you like to be passed through and block all others.
@@ -86,6 +96,14 @@ namespace Gala {
          */
         public void allow_all_keybindings () {
             _keybinding_filter = null;
+        }
+
+        public void allow_actions (GestureAction[] actions) {
+            allowed_actions = actions;
+        }
+
+        public bool filter_action (GestureAction action) {
+            return !(action in allowed_actions);
         }
     }
 
@@ -117,11 +135,6 @@ namespace Gala {
          * The background group is a container for the background actors forming the wallpaper
          */
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
-         * View that allows to see and manage all your windows and desktops.
-         */
-        public abstract Gala.ActivatableComponent workspace_view { get; protected set; }
 
         /**
          * Enters the modal mode, which means that all events are directed to the stage instead
@@ -176,5 +189,18 @@ namespace Gala {
          * @param direction The direction in which to switch
          */
         public abstract void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp);
+
+        /**
+         * Gets action command from gsettings and executes it.
+         *
+         * @param action_key The gsettings key of action. Available keys are stored in ActionKeys
+         */
+        public abstract void launch_action (string action_key);
+
+        /**
+         * Checks whether the action should currently be prohibited.
+         * @return true if the action should be prohibited, false otherwise
+         */
+        public abstract bool filter_action (GestureAction action);
     }
 }

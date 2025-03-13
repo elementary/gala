@@ -13,11 +13,6 @@ namespace Gala {
     }
 
     public class InternalUtils {
-        public static bool workspaces_only_on_primary () {
-            return Meta.Prefs.get_dynamic_workspaces ()
-                && Meta.Prefs.get_workspaces_only_on_primary ();
-        }
-
         /**
          * set the area where clutter can receive events
          **/
@@ -47,14 +42,8 @@ namespace Gala {
 
                 case InputArea.NONE:
                 default:
-#if !HAS_MUTTER44
-                    unowned Meta.X11Display x11display = display.get_x11_display ();
-                    x11display.clear_stage_input_region ();
-                    return;
-#else
                     rects = {};
                     break;
-#endif
             }
 
             unowned Meta.X11Display x11display = display.get_x11_display ();
@@ -109,39 +98,23 @@ namespace Gala {
             return k1 * k1 + k2 * k2;
         }
 
-#if HAS_MUTTER45
         private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-#else
-        private static Meta.Rectangle rect_adjusted (Meta.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-#endif
             return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
         }
 
-#if HAS_MUTTER45
         private static Gdk.Point rect_center (Mtk.Rectangle rect) {
-#else
-        private static Gdk.Point rect_center (Meta.Rectangle rect) {
-#endif
             return {rect.x + rect.width / 2, rect.y + rect.height / 2};
         }
 
         public struct TilableWindow {
-#if HAS_MUTTER45
             Mtk.Rectangle rect;
-#else
-            Meta.Rectangle rect;
-#endif
             unowned WindowClone id;
         }
 
         /**
          * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
          */
-#if HAS_MUTTER45
         public static List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, List<TilableWindow?> windows) {
-#else
-        public static List<TilableWindow?> calculate_grid_placement (Meta.Rectangle area, List<TilableWindow?> windows) {
-#endif
             uint window_count = windows.length ();
             int columns = (int)Math.ceil (Math.sqrt (window_count));
             int rows = (int)Math.ceil (window_count / (double)columns);
@@ -220,11 +193,7 @@ namespace Gala {
                 var rect = window.rect;
 
                 // Work out where the slot is
-#if HAS_MUTTER45
                 Mtk.Rectangle target = {
-#else
-                Meta.Rectangle target = {
-#endif
                     area.x + (slot % columns) * slot_width,
                     area.y + (slot / columns) * slot_height,
                     slot_width,
@@ -313,14 +282,9 @@ namespace Gala {
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
-#if HAS_MUTTER45
         public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
-#else
-        public static Meta.Rectangle get_workspaces_geometry (Meta.Display display) {
-#endif
-            if (InternalUtils.workspaces_only_on_primary ()) {
-                var primary = display.get_primary_monitor ();
-                return display.get_monitor_geometry (primary);
+            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
+                return display.get_monitor_geometry (display.get_primary_monitor ());
             } else {
                 float screen_width, screen_height;
                 display.get_size (out screen_width, out screen_height);
@@ -368,6 +332,25 @@ namespace Gala {
                     });
                 }
             });
+        }
+
+        public static void clutter_actor_reparent (Clutter.Actor actor, Clutter.Actor new_parent) {
+            if (actor == new_parent) {
+                return;
+            }
+
+            actor.ref ();
+            actor.get_parent ().remove_child (actor);
+            new_parent.add_child (actor);
+            actor.unref ();
+        }
+
+        public static void bell_notify (Meta.Display display) {
+#if HAS_MUTTER47
+            display.get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
+#else
+            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
+#endif
         }
     }
 }

@@ -35,6 +35,9 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     private double delta_y;
     private GestureDirection direction;
 
+    // When we receive a cancel call, we start ignoring the ongoing scroll until it's over
+    private bool ignoring = false;
+
     construct {
         started = false;
         delta_x = 0;
@@ -46,14 +49,20 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         Object (actor: actor, orientation: orientation, settings: settings);
 
         actor.scroll_event.connect (on_scroll_event);
+        // When the actor is turned invisible, we don't receive a scroll finish event which would cause
+        // us to ignore the first new scroll event if we're currently ignoring.
+        actor.notify["visible"].connect (() => ignoring = false);
     }
 
-#if HAS_MUTTER45
     private bool on_scroll_event (Clutter.Event event) {
-#else
-    private bool on_scroll_event (Clutter.ScrollEvent event) {
-#endif
         if (!can_handle_event (event)) {
+            return false;
+        }
+
+        if (ignoring) {
+            if (event.get_scroll_finish_flags () != NONE) {
+                ignoring = false;
+            }
             return false;
         }
 
@@ -88,11 +97,8 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         } else {
             double delta = calculate_delta (delta_x, delta_y, direction);
             if (x == 0 && y == 0) {
-                started = false;
-                delta_x = 0;
-                delta_y = 0;
-                direction = GestureDirection.UNKNOWN;
                 on_end (delta, time);
+                reset ();
             } else {
                 on_update (delta, time);
             }
@@ -101,14 +107,24 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         return true;
     }
 
-#if HAS_MUTTER45
     private static bool can_handle_event (Clutter.Event event) {
-#else
-    private static bool can_handle_event (Clutter.ScrollEvent event) {
-#endif
         return event.get_type () == Clutter.EventType.SCROLL
             && event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
+    }
+
+    private void reset () {
+        started = false;
+        delta_x = 0;
+        delta_y = 0;
+        direction = GestureDirection.UNKNOWN;
+    }
+
+    public override void cancel_gesture () {
+        if (started) {
+            ignoring = true;
+            reset ();
+        }
     }
 
     private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {

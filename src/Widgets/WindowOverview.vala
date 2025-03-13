@@ -5,34 +5,34 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
+public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
     private const int BORDER = 10;
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
 
     public WindowManager wm { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; } // Currently only used to allow us to use GesturePropertyTransitions
+
+    private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
 
     private ModalProxy modal_proxy;
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
     private WindowCloneContainer window_clone_container;
 
-    public WindowOverview (WindowManager wm, GestureTracker gesture_tracker) {
-        Object (wm : wm, gesture_tracker: gesture_tracker);
+    public WindowOverview (WindowManager wm) {
+        Object (wm : wm);
     }
 
     construct {
         visible = false;
         reactive = true;
+        gesture_controller = new GestureController (MULTITASKING_VIEW, this, wm) {
+            enabled = false
+        };
     }
 
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         if (!is_opened ()) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -40,11 +40,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
         return window_clone_container.key_press_event (event);
     }
 
-#if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event event) {
-#else
-    public override bool button_release_event (Clutter.ButtonEvent event) {
-#endif
         if (event.get_button () == Clutter.Button.PRIMARY) {
             close ();
         }
@@ -117,6 +113,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
         modal_proxy = wm.push_modal (this);
         modal_proxy.set_keybinding_filter (keybinding_filter);
+        modal_proxy.allow_actions ({ ZOOM });
 
         unowned var display = wm.get_display ();
 
@@ -124,7 +121,7 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            window_clone_container = new WindowCloneContainer (display, gesture_tracker, scale, true) {
+            window_clone_container = new WindowCloneContainer (display, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -152,8 +149,9 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             }
 
             container.add_window (window);
-            container.open (display.get_focus_window (), false, false);
         }
+
+        gesture_controller.goto (1);
     }
 
     private bool keybinding_filter (Meta.KeyBinding binding) {
@@ -169,20 +167,12 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
 
         switch (binding.get_name ()) {
             case "expose-all-windows":
-            case "zoom-in":
-            case "zoom-out":
                 return false;
             default:
                 break;
         }
 
         return true;
-    }
-
-    private void restack_windows () {
-        foreach (var child in get_children ()) {
-            ((WindowCloneContainer) child).restack_windows ();
-        }
     }
 
     private void window_left_monitor (int num, Meta.Window window) {
@@ -262,23 +252,19 @@ public class Gala.WindowOverview : Clutter.Actor, ActivatableComponent {
             return;
         }
 
-        restack_windows ();
-
         foreach (var workspace in workspaces) {
             workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
         }
         wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
-        foreach (unowned var child in get_children ()) {
-            ((WindowCloneContainer) child).close ();
-        }
-
         Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
             cleanup ();
 
             return Source.REMOVE;
         });
+
+        gesture_controller.goto (0);
     }
 
     private void cleanup () {
