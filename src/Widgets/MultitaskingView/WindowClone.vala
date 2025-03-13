@@ -33,11 +33,7 @@ public class Gala.WindowClone : ActorTarget {
     /**
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
-#if HAS_MUTTER45
     public Mtk.Rectangle? slot { get; private set; default = null; }
-#else
-    public Meta.Rectangle? slot { get; private set; default = null; }
-#endif
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -106,7 +102,6 @@ public class Gala.WindowClone : ActorTarget {
         reactive = true;
 
         window.unmanaged.connect (unmanaged);
-        window.notify["on-all-workspaces"].connect (on_all_workspaces_changed);
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
@@ -152,7 +147,6 @@ public class Gala.WindowClone : ActorTarget {
 
     ~WindowClone () {
         window.unmanaged.disconnect (unmanaged);
-        window.notify["on-all-workspaces"].disconnect (on_all_workspaces_changed);
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
@@ -228,21 +222,10 @@ public class Gala.WindowClone : ActorTarget {
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
 
-    private void on_all_workspaces_changed () {
-        // we don't display windows that are on all workspaces
-        if (window.on_all_workspaces) {
-            unmanaged ();
-        }
-    }
-
     /**
      * Animate the window to the given slot
      */
-#if HAS_MUTTER45
     public void take_slot (Mtk.Rectangle rect, bool animate) {
-#else
-    public void take_slot (Meta.Rectangle rect, bool animate) {
-#endif
         slot = rect;
 
         if (animate) {
@@ -283,15 +266,11 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (true);
-        }
+        update_hover_widgets (true);
     }
 
     public override void end_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (true);
-        }
+        update_hover_widgets (false);
     }
 
     public override void allocate (Clutter.ActorBox box) {
@@ -361,11 +340,7 @@ public class Gala.WindowClone : ActorTarget {
         window_title.allocate (window_title_alloc);
     }
 
-#if HAS_MUTTER45
     public override bool button_press_event (Clutter.Event event) {
-#else
-    public override bool button_press_event (Clutter.ButtonEvent event) {
-#endif
         return Clutter.EVENT_STOP;
     }
 

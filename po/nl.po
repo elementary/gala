@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-02 14:11+0000\n"
-"PO-Revision-Date: 2025-02-16 03:16+0000\n"
+"POT-Creation-Date: 2025-03-12 22:19+0000\n"
+"PO-Revision-Date: 2025-03-11 04:37+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
-"Language-Team: Dutch <https://l10n.elementary.io/projects/desktop/gala/nl/>\n"
+"Language-Team: Dutch <https://l10n.elementaryos.org/projects/desktop/gala/nl/"
+">\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -256,59 +257,59 @@ msgstr "Sta toe"
 msgid "Deny"
 msgstr "Weigeren"
 
-#: src/DesktopIntegration.vala:176
+#: src/DesktopIntegration.vala:194
 msgid "Window has already focus"
 msgstr "Window heeft al de focus"
 
-#: src/ScreenshotManager.vala:309
-msgid "Screenshots"
-msgstr "Schermafbeeldingen"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:79
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Schermafbeelding van %s"
 
-#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:137
+msgid "Show in Files"
+msgstr "Laat zien in Bestanden"
+
+#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
 msgid "Screenshot taken"
 msgstr "Schermafbeelding genomen"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot is saved to clipboard"
+msgstr "Schermafdruk is opgeslagen op het klembord"
+
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot saved to screenshots folder"
+msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
+
+#: src/ScreenshotManager.vala:409
+msgid "Screenshots"
+msgstr "Schermafbeeldingen"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr "Vensterwisselaar"
 
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:1735
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Wijzigingen worden na %i seconde automatisch teruggedraaid."
 msgstr[1] "Wijzigingen worden na %i seconden automatisch teruggedraaid."
 
-#: src/WindowManager.vala:2272
+#: src/WindowManager.vala:1742
 msgid "Keep new display settings?"
 msgstr "Nieuwe weergave-instellingen bewaren?"
 
-#: src/WindowManager.vala:2276
+#: src/WindowManager.vala:1746
 msgid "Keep Settings"
 msgstr "Instellingen behouden"
 
-#: src/WindowManager.vala:2277
+#: src/WindowManager.vala:1747
 msgid "Use Previous Settings"
 msgstr "Vorige instellingen gebruiken"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2316
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Schermafbeelding van %s"
-
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/WindowManager.vala:2373
-msgid "Show in Files"
-msgstr ""
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot is saved to clipboard"
-msgstr "Schermafdruk is opgeslagen op het klembord"
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot saved to screenshots folder"
-msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"

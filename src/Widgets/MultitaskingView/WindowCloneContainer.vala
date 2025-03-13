@@ -72,7 +72,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         new_window.destroy.connect ((_new_window) => {
             // make sure to release reference if the window is selected
             if (_new_window == current_window) {
-                select_next_window (Meta.MotionDirection.RIGHT);
+                select_next_window (Meta.MotionDirection.RIGHT, false);
             }
 
             // if window is still selected, reset the selection
@@ -178,11 +178,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return (int) (seq_b - seq_a);
         });
 
-#if HAS_MUTTER45
         Mtk.Rectangle area = {
-#else
-        Meta.Rectangle area = {
-#endif
             padding_left,
             padding_top,
             (int)width - padding_left - padding_right,
@@ -201,11 +197,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
      * Collect key events, mainly for redirecting them to the WindowCloneContainers to
      * select the active window.
      */
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         if (!opened) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -215,16 +207,16 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 requested_close ();
                 break;
             case Clutter.Key.Down:
-                select_next_window (Meta.MotionDirection.DOWN);
+                select_next_window (Meta.MotionDirection.DOWN, true);
                 break;
             case Clutter.Key.Up:
-                select_next_window (Meta.MotionDirection.UP);
+                select_next_window (Meta.MotionDirection.UP, true);
                 break;
             case Clutter.Key.Left:
-                select_next_window (Meta.MotionDirection.LEFT);
+                select_next_window (Meta.MotionDirection.LEFT, true);
                 break;
             case Clutter.Key.Right:
-                select_next_window (Meta.MotionDirection.RIGHT);
+                select_next_window (Meta.MotionDirection.RIGHT, true);
                 break;
             case Clutter.Key.Return:
             case Clutter.Key.KP_Enter:
@@ -243,7 +235,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
      *
      * @param direction The MetaMotionDirection in which to search for windows for.
      */
-    public void select_next_window (Meta.MotionDirection direction) {
+    public void select_next_window (Meta.MotionDirection direction, bool user_action) {
         if (get_n_children () < 1) {
             return;
         }
@@ -326,7 +318,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         }
 
         if (closest == null) {
-            if (current_window != null) {
+            if (current_window != null && user_action) {
                 InternalUtils.bell_notify (display);
                 current_window.active = true;
             }
@@ -337,7 +329,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
             current_window.active = false;
         }
 
-        closest.active = true;
+        if (user_action) {
+            closest.active = true;
+        }
+
         current_window = closest;
     }
 
@@ -354,11 +349,9 @@ public class Gala.WindowCloneContainer : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action != MULTITASKING_VIEW) {
-            return;
-        }
-
         if (!opened) {
+            opened = true;
+
             if (current_window != null) {
                 current_window.active = false;
             }
@@ -370,19 +363,26 @@ public class Gala.WindowCloneContainer : ActorTarget {
                     break;
                 }
             }
+
+            restack_windows ();
+            reflow (true);
+        } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
+            restack_windows ();
         }
-
-        opened = true;
-
-        restack_windows ();
-        reflow (true);
     }
 
     public override void commit_progress (GestureAction action, double to) {
-        if (action != MULTITASKING_VIEW) {
-            return;
-        }
+        switch (action) {
+            case MULTITASKING_VIEW:
+                opened = to > 0.5;
+                break;
 
-        opened = to > 0.5;
+            case SWITCH_WORKSPACE:
+                opened = get_current_commit (MULTITASKING_VIEW) > 0.5;
+                break;
+
+            default:
+                break;
+        }
     }
 }

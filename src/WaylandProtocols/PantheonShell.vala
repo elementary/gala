@@ -5,32 +5,13 @@
  */
 
 namespace Gala {
-#if !HAS_MUTTER45
-    [Compact]
-    public class FakeMetaWaylandCompositor : GLib.Object {
-        // It is the third field and Vala adds a FakeMetaWaylandCompositorPrivate *priv
-        public Wl.Display wayland_display;
-
-        [CCode (cname = "meta_context_get_wayland_compositor")]
-        public extern static unowned Gala.FakeMetaWaylandCompositor from_context (Meta.Context context);
-    }
-#endif
     public static inline unowned Wl.Display? get_display_from_context (Meta.Context context) {
-#if HAS_MUTTER45
         unowned Meta.WaylandCompositor? compositor = context.get_wayland_compositor ();
         if (compositor == null) {
             return null;
         }
 
         return (Wl.Display) compositor.get_wayland_display ();
-#else
-        unowned FakeMetaWaylandCompositor compositor = Gala.FakeMetaWaylandCompositor.from_context (context);
-        if (compositor == null) {
-            return null;
-        }
-
-        return compositor.wayland_display;
-#endif
     }
 
     private static Pantheon.Desktop.ShellInterface wayland_pantheon_shell_interface;

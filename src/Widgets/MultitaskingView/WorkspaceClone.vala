@@ -229,8 +229,8 @@ namespace Gala {
                 }
             }
 
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.connect (add_window);
+            var static_windows = StaticWindowContainer.get_instance (display);
+            static_windows.window_changed.connect (on_window_static_changed);
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_targets);
@@ -245,9 +245,6 @@ namespace Gala {
             display.window_left_monitor.disconnect (window_left_monitor);
             workspace.window_added.disconnect (add_window);
             workspace.window_removed.disconnect (remove_window);
-
-            var listener = WindowListener.get_default ();
-            listener.window_no_longer_on_all_workspaces.disconnect (add_window);
 
             background.destroy ();
             window_container.destroy ();
@@ -266,7 +263,7 @@ namespace Gala {
         private void add_window (Meta.Window window) {
             if (window.window_type != Meta.WindowType.NORMAL
                 || window.get_workspace () != workspace
-                || window.on_all_workspaces
+                || StaticWindowContainer.get_instance (workspace.get_display ()).is_static (window)
                 || !window.is_on_primary_monitor ())
                 return;
 
@@ -295,11 +292,15 @@ namespace Gala {
                 remove_window (window);
         }
 
-#if HAS_MUTTER45
+        private void on_window_static_changed (Meta.Window window, bool is_static) {
+            if (is_static) {
+                remove_window (window);
+            } else {
+                add_window (window);
+            }
+        }
+
         public void update_size (Mtk.Rectangle monitor_geometry) {
-#else
-        public void update_size (Meta.Rectangle monitor_geometry) {
-#endif
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
@@ -318,7 +319,7 @@ namespace Gala {
             background.set_pivot_point (0.5f, pivot_y);
 
             var initial_width = monitor.width;
-            var target_width = monitor.width * scale + WindowManagerGala.WORKSPACE_GAP * 2;
+            var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
 
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
             add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));

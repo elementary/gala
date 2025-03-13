@@ -7,21 +7,21 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : CanvasActor {
+public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const int ANIMATION_DURATION = 200;
-    // https://github.com/elementary/gala/issues/1317#issuecomment-982484415
-    private const int GESTURE_RANGE_LIMIT = 10;
+    private const double GESTURE_STEP = 0.1;
 
-    public Gala.WindowManager? wm { get; construct; }
-    public GestureTracker gesture_tracker { get; construct; }
+    public WindowManager wm { get; construct; }
     public bool opened { get; private set; default = false; }
 
-    private bool handling_gesture = false;
+    public Clutter.Actor? actor { get { return this; } }
+
+    private GestureController gesture_controller;
     private int modifier_mask;
     private Gala.ModalProxy modal_proxy = null;
     private Drawing.StyleManager style_manager;
@@ -49,17 +49,24 @@ public class Gala.WindowSwitcher : CanvasActor {
         }
     }
 
+    private double previous_progress = 0d;
+
     private float scaling_factor = 1.0f;
 
-    public WindowSwitcher (Gala.WindowManager wm, GestureTracker gesture_tracker) {
-        Object (
-            wm: wm,
-            gesture_tracker: gesture_tracker
-        );
+    public WindowSwitcher (WindowManager wm) {
+        Object (wm: wm);
     }
 
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
+
+        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
+            overshoot_upper_clamp = int.MAX,
+            overshoot_lower_clamp = int.MIN,
+            snap = false
+        };
+        gesture_controller.enable_touchpad ();
+        gesture_controller.notify["recognizing"].connect (recognizing_changed);
 
         container = new Clutter.Actor () {
             reactive = true,
@@ -220,12 +227,55 @@ public class Gala.WindowSwitcher : CanvasActor {
         ctx.restore ();
     }
 
+    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+        if (update_type != UPDATE || container.get_n_children () == 0) {
+            return;
+        }
+
+        var is_step = ((int) (previous_progress / GESTURE_STEP) - (int) (progress / GESTURE_STEP)).abs () >= 1;
+
+        previous_progress = progress;
+
+        if (container.get_n_children () == 1 && current_icon != null && is_step) {
+            InternalUtils.bell_notify (wm.get_display ());
+            return;
+        }
+
+        var current_index = (int) (progress / GESTURE_STEP) % container.get_n_children ();
+
+        if (current_index < 0) {
+            current_index = container.get_n_children () + current_index;
+        }
+
+        var new_icon = (WindowSwitcherIcon) container.get_child_at_index (current_index);
+        if (new_icon != current_icon) {
+            current_icon = new_icon;
+        }
+    }
+
+    private void select_icon (WindowSwitcherIcon? icon) {
+        if (icon == null) {
+            gesture_controller.progress = 0;
+            current_icon = null;
+            return;
+        }
+
+        int index = 0;
+        for (var child = container.get_first_child (); child != null; child = child.get_next_sibling ()) {
+            if (child == icon) {
+                gesture_controller.progress = index * GESTURE_STEP;
+                break;
+            }
+            index++;
+        }
+    }
+
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent event, Meta.KeyBinding binding
     ) {
-        if (handling_gesture) {
+        if (gesture_controller.recognizing) {
             return;
         }
 
@@ -264,75 +314,48 @@ public class Gala.WindowSwitcher : CanvasActor {
         next_window (backward);
     }
 
-    public void handle_gesture (GestureDirection direction) {
-        handling_gesture = true;
+    private void recognizing_changed () {
+        if (gesture_controller.recognizing) {
+            unowned var display = wm.get_display ();
+            unowned var workspace_manager = display.get_workspace_manager ();
+            unowned var active_workspace = workspace_manager.get_active_workspace ();
 
-        unowned var display = wm.get_display ();
-        unowned var workspace_manager = display.get_workspace_manager ();
-        unowned var active_workspace = workspace_manager.get_active_workspace ();
-
-        var windows_exist = collect_all_windows (display, active_workspace);
-        if (!windows_exist) {
-            return;
-        }
-        open_switcher ();
-
-        // if direction == LEFT we need to move to the end of the list first, thats why last_window_index is set to -1
-        var last_window_index = direction == RIGHT ? 0 : -1;
-        GestureTracker.OnUpdate on_animation_update = (percentage) => {
-            var window_index = GestureTracker.animation_value (0, GESTURE_RANGE_LIMIT, percentage, true);
-
-            if (window_index >= container.get_n_children ()) {
+            var windows_exist = collect_all_windows (display, active_workspace);
+            if (!windows_exist) {
                 return;
             }
-
-            if (window_index > last_window_index) {
-                while (last_window_index < window_index) {
-                    next_window (direction == LEFT);
-                    last_window_index++;
-                }
-            } else if (window_index < last_window_index) {
-                while (last_window_index > window_index) {
-                    next_window (direction == RIGHT);
-                    last_window_index--;
-                }
-            }
-        };
-
-        GestureTracker.OnEnd on_animation_end = (percentage, cancel_action, calculated_duration) => {
-            handling_gesture = false;
+            open_switcher ();
+        } else {
             close_switcher (wm.get_display ().get_current_time ());
-        };
-
-        gesture_tracker.connect_handlers (null, (owned) on_animation_update, (owned) on_animation_end);
+        }
     }
 
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
+        select_icon (null);
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
         }
 
-        unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
-        if (current_window == null) {
-            current_icon = null;
-        }
-
         container.remove_all_children ();
 
+        unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
             var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
-            if (window == current_window) {
-                current_icon = icon;
-            }
-
             add_icon (icon);
+
+            if (window == current_window) {
+                select_icon (icon);
+            }
         }
 
         return true;
     }
 
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+        select_icon (null);
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
@@ -340,7 +363,6 @@ public class Gala.WindowSwitcher : CanvasActor {
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         if (current_window == null) {
-            current_icon = null;
             return false;
         }
 
@@ -351,11 +373,11 @@ public class Gala.WindowSwitcher : CanvasActor {
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
                 var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
-                if (window == current_window) {
-                    current_icon = icon;
-                }
-
                 add_icon (icon);
+
+                if (window == current_window) {
+                    select_icon (icon);
+                }
             }
         }
 
@@ -367,8 +389,8 @@ public class Gala.WindowSwitcher : CanvasActor {
         icon.get_accessible ().accessible_parent = container.get_accessible ();
 
         icon.motion_event.connect ((_icon, event) => {
-            if (current_icon != _icon && !handling_gesture) {
-                current_icon = (WindowSwitcherIcon) _icon;
+            if (current_icon != _icon && !gesture_controller.recognizing) {
+                select_icon ((WindowSwitcherIcon) _icon);
             }
 
             return Clutter.EVENT_PROPAGATE;
@@ -425,18 +447,13 @@ public class Gala.WindowSwitcher : CanvasActor {
 
     private void push_modal () {
         modal_proxy = wm.push_modal (this);
+        modal_proxy.allow_actions ({ SWITCH_WINDOWS });
         modal_proxy.set_keybinding_filter ((binding) => {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
             switch (action) {
                 case Meta.KeyBindingAction.NONE:
                 case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
-                case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
-                case Meta.KeyBindingAction.SWITCH_WINDOWS:
-                case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-                case Meta.KeyBindingAction.SWITCH_GROUP:
-                case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                     return false;
                 default:
                     break;
@@ -470,28 +487,7 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     private void next_window (bool backward) {
-        Clutter.Actor actor;
-
-        if (container.get_n_children () == 1 && current_icon != null) {
-            InternalUtils.bell_notify (wm.get_display ());
-            return;
-        }
-
-        if (current_icon == null) {
-            actor = container.get_first_child ();
-        } else if (!backward) {
-            actor = current_icon.get_next_sibling ();
-            if (actor == null) {
-                actor = container.get_first_child ();
-            }
-        } else {
-            actor = current_icon.get_previous_sibling ();
-            if (actor == null) {
-                actor = container.get_last_child ();
-            }
-        }
-
-        current_icon = (WindowSwitcherIcon) actor;
+        gesture_controller.progress += backward ? -GESTURE_STEP : GESTURE_STEP;
     }
 
     private void update_caption_text () {
@@ -501,48 +497,36 @@ public class Gala.WindowSwitcher : CanvasActor {
     }
 
     public override void key_focus_out () {
-        if (!handling_gesture) {
+        if (!gesture_controller.recognizing) {
             close_switcher (wm.get_display ().get_current_time ());
         }
     }
 
-#if HAS_MUTTER45
     private bool container_mouse_release (Clutter.Event event) {
-#else
-    private bool container_mouse_release (Clutter.ButtonEvent event) {
-#endif
-        if (opened && event.get_button () == Clutter.Button.PRIMARY && !handling_gesture) {
+        if (opened && event.get_button () == Clutter.Button.PRIMARY && !gesture_controller.recognizing) {
             close_switcher (event.get_time ());
         }
 
         return true;
     }
 
-#if HAS_MUTTER45
     public override bool key_release_event (Clutter.Event event) {
-#else
-    public override bool key_release_event (Clutter.KeyEvent event) {
-#endif
-        if ((get_current_modifiers () & modifier_mask) == 0 && !handling_gesture) {
+        if ((get_current_modifiers () & modifier_mask) == 0 && !gesture_controller.recognizing) {
             close_switcher (event.get_time ());
         }
 
         return Clutter.EVENT_PROPAGATE;
     }
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         switch (event.get_key_symbol ()) {
             case Clutter.Key.Right:
-                if (!handling_gesture) {
+                if (!gesture_controller.recognizing) {
                     next_window (false);
                 }
                 return Clutter.EVENT_STOP;
             case Clutter.Key.Left:
-                if (!handling_gesture) {
+                if (!gesture_controller.recognizing) {
                     next_window (true);
                 }
                 return Clutter.EVENT_STOP;

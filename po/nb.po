@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"POT-Creation-Date: 2025-03-12 22:19+0000\n"
 "PO-Revision-Date: 2024-09-19 07:21+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
@@ -258,60 +258,60 @@ msgstr "Tillat"
 msgid "Deny"
 msgstr "Nekt"
 
-#: src/DesktopIntegration.vala:176
+#: src/DesktopIntegration.vala:194
 #, fuzzy
 msgid "Window has already focus"
 msgstr "Vinduet har allerede fokus"
 
-#: src/ScreenshotManager.vala:309
-msgid "Screenshots"
-msgstr "Skjermavbildninger"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:79
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Skjermavbildning fra %s"
 
-#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:137
+msgid "Show in Files"
+msgstr ""
+
+#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot is saved to clipboard"
+msgstr ""
+
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot saved to screenshots folder"
+msgstr ""
+
+#: src/ScreenshotManager.vala:409
+msgid "Screenshots"
+msgstr "Skjermavbildninger"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr "Vindusbytter"
 
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:1735
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
 msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
 
-#: src/WindowManager.vala:2272
+#: src/WindowManager.vala:1742
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2276
+#: src/WindowManager.vala:1746
 msgid "Keep Settings"
 msgstr "Behold innstillinger"
 
-#: src/WindowManager.vala:2277
+#: src/WindowManager.vala:1747
 msgid "Use Previous Settings"
 msgstr "Bruk tidligere oppsett"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2316
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Skjermavbildning fra %s"
-
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/WindowManager.vala:2373
-msgid "Show in Files"
-msgstr ""
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot is saved to clipboard"
-msgstr ""
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot saved to screenshots folder"
-msgstr ""
 
 #~ msgid ""
 #~ "Set the keyboard layout correctly at startup so that the indicator "
