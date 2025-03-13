@@ -1691,7 +1691,7 @@ namespace Gala {
             switch (action) {
                 case Meta.KeyBindingAction.OVERLAY_KEY:
                     if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
-                        return action_filter (MULTITASKING_VIEW);
+                        return filter_action (MULTITASKING_VIEW);
                     }
                     break;
                 case Meta.KeyBindingAction.WORKSPACE_1:
@@ -1708,16 +1708,16 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_12:
                 case Meta.KeyBindingAction.WORKSPACE_LEFT:
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
-                    return action_filter (SWITCH_WORKSPACE);
+                    return filter_action (SWITCH_WORKSPACE);
                 case Meta.KeyBindingAction.SHOW_DESKTOP:
-                    return action_filter (MULTITASKING_VIEW);
+                    return filter_action (MULTITASKING_VIEW);
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_GROUP:
                 case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
-                    return action_filter (SWITCH_WINDOWS);
+                    return filter_action (SWITCH_WINDOWS);
                 default:
                     break;
             }
@@ -1727,10 +1727,10 @@ namespace Gala {
                 case "cycle-workspaces-previous":
                 case "switch-to-workspace-first":
                 case "switch-to-workspace-last":
-                    return action_filter (SWITCH_WORKSPACE);
+                    return filter_action (SWITCH_WORKSPACE);
                 case "zoom-in":
                 case "zoom-out":
-                    return action_filter (ZOOM);
+                    return filter_action (ZOOM);
                 default:
                     break;
             }
@@ -1748,7 +1748,7 @@ namespace Gala {
             return filter (binding);
         }
 
-        public bool action_filter (GestureAction action) {
+        public bool filter_action (GestureAction action) {
             if (!is_modal ()) {
                 return false;
             }

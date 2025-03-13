@@ -201,6 +201,6 @@ namespace Gala {
          * Checks whether the action should currently be prohibited.
          * @return true if the action should be prohibited, false otherwise
          */
-        public abstract bool action_filter (GestureAction action);
+        public abstract bool filter_action (GestureAction action);
     }
 }
