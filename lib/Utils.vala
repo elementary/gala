@@ -305,11 +305,7 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
-#if HAS_MUTTER45
             Mtk.Rectangle inner_rect
-#else
-            Meta.Rectangle inner_rect
-#endif
         ) {
             Clutter.Content content;
 
@@ -344,11 +340,7 @@ namespace Gala {
          */
         [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
         public static int get_ui_scaling_factor () {
-#if HAS_MUTTER44
             return 1;
-#else
-            return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#endif
         }
 
         /**

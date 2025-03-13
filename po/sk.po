@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-02 14:11+0000\n"
+"POT-Creation-Date: 2025-03-12 22:19+0000\n"
 "PO-Revision-Date: 2024-10-05 18:16+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
@@ -251,23 +251,42 @@ msgstr "Povoliť"
 msgid "Deny"
 msgstr "Zakázať"
 
-#: src/DesktopIntegration.vala:176
+#: src/DesktopIntegration.vala:194
 msgid "Window has already focus"
 msgstr "Okno je už zamerané"
 
-#: src/ScreenshotManager.vala:309
-msgid "Screenshots"
-msgstr "Snímky obrazovky"
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:79
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Snímka obrazovky z %s"
 
-#: src/ScreenshotManager.vala:401 src/WindowManager.vala:2379
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:137
+msgid "Show in Files"
+msgstr ""
+
+#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
 msgid "Screenshot taken"
 msgstr "Snímka obrazovky vytvorená"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot is saved to clipboard"
+msgstr ""
+
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot saved to screenshots folder"
+msgstr ""
+
+#: src/ScreenshotManager.vala:409
+msgid "Screenshots"
+msgstr "Snímky obrazovky"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr "Prepínač okien"
 
-#: src/WindowManager.vala:2265
+#: src/WindowManager.vala:1735
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -275,36 +294,17 @@ msgstr[0] "Za %i sekundu sa zmeny automaticky vrátia späť."
 msgstr[1] "Za %i sekundy sa zmeny automaticky vrátia späť."
 msgstr[2] "Za %i sekúnd sa zmeny automaticky vrátia späť."
 
-#: src/WindowManager.vala:2272
+#: src/WindowManager.vala:1742
 msgid "Keep new display settings?"
 msgstr "Ponechať nové nastavenia obrazovky?"
 
-#: src/WindowManager.vala:2276
+#: src/WindowManager.vala:1746
 msgid "Keep Settings"
 msgstr "Ponechať nastavenia"
 
-#: src/WindowManager.vala:2277
+#: src/WindowManager.vala:1747
 msgid "Use Previous Settings"
 msgstr "Použiť predchádzajúce nastavenia"
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2316
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Snímka obrazovky z %s"
-
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/WindowManager.vala:2373
-msgid "Show in Files"
-msgstr ""
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot is saved to clipboard"
-msgstr ""
-
-#: src/WindowManager.vala:2380
-msgid "Screenshot saved to screenshots folder"
-msgstr ""
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"

@@ -18,6 +18,8 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
+
         /**
          * {@inheritDoc}
          */
@@ -97,11 +99,7 @@ namespace Gala {
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
         private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         private Meta.SizeChange? which_change = null;
-#if HAS_MUTTER45
         private Mtk.Rectangle old_rect_size_change;
-#else
-        private Meta.Rectangle old_rect_size_change;
-#endif
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
@@ -269,11 +267,7 @@ namespace Gala {
             shell_group = new Clutter.Actor ();
             ui_group.add_child (shell_group);
 
-#if HAS_MUTTER44
             var feedback_group = display.get_compositor ().get_feedback_group ();
-#else
-            var feedback_group = display.get_feedback_group ();
-#endif
             stage.remove_child (feedback_group);
             ui_group.add_child (feedback_group);
 
@@ -804,20 +798,16 @@ namespace Gala {
                     if (current != null && current.allows_move ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_MOVING);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
 #if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
-#elif HAS_MUTTER44
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, true, Meta.CURRENT_TIME);
+                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
 #endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
@@ -946,11 +936,7 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER45
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
-#else
-        public override void show_tile_preview (Meta.Window window, Meta.Rectangle tile_rect, int tile_monitor_number) {
-#endif
             if (tile_preview == null) {
                 tile_preview = new Clutter.Actor ();
                 var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
@@ -1006,11 +992,7 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER45
         public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Mtk.Rectangle rect) {
-#else
-        public override void show_window_menu_for_rect (Meta.Window window, Meta.WindowMenuType menu, Meta.Rectangle rect) {
-#endif
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
@@ -1031,11 +1013,7 @@ namespace Gala {
 
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
-#if HAS_MUTTER45
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-#else
-        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Meta.Rectangle old_frame_rect, Meta.Rectangle old_buffer_rect) {
-#endif
             which_change = which_change_local;
             old_rect_size_change = old_frame_rect;
 
@@ -1096,11 +1074,7 @@ namespace Gala {
             int width, height;
             get_display ().get_size (out width, out height);
 
-#if HAS_MUTTER45
             Mtk.Rectangle icon = {};
-#else
-            Meta.Rectangle icon = {};
-#endif
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
                 float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
@@ -1708,15 +1682,65 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
-            if (!is_modal ())
+            if (!is_modal ()) {
                 return false;
+            }
+
+            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
+
+            switch (action) {
+                case Meta.KeyBindingAction.OVERLAY_KEY:
+                    if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
+                        return filter_action (MULTITASKING_VIEW);
+                    }
+                    break;
+                case Meta.KeyBindingAction.WORKSPACE_1:
+                case Meta.KeyBindingAction.WORKSPACE_2:
+                case Meta.KeyBindingAction.WORKSPACE_3:
+                case Meta.KeyBindingAction.WORKSPACE_4:
+                case Meta.KeyBindingAction.WORKSPACE_5:
+                case Meta.KeyBindingAction.WORKSPACE_6:
+                case Meta.KeyBindingAction.WORKSPACE_7:
+                case Meta.KeyBindingAction.WORKSPACE_8:
+                case Meta.KeyBindingAction.WORKSPACE_9:
+                case Meta.KeyBindingAction.WORKSPACE_10:
+                case Meta.KeyBindingAction.WORKSPACE_11:
+                case Meta.KeyBindingAction.WORKSPACE_12:
+                case Meta.KeyBindingAction.WORKSPACE_LEFT:
+                case Meta.KeyBindingAction.WORKSPACE_RIGHT:
+                    return filter_action (SWITCH_WORKSPACE);
+                case Meta.KeyBindingAction.SHOW_DESKTOP:
+                    return filter_action (MULTITASKING_VIEW);
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
+                case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS:
+                case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
+                case Meta.KeyBindingAction.SWITCH_GROUP:
+                case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
+                    return filter_action (SWITCH_WINDOWS);
+                default:
+                    break;
+            }
+
+            switch (binding.get_name ()) {
+                case "cycle-workspaces-next":
+                case "cycle-workspaces-previous":
+                case "switch-to-workspace-first":
+                case "switch-to-workspace-last":
+                    return filter_action (SWITCH_WORKSPACE);
+                case "zoom-in":
+                case "zoom-out":
+                    return filter_action (ZOOM);
+                default:
+                    break;
+            }
 
             var modal_proxy = modal_stack.peek_head ();
             if (modal_proxy == null) {
                 return false;
             }
 
-           unowned var filter = modal_proxy.get_keybinding_filter ();
+            unowned var filter = modal_proxy.get_keybinding_filter ();
             if (filter == null) {
                 return false;
             }
@@ -1724,13 +1748,17 @@ namespace Gala {
             return filter (binding);
         }
 
+        public bool filter_action (GestureAction action) {
+            if (!is_modal ()) {
+                return false;
+            }
+
+            return modal_stack.peek_head ().filter_action (action);
+        }
+
         public override void confirm_display_change () {
-#if HAS_MUTTER44
             unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
             var timeout = monitor_manager.get_display_configuration_timeout ();
-#else
-            var timeout = Meta.MonitorManager.get_display_configuration_timeout ();
-#endif
             var summary = ngettext (
                 "Changes will automatically revert after %i second.",
                 "Changes will automatically revert after %i seconds.",

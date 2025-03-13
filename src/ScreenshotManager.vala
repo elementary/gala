@@ -266,11 +266,7 @@ public class Gala.ScreenshotManager : Object {
             flash_area (x, y, width, height);
         }
 
-#if HAS_MUTTER45
         Mtk.Rectangle rect = { x, y, width, height };
-#else
-        Meta.Rectangle rect = { x, y, width, height };
-#endif
         unowned var display = wm.get_display ();
         var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
 
@@ -298,20 +294,11 @@ public class Gala.ScreenshotManager : Object {
         window_actor.get_position (out actor_x, out actor_y);
 
         var rect = window.get_frame_rect ();
-#if HAS_MUTTER45
         if (!include_frame) {
-#else
-        if ((include_frame && window.is_client_decorated ()) ||
-            (!include_frame && !window.is_client_decorated ())) {
-#endif
             rect = window.frame_rect_to_client_rect (rect);
         }
 
-#if HAS_MUTTER45
         Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
-#else
-        Cairo.RectangleInt clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
-#endif
         var image = (Cairo.ImageSurface) window_actor.get_image (clip);
         if (include_cursor) {
             if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {

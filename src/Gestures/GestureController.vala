@@ -33,6 +33,7 @@ public class Gala.GestureController : Object {
     private const double MAX_VELOCITY = 0.01;
 
     public GestureAction action { get; construct; }
+    public WindowManager wm { get; construct; }
 
     private GestureTarget? _target;
     public GestureTarget target {
@@ -89,8 +90,8 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, GestureTarget target) {
-        Object (action: action, target: target);
+    public GestureController (GestureAction action, GestureTarget target, WindowManager wm) {
+        Object (action: action, target: target, wm: wm);
     }
 
     public void enable_touchpad () {
@@ -119,8 +120,9 @@ public class Gala.GestureController : Object {
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
-        recognizing = enabled && (GestureSettings.get_action (gesture, out _action_info) == action
-            || backend == scroll_backend && GestureSettings.get_action (gesture) == NONE);
+        var recognized_action = GestureSettings.get_action (gesture, out _action_info);
+        recognizing = enabled && (!wm.filter_action (recognized_action) && recognized_action == action ||
+            backend == scroll_backend && recognized_action == NONE);
 
         if (recognizing) {
             if (gesture.direction == UP || gesture.direction == RIGHT || gesture.direction == OUT) {

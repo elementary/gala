@@ -33,11 +33,7 @@ public class Gala.WindowClone : ActorTarget {
     /**
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
-#if HAS_MUTTER45
     public Mtk.Rectangle? slot { get; private set; default = null; }
-#else
-    public Meta.Rectangle? slot { get; private set; default = null; }
-#endif
 
     /**
      * When active fades a white border around the window in. Used for the visually
@@ -229,11 +225,7 @@ public class Gala.WindowClone : ActorTarget {
     /**
      * Animate the window to the given slot
      */
-#if HAS_MUTTER45
     public void take_slot (Mtk.Rectangle rect, bool animate) {
-#else
-    public void take_slot (Meta.Rectangle rect, bool animate) {
-#endif
         slot = rect;
 
         if (animate) {
@@ -348,11 +340,7 @@ public class Gala.WindowClone : ActorTarget {
         window_title.allocate (window_title_alloc);
     }
 
-#if HAS_MUTTER45
     public override bool button_press_event (Clutter.Event event) {
-#else
-    public override bool button_press_event (Clutter.ButtonEvent event) {
-#endif
         return Clutter.EVENT_STOP;
     }
 

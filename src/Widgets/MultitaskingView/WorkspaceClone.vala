@@ -300,11 +300,7 @@ namespace Gala {
             }
         }
 
-#if HAS_MUTTER45
         public void update_size (Mtk.Rectangle monitor_geometry) {
-#else
-        public void update_size (Meta.Rectangle monitor_geometry) {
-#endif
             if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
                 window_container.set_size (monitor_geometry.width, monitor_geometry.height);
                 background.set_size (window_container.width, window_container.height);
