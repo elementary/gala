@@ -27,11 +27,7 @@ public class Gala.PixelPicker : Clutter.Actor {
         height = screen_height;
     }
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event e) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent e) {
-#endif
         if (e.get_key_symbol () == Clutter.Key.Escape) {
             cancelled = true;
             close ();
@@ -42,11 +38,7 @@ public class Gala.PixelPicker : Clutter.Actor {
         return false;
     }
 
-#if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event e) {
-#else
-    public override bool button_release_event (Clutter.ButtonEvent e) {
-#endif
         if (e.get_button () != Clutter.Button.PRIMARY) {
             return true;
         }

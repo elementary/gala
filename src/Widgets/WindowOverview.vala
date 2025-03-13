@@ -32,11 +32,7 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
     }
 
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         if (!is_opened ()) {
             return Clutter.EVENT_PROPAGATE;
         }
@@ -44,11 +40,7 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
         return window_clone_container.key_press_event (event);
     }
 
-#if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event event) {
-#else
-    public override bool button_release_event (Clutter.ButtonEvent event) {
-#endif
         if (event.get_button () == Clutter.Button.PRIMARY) {
             close ();
         }

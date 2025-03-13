@@ -54,11 +54,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         actor.notify["visible"].connect (() => ignoring = false);
     }
 
-#if HAS_MUTTER45
     private bool on_scroll_event (Clutter.Event event) {
-#else
-    private bool on_scroll_event (Clutter.ScrollEvent event) {
-#endif
         if (!can_handle_event (event)) {
             return false;
         }
@@ -111,11 +107,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         return true;
     }
 
-#if HAS_MUTTER45
     private static bool can_handle_event (Clutter.Event event) {
-#else
-    private static bool can_handle_event (Clutter.ScrollEvent event) {
-#endif
         return event.get_type () == Clutter.EventType.SCROLL
             && event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
