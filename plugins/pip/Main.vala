@@ -36,7 +36,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         var display = wm.get_display ();
         var settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
-        display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) on_initiate);
+        display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, on_initiate);
     }
 
     public override void destroy () {
@@ -50,7 +50,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     [CCode (instance_pos = -1)]
-    private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
+    private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
         Meta.KeyBinding binding) {
         selection_area = new SelectionArea (wm);
         selection_area.selected.connect (on_selection_actor_selected);
