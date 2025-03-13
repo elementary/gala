@@ -63,11 +63,7 @@ public class Gala.HideTracker : Object {
 
         var cursor_tracker = display.get_cursor_tracker ();
         cursor_tracker.position_invalidated.connect (() => {
-#if HAS_MUTTER45
             var has_pointer = panel.window.has_pointer ();
-#else
-            var has_pointer = window_has_pointer ();
-#endif
 
             if (hovered != has_pointer) {
                 hovered = has_pointer;
@@ -97,26 +93,6 @@ public class Gala.HideTracker : Object {
         setup_barrier ();
     }
 
-#if !HAS_MUTTER45
-    private bool window_has_pointer () {
-        var cursor_tracker = display.get_cursor_tracker ();
-        Graphene.Point pointer_pos;
-        cursor_tracker.get_pointer (out pointer_pos, null);
-
-        var window_rect = panel.get_custom_window_rect ();
-        Graphene.Rect graphene_window_rect = {
-            {
-                window_rect.x,
-                window_rect.y
-            },
-            {
-                window_rect.width,
-                window_rect.height
-            }
-        };
-        return graphene_window_rect.contains_point (pointer_pos);
-    }
-#endif
 
     private void track_focus_window (Meta.Window? window) {
         if (window == null) {
@@ -218,11 +194,7 @@ public class Gala.HideTracker : Object {
     }
 
     private void toggle_display (bool should_hide) {
-#if HAS_MUTTER45
         hovered = panel.window.has_pointer ();
-#else
-        hovered = window_has_pointer ();
-#endif
 
         if (should_hide && !hovered && !panel.window.has_focus ()) {
             trigger_hide ();
@@ -316,11 +288,7 @@ public class Gala.HideTracker : Object {
         }
     }
 
-#if HAS_MUTTER45
     private void setup_barrier_top (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
-#endif
         barrier = new Barrier (
             display.get_context ().get_backend (),
             monitor_geom.x + offset,
@@ -337,11 +305,7 @@ public class Gala.HideTracker : Object {
         barrier.trigger.connect (trigger_show);
     }
 
-#if HAS_MUTTER45
     private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
-#endif
         barrier = new Barrier (
             display.get_context ().get_backend (),
             monitor_geom.x + offset,

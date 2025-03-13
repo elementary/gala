@@ -100,11 +100,7 @@ public class Gala.HotCorner : Object {
         }
     }
 
-#if HAS_MUTTER45
     private static Mtk.Rectangle get_barrier_rect (float x, float y, float scale, string hot_corner_position, Clutter.Orientation orientation) {
-#else
-    private static Meta.Rectangle get_barrier_rect (float x, float y, float scale, string hot_corner_position, Clutter.Orientation orientation) {
-#endif
         var barrier_size = InternalUtils.scale_to_int (BARRIER_SIZE, scale);
 
         int x1 = (int) x;

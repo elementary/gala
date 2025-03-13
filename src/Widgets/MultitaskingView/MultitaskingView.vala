@@ -23,7 +23,6 @@ namespace Gala {
      */
     public class MultitaskingView : ActorTarget, ActivatableComponent {
         public const int ANIMATION_DURATION = 250;
-        private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
 
         private GestureController workspaces_gesture_controller;
         private GestureController multitasking_gesture_controller;
@@ -59,14 +58,14 @@ namespace Gala {
             opened = false;
             display = wm.get_display ();
 
-            multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, this);
+            multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, this, wm);
             multitasking_gesture_controller.enable_touchpad ();
 
             add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
             workspaces = new WorkspaceRow (display);
 
-            workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this) {
+            workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this, wm) {
                 overshoot_upper_clamp = 0.1
             };
             workspaces_gesture_controller.enable_touchpad ();
@@ -190,11 +189,7 @@ namespace Gala {
          * Scroll through workspaces with the mouse wheel. Smooth scrolling is handled by
          * GestureController.
          */
-#if HAS_MUTTER45
         public override bool scroll_event (Clutter.Event scroll_event) {
-#else
-        public override bool scroll_event (Clutter.ScrollEvent scroll_event) {
-#endif
             if (!opened) {
                 return true;
             }
@@ -252,6 +247,7 @@ namespace Gala {
 
                 modal_proxy = wm.push_modal (this);
                 modal_proxy.set_keybinding_filter (keybinding_filter);
+                modal_proxy.allow_actions ({ MULTITASKING_VIEW, SWITCH_WORKSPACE, ZOOM });
 
                 var scale = display.get_monitor_scale (display.get_primary_monitor ());
                 icon_groups.force_reposition ();
@@ -431,11 +427,7 @@ namespace Gala {
          * Collect key events, mainly for redirecting them to the WindowCloneContainers to
          * select the active window.
          */
-#if HAS_MUTTER45
         public override bool key_press_event (Clutter.Event event) {
-#else
-        public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
             if (!opened) {
                 return Clutter.EVENT_PROPAGATE;
             }
@@ -498,28 +490,7 @@ namespace Gala {
         private bool keybinding_filter (Meta.KeyBinding binding) {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
-            // allow super key only when it toggles multitasking view
-            if (action == Meta.KeyBindingAction.OVERLAY_KEY &&
-                gala_behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
-                return false;
-            }
-
             switch (action) {
-                case Meta.KeyBindingAction.WORKSPACE_1:
-                case Meta.KeyBindingAction.WORKSPACE_2:
-                case Meta.KeyBindingAction.WORKSPACE_3:
-                case Meta.KeyBindingAction.WORKSPACE_4:
-                case Meta.KeyBindingAction.WORKSPACE_5:
-                case Meta.KeyBindingAction.WORKSPACE_6:
-                case Meta.KeyBindingAction.WORKSPACE_7:
-                case Meta.KeyBindingAction.WORKSPACE_8:
-                case Meta.KeyBindingAction.WORKSPACE_9:
-                case Meta.KeyBindingAction.WORKSPACE_10:
-                case Meta.KeyBindingAction.WORKSPACE_11:
-                case Meta.KeyBindingAction.WORKSPACE_12:
-                case Meta.KeyBindingAction.WORKSPACE_LEFT:
-                case Meta.KeyBindingAction.WORKSPACE_RIGHT:
-                case Meta.KeyBindingAction.SHOW_DESKTOP:
                 case Meta.KeyBindingAction.NONE:
                 case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
                     return false;
@@ -528,12 +499,6 @@ namespace Gala {
             }
 
             switch (binding.get_name ()) {
-                case "cycle-workspaces-next":
-                case "cycle-workspaces-previous":
-                case "switch-to-workspace-first":
-                case "switch-to-workspace-last":
-                case "zoom-in":
-                case "zoom-out":
                 case "screenshot":
                 case "screenshot-clip":
                     return false;

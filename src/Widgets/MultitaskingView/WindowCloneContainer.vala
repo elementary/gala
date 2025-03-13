@@ -178,11 +178,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return (int) (seq_b - seq_a);
         });
 
-#if HAS_MUTTER45
         Mtk.Rectangle area = {
-#else
-        Meta.Rectangle area = {
-#endif
             padding_left,
             padding_top,
             (int)width - padding_left - padding_right,
@@ -201,11 +197,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
      * Collect key events, mainly for redirecting them to the WindowCloneContainers to
      * select the active window.
      */
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event event) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent event) {
-#endif
         if (!opened) {
             return Clutter.EVENT_PROPAGATE;
         }
