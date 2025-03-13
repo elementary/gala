@@ -5,3 +5,6 @@ edge-tiling = true
 
 [org.gnome.desktop.wm.preferences:Pantheon]
 button-layout='close:maximize'
+
+[org.gnome.desktop.wm.keybindings:Pantheon]
+show-desktop=[]
