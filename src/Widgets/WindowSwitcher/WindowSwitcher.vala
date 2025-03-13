@@ -60,7 +60,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, this) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
@@ -447,18 +447,13 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
 
     private void push_modal () {
         modal_proxy = wm.push_modal (this);
+        modal_proxy.allow_actions ({ SWITCH_WINDOWS });
         modal_proxy.set_keybinding_filter ((binding) => {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
 
             switch (action) {
                 case Meta.KeyBindingAction.NONE:
                 case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
-                case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
-                case Meta.KeyBindingAction.SWITCH_WINDOWS:
-                case Meta.KeyBindingAction.SWITCH_WINDOWS_BACKWARD:
-                case Meta.KeyBindingAction.SWITCH_GROUP:
-                case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                     return false;
                 default:
                     break;
