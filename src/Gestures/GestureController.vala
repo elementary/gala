@@ -32,9 +32,8 @@ public class Gala.GestureController : Object {
      */
     private const double MAX_VELOCITY = 0.01;
 
-    public WindowManager wm { get; construct; }
-
     public GestureAction action { get; construct; }
+    public WindowManager wm { get; construct; }
 
     private GestureTarget? _target;
     public GestureTarget target {
