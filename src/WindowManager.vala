@@ -248,12 +248,12 @@ namespace Gala {
                 window_switcher = new WindowSwitcher (this);
                 ui_group.add_child (window_switcher);
 
-                Meta.KeyBinding.set_custom_handler ("switch-applications", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-applications-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-group", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-group-backward", (Meta.KeyHandlerFunc) window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-applications", window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-applications-backward", window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-windows", window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-windows-backward", window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group", window_switcher.handle_switch_windows);
+                Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
             }
 
             if (plugin_manager.window_overview_provider == null
@@ -289,17 +289,17 @@ namespace Gala {
             /*keybindings*/
             var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
-            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-first", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("move-to-workspace-last", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_move_to_workspace_end);
-            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
-            display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
-            display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
-            display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
+            display.add_keybinding ("switch-to-workspace-first", keybinding_settings, IGNORE_AUTOREPEAT, handle_switch_to_workspace_end);
+            display.add_keybinding ("switch-to-workspace-last", keybinding_settings, IGNORE_AUTOREPEAT, handle_switch_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-first", keybinding_settings, IGNORE_AUTOREPEAT, handle_move_to_workspace_end);
+            display.add_keybinding ("move-to-workspace-last", keybinding_settings, IGNORE_AUTOREPEAT, handle_move_to_workspace_end);
+            display.add_keybinding ("cycle-workspaces-next", keybinding_settings, NONE, handle_cycle_workspaces);
+            display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
+            display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
+            display.add_keybinding ("switch-input-source", keybinding_settings, IGNORE_AUTOREPEAT, handle_switch_input_source);
+            display.add_keybinding ("switch-input-source-backward", keybinding_settings, IGNORE_AUTOREPEAT, handle_switch_input_source);
 
-            display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
                     window_overview.close ();
                 } else {
@@ -325,16 +325,16 @@ namespace Gala {
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
-            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-left", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
-            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-right", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-left", handle_switch_to_workspace);
+            Meta.KeyBinding.set_custom_handler ("switch-to-workspace-right", handle_switch_to_workspace);
 
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-up", () => {});
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-down", () => {});
-            Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", (Meta.KeyHandlerFunc) handle_move_to_workspace);
-            Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-left", handle_move_to_workspace);
+            Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", handle_move_to_workspace);
 
             for (int i = 1; i < 13; i++) {
-                Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
+                Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), handle_move_to_workspace);
             }
 
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
@@ -429,7 +429,7 @@ namespace Gala {
         }
 
         [CCode (instance_pos = -1)]
-        private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent event,
+        private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
             Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
             unowned var manager = display.get_workspace_manager ();
@@ -443,7 +443,8 @@ namespace Gala {
             }
 
             if (active_workspace_index != index) {
-                manager.get_workspace_by_index (index).activate (event.get_time ());
+                var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
+                manager.get_workspace_by_index (index).activate (timestamp);
             } else {
                 InternalUtils.bell_notify (display);
             }
@@ -451,7 +452,7 @@ namespace Gala {
 
         [CCode (instance_pos = -1)]
         private void handle_move_to_workspace (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             if (window == null) {
                 return;
             }
@@ -471,47 +472,51 @@ namespace Gala {
             }
 
             if (target_workspace != null) {
-                move_window (window, target_workspace, event.get_time ());
+                var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
+                move_window (window, target_workspace, timestamp);
             }
         }
 
         [CCode (instance_pos = -1)]
         private void handle_move_to_workspace_end (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            if (window == null)
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
+            if (window == null) {
                 return;
+            }
 
+            var timestamp = event != null ? event.get_time (): Meta.CURRENT_TIME;
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "move-to-workspace-first" ? 0 : manager.get_n_workspaces () - 1);
             unowned var workspace = manager.get_workspace_by_index (index);
             window.change_workspace (workspace);
-            workspace.activate_with_focus (window, event.get_time ());
+            workspace.activate_with_focus (window, timestamp);
         }
 
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction, event.get_time ());
+            var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
+            switch_to_next_workspace (direction, timestamp);
         }
 
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace_end (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
             var index = (binding.get_name () == "switch-to-workspace-first" ? 0 : manager.n_workspaces - 1);
-            manager.get_workspace_by_index (index).activate (event.get_time ());
+            manager.get_workspace_by_index (index).activate (event != null ? event.get_time () : Meta.CURRENT_TIME);
         }
 
         [CCode (instance_pos = -1)]
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
         }
 
         [CCode (instance_pos = -1)]
         private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
         }
 
