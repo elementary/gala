@@ -299,6 +299,14 @@ namespace Gala {
             display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
             display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
 
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
+                } else {
+                    multitasking_view.open ();
+                }
+            });
+
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
                     window_overview.close ();
@@ -315,13 +323,7 @@ namespace Gala {
                 launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
             });
 
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (multitasking_view.is_opened ()) {
-                    multitasking_view.close ();
-                } else {
-                    multitasking_view.open ();
-                }
-            });
+            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {});
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
