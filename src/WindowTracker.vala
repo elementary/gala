@@ -308,7 +308,9 @@ public class Gala.WindowTracker : GLib.Object {
 
         app.add_window (window);
 
-        windows_changed ();
+        if (InternalUtils.get_window_is_normal (window)) {
+            windows_changed ();
+        }
     }
 
     private void disassociate_window (Meta.Window window) {
