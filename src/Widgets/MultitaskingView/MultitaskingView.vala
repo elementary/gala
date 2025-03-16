@@ -236,7 +236,7 @@ namespace Gala {
         }
 
         public override void start_progress (GestureAction action) {
-            if (!opened) {
+            if (!visible) {
                 opened = true;
 
                 wm.background_group.hide ();
