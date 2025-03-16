@@ -192,6 +192,18 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
+    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_itself_positioned (window)) {
+        if (monitor_index < 0 || monitor_index > wm.get_display ().get_n_monitors ()) {
+            warning ("Invalid monitor index provided: %d", monitor_index);
+            return;
+        }
+
+        positioned_windows[window] = new ShellWindow (window, MONITOR_LABEL, monitor_index);
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
+
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
