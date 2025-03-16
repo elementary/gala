@@ -14,12 +14,11 @@ public class Gala.WindowStateSaver : GLib.Object {
     private static LoginManager? login_manager;
     private static Sqlite.Database db;
 
-    public static void init (WindowTracker window_tracker, Meta.Backend meta_backend) {
+    public static void init (WindowTracker window_tracker) {
         WindowStateSaver.window_tracker = window_tracker;
         app_windows = new GLib.HashTable<string, GLib.Array<Meta.Window?>> (GLib.str_hash, GLib.str_equal);
 
         connect_to_logind.begin ();
-        meta_backend.prepare_shutdown.connect (save_all_windows_state);
 
         var dir = Path.build_filename (GLib.Environment.get_user_data_dir (), "io.elementary.gala");
         Posix.mkdir (dir, 0775);
@@ -128,6 +127,10 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         track_window (window, app_id);
+    }
+
+    public static void on_shutdown () {
+        save_all_windows_state ();
     }
 
     private static void track_window (Meta.Window window, string app_id) {

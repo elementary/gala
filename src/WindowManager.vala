@@ -173,7 +173,7 @@ namespace Gala {
             WindowListener.init (display);
             KeyboardManager.init (display);
             window_tracker = new WindowTracker ();
-            WindowStateSaver.init (window_tracker, display.get_context ().get_backend ());
+            WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
             WindowAttentionTracker.init (display);
 
