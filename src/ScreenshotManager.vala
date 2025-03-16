@@ -352,7 +352,7 @@ public class Gala.ScreenshotManager : Object {
 
     public async void conceal_text () throws DBusError, IOError {
         if (!is_redacted_font_available) {
-            return;
+            throw new DBusError.FAILED ("Redacted font is not installed.");
         }
 
         if (conceal_timeout > 0) {
