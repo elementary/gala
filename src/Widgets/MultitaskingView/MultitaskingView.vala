@@ -508,5 +508,19 @@ namespace Gala {
 
             return true;
         }
+
+        public override bool captured_event (Clutter.Event event) {
+            /* If we aren't open but receive events this means we are animating closed
+             * or we are finishing a workspace switch animation. In any case we want to
+             * prevent a drag and drop to start for the window clones which can happen
+             * pretty easily if you click on one while the animation finishes.
+             */
+            var type = event.get_type (); // LEAVE and ENTER have to be propagated
+            if (!opened && animating && type != ENTER && type != LEAVE) {
+                return Clutter.EVENT_STOP;
+            }
+
+            return Clutter.EVENT_PROPAGATE;
+        }
     }
 }
