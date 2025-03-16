@@ -46,14 +46,17 @@ public class Gala.WindowStateSaver : GLib.Object {
             -1, out stmt
         );
 
-        if (rc == Sqlite.OK && stmt.step () == Sqlite.DONE) {
-            // disable synchronized commits for performance reasons
-            rc = db.exec ("PRAGMA synchronous=OFF");
-            if (rc != Sqlite.OK) {
-                warning ("Unable to disable synchronous mode %d, %s", rc, db.errmsg ());
-            }
+        if (rc == Sqlite.OK) {
+            rc = stmt.step ();
+            if (rc == Sqlite.DONE) {
+                // disable synchronized commits for performance reasons
+                rc = db.exec ("PRAGMA synchronous=OFF");
+                if (rc != Sqlite.OK) {
+                    warning ("Unable to disable synchronous mode %d, %s", rc, db.errmsg ());
+                }
 
-            return;
+                return;
+            }
         }
 
         critical ("Cannot create table 'apps': %d, %s", rc, db.errmsg ());
@@ -121,12 +124,15 @@ public class Gala.WindowStateSaver : GLib.Object {
             -1, out stmt
         );
 
-        if (rc != Sqlite.OK || stmt.step () != Sqlite.DONE) {
-            critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
-            return;
+        if (rc == Sqlite.OK) {
+            rc = stmt.step ();
+            if (rc == Sqlite.DONE) {
+                track_window (window, app_id);
+                return;
+            }
         }
 
-        track_window (window, app_id);
+        critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
     }
 
     public static void on_shutdown () {
@@ -154,9 +160,14 @@ public class Gala.WindowStateSaver : GLib.Object {
             -1, out stmt
         );
 
-        if (rc != Sqlite.OK || stmt.step () != Sqlite.DONE) {
-            critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+        if (rc == Sqlite.OK) {
+            rc = stmt.step ();
+            if (rc == Sqlite.DONE) {
+                return;
+            }
         }
+
+        critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
     }
 
     private static void save_all_windows_state () {
