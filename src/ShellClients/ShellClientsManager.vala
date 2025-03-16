@@ -306,6 +306,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                     make_centered (window);
                     break;
 
+                case "monitor-label":
+                    int parsed;
+                    if (int.try_parse (val, out parsed)) {
+                        make_monitor_label (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as monitor label", val);
+                    }
+                    break;
+
                 default:
                     break;
             }
