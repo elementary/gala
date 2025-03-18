@@ -522,4 +522,3 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         return Clutter.EVENT_PROPAGATE;
     }
 }
-
