@@ -496,13 +496,13 @@ namespace Gala {
 
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent, event, Meta.KeyBinding binding) {
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
             unowned var name = binding.get_name ();
 
             if (name == "switch-to-workspace-left" || name == "switch-to-workspace-right") {
                 var direction = (name == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-                switch_to_next_workspace (direction, event.get_time ());
+                switch_to_next_workspace (direction, timestamp);
             } else {
                 unowned var workspace_manager = get_display ().get_workspace_manager ();
 
@@ -514,7 +514,7 @@ namespace Gala {
                     return;
                 }
 
-                workspace.activate (event.get_time ());
+                workspace.activate (timestamp);
             }
         }
 
