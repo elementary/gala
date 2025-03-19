@@ -8,13 +8,16 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-03-12 22:19+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-03-20 07:55+0000\n"
+"Last-Translator: Carmina16 <mistresssilvara@hotmail.com>\n"
+"Language-Team: Occidental <https://l10n.elementaryos.org/projects/desktop/"
+"gala/ie/>\n"
 "Language: ie\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.4\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -70,7 +73,7 @@ msgstr ""
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
-msgstr ""
+msgstr "Cluder"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
@@ -100,7 +103,7 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
 #: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
@@ -277,17 +280,17 @@ msgstr ""
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Li modificationes va esser revertet pos %i seconde."
+msgstr[1] "Li modificationes va esser revertet pos %i secondes."
 
 #: src/WindowManager.vala:1742
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Reterner li nov parametres del ecran?"
 
 #: src/WindowManager.vala:1746
 msgid "Keep Settings"
-msgstr ""
+msgstr "Retener"
 
 #: src/WindowManager.vala:1747
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Usar li precedent"
