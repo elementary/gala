@@ -122,7 +122,7 @@ public class Gala.WorkspaceManager : Object {
 
         // If we don't have an empty workspace at the end, add one
         if (!empty_workspaces[empty_workspaces.length - 1]) {
-            manager.append_new_workspace (false, display.get_current_time());
+            manager.append_new_workspace (false, display.get_current_time ());
             empty_workspaces += true;
         }
 
@@ -155,7 +155,7 @@ public class Gala.WorkspaceManager : Object {
                 Meta.Workspace? next = null;
 
                 next = workspace.get_neighbor (LEFT);
-                // if it's the first one we may have another one to the right
+                // If it's the first one we may have another one to the right
                 if (next == workspace || next == null) {
                     next = workspace.get_neighbor (RIGHT);
                 }
