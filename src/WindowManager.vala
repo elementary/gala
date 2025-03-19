@@ -335,6 +335,7 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
             for (int i = 1; i < 13; i++) {
+                Meta.KeyBinding.set_custom_handler ("switch-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_switch_to_workspace);
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
             }
 
@@ -466,8 +467,9 @@ namespace Gala {
                 var direction = (name == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
                 target_workspace = active_workspace.get_neighbor (direction);
             } else {
-                var workspace_number = int.parse (name.offset ("move-to-workspace-".length));
-                var workspace_index = workspace_number - 1;
+                var workspace_number = int.parse (name.offset ("move-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
                 target_workspace = workspace_manager.get_workspace_by_index (workspace_index);
             }
 
@@ -492,8 +494,24 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction, event.get_time ());
+            unowned var name = binding.get_name ();
+
+            if (name == "switch-to-workspace-left" || name == "switch-to-workspace-right") {
+                var direction = (name == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+                switch_to_next_workspace (direction, event.get_time ());
+            } else {
+                unowned var workspace_manager = get_display ().get_workspace_manager ();
+
+                var workspace_number = int.parse (name.offset ("switch-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
+                var workspace = workspace_manager.get_workspace_by_index (workspace_index);
+                if (workspace == null) {
+                    return;
+                }
+
+                workspace.activate (event.get_time ());
+            }
         }
 
         [CCode (instance_pos = -1)]
