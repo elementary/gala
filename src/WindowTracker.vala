@@ -294,21 +294,31 @@ public class Gala.WindowTracker : GLib.Object {
         tracked_window_changed ((Meta.Window) object);
     }
 
+    private void on_unmanaged (Meta.Window window) {
+        disassociate_window (window);
+
+        if (InternalUtils.get_window_is_normal (window)) {
+            windows_changed ();
+        }
+    }
+
     private void track_window (Meta.Window window) {
         var app = get_app_for_window (window);
         if (app == null) {
             return;
         }
 
-        window_to_app.insert (window, app);
-
         window.notify["wm-class"].connect (tracked_window_notified);
         window.notify["gtk-application-id"].connect (tracked_window_notified);
-        window.unmanaged.connect (disassociate_window);
+        window.notify["window-type"].connect (tracked_window_notified);
+        window.unmanaged.connect (on_unmanaged);
 
         app.add_window (window);
+        window_to_app.insert (window, app);
 
-        windows_changed ();
+        if (InternalUtils.get_window_is_normal (window)) {
+            windows_changed ();
+        }
     }
 
     private void disassociate_window (Meta.Window window) {
@@ -317,12 +327,12 @@ public class Gala.WindowTracker : GLib.Object {
             return;
         }
 
-        window.unmanaged.disconnect (disassociate_window);
         window.notify["wm-class"].disconnect (tracked_window_notified);
         window.notify["gtk-application-id"].disconnect (tracked_window_notified);
+        window.notify["window-type"].disconnect (tracked_window_notified);
+        window.unmanaged.disconnect (on_unmanaged);
+
         app.remove_window (window);
         window_to_app.remove (window);
-
-        windows_changed ();
     }
 }
