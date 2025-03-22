@@ -150,7 +150,6 @@ public class Gala.WorkspaceManager : Object {
 
             var workspace = manager.get_workspace_by_index (i);
 
-            //TODO: this is not very nice yet, the animation is bad
             if (workspace == manager.get_active_workspace ()) {
                 Meta.Workspace? next = null;
 
