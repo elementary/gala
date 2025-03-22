@@ -94,7 +94,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         unowned var manager = display.get_workspace_manager ();
         manager.workspace_added.connect (add_workspace);
         manager.workspace_removed.connect (remove_workspace);
-        manager.workspaces_reordered.connect (() => reposition_icon_groups (false));
+        manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
         manager.bind_property (
@@ -395,6 +395,15 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         reposition_icon_groups (opened);
 
         workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+    }
+
+    private void on_workspaces_reordered () {
+        if (!visible) {
+            unowned var manager = display.get_workspace_manager ();
+            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+        }
+
+        reposition_icon_groups (false);
     }
 
     private void on_workspace_switched (int from, int to) {
