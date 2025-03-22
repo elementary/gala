@@ -29,7 +29,10 @@ public class Gala.DesktopIntegration : GLib.Object {
         this.wm = wm;
         time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
 
-        wm.window_tracker.windows_changed.connect (() => windows_changed ());
+        wm.window_tracker.windows_changed.connect (() => {
+            running_applications_changed ();
+            windows_changed ();
+        });
 
         unowned var display = wm.get_display ();
         unowned var workspace_manager = display.get_workspace_manager ();
