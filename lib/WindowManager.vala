@@ -139,13 +139,20 @@ namespace Gala {
         public abstract Meta.BackgroundGroup background_group { get; protected set; }
 
         /**
-         * Enters the modal mode, which means that all events are directed to the stage instead
-         * of the windows. This is the only way to receive keyboard events besides shortcut listeners.
+         * Enters the modal mode, which will block keybindings and gestures. See {@link ModalProxy} for
+         * how to allow certain gestures and keybindings.
+         * If {@link grab} is true all events will be redirected to the given {@link Clutter.Actor}.
+         * If {@link grab} is false other actors and shell windows may still receive events.
+         * Normal windows will never receive keyboard focus though they will still receive pointer events
+         * if {@link grab} is false and their {@link Meta.WindowActor} is visible.
+         *
+         * @param actor The actor to grab events for
+         * @param grab Whether to grab all events onto the actor
          *
          * @return a {@link ModalProxy} which is needed to end the modal mode again and provides some
          *         some basic control on the behavior of the window manager while it is in modal mode.
          */
-        public abstract ModalProxy push_modal (Clutter.Actor actor);
+        public abstract ModalProxy push_modal (Clutter.Actor actor, bool grab);
 
         /**
          * May exit the modal mode again, unless another component has called {@link push_modal}

@@ -112,7 +112,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
         modal_proxy.set_keybinding_filter (keybinding_filter);
         modal_proxy.allow_actions ({ ZOOM });
 
