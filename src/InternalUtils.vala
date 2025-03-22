@@ -352,5 +352,25 @@ namespace Gala {
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
         }
+
+        public static Meta.Window? get_mru_window (Meta.Workspace workspace) {
+            var list = workspace.list_windows ();
+
+            if (list.is_empty ()) {
+                return null;
+            }
+
+            list.sort ((a, b) => {
+                return (int) b.get_user_time () - (int) a.get_user_time ();
+            });
+
+            foreach (var window in list) {
+                if (!ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                    return window;
+                }
+            }
+
+            return null;
+        }
     }
 }

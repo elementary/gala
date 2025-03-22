@@ -138,7 +138,10 @@ public class Gala.HideTracker : Object {
         focus_overlap = false;
         focus_maximized_overlap = false;
 
-        foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
+        var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+        var mru_window = InternalUtils.get_mru_window (active_workspace);
+
+        foreach (var window in active_workspace.list_windows ()) {
             if (window == panel.window) {
                 continue;
             }
@@ -158,7 +161,7 @@ public class Gala.HideTracker : Object {
 
             overlap = true;
 
-            if (window != display.focus_window) {
+            if (window != mru_window) {
                 continue;
             }
 
