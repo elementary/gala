@@ -126,7 +126,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
     }
 
     private void get_selection_rectangle (out int x, out int y, out int width, out int height) {
