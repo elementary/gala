@@ -352,5 +352,40 @@ namespace Gala {
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
         }
+
+        /**
+         * Returns the most recently used "normal" window (as gotten via {@link get_window_is_normal}) in the given workspace.
+         * If there is a not normal but more recent window (e.g. a menu/tooltip) any_window will be set to that window otherwise
+         * it will be set to the same window that is returned.
+         */
+        public static Meta.Window? get_mru_window (Meta.Workspace workspace, out Meta.Window? any_window = null) {
+            any_window = null;
+
+            var list = workspace.list_windows ();
+
+            if (list.is_empty ()) {
+                return null;
+            }
+
+            list.sort ((a, b) => {
+                return (int) b.get_user_time () - (int) a.get_user_time ();
+            });
+
+            foreach (var window in list) {
+                if (!ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                    if (any_window == null) {
+                        any_window = window;
+                    }
+
+                    if (!get_window_is_normal (window)) {
+                        continue;
+                    }
+
+                    return window;
+                }
+            }
+
+            return null;
+        }
     }
 }
