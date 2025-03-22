@@ -131,6 +131,8 @@ namespace Gala {
                 Meta.Background.refresh_all ();
             });
 
+            display.notify["focus-window"].connect (on_focus_window_changed);
+
 #if WITH_SYSTEMD
             if (Meta.Util.is_wayland_compositor ()) {
                 display.init_xserver.connect ((task) => {
@@ -676,23 +678,24 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal (Clutter.Actor actor) {
+        public ModalProxy push_modal (Clutter.Actor actor, bool grab) {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
 
-            // modal already active
-            if (modal_stack.size >= 2)
-                return proxy;
+            if (grab) {
+                proxy.grab = stage.grab (actor);
+            }
 
-            unowned Meta.Display display = get_display ();
+            on_focus_window_changed ();
+
+            // modal already active
+            if (modal_stack.size >= 2) {
+                return proxy;
+            }
 
             update_input_area ();
-            proxy.grab = stage.grab (actor);
-
-            if (modal_stack.size == 1) {
-                display.disable_unredirect ();
-            }
+            get_display ().disable_unredirect ();
 
             return proxy;
         }
@@ -706,16 +709,21 @@ namespace Gala {
                 return;
             }
 
-            proxy.grab.dismiss ();
+            if (proxy.grab != null) {
+                proxy.grab.dismiss ();
+            }
 
-            if (is_modal ())
+            on_focus_window_changed ();
+
+            if (is_modal ()) {
                 return;
+            }
 
             update_input_area ();
 
-            unowned Meta.Display display = get_display ();
-
+            unowned var display = get_display ();
             display.enable_unredirect ();
+            display.focus_default_window (display.get_current_time ());
         }
 
         /**
@@ -730,6 +738,18 @@ namespace Gala {
          */
         public bool modal_proxy_valid (ModalProxy proxy) {
             return (proxy in modal_stack);
+        }
+
+        private void on_focus_window_changed () {
+            unowned var display = get_display ();
+
+            if (!is_modal () || modal_stack.peek_head ().grab != null || display.focus_window == null ||
+                ShellClientsManager.get_instance ().is_positioned_window (display.focus_window)
+            ) {
+                return;
+            }
+
+            display.unset_input_focus (display.get_current_time ());
         }
 
         private void dim_parent_window (Meta.Window window) {
@@ -756,7 +776,7 @@ namespace Gala {
         }
 
         private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
-            var proxy = push_modal (stage);
+            var proxy = push_modal (stage, true);
 
             ulong handler = 0;
             handler = stage.captured_event.connect ((event) => {
