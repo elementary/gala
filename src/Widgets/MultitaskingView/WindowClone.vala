@@ -135,9 +135,9 @@ public class Gala.WindowClone : ActorTarget {
         active_shape.opacity = 0;
 
         clone_container = new Clutter.Actor () {
-            pivot_point = { 0.5f, 0.5f },
-            background_color = Clutter.Color.from_string ("red")
+            pivot_point = { 0.5f, 0.5f }
         };
+        add_target (new PropertyTarget (CLOSE_WINDOW, clone_container, "rotation-angle-x", typeof (double), 0.0, 90.0));
 
         window_title = new Tooltip ();
         window_title.opacity = 0;
@@ -194,7 +194,6 @@ public class Gala.WindowClone : ActorTarget {
         }
 
         clone = new Clutter.Clone (actor);
-        clone.set_content_scaling_filters (TRILINEAR, TRILINEAR);
         clone_container.add_child (clone);
 
         check_shadow_requirements ();
@@ -282,17 +281,23 @@ public class Gala.WindowClone : ActorTarget {
             return;
         }
 
-        if (progress != 0) {
-            update_hover_widgets (false);
-        }
+        clone_container.rotation_angle_x = 90.0 * progress;
 
-        clone_container.rotation_angle_x = 90 * progress;
-
-        if (progress == 1) {
+        if (progress == 1.0 && get_current_commit (CLOSE_WINDOW) == 1.0) {
             close_window (Meta.CURRENT_TIME);
         }
 
-        warning ("New rotation angle is %f", clone_container.rotation_angle_x);
+        update_hover_widgets ();
+    }
+
+    public override void commit_progress (Gala.GestureAction action, double to) {
+        if (action != CLOSE_WINDOW) {
+            return;
+        }
+
+        if (clone_container.rotation_angle_x == 90.0 && to == 1.0) {
+            close_window (Meta.CURRENT_TIME);
+        }
     }
 
     public override void end_progress (GestureAction action) {
@@ -311,29 +316,30 @@ public class Gala.WindowClone : ActorTarget {
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
 
+        var input_rect = window.get_buffer_rect ();
+        var outer_rect = window.get_frame_rect ();
+        var clone_scale_factor = width / outer_rect.width;
+
+        // Compensate for invisible borders of the texture
+        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
+        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
+
+        var clone_container_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, input_rect.width * clone_scale_factor, input_rect.height * clone_scale_factor);
+        clone_container.allocate (clone_container_alloc);
+
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
         unowned var display = wm.get_display ();
 
-        var input_rect = window.get_buffer_rect ();
-        var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
-
-        //  clone_container.set_scale (clone_scale_factor, clone_scale_factor);
         clone.set_scale (clone_scale_factor, clone_scale_factor);
 
         float clone_width, clone_height;
         clone.get_preferred_size (null, null, out clone_width, out clone_height);
 
-        // Compensate for invisible borders of the texture
-        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
-        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
-
-        var clone_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, clone_width, clone_height);
+        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
         clone.allocate (clone_alloc);
-        clone_container.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -390,7 +396,7 @@ public class Gala.WindowClone : ActorTarget {
 
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = has_pointer && !in_slot_animation && clone.rotation_angle_x == 0;
+        var show = has_pointer && !in_slot_animation && clone_container.rotation_angle_x == 0;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
