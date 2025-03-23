@@ -148,7 +148,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
                     continue;
                 }
 
-                var monitor_clone = new MonitorClone (display, monitor);
+                var monitor_clone = new MonitorClone (wm, monitor);
                 monitor_clone.window_selected.connect (window_selected);
                 monitor_clone.visible = opened;
 
@@ -351,7 +351,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         unowned var manager = display.get_workspace_manager ();
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
 
-        var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), scale);
+        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
         workspaces.insert_child_at_index (workspace, num);
         icon_groups.add_group (workspace.icon_group);
 

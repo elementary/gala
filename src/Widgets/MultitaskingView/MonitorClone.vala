@@ -14,24 +14,26 @@
 public class Gala.MonitorClone : ActorTarget {
     public signal void window_selected (Meta.Window window);
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
     public int monitor { get; construct; }
 
     private WindowCloneContainer window_container;
     private BackgroundManager background;
 
-    public MonitorClone (Meta.Display display, int monitor) {
-        Object (display: display, monitor: monitor);
+    public MonitorClone (WindowManager wm, int monitor) {
+        Object (wm: wm, monitor: monitor);
     }
 
     construct {
         reactive = true;
 
+        unowned var display = wm.get_display ();
+
         background = new BackgroundManager (display, monitor, false);
 
         var scale = display.get_monitor_scale (monitor);
 
-        window_container = new WindowCloneContainer (display, scale);
+        window_container = new WindowCloneContainer (wm, scale);
         window_container.window_selected.connect ((w) => { window_selected (w); });
 
         display.window_entered_monitor.connect (window_entered);
@@ -58,6 +60,7 @@ public class Gala.MonitorClone : ActorTarget {
     }
 
     ~MonitorClone () {
+        unowned var display = wm.get_display ();
         display.window_entered_monitor.disconnect (window_entered);
         display.window_left_monitor.disconnect (window_left);
     }
@@ -66,6 +69,8 @@ public class Gala.MonitorClone : ActorTarget {
      * Make sure the MonitorClone is at the location of the monitor on the stage
      */
     public void update_allocation () {
+        unowned var display = wm.get_display ();
+
         var monitor_geometry = display.get_monitor_geometry (monitor);
 
         set_position (monitor_geometry.x, monitor_geometry.y);
