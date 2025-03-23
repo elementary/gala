@@ -77,7 +77,7 @@ public class Gala.WindowClone : ActorTarget {
     private DragDropAction? drag_action = null;
     private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
-    
+
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
     private ulong check_confirm_dialog_cb = 0;

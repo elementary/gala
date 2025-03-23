@@ -162,7 +162,7 @@ public class Gala.WorkspaceClone : ActorTarget {
     private uint hover_activate_timeout = 0;
 
     public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float scale) {
-        Object (wm: wm,workspace: workspace, scale_factor: scale);
+        Object (wm: wm, workspace: workspace, scale_factor: scale);
     }
 
     construct {
