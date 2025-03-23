@@ -459,8 +459,13 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     private void actor_clicked (uint32 button) {
-        if (button == Clutter.Button.PRIMARY) {
-            selected ();
+        switch (button) {
+            case Clutter.Button.PRIMARY:
+                selected ();
+                break;
+            case Clutter.Button.MIDDLE:
+                close_window (display.get_current_time ());
+                break;
         }
     }
 
