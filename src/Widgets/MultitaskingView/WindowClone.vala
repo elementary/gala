@@ -13,6 +13,7 @@ public class Gala.WindowClone : ActorTarget {
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
     private const int TITLE_MAX_WIDTH_MARGIN = 60;
+    private const int CLOSE_TRANSLATION = 600;
 
     /**
      * The window was selected. The MultitaskingView should consider activating
@@ -137,7 +138,6 @@ public class Gala.WindowClone : ActorTarget {
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }
         };
-        add_target (new PropertyTarget (CLOSE_WINDOW, clone_container, "rotation-angle-x", typeof (double), 0.0, 90.0));
 
         window_title = new Tooltip ();
         window_title.opacity = 0;
@@ -281,7 +281,14 @@ public class Gala.WindowClone : ActorTarget {
             return;
         }
 
-        clone_container.rotation_angle_x = 90.0 * progress;
+        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale_factor * progress);
+        var target_opacity = (uint) (255 * (1 - progress));
+
+        clone_container.translation_y = target_translation_y;
+        clone_container.opacity = target_opacity;
+
+        window_icon.translation_y = target_translation_y;
+        window_icon.opacity = target_opacity;
 
         if (progress == 1.0 && get_current_commit (CLOSE_WINDOW) == 1.0) {
             close_window (Meta.CURRENT_TIME);
@@ -295,21 +302,14 @@ public class Gala.WindowClone : ActorTarget {
             return;
         }
 
-        if (clone_container.rotation_angle_x == 90.0 && to == 1.0) {
+        if (get_current_progress (CLOSE_WINDOW) == 1.0 && to == 1.0) {
             close_window (Meta.CURRENT_TIME);
         }
     }
 
     public override void end_progress (GestureAction action) {
-        switch (action) {
-            case MULTITASKING_VIEW:
-                update_hover_widgets (false);
-                break;
-            case CLOSE_WINDOW:
-                rotation_angle_x = 0;
-                break;
-            default:
-                break;
+        if (action == MULTITASKING_VIEW) {
+            update_hover_widgets (false);
         }
     }
 
@@ -396,7 +396,9 @@ public class Gala.WindowClone : ActorTarget {
 
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = has_pointer && !in_slot_animation && clone_container.rotation_angle_x == 0;
+        var show = has_pointer && !in_slot_animation && get_current_progress (CLOSE_WINDOW) == 0.0;
+
+        warning ("Setting show to %s", show.to_string ());
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
@@ -464,7 +466,7 @@ public class Gala.WindowClone : ActorTarget {
                 selected ();
                 break;
             case Clutter.Button.MIDDLE:
-                close_window (display.get_current_time ());
+                close_window (wm.get_display ().get_current_time ());
                 break;
         }
     }
