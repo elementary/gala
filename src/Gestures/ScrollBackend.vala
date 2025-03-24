@@ -108,8 +108,8 @@ public class Gala.ScrollBackend : Object, GestureBackend {
         return Clutter.EVENT_PROPAGATE;
     }
 
-    private bool on_leave_event (Clutter.Event event) {
-        if (event.get_type () != LEAVE) {
+    private bool on_leave_event (Clutter.Event event) requires (event.get_type () == LEAVE) {
+        if (!started) {
             return Clutter.EVENT_PROPAGATE;
         }
 
