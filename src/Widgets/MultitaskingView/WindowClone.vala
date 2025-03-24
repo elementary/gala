@@ -469,14 +469,11 @@ public class Gala.WindowClone : ActorTarget {
         destroy ();
     }
 
-    private void actor_clicked (uint32 button) {
-        switch (button) {
-            case Clutter.Button.PRIMARY:
-                selected ();
-                break;
-            case Clutter.Button.MIDDLE:
-                close_window (wm.get_display ().get_current_time ());
-                break;
+    private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {
+        if (button == Clutter.Button.PRIMARY) {
+            selected ();
+        } else if (button == Clutter.Button.MIDDLE && device_type == POINTER_DEVICE) {
+            close_window (wm.get_display ().get_current_time ());
         }
     }
 
