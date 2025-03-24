@@ -5,7 +5,7 @@
 
 public enum Gala.ActionType {
     NONE = 0,
-    SHOW_WORKSPACE_VIEW,
+    SHOW_MULTITASKING_VIEW,
     MAXIMIZE_CURRENT,
     HIDE_CURRENT,
     OPEN_LAUNCHER,
@@ -164,6 +164,15 @@ public class Gala.Daemon.DBus : GLib.Object {
     }
 
     private void show_menu (Gtk.Popover menu, int display_width, int display_height, int x, int y) {
+        if (!DisplayConfig.is_logical_layout ()) {
+            var scale_factor = window.scale_factor;
+
+            display_width /= scale_factor;
+            display_height /= scale_factor;
+            x /= scale_factor;
+            y /= scale_factor;
+        }
+
         window.default_width = display_width;
         window.default_height = display_height;
         window.present ();
