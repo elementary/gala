@@ -290,10 +290,11 @@ public class Gala.WindowClone : ActorTarget {
         window_icon.translation_y = target_translation_y;
         window_icon.opacity = target_opacity;
 
-        update_hover_widgets ();
-
         window_title.translation_y = target_translation_y;
+        window_title.opacity = target_opacity;
+
         close_button.translation_y = target_translation_y;
+        close_button.opacity = target_opacity;
 
         if (progress == 1.0 && get_current_commit (CLOSE_WINDOW) == 1.0) {
             close_window (Meta.CURRENT_TIME);
@@ -404,7 +405,7 @@ public class Gala.WindowClone : ActorTarget {
 
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = has_pointer && !in_slot_animation && get_current_progress (CLOSE_WINDOW) == 0.0;
+        var show = has_pointer && !in_slot_animation;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
