@@ -105,7 +105,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         add_effect (shadow_effect);
 
 
-        blur_effect = new BackgroundBlurEffect (12, 9, scaling_factor);
+        blur_effect = new BackgroundBlurEffect (40, 9, scaling_factor);
         add_effect (blur_effect);
 
         scale ();
@@ -173,7 +173,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        background_color.alpha = 0.3;
+        background_color.alpha = 0.6;
 
         var stroke_width = scaling_factor;
 
@@ -230,7 +230,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color.red,
             highlight_color.green,
             highlight_color.blue,
-            highlight_color.alpha
+            0.3
         );
         ctx.stroke ();
         ctx.restore ();
