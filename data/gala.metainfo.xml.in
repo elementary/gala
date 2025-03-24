@@ -55,6 +55,7 @@
         <issue url="https://github.com/elementary/gala/issues/2170">Don’t show app icons in app window spread</issue>
         <issue url="https://github.com/elementary/gala/issues/2171">PiP dragging doesn't start until after mouse is released</issue>
         <issue url="https://github.com/elementary/gala/issues/2175">Gala crashes when receiving a notification while switching workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/2199">Swiping in the multitasking view can close applications</issue>
       </issues>
     </release>
 
