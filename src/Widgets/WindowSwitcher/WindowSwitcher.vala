@@ -102,6 +102,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         };
         add_effect (shadow_effect);
 
+        add_effect (new BackgroundBlurEffect (12, 8, 1));
+
         scale ();
 
         container.button_release_event.connect (container_mouse_release);
@@ -165,6 +167,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             caption_color = "#fafafa";
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
+
+        background_color.alpha = 0.3;
 
         var stroke_width = scaling_factor;
 
