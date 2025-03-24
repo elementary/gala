@@ -416,7 +416,7 @@ public class Gala.WindowClone : ActorTarget {
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {
         if (button == Clutter.Button.PRIMARY) {
             selected ();
-        } else if (button == Clutter.Button.MIDDLE && device_type != TOUCHPAD_DEVICE) {
+        } else if (button == Clutter.Button.MIDDLE && device_type == POINTER_DEVICE) {
             close_window (display.get_current_time ());
         }
     }
