@@ -433,12 +433,8 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        warning ("OwO");
-
         Idle.add (() => {
             if (new_window.get_transient_for () == window) {
-                warning ("UwU");
-
                 gesture_controller.goto (0.0);
                 selected ();
 
