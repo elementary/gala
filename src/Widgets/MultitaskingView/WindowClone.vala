@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2022-2023 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2022-2025 elementary, Inc. (https://elementary.io)
  *                         2014 Tom Beckmann
  */
 
@@ -277,7 +277,7 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW) {
+        if (action != CLOSE_WINDOW || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -298,11 +298,16 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public override void commit_progress (Gala.GestureAction action, double to) {
-        if (action != CLOSE_WINDOW) {
+        if (action != CLOSE_WINDOW || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
-        if (get_current_progress (CLOSE_WINDOW) == 1.0 && to == 1.0) {
+        if (to == 1.0 && get_current_progress (SWITCH_WORKSPACE) != 0) {
+            Idle.add (() => {
+                gesture_controller.goto (0.0);
+                return Source.REMOVE;
+            });
+        } else if (get_current_progress (CLOSE_WINDOW) == 1.0 && to == 1.0) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -398,8 +403,6 @@ public class Gala.WindowClone : ActorTarget {
 
         var show = has_pointer && !in_slot_animation && get_current_progress (CLOSE_WINDOW) == 0.0;
 
-        warning ("Setting show to %s", show.to_string ());
-
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
         close_button.set_easing_duration (duration);
@@ -427,15 +430,21 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        if (new_window.get_transient_for () == window) {
-            Idle.add (() => {
-                selected ();
-                return Source.REMOVE;
-            });
+        warning ("OwO");
 
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
+        Idle.add (() => {
+            if (new_window.get_transient_for () == window) {
+                warning ("UwU");
+
+                gesture_controller.goto (0.0);
+                selected ();
+
+                SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
+                check_confirm_dialog_cb = 0;
+            }
+
+            return Source.REMOVE;
+        });
     }
 
     /**
