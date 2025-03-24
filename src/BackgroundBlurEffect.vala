@@ -13,6 +13,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     public float monitor_scale { get; construct set; }
 
     private float downscale_factor;
+    private float real_blur_radius;
 
     private int texture_width;
     private int texture_height;
@@ -312,7 +313,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var width = (int) actor_box.get_width ();
         var height = (int) actor_box.get_height ();
 
-        var downscale_factor = calculate_downscale_factor (width, height, blur_radius);
+        var downscale_factor = calculate_downscale_factor (width, height, real_blur_radius);
 
         var updated = update_actor_fbo (width, height, downscale_factor) && update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
 
@@ -330,7 +331,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var blur_node = new Clutter.BlurNode (
             (uint) (texture_width / downscale_factor),
             (uint) (texture_height / downscale_factor),
-            blur_radius / downscale_factor
+            real_blur_radius / downscale_factor
         );
         blur_node.add_rectangle ({
             0.0f,
@@ -382,6 +383,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             add_actor_node (node);
             return;
         }
+
+        real_blur_radius = blur_radius * (1.0f - (float) (255 - actor.opacity) / 255.0f);
 
         Clutter.ActorBox source_actor_box = {};
         update_actor_box (paint_context, ref source_actor_box);
