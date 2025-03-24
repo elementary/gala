@@ -368,7 +368,7 @@ namespace Cogl {
 		[Version (since = "2.0")]
 		public void set_uniform_1i (int uniform_location, int value);
 		[Version (since = "2.0")]
-		public void set_uniform_float (int uniform_location, int n_components, int count, float value);
+		public void set_uniform_float (int uniform_location, int n_components, int count, [CCode (array_length = false, array_null_terminated = false)] float[] value);
 		[Version (since = "2.0")]
 		public void set_uniform_int (int uniform_location, int n_components, int count, int value);
 		[Version (since = "2.0")]

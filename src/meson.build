@@ -1,4 +1,5 @@
 gala_bin_sources = files(
+    'BackgroundBlurEffect.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DaemonManager.vala',
