@@ -290,11 +290,14 @@ public class Gala.WindowClone : ActorTarget {
         window_icon.translation_y = target_translation_y;
         window_icon.opacity = target_opacity;
 
+        update_hover_widgets ();
+
+        window_title.translation_y = target_translation_y;
+        close_button.translation_y = target_translation_y;
+
         if (progress == 1.0 && get_current_commit (CLOSE_WINDOW) == 1.0) {
             close_window (Meta.CURRENT_TIME);
         }
-
-        update_hover_widgets ();
     }
 
     public override void commit_progress (Gala.GestureAction action, double to) {
