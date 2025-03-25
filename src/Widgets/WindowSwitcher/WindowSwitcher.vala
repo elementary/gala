@@ -248,7 +248,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         }
 
         var new_icon = (WindowSwitcherIcon) container.get_child_at_index (current_index);
-        if (new_icon != current_icon) {
+        if (new_icon != null && new_icon != current_icon) {
             current_icon = new_icon;
         }
     }
