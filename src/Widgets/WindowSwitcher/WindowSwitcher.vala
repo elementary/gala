@@ -42,7 +42,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-                _current_icon.grab_key_focus ();
+
+                // _current_icon.grab_key_focus () sometimes results in a crash
+                // https://github.com/elementary/gala/issues/2308
+                get_stage ().set_key_focus (_current_icon);
             }
 
             update_caption_text ();
