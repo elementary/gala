@@ -271,13 +271,11 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public override void start_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (true);
-        }
+        update_hover_widgets (true);
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CLOSE_WINDOW || slot == null) {
             return;
         }
 
@@ -295,30 +293,13 @@ public class Gala.WindowClone : ActorTarget {
 
         close_button.translation_y = target_translation_y;
         close_button.opacity = target_opacity;
-
-        if (progress == 1.0 && get_current_commit (CLOSE_WINDOW) == 1.0) {
-            close_window (Meta.CURRENT_TIME);
-        }
-    }
-
-    public override void commit_progress (Gala.GestureAction action, double to) {
-        if (action != CLOSE_WINDOW || !Meta.Prefs.get_gnome_animations ()) {
-            return;
-        }
-
-        if (to == 1.0 && get_current_progress (SWITCH_WORKSPACE) != 0) {
-            Idle.add (() => {
-                gesture_controller.goto (0.0);
-                return Source.REMOVE;
-            });
-        } else if (get_current_progress (CLOSE_WINDOW) == 1.0 && to == 1.0) {
-            close_window (Meta.CURRENT_TIME);
-        }
     }
 
     public override void end_progress (GestureAction action) {
-        if (action == MULTITASKING_VIEW) {
-            update_hover_widgets (false);
+        update_hover_widgets (false);
+
+        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5) {
+            close_window (Meta.CURRENT_TIME);
         }
     }
 

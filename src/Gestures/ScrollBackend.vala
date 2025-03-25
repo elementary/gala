@@ -48,7 +48,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
         Object (actor: actor, orientation: orientation, settings: settings);
 
-        actor.scroll_event.connect (on_scroll_event);
+        actor.captured_event.connect (on_scroll_event);
         actor.leave_event.connect (on_leave_event);
         // When the actor is turned invisible, we don't receive a scroll finish event which would cause
         // us to ignore the first new scroll event if we're currently ignoring.
@@ -85,6 +85,14 @@ public class Gala.ScrollBackend : Object, GestureBackend {
 
         if (!started) {
             if (delta_x != 0 || delta_y != 0) {
+                if (delta_x.abs () > delta_y.abs () && orientation != HORIZONTAL ||
+                    delta_y.abs () > delta_x.abs () && orientation != VERTICAL
+                ) {
+                    ignoring = true;
+                    reset ();
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
                 float origin_x, origin_y;
                 event.get_coords (out origin_x, out origin_y);
                 Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
@@ -105,7 +113,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             }
         }
 
-        return Clutter.EVENT_PROPAGATE;
+        return Clutter.EVENT_STOP;
     }
 
     private bool on_leave_event (Clutter.Event event) requires (event.get_type () == LEAVE) {
