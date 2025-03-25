@@ -206,7 +206,7 @@ public class Gala.WindowClone : ActorTarget {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect ("window");
+                shadow_effect = new ShadowEffect ("window", monitor_scale_factor);
                 shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
