@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2022-2023 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2022-2025 elementary, Inc. (https://elementary.io)
  *                         2014 Tom Beckmann
  */
 
@@ -13,6 +13,7 @@ public class Gala.WindowClone : ActorTarget {
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
     private const int TITLE_MAX_WIDTH_MARGIN = 60;
+    private const int CLOSE_TRANSLATION = 600;
 
     /**
      * The window was selected. The MultitaskingView should consider activating
@@ -26,8 +27,7 @@ public class Gala.WindowClone : ActorTarget {
      */
     public signal void request_reposition ();
 
-    public Meta.Display display { get; construct; }
-
+    public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
     /**
@@ -84,14 +84,17 @@ public class Gala.WindowClone : ActorTarget {
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
+    private Clutter.Actor clone_container;
     private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
 
-    public WindowClone (Meta.Display display, Meta.Window window, float scale, bool overview_mode = false) {
+    private GestureController gesture_controller;
+
+    public WindowClone (WindowManager wm, Meta.Window window, float scale, bool overview_mode = false) {
         Object (
-            display: display,
+            wm: wm,
             window: window,
             monitor_scale_factor: scale,
             overview_mode: overview_mode
@@ -100,6 +103,9 @@ public class Gala.WindowClone : ActorTarget {
 
     construct {
         reactive = true;
+
+        gesture_controller = new GestureController (CLOSE_WINDOW, this, wm);
+        gesture_controller.enable_scroll (this, VERTICAL);
 
         window.unmanaged.connect (unmanaged);
         window.notify["fullscreen"].connect (check_shadow_requirements);
@@ -126,13 +132,18 @@ public class Gala.WindowClone : ActorTarget {
             add_action (drag_action);
         }
 
-        window_title = new Tooltip ();
-        window_title.opacity = 0;
-
         active_shape = new ActiveShape ();
         active_shape.opacity = 0;
 
+        clone_container = new Clutter.Actor () {
+            pivot_point = { 0.5f, 0.5f }
+        };
+
+        window_title = new Tooltip ();
+        window_title.opacity = 0;
+
         add_child (active_shape);
+        add_child (clone_container);
         add_child (window_title);
 
         reallocate ();
@@ -183,13 +194,7 @@ public class Gala.WindowClone : ActorTarget {
         }
 
         clone = new Clutter.Clone (actor);
-        clone.set_content_scaling_filters (TRILINEAR, TRILINEAR);
-        add_child (clone);
-
-        set_child_below_sibling (active_shape, clone);
-        set_child_above_sibling (close_button, clone);
-        set_child_above_sibling (window_icon, clone);
-        set_child_above_sibling (window_title, clone);
+        clone_container.add_child (clone);
 
         check_shadow_requirements ();
     }
@@ -269,31 +274,61 @@ public class Gala.WindowClone : ActorTarget {
         update_hover_widgets (true);
     }
 
+    public override void update_progress (Gala.GestureAction action, double progress) {
+        if (action != CLOSE_WINDOW || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+            return;
+        }
+
+        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale_factor * progress);
+        var target_opacity = (uint) (255 * (1 - progress));
+
+        clone_container.translation_y = target_translation_y;
+        clone_container.opacity = target_opacity;
+
+        window_icon.translation_y = target_translation_y;
+        window_icon.opacity = target_opacity;
+
+        window_title.translation_y = target_translation_y;
+        window_title.opacity = target_opacity;
+
+        close_button.translation_y = target_translation_y;
+        close_button.opacity = target_opacity;
+    }
+
     public override void end_progress (GestureAction action) {
         update_hover_widgets (false);
+
+        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+            close_window (Meta.CURRENT_TIME);
+        }
     }
 
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
 
+        var input_rect = window.get_buffer_rect ();
+        var outer_rect = window.get_frame_rect ();
+        var clone_scale_factor = width / outer_rect.width;
+
+        // Compensate for invisible borders of the texture
+        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
+        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
+
+        var clone_container_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, input_rect.width * clone_scale_factor, input_rect.height * clone_scale_factor);
+        clone_container.allocate (clone_container_alloc);
+
         if (clone == null || (drag_action != null && drag_action.dragging)) {
             return;
         }
 
-        var input_rect = window.get_buffer_rect ();
-        var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
+        unowned var display = wm.get_display ();
 
         clone.set_scale (clone_scale_factor, clone_scale_factor);
 
         float clone_width, clone_height;
         clone.get_preferred_size (null, null, out clone_width, out clone_height);
 
-        // Compensate for invisible borders of the texture
-        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
-        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
-
-        var clone_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, clone_width, clone_height);
+        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
         clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
@@ -380,15 +415,17 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     private void check_confirm_dialog (int monitor, Meta.Window new_window) {
-        if (new_window.get_transient_for () == window) {
-            Idle.add (() => {
+        Idle.add (() => {
+            if (new_window.get_transient_for () == window) {
+                gesture_controller.goto (0.0);
                 selected ();
-                return Source.REMOVE;
-            });
 
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
+                SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
+                check_confirm_dialog_cb = 0;
+            }
+
+            return Source.REMOVE;
+        });
     }
 
     /**
@@ -417,7 +454,7 @@ public class Gala.WindowClone : ActorTarget {
         if (button == Clutter.Button.PRIMARY) {
             selected ();
         } else if (button == Clutter.Button.MIDDLE && device_type == POINTER_DEVICE) {
-            close_window (display.get_current_time ());
+            close_window (wm.get_display ().get_current_time ());
         }
     }
 
@@ -476,7 +513,7 @@ public class Gala.WindowClone : ActorTarget {
         close_button.opacity = 0;
         window_title.opacity = 0;
 
-        display.set_cursor (Meta.Cursor.DND_IN_DRAG);
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
         return this;
     }
@@ -529,7 +566,7 @@ public class Gala.WindowClone : ActorTarget {
             }
         }
 
-        display.set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
     }
 
     /**
@@ -538,8 +575,10 @@ public class Gala.WindowClone : ActorTarget {
      * otherwise we cancel the drag and animate back to our old place.
      */
     private void drag_end (Clutter.Actor destination) {
+        unowned var display = wm.get_display ();
+
         Meta.Workspace workspace = null;
-        var primary = window.get_display ().get_primary_monitor ();
+        var primary = display.get_primary_monitor ();
 
         active_shape.show ();
 
@@ -628,7 +667,7 @@ public class Gala.WindowClone : ActorTarget {
 
         request_reposition ();
 
-        display.set_cursor (Meta.Cursor.DEFAULT);
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         if (duration > 0) {
             ulong handler = 0;
