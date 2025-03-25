@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-03-24 21:59+0000\n"
-"PO-Revision-Date: 2025-03-02 19:10+0000\n"
+"PO-Revision-Date: 2025-03-26 05:55+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <italo@gp-mail.com>\n"
-"Language-Team: Spanish <https://l10n.elementary.io/projects/desktop/gala/es/"
-">\n"
+"Language-Team: Spanish <https://l10n.elementaryos.org/projects/desktop/gala/"
+"es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.4\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -128,6 +128,7 @@ msgstr "Traducciones actualizadas"
 #: data/gala.metainfo.xml.in:35
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
+"El estado de las ventanas ahora se guardan al dormir y al apagar el equipo"
 
 #: data/gala.metainfo.xml.in:58
 msgid "Fixed rare crash when a dock window was killed"
