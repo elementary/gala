@@ -247,4 +247,15 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         wm.window_overview.open (hints);
     }
+
+    public void reorder_workspace (int index, int new_index) throws DBusError, IOError {
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var workspace = workspace_manager.get_workspace_by_index (index);
+
+        if (workspace == null) {
+            throw new IOError.NOT_FOUND ("Invalid index, workspace not found");
+        }
+
+        workspace_manager.reorder_workspace (workspace, new_index);
+    }
 }
