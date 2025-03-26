@@ -1,0 +1,9 @@
+[wrap-git]
+directory = libdisplay-info
+url = https://gitlab.freedesktop.org/emersion/libdisplay-info.git
+push-url = ssh://git@ssh.gitlab.freedesktop.org:emersion/libdisplay-info.git
+revision = 0.2.0
+depth = 1
+
+[provide]
+dependency_names = libdisplay-info

@@ -1,0 +1,11 @@
+[wrap-git]
+directory = libei
+url = https://gitlab.freedesktop.org/libinput/libei.git
+push-url = ssh://git@ssh.gitlab.freedesktop.org:libinput/libei.git
+revision = 1.4.0
+depth = 1
+
+diff_files = 0001-meson.build-Use-the-correct-name-for-the-libraries-o.patch
+
+[provide]
+dependency_names = libei-1.0, libeis-1.0

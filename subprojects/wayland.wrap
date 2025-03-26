@@ -1,0 +1,9 @@
+[wrap-file]
+directory = wayland-1.23.1
+source_url = https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.23.1/downloads/wayland-1.23.1.tar.xz
+source_filename = wayland-1.23.1.tar.xz
+source_hash = 864fb2a8399e2d0ec39d56e9d9b753c093775beadc6022ce81f441929a81e5ed
+
+[provide]
+dependency_names = wayland-client, wayland-server, wayland-cursor, wayland-egl
+program_names = wayland-scanner

@@ -1,0 +1,11 @@
+[wrap-git]
+directory = mutter
+url = https://gitlab.gnome.org/GNOME/mutter.git
+push-url = ssh://git@ssh.gitlab.gnome.org:GNOME/mutter.git
+revision = 48.0
+depth = 1
+
+diff_files = 0001-Lower-GLib-requirements-to-2.75.1.patch
+
+[provide]
+dependency_names = libmutter-16, mutter-mtk-16, mutter-cogl-16, mutter-clutter-16

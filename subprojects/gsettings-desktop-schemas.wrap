@@ -1,0 +1,11 @@
+[wrap-git]
+directory = gsettings-desktop-schemas
+url = https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas.git
+push-url = ssh://git@ssh.gitlab.gnome.org:GNOME/gsettings-desktop-schemas.git
+revision = 48.0
+depth = 1
+
+diff_files = 0001-meson-Add-override-dependency-specifier.patch
+
+[provide]
+dependency_names = gsettings-desktop-schemas

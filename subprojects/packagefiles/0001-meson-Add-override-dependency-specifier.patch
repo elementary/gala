@@ -1,0 +1,31 @@
+From b4f82d8864833e8046526737c41a2daae5363727 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Corentin=20No=C3=ABl?= <corentin.noel@collabora.com>
+Date: Wed, 26 Mar 2025 15:36:08 +0100
+Subject: [PATCH] meson: Add override dependency specifier
+
+Allows to build this as a subproject
+---
+ meson.build | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/meson.build b/meson.build
+index c0df632..38e50b5 100644
+--- a/meson.build
++++ b/meson.build
+@@ -46,6 +46,13 @@ pkg = configure_file(configuration: conf,
+                      install: true,
+                      install_dir: join_paths(datadir, 'pkgconfig'),
+                      output: 'gsettings-desktop-schemas.pc')
++gsettings_desktop_schemas_dep = declare_dependency(
++    include_directories: include_directories('headers'),
++)
++meson.override_dependency(
++    'gsettings-desktop-schemas',
++    gsettings_desktop_schemas_dep,
++)
+ 
+ glib_mkenums = find_program('glib-mkenums')
+ 
+-- 
+2.43.0
+

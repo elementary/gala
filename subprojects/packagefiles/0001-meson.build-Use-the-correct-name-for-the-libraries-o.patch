@@ -1,0 +1,45 @@
+From 422b10cf6266b6d455b1c5d972f431742048d018 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Corentin=20No=C3=ABl?= <corentin.noel@collabora.com>
+Date: Wed, 26 Mar 2025 15:33:34 +0100
+Subject: [PATCH] meson.build: Use the correct name for the libraries overrides
+
+The libraries are actually suffixed with the API number, use the same value as
+their pkgconfig basenames.
+---
+ src/meson.build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/meson.build b/src/meson.build
+index 3e97c11..583a2fb 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -78,7 +78,7 @@ if build_libei
+ 
+     dep_libei = declare_dependency(link_with: lib_libei,
+                                     include_directories: [inc_src])
+-    meson.override_dependency('libei', dep_libei)
++    meson.override_dependency('libei-@0@'.format(libei_api_version), dep_libei)
+ 
+     pkgconfig.generate(lib_libei,
+         filebase: 'libei-@0@'.format(libei_api_version),
+@@ -138,7 +138,7 @@ if build_libeis
+ 
+     dep_libeis = declare_dependency(link_with: lib_libeis,
+                                     include_directories: [inc_src])
+-    meson.override_dependency('libeis', dep_libeis)
++    meson.override_dependency('libeis-@0@'.format(libei_api_version), dep_libeis)
+ 
+     pkgconfig.generate(lib_libeis,
+         filebase: 'libeis-@0@'.format(libei_api_version),
+@@ -167,7 +167,7 @@ if build_oeffis
+ 
+     dep_liboeffis = declare_dependency(link_with: lib_liboeffis,
+                                        include_directories: [inc_src])
+-    meson.override_dependency('liboeffis', dep_liboeffis)
++    meson.override_dependency('liboeffis-@0@'.format(libei_api_version), dep_liboeffis)
+ 
+     pkgconfig.generate(lib_liboeffis,
+         filebase: 'liboeffis-@0@'.format(libei_api_version),
+-- 
+2.43.0
+

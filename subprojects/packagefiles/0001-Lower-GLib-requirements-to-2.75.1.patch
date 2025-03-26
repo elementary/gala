@@ -1,0 +1,61 @@
+From 576078a00843155e181741a5493ea8e9ce2acee1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Corentin=20No=C3=ABl?= <corentin.noel@collabora.com>
+Date: Wed, 26 Mar 2025 15:22:26 +0100
+Subject: [PATCH] Lower GLib requirements to 2.75.1
+
+---
+ clutter/clutter/clutter-box-layout.c  | 6 +++---
+ clutter/clutter/clutter-grid-layout.c | 6 +++---
+ meson.build                           | 2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/clutter/clutter/clutter-box-layout.c b/clutter/clutter/clutter-box-layout.c
+index af814f1..12aaa20 100644
+--- a/clutter/clutter/clutter-box-layout.c
++++ b/clutter/clutter/clutter-box-layout.c
+@@ -588,9 +588,9 @@ distribute_natural_allocation (float          extra_space,
+    */
+ 
+   /* Sort descending by gap and position. */
+-  g_sort_array (spreading,
+-                n_requested_sizes, sizeof (unsigned int),
+-                compare_gap, sizes);
++  g_qsort_with_data (spreading,
++                     n_requested_sizes, sizeof (unsigned int),
++                     compare_gap, sizes);
+ 
+   /* Distribute available space.
+    * This master piece of a loop was conceived by Behdad Esfahbod.
+diff --git a/clutter/clutter/clutter-grid-layout.c b/clutter/clutter/clutter-grid-layout.c
+index 22f9cf7..8a2c485 100644
+--- a/clutter/clutter/clutter-grid-layout.c
++++ b/clutter/clutter/clutter-grid-layout.c
+@@ -971,9 +971,9 @@ distribute_natural_allocation (gint           extra_space,
+    */
+ 
+   /* Sort descending by gap and position. */
+-  g_sort_array (spreading,
+-                n_requested_sizes, sizeof (guint),
+-                compare_gap, sizes);
++  g_qsort_with_data (spreading,
++                     n_requested_sizes, sizeof (guint),
++                     compare_gap, sizes);
+ 
+   /* Distribute available space.
+    * This master piece of a loop was conceived by Behdad Esfahbod.
+diff --git a/meson.build b/meson.build
+index 4494dc5..99b380c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -16,7 +16,7 @@ mutter_builddir = meson.current_build_dir()
+ lcms2_req = '>= 2.6'
+ colord_req = '>= 1.4.5'
+ fribidi_req = '>= 1.0.0'
+-glib_req = '>= 2.81.1'
++glib_req = '>= 2.75.1'
+ gi_req = '>= 0.9.5'
+ graphene_req = '>= 1.10.2'
+ gtk3_req = '>= 3.19.8'
+-- 
+2.43.0
+
