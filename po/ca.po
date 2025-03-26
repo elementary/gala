@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-03-24 21:59+0000\n"
-"PO-Revision-Date: 2025-03-03 20:18+0000\n"
+"PO-Revision-Date: 2025-03-26 05:55+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
-"Language-Team: Catalan <https://l10n.elementary.io/projects/desktop/gala/ca/"
-">\n"
+"Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
+"ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.4\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -126,7 +126,7 @@ msgstr "Traduccions actualitzades"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Window state is now saved on sleep and shutdown"
-msgstr ""
+msgstr "L'estat de la finestra ara es desa en suspensió i aturat"
 
 #: data/gala.metainfo.xml.in:58
 msgid "Fixed rare crash when a dock window was killed"
