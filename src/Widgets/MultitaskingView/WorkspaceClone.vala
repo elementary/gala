@@ -42,11 +42,8 @@ private class Gala.FramedBackground : BackgroundManager {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 #endif
         pipeline = new Cogl.Pipeline (ctx);
-        var primary = display.get_primary_monitor ();
-        var monitor_geom = display.get_monitor_geometry (primary);
 
-        var effect = new ShadowEffect ("workspace");
-        add_effect (effect);
+        add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
 
         reactive = true;
     }
