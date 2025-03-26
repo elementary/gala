@@ -200,16 +200,15 @@ namespace Gala {
              * + ui group
              * +-- window group
              * +---- background manager
-             * +-- shell elements
              * +-- top window group
-             * +-- workspace view
+             * +-- multitasking view
              * +-- window switcher
              * +-- window overview
-             * +-- notification group
+             * +-- shell group
+             * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
-             * +-- screen shield
-             * +-- feedback group (e.g. DND icons)
+             * +-- session locker
              */
 
             system_background = new SystemBackground (display);
@@ -219,7 +218,6 @@ namespace Gala {
             stage.insert_child_below (system_background.background_actor, null);
 
             ui_group = new Clutter.Actor ();
-            ui_group.reactive = true;
             update_ui_group_size ();
             stage.add_child (ui_group);
 
@@ -275,10 +273,10 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (display));
 
-            var screen_shield = new ScreenShield (this);
-            ui_group.add_child (screen_shield);
+            var session_locker = new SessionLocker (this);
+            ui_group.add_child (session_locker);
 
-            screensaver = new ScreenSaverManager (screen_shield);
+            screensaver = new ScreenSaverManager (session_locker);
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode

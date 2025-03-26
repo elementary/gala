@@ -8,36 +8,36 @@ public class Gala.ScreenSaverManager : Object {
     public signal void active_changed (bool new_value);
 
     [DBus (visible = false)]
-    public ScreenShield screen_shield { get; construct; }
+    public SessionLocker session_locker { get; construct; }
 
-    public ScreenSaverManager (ScreenShield shield) {
-        Object (screen_shield: shield);
+    public ScreenSaverManager (SessionLocker session_locker) {
+        Object (session_locker: session_locker);
     }
 
     construct {
-        screen_shield.active_changed.connect (() => {
-            active_changed (screen_shield.active);
+        session_locker.active_changed.connect (() => {
+            active_changed (session_locker.active);
         });
     }
 
     public void @lock () throws GLib.Error {
-        screen_shield.@lock (true);
+        session_locker.@lock (true);
     }
 
     public bool get_active () throws GLib.Error {
-        return screen_shield.active;
+        return session_locker.active;
     }
 
     public void set_active (bool active) throws GLib.Error {
         if (active) {
-            screen_shield.activate (true);
+            session_locker.activate (true);
         } else {
-            screen_shield.deactivate (false);
+            session_locker.deactivate (false);
         }
     }
 
     public uint get_active_time () throws GLib.Error {
-        var started = screen_shield.activation_time;
+        var started = session_locker.activation_time;
         if (started > 0) {
             return (uint)Math.floor ((GLib.get_monotonic_time () - started) / 1000000);
         } else {
