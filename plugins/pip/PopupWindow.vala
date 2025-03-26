@@ -78,7 +78,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             reactive = true
         };
         container.add_child (clone_container);
-        container.add_effect (new ShadowEffect ("window", scale));
+        container.add_effect (new ShadowEffect ("window", 9, scale));
 
         move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
         move_action.drag_begin.connect (on_move_begin);

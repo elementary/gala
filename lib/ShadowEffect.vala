@@ -51,16 +51,16 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     public float monitor_scale { get; construct set; }
+    public int border_radius { get; construct; }
 
     public uint8 shadow_opacity { get; set; default = 255; }
-    public int border_radius { get; set; default = 9;}
 
     private int shadow_size;
     private Cogl.Pipeline? pipeline;
     private string? current_key = null;
 
-    public ShadowEffect (string css_class, float monitor_scale) {
-        Object (css_class: css_class, monitor_scale: monitor_scale);
+    public ShadowEffect (string css_class, int border_radius, float monitor_scale) {
+        Object (css_class: css_class, border_radius: border_radius, monitor_scale: monitor_scale);
     }
 
     ~ShadowEffect () {

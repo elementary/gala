@@ -235,9 +235,7 @@ public class Gala.IconGroup : CanvasActor {
             InternalUtils.scale_to_int (5, scale_factor)
         );
 
-        var shadow_effect = new ShadowEffect ("", scale_factor) {
-            border_radius = InternalUtils.scale_to_int (5, scale_factor)
-        };
+        var shadow_effect = new ShadowEffect ("", InternalUtils.scale_to_int (5, scale_factor), scale_factor);
 
         var style_manager = Drawing.StyleManager.get_instance ();
 

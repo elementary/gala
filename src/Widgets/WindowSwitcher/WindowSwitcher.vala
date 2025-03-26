@@ -99,8 +99,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             orientation = VERTICAL
         };
 
-        shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
-            border_radius = InternalUtils.scale_to_int (9, scaling_factor),
+        shadow_effect = new ShadowEffect ("window-switcher", InternalUtils.scale_to_int (9, scaling_factor), scaling_factor) {
             shadow_opacity = 100
         };
         add_effect (shadow_effect);
