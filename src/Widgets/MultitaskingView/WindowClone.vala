@@ -140,7 +140,6 @@ public class Gala.WindowClone : ActorTarget {
         };
 
         window_title = new Tooltip ();
-        window_title.opacity = 0;
 
         add_child (active_shape);
         add_child (clone_container);
@@ -257,17 +256,17 @@ public class Gala.WindowClone : ActorTarget {
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) window_rect.x, (float) slot.x));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) window_rect.y, (float) slot.y));
-
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) window_rect.width, (float) slot.width));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "height", typeof (float), (float) window_rect.height, (float) slot.height));
-
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         if (should_fade ()) {
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         }
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
+
     }
 
     public override void start_progress (GestureAction action) {
@@ -393,12 +392,6 @@ public class Gala.WindowClone : ActorTarget {
         close_button.set_easing_duration (duration);
         close_button.opacity = show ? 255 : 0;
         close_button.restore_easing_state ();
-
-        window_title.save_easing_state ();
-        window_title.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_title.set_easing_duration (duration);
-        window_title.opacity = show ? 255 : 0;
-        window_title.restore_easing_state ();
     }
 
     /**
@@ -511,7 +504,6 @@ public class Gala.WindowClone : ActorTarget {
         window_icon.restore_easing_state ();
 
         close_button.opacity = 0;
-        window_title.opacity = 0;
 
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
