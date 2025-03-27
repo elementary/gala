@@ -42,7 +42,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-                _current_icon.grab_key_focus ();
+
+                // _current_icon.grab_key_focus () sometimes results in a crash
+                // https://github.com/elementary/gala/issues/2308
+                get_stage ().set_key_focus (_current_icon);
             }
 
             update_caption_text ();
@@ -96,7 +99,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             orientation = VERTICAL
         };
 
-        shadow_effect = new ShadowEffect ("window-switcher") {
+        shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
             border_radius = InternalUtils.scale_to_int (9, scaling_factor),
             shadow_opacity = 100
         };
@@ -118,7 +121,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     private void scale () {
         scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
 
-        shadow_effect.scale_factor = scaling_factor;
+        shadow_effect.monitor_scale = scaling_factor;
 
         var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 

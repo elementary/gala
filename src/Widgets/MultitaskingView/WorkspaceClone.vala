@@ -42,11 +42,8 @@ private class Gala.FramedBackground : BackgroundManager {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 #endif
         pipeline = new Cogl.Pipeline (ctx);
-        var primary = display.get_primary_monitor ();
-        var monitor_geom = display.get_monitor_geometry (primary);
 
-        var effect = new ShadowEffect ("workspace");
-        add_effect (effect);
+        add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
 
         reactive = true;
     }
@@ -137,6 +134,7 @@ public class Gala.WorkspaceClone : ActorTarget {
      */
     public signal void selected (bool close_view);
 
+    public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
     public IconGroup icon_group { get; private set; }
     public WindowCloneContainer window_container { get; private set; }
@@ -160,8 +158,8 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     private uint hover_activate_timeout = 0;
 
-    public WorkspaceClone (Meta.Workspace workspace, float scale) {
-        Object (workspace: workspace, scale_factor: scale);
+    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float scale) {
+        Object (wm: wm, workspace: workspace, scale_factor: scale);
     }
 
     construct {
@@ -178,7 +176,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (display, scale_factor) {
+        window_container = new WindowCloneContainer (wm, scale_factor) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };

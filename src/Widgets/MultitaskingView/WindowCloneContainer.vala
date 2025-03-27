@@ -16,7 +16,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public int padding_right { get; set; default = 12; }
     public int padding_bottom { get; set; default = 12; }
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
     public bool overview_mode { get; construct; }
 
     private float _monitor_scale = 1.0f;
@@ -40,8 +40,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (Meta.Display display, float scale, bool overview_mode = false) {
-        Object (display: display, monitor_scale: scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, float scale, bool overview_mode = false) {
+        Object (wm: wm, monitor_scale: scale, overview_mode: overview_mode);
     }
 
     private void reallocate () {
@@ -64,9 +64,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
         }
         windows.append (window);
 
+        unowned var display = wm.get_display ();
         var windows_ordered = InternalUtils.sort_windows (display, windows);
 
-        var new_window = new WindowClone (display, window, monitor_scale, overview_mode);
+        var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
 
         new_window.selected.connect ((clone) => window_selected (clone.window));
         new_window.destroy.connect ((_new_window) => {
@@ -127,6 +128,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      * during animations correct.
      */
     private void restack_windows () {
+        unowned var display = wm.get_display ();
+
         var children = get_children ();
 
         var windows = new List<Meta.Window> ();
@@ -240,6 +243,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return;
         }
 
+        unowned var display = wm.get_display ();
+
         WindowClone? closest = null;
 
         if (current_window == null) {
@@ -351,6 +356,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public override void start_progress (GestureAction action) {
         if (!opened) {
             opened = true;
+
+            unowned var display = wm.get_display ();
 
             if (current_window != null) {
                 current_window.active = false;
