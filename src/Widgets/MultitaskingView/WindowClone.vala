@@ -168,6 +168,7 @@ public class Gala.WindowClone : ActorTarget {
             opacity = 0
         };
         close_button.triggered.connect (close_window);
+        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
 
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
             visible = !overview_mode
@@ -386,7 +387,7 @@ public class Gala.WindowClone : ActorTarget {
 
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = has_pointer && !in_slot_animation;
+        var show = (has_pointer || close_button.has_pointer) && !in_slot_animation;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
