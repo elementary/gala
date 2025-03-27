@@ -15,7 +15,7 @@ public class Gala.ScreenSaverManager : Object {
     }
 
     construct {
-        session_locker.active_changed.connect (() => {
+        session_locker.notify["active"].connect (() => {
             active_changed (session_locker.active);
         });
     }
@@ -32,7 +32,7 @@ public class Gala.ScreenSaverManager : Object {
         if (active) {
             session_locker.activate (true);
         } else {
-            session_locker.deactivate (false);
+            session_locker.deactivate ();
         }
     }
 
