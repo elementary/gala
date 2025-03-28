@@ -504,6 +504,7 @@ public class Gala.WindowClone : ActorTarget {
         window_icon.restore_easing_state ();
 
         close_button.opacity = 0;
+        window_title.opacity = 0;
 
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 
