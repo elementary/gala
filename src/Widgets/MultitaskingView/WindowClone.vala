@@ -266,7 +266,6 @@ public class Gala.WindowClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
-
     }
 
     public override void start_progress (GestureAction action) {
