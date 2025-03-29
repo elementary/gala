@@ -29,6 +29,8 @@ public class Gala.PositionedWindow : Object {
     public Position position { get; construct set; }
     public Variant? position_data { get; construct set; }
 
+    private ulong position_changed_id;
+
     public PositionedWindow (Meta.Window window, Position position, Variant? position_data = null) {
         Object (window: window, position: position, position_data: position_data);
     }
@@ -37,7 +39,7 @@ public class Gala.PositionedWindow : Object {
         window.stick ();
 
         window.size_changed.connect (position_window);
-        window.position_changed.connect (position_window);
+        position_changed_id = window.position_changed.connect (position_window);
         window.shown.connect (position_window);
 
         unowned var monitor_manager = window.display.get_context ().get_backend ().get_monitor_manager ();
@@ -73,6 +75,8 @@ public class Gala.PositionedWindow : Object {
                 break;
         }
 
+        SignalHandler.block (window, position_changed_id);
         window.move_frame (false, x, y);
+        SignalHandler.unblock (window, position_changed_id);
     }
 }
