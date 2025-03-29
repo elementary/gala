@@ -3,7 +3,7 @@
  * SPDX-FileCopyrightText: 2020, 2025 elementary, Inc. (https://elementary.io)
  */
 
-public class Gala.SessionLocker : Clutter.Actor {
+public class Gala.SessionLocker : Object {
     [DBus (name = "org.freedesktop.login1.Manager")]
     private interface LoginManager : Object {
         public signal void prepare_for_sleep (bool about_to_suspend);
@@ -62,27 +62,41 @@ public class Gala.SessionLocker : Clutter.Actor {
     private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
     private const string LOCK_ON_SUSPEND_KEY = "lock-on-suspend";
 
-    public signal void active_changed ();
+    public ScreenShield screen_shield { private get; construct; }
 
-    // Screensaver active but not necessarily locked
-    public bool active { get; private set; default = false; }
-
-    public bool is_locked { get; private set; default = false; }
-    public bool in_greeter { get; private set; default = false; }
     public int64 activation_time { get; private set; default = 0; }
 
-    public WindowManager wm { get; construct; }
+    // Screensaver active but not necessarily locked
+    private bool _active = false;
+    public bool active {
+        get {
+            return _active;
+        }
+        private set {
+            if (!connected_to_buses) {
+                return;
+            }
 
-    private ModalProxy? modal_proxy;
+            if (_active != value) {
+                _active = value;
+                notify_property ("active");
+            }
+
+            try {
+                login_session.set_locked_hint (active);
+            } catch (Error e) {
+                warning ("Unable to set locked hint on login session: %s", e.message);
+            }
+
+            sync_inhibitor ();
+        }
+    }
 
     private LoginManager? login_manager;
     private LoginUserManager? login_user_manager;
     private LoginSessionManager? login_session;
     private SessionPresence? session_presence;
-
     private DisplayManagerSeat? display_manager;
-
-    private uint animate_id = 0;
 
     private UnixInputStream? inhibitor;
 
@@ -91,9 +105,11 @@ public class Gala.SessionLocker : Clutter.Actor {
     private GLib.Settings gala_settings;
 
     private bool connected_to_buses = false;
+    private bool is_locked = false;
+    private bool in_greeter = false;
 
-    public SessionLocker (WindowManager wm) {
-        Object (wm: wm);
+    public SessionLocker (ScreenShield screen_shield) {
+        Object (screen_shield: screen_shield);
     }
 
     construct {
@@ -106,30 +122,7 @@ public class Gala.SessionLocker : Clutter.Actor {
         gala_settings = new GLib.Settings ("io.elementary.desktop.screensaver");
         lockdown_settings = new GLib.Settings ("org.gnome.desktop.lockdown");
 
-        visible = false;
-        reactive = true;
-
-        // Listen for keypresses or mouse movement
-        key_press_event.connect ((event) => {
-            on_user_became_active ();
-            return Clutter.EVENT_STOP;
-        });
-
-        motion_event.connect ((event) => {
-            on_user_became_active ();
-            return Clutter.EVENT_STOP;
-        });
-
-#if HAS_MUTTER47
-        background_color = Cogl.Color.from_string ("black");
-#else
-        background_color = Clutter.Color.from_string ("black");
-#endif
-
-        expand_to_screen_size ();
-
-        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (expand_to_screen_size);
+        screen_shield.user_action.connect (on_user_became_active);
 
         init_dbus_interfaces.begin ();
     }
@@ -148,7 +141,7 @@ public class Gala.SessionLocker : Clutter.Actor {
                 // Listen for lock unlock events from logind
                 login_session.lock.connect (() => @lock (false));
                 login_session.unlock.connect (() => {
-                    deactivate (false);
+                    deactivate ();
                     in_greeter = false;
                 });
 
@@ -186,13 +179,6 @@ public class Gala.SessionLocker : Clutter.Actor {
         connected_to_buses = success;
     }
 
-    private void expand_to_screen_size () {
-        int screen_width, screen_height;
-        wm.get_display ().get_size (out screen_width, out screen_height);
-        width = screen_width;
-        height = screen_height;
-    }
-
     private void prepare_for_sleep (bool about_to_suspend) {
         if (!connected_to_buses) {
             return;
@@ -206,7 +192,6 @@ public class Gala.SessionLocker : Clutter.Actor {
         } else {
             debug ("resumed from suspend, waking screen");
             on_user_became_active ();
-            expand_to_screen_size ();
         }
     }
 
@@ -264,7 +249,7 @@ public class Gala.SessionLocker : Clutter.Actor {
         // User became active in some way, switch to the greeter if we're not there already
         if (is_locked && !in_greeter) {
             debug ("user became active, switching to greeter");
-            cancel_animation ();
+            deactivate ();
             try {
                 display_manager.switch_to_greeter ();
                 in_greeter = true;
@@ -274,7 +259,7 @@ public class Gala.SessionLocker : Clutter.Actor {
         // Otherwise, we're in screensaver mode, just deactivate
         } else if (!is_locked) {
             debug ("user became active in unlocked session, closing screensaver");
-            deactivate (false);
+            deactivate ();
         }
     }
 
@@ -315,104 +300,32 @@ public class Gala.SessionLocker : Clutter.Actor {
     }
 
     public void activate (bool animate, uint animation_time = LONG_ANIMATION_TIME) {
-        if (visible || !connected_to_buses) {
+        if (active || !connected_to_buses) {
             return;
         }
-
-        expand_to_screen_size ();
 
         if (activation_time == 0) {
             activation_time = GLib.get_monotonic_time ();
         }
 
-        wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
-        visible = true;
-        grab_key_focus ();
-        modal_proxy = wm.push_modal (this);
-
-        if (Meta.Prefs.get_gnome_animations () && animate) {
-            animate_and_lock (animation_time);
-        } else {
-            _set_active (true);
-
-            opacity = 255;
+        screen_shield.activate (animate ? 0 : animation_time, () => {
+            active = true;
 
             if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
                 @lock (false);
             }
-        }
-    }
-
-    private void animate_and_lock (uint animation_time) {
-        opacity = 0;
-        save_easing_state ();
-        set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        set_easing_duration (animation_time);
-        opacity = 255;
-
-        animate_id = Timeout.add (animation_time, () => {
-            animate_id = 0;
-
-            restore_easing_state ();
-
-            _set_active (true);
-
-            if (screensaver_settings.get_boolean (LOCK_ENABLED_KEY)) {
-                @lock (false);
-            }
-
-            return GLib.Source.REMOVE;
         });
     }
 
-    private void cancel_animation () {
-        if (animate_id != 0) {
-            GLib.Source.remove (animate_id);
-            animate_id = 0;
-
-            restore_easing_state ();
-        }
-    }
-
-    public void deactivate (bool animate) {
+    public void deactivate () {
         if (!connected_to_buses) {
             return;
         }
 
-        cancel_animation ();
+        screen_shield.deactivate ();
 
         is_locked = false;
-
-        if (modal_proxy != null) {
-            wm.pop_modal (modal_proxy);
-            modal_proxy = null;
-        }
-
-        wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
-        visible = false;
-
         activation_time = 0;
-        _set_active (false);
-    }
-
-    private void _set_active (bool new_active) {
-        if (!connected_to_buses) {
-            return;
-        }
-
-        var prev_is_active = active;
-        active = new_active;
-
-        if (prev_is_active != active) {
-            active_changed ();
-        }
-
-        try {
-            login_session.set_locked_hint (active);
-        } catch (Error e) {
-            warning ("Unable to set locked hint on login session: %s", e.message);
-        }
-
-        sync_inhibitor ();
+        active = false;
     }
 }
