@@ -126,14 +126,6 @@ public class Gala.WorkspaceClone : ActorTarget {
      */
     public signal void window_selected (Meta.Window window);
 
-    /**
-     * The background has been selected. Switch to that workspace.
-     *
-     * @param close_view If the MultitaskingView should also consider closing itself
-     *                   after switching.
-     */
-    public signal void selected (bool close_view);
-
     public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
     public IconGroup icon_group { get; private set; }
@@ -170,9 +162,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
         var background_click_action = new Clutter.ClickAction ();
-        background_click_action.clicked.connect (() => {
-            selected (true);
-        });
+        background_click_action.clicked.connect (() => activate (true));
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
@@ -181,10 +171,10 @@ public class Gala.WorkspaceClone : ActorTarget {
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect ((w) => { window_selected (w); });
-        window_container.requested_close.connect (() => selected (true));
+        window_container.requested_close.connect (() => activate (true));
 
         icon_group = new IconGroup (display, workspace, scale_factor);
-        icon_group.selected.connect (() => selected (true));
+        icon_group.selected.connect (() => activate (true));
 
         var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         icon_group.add_action (icons_drop_action);
@@ -200,7 +190,7 @@ public class Gala.WorkspaceClone : ActorTarget {
 
             if (hovered && hover_activate_timeout == 0) {
                 hover_activate_timeout = Timeout.add (HOVER_ACTIVATE_DELAY, () => {
-                    selected (false);
+                    activate (false);
                     hover_activate_timeout = 0;
                     return false;
                 });
@@ -331,6 +321,13 @@ public class Gala.WorkspaceClone : ActorTarget {
     public override void update_progress (GestureAction action, double progress) {
         if (action == SWITCH_WORKSPACE) {
             icon_group.backdrop_opacity = 1 - (float) (workspace.index () + progress).abs ().clamp (0, 1);
+        }
+    }
+
+    private void activate (bool close_view) {
+        workspace.activate (Meta.CURRENT_TIME);
+        if (close_view && workspace.active) {
+            wm.perform_action (SHOW_MULTITASKING_VIEW);
         }
     }
 }
