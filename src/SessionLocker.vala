@@ -4,15 +4,6 @@
  */
 
 public class Gala.SessionLocker : Object {
-    [DBus (name = "org.freedesktop.login1.Manager")]
-    private interface LoginManager : Object {
-        public signal void prepare_for_sleep (bool about_to_suspend);
-
-        public abstract GLib.ObjectPath get_session (string session_id) throws GLib.Error;
-
-        public abstract UnixInputStream inhibit (string what, string who, string why, string mode) throws GLib.Error;
-    }
-
     [DBus (name = "org.freedesktop.login1.Session")]
     private interface LoginSessionManager : Object {
         public abstract bool active { get; }
