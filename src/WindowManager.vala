@@ -72,6 +72,8 @@ namespace Gala {
 
         public ScreenSaverManager? screensaver { get; private set; }
 
+        public ShutdownManager shutdown_manager { get; private set; }
+
         private HotCornerManager? hot_corner_manager = null;
 
         public WindowTracker? window_tracker { get; private set; }
@@ -284,6 +286,8 @@ namespace Gala {
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
+
+            shutdown_manager = new ShutdownManager (screen_shield);
 
             FilterManager.init (this);
 
