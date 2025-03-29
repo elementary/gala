@@ -1,7 +1,7 @@
 /*
  * Copyright 2012 Tom Beckmann
  * Copyright 2012 Rico Tzschichholz
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -15,10 +15,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
     private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
 
+    private Clutter.Actor monitors;
     private ModalProxy modal_proxy;
-    // the workspaces which we expose right now
-    private List<Meta.Workspace> workspaces;
-    private WindowCloneContainer window_clone_container;
 
     private uint64[]? window_ids = null;
 
@@ -33,15 +31,18 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             enabled = false
         };
         add_gesture_controller (gesture_controller);
-    }
 
+        monitors = new ActorTarget ();
+        add_child (monitors);
+    }
 
     public override bool key_press_event (Clutter.Event event) {
         if (!is_opened ()) {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        return window_clone_container.key_press_event (event);
+        //TODO: Navigating between monitors
+        return get_child_at_index (wm.get_display ().get_primary_monitor ()).key_press_event (event);
     }
 
     public override bool button_release_event (Clutter.Event event) {
@@ -63,40 +64,30 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
      * {@inheritDoc}
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        workspaces = new List<Meta.Workspace> ();
-        unowned var manager = wm.get_display ().get_workspace_manager ();
-        foreach (unowned var workspace in manager.get_workspaces ()) {
-            workspaces.append (workspace);
+        if (visible) {
+            return;
         }
 
         window_ids = hints != null && "windows" in hints ? (uint64[]) hints["windows"] : null;
 
         var windows = new List<Meta.Window> ();
-        foreach (var workspace in workspaces) {
-            foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK || NotificationStack.is_notification (window) ) {
-                    continue;
-                }
-
-                if (window.window_type != Meta.WindowType.NORMAL &&
-                    window.window_type != Meta.WindowType.DIALOG ||
-                    window.is_attached_dialog () ||
-                    (window_ids != null && !(window.get_id () in window_ids))
-                ) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    actor.hide ();
-
-                    continue;
-                }
-
-                // skip windows that are on all workspace except we're currently
-                // processing the workspace it actually belongs to
-                if (window.on_all_workspaces && window.get_workspace () != workspace) {
-                    continue;
-                }
-
-                windows.append (window);
+        foreach (unowned var window_actor in wm.get_display ().get_window_actors ()) {
+            var window = window_actor.meta_window;
+            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                continue;
             }
+
+            if (window.window_type != Meta.WindowType.NORMAL &&
+                window.window_type != Meta.WindowType.DIALOG ||
+                window.is_attached_dialog () ||
+                window_ids != null && !(window.get_id () in window_ids)
+            ) {
+                window_actor.hide ();
+
+                continue;
+            }
+
+            windows.append (window);
         }
 
         if (windows.is_empty ()) {
@@ -119,7 +110,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
-            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
+            var window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -132,7 +123,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             window_clone_container.window_selected.connect (thumb_selected);
             window_clone_container.requested_close.connect (() => close ());
 
-            add_child (window_clone_container);
+            monitors.add_child (window_clone_container);
         }
 
         visible = true;
@@ -202,20 +193,14 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             return;
         }
 
-#if HAS_MUTTER48
-        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#else
-        Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#endif
-            cleanup ();
-
-            return Source.REMOVE;
-        });
-
         gesture_controller.goto (0);
     }
 
-    private void cleanup () {
+    public override void end_progress (GestureAction action) {
+        if (action != MULTITASKING_VIEW || get_current_commit (MULTITASKING_VIEW) > 0.5) {
+            return;
+        }
+
         visible = false;
 
         wm.pop_modal (modal_proxy);
@@ -226,6 +211,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             }
         }
 
-        destroy_all_children ();
+        monitors.remove_all_children ();
     }
 }

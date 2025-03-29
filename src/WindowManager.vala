@@ -1410,7 +1410,7 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations () || !actor.visible) {
                 actor.opacity = 0;
                 destroy_completed (actor);
 
