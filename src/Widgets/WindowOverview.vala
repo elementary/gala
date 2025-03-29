@@ -15,6 +15,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
     private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
 
+    private Clutter.Actor background;
     private Clutter.Actor monitors;
     private ModalProxy modal_proxy;
 
@@ -31,6 +32,18 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             enabled = false
         };
         add_gesture_controller (gesture_controller);
+
+        background = new Clutter.Actor () {
+#if HAS_MUTTER47
+            background_color = Cogl.Color.from_string ("black")
+#else
+            background_color = Clutter.Color.from_string ("black")
+#endif
+        };
+        background.add_constraint (new Clutter.BindConstraint (this, SIZE, 0));
+        add_child (background);
+
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "opacity", typeof (uint), 0u, 150u));
 
         monitors = new ActorTarget ();
         add_child (monitors);
@@ -71,19 +84,17 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         window_ids = hints != null && "windows" in hints ? (uint64[]) hints["windows"] : null;
 
         var windows = new List<Meta.Window> ();
+#if HAS_MUTTER48
+        foreach (unowned var window_actor in wm.get_display ().get_compositor ().get_window_actors ()) {
+#else
         foreach (unowned var window_actor in wm.get_display ().get_window_actors ()) {
+#endif
             var window = window_actor.meta_window;
-            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
-                continue;
-            }
-
-            if (window.window_type != Meta.WindowType.NORMAL &&
-                window.window_type != Meta.WindowType.DIALOG ||
+            if (ShellClientsManager.get_instance ().is_positioned_window (window) ||
+                window.window_type != NORMAL && window.window_type != DIALOG ||
                 window.is_attached_dialog () ||
                 window_ids != null && !(window.get_id () in window_ids)
             ) {
-                window_actor.hide ();
-
                 continue;
             }
 
