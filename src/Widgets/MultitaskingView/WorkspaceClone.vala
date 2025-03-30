@@ -325,9 +325,10 @@ public class Gala.WorkspaceClone : ActorTarget {
     }
 
     private void activate (bool close_view) {
-        workspace.activate (Meta.CURRENT_TIME);
         if (close_view && workspace.active) {
             wm.perform_action (SHOW_MULTITASKING_VIEW);
+        } else {
+            workspace.activate (Meta.CURRENT_TIME);
         }
     }
 }
