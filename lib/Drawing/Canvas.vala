@@ -9,6 +9,8 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     private int height = -1;
     private float scale_factor = 1.0f;
 
+    private Cogl.Context? cogl_context;
+
     private Cogl.Texture? texture = null;
     private Cogl.Bitmap? bitmap = null;
 
@@ -16,13 +18,24 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
 
     public signal void draw (Cairo.Context cr, int width, int height);
 
-    private void emit_draw () requires (width > 0 && height > 0) {
+    public override void attached (Clutter.Actor actor) {
+#if HAS_MUTTER47
+        cogl_context = actor.context.get_backend ().get_cogl_context ();
+#else
+        cogl_context = Clutter.get_default_backend ().get_cogl_context ();
+#endif
+    }
+
+    public override void detached (Clutter.Actor actor) {
+        cogl_context = null;
+    }
+
+    private void emit_draw () requires (width > 0 && height > 0 && cogl_context != null) {
         dirty = true;
         int real_width = (int) Math.ceilf (width * scale_factor);
         int real_height = (int) Math.ceilf (height * scale_factor);
         if (bitmap == null) {
-            unowned Cogl.Context ctx = Clutter.get_default_backend ().get_cogl_context ();
-            bitmap = new Cogl.Bitmap.with_size (ctx, real_width, real_height, Cogl.PixelFormat.CAIRO_ARGB32_COMPAT);
+            bitmap = new Cogl.Bitmap.with_size (cogl_context, real_width, real_height, Cogl.PixelFormat.CAIRO_ARGB32_COMPAT);
         }
 
         unowned Cogl.Buffer? buffer = bitmap.get_buffer ();

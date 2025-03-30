@@ -44,11 +44,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         height = screen_height;
     }
 
-#if HAS_MUTTER45
     public override bool key_press_event (Clutter.Event e) {
-#else
-    public override bool key_press_event (Clutter.KeyEvent e) {
-#endif
         if (e.get_key_symbol () == Clutter.Key.Escape) {
             close ();
             closed ();
@@ -58,11 +54,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         return false;
     }
 
-#if HAS_MUTTER45
     public override bool button_press_event (Clutter.Event e) {
-#else
-    public override bool button_press_event (Clutter.ButtonEvent e) {
-#endif
         if (dragging || e.get_button () != Clutter.Button.PRIMARY) {
             return true;
         }
@@ -76,11 +68,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         return true;
     }
 
-#if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event e) {
-#else
-    public override bool button_release_event (Clutter.ButtonEvent e) {
-#endif
         if (e.get_button () != Clutter.Button.PRIMARY) {
             return true;
         }
@@ -109,11 +97,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         return true;
     }
 
-#if HAS_MUTTER45
     public override bool motion_event (Clutter.Event e) {
-#else
-    public override bool motion_event (Clutter.MotionEvent e) {
-#endif
         if (!clicked) {
             return true;
         }

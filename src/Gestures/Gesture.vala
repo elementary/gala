@@ -35,9 +35,25 @@ namespace Gala {
     }
 
     public class Gesture {
+        public const float INVALID_COORD = float.MAX;
+
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;
         public Clutter.InputDeviceType performed_on_device_type;
+
+        /**
+         * The x coordinate of the initial contact point for the gesture.
+         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
+         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
+         */
+        public float origin_x = INVALID_COORD;
+
+        /**
+         * The y coordinate of the initial contact point for the gesture.
+         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
+         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
+         */
+        public float origin_y = INVALID_COORD;
     }
 }

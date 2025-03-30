@@ -27,6 +27,60 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.2.0" date="2025-03-25" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+          <li>Window state is now saved on sleep and shutdown</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/137">Send a persistent notification after taking a screenshot</issue>
+        <issue url="https://github.com/elementary/gala/issues/321">Use org.gnome.desktop.interface enable-animations</issue>
+        <issue url="https://github.com/elementary/gala/issues/544">Multitasking View. Wingpanel shows for brief moment if a fullscreen wokspace is selected after coming from a wokspace that shows the wingpanel.</issue>
+        <issue url="https://github.com/elementary/gala/issues/898">Super+Number. When workspace doesn't exist, switch to last workspace instead.</issue>
+        <issue url="https://github.com/elementary/gala/issues/1202">Touchpad desktop switching gesture is sometimes unresponsive</issue>
+        <issue url="https://github.com/elementary/gala/issues/1661">Better post-screenshot animation</issue>
+        <issue url="https://github.com/elementary/gala/issues/2114">Wrong context menu placement</issue>
+        <issue url="https://github.com/elementary/gala/issues/2199">Swiping in the multitasking view can close applications</issue>
+        <issue url="https://github.com/elementary/gala/issues/2260">Ghost of window on another workspace appears when cancelling workspace swipe</issue>
+        <issue url="https://github.com/elementary/gala/issues/2267">Dock crash may crash Gala</issue>
+        <issue url="https://github.com/elementary/gala/issues/2279">Can't reveal dock when animations are disabled</issue>
+      </issues>
+    </release>
+
+    <release version="8.1.0" date="2025-01-11" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Updated translations</li>
+          <li>Fixed rare crash when a dock window was killed</li>
+          <li>Added interactive screenshot shortcut</li>
+          <li>Fixed crash when using tiling shortcuts</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/397">Prevent PIP overlapping wingpanel?</issue>
+        <issue url="https://github.com/elementary/gala/issues/551">Return to original workspace if a fullscreen window is closed and there is no more windows open</issue>
+        <issue url="https://github.com/elementary/gala/issues/815">Zoom with Super + Scroll</issue>
+        <issue url="https://github.com/elementary/gala/issues/857">Toggling the active window's maximization state during multitasking view messes up the window preview size</issue>
+        <issue url="https://github.com/elementary/gala/issues/1178">Workspace Switching with Keyboard (meta) + Mouse scroll</issue>
+        <issue url="https://github.com/elementary/gala/issues/1967">Some apps ignore HiDPI mode</issue>
+        <issue url="https://github.com/elementary/gala/issues/1986">Does not return to the first virtual desktop after exiting fullscreen mode.</issue>
+        <issue url="https://github.com/elementary/gala/issues/2088">Invisible window clones</issue>
+        <issue url="https://github.com/elementary/gala/issues/2102">Notifications sometimes result in segfault</issue>
+        <issue url="https://github.com/elementary/gala/issues/2113">gnome-session-x11-services-ready.target isn't started on Wayland session</issue>
+        <issue url="https://github.com/elementary/gala/issues/2131">Unthemed cursor style and glitchy menus on some applications</issue>
+        <issue url="https://github.com/elementary/gala/issues/2154">Windows do not display correctly after moving between workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/2159">Crash when moving windows between workspaces and using gestures to switch</issue>
+        <issue url="https://github.com/elementary/gala/issues/2169">Text UI based Scaling: Tiny Titlebars in XWayland Apps</issue>
+        <issue url="https://github.com/elementary/gala/issues/2170">Don’t show app icons in app window spread</issue>
+        <issue url="https://github.com/elementary/gala/issues/2171">PiP dragging doesn't start until after mouse is released</issue>
+        <issue url="https://github.com/elementary/gala/issues/2175">Gala crashes when receiving a notification while switching workspaces</issue>
+      </issues>
+    </release>
+
     <release version="8.0.4" date="2024-12-02" urgency="medium">
       <description>
         <p>Improvements:</p>

@@ -266,14 +266,20 @@ namespace Gala {
 
         /**
          * Get the number of toplevel windows on a workspace excluding those that are
-         * on all workspaces
+         * on all workspaces.
+         *
+         * We need `exclude` here because on Meta.Workspace.window_removed
+         * the windows gets removed from workspace's internal window list but not display's window list
+         * which Meta.Workspace uses for Meta.Workspace.list_windows ().
          *
          * @param workspace The workspace on which to count the windows
+         * @param exclude a window to not count
+         * 
          */
-        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false) {
+        public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;
             foreach (unowned var window in workspace.list_windows ()) {
-                if (window.on_all_workspaces) {
+                if (window.on_all_workspaces || window == exclude) {
                     continue;
                 }
 
@@ -299,11 +305,7 @@ namespace Gala {
          */
         public static Clutter.Actor? get_window_actor_snapshot (
             Meta.WindowActor actor,
-#if HAS_MUTTER45
             Mtk.Rectangle inner_rect
-#else
-            Meta.Rectangle inner_rect
-#endif
         ) {
             Clutter.Content content;
 
@@ -319,9 +321,14 @@ namespace Gala {
                 return null;
             }
 
-            var container = new Clutter.Actor ();
-            container.set_size (inner_rect.width, inner_rect.height);
-            container.content = content;
+            var container = new Clutter.Actor () {
+                content = content,
+                offscreen_redirect = Clutter.OffscreenRedirect.ALWAYS,
+                x = inner_rect.x,
+                y = inner_rect.y,
+                width = inner_rect.width,
+                height = inner_rect.height
+            };
 
             return container;
         }
@@ -333,11 +340,7 @@ namespace Gala {
          */
         [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
         public static int get_ui_scaling_factor () {
-#if HAS_MUTTER44
             return 1;
-#else
-            return Meta.Backend.get_backend ().get_settings ().get_ui_scaling_factor ();
-#endif
         }
 
         /**
@@ -444,6 +447,13 @@ namespace Gala {
 
             regions.remove (window);
             X.Fixes.destroy_region (xdisplay, region);
+        }
+
+        /**
+         * Utility that returns the given duration or 0 if animations are disabled.
+         */
+        public static uint get_animation_duration (uint duration) {
+            return Meta.Prefs.get_gnome_animations () ? duration : 0;
         }
     }
 }

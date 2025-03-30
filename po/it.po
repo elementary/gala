@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-11-23 16:06+0000\n"
+"POT-Creation-Date: 2025-03-24 21:59+0000\n"
 "PO-Revision-Date: 2022-04-20 09:31+0000\n"
 "Last-Translator: Mirko Brombin <brombinmirko@gmail.com>\n"
 "Language-Team: Italian <https://l10n.elementary.io/projects/desktop/gala/it/"
@@ -32,13 +32,13 @@ msgstr "Impostazioni schermo…"
 msgid "System Settings…"
 msgstr "Impostazioni di sistema…"
 
-#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "Impostazioni di sistema…"
 
-#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
@@ -112,34 +112,55 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
-#: data/gala.metainfo.xml.in:59 data/gala.metainfo.xml.in:76
-#: data/gala.metainfo.xml.in:92 data/gala.metainfo.xml.in:133
-#: data/gala.metainfo.xml.in:158 data/gala.metainfo.xml.in:174
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:99
+#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:131
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:188
+#: data/gala.metainfo.xml.in:213 data/gala.metainfo.xml.in:229
 msgid "Improvements:"
 msgstr "Miglioramenti:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
-#: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:80
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:88 data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:151 data/gala.metainfo.xml.in:194
+#: data/gala.metainfo.xml.in:216 data/gala.metainfo.xml.in:231
 msgid "Updated translations"
 msgstr "Traduzioni aggiornate"
 
 #: data/gala.metainfo.xml.in:35
+msgid "Window state is now saved on sleep and shutdown"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:58
+msgid "Fixed rare crash when a dock window was killed"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:59
+msgid "Added interactive screenshot shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:60
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fixed crash when using tiling shortcuts"
+msgstr ""
+"Corregge un potenziale arresto anomalo durante l'acquisizione di schermate"
+
+#: data/gala.metainfo.xml.in:89
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "Migliora le ombre delle finestre per le applicazione più datate"
 
-#: data/gala.metainfo.xml.in:78
+#: data/gala.metainfo.xml.in:133
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Corregge un potenziale arresto anomalo durante l'acquisizione di schermate"
 
-#: data/gala.metainfo.xml.in:79
+#: data/gala.metainfo.xml.in:134
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
@@ -147,35 +168,35 @@ msgstr ""
 "Corregge la posizione delle notifiche a seguito della modifica del fattore "
 "di scala dello schermo"
 
-#: data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:149
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Panoramica degli spazi di lavoro"
 
-#: data/gala.metainfo.xml.in:95
+#: data/gala.metainfo.xml.in:150
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:190
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:191
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:192
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:138
+#: data/gala.metainfo.xml.in:193
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:160
+#: data/gala.metainfo.xml.in:215
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -201,96 +222,109 @@ msgctxt "program"
 msgid "Unknown"
 msgstr ""
 
-#: src/DesktopIntegration.vala:133
-msgid "Window has already focus"
-msgstr ""
-
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr ""
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr ""
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
 msgstr ""
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr ""
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
 msgstr ""
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
 msgstr ""
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
 msgstr ""
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
 msgstr ""
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
 msgstr ""
 
-#: src/ScreenshotManager.vala:296
-msgid "Screenshots"
-msgstr "Catture dello schermo"
+#: src/DesktopIntegration.vala:194
+msgid "Window has already focus"
+msgstr ""
 
-#: src/ScreenshotManager.vala:388
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:79
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Cattura da %s"
+
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:137
+msgid "Show in Files"
+msgstr ""
+
+#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:488
 #, fuzzy
 #| msgid "Screenshots"
 msgid "Screenshot taken"
 msgstr "Catture dello schermo"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:73
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot is saved to clipboard"
+msgstr ""
+
+#: src/ScreenshotManager.vala:144
+msgid "Screenshot saved to screenshots folder"
+msgstr ""
+
+#: src/ScreenshotManager.vala:396
+msgid "Screenshots"
+msgstr "Catture dello schermo"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:2355
+#: src/WindowManager.vala:1781
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:2362
+#: src/WindowManager.vala:1788
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Impostazioni schermo…"
 
-#: src/WindowManager.vala:2366
+#: src/WindowManager.vala:1792
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Impostazioni di sistema…"
 
-#: src/WindowManager.vala:2367
+#: src/WindowManager.vala:1793
 msgid "Use Previous Settings"
 msgstr ""
-
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2406
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Cattura da %s"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
@@ -378,10 +412,6 @@ msgstr "Cattura da %s"
 
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Mostra le scorciatoie da tastiera nei menu della barra del titolo"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr ""
-#~ "Corregge un potenziale arresto anomalo durante l'acquisizione di schermate"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

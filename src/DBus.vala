@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2024-2025 elementary, Inc. (https://elementary.io)
  *                         2012-2014 Tom Beckmann
  *                         2012-2014 Jacob Parker
  */
@@ -11,7 +11,7 @@ public class Gala.DBus {
     private static WindowManagerGala wm;
 
     [DBus (visible = false)]
-    public static void init (WindowManagerGala _wm) {
+    public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
         Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
@@ -33,8 +33,8 @@ public class Gala.DBus {
         Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
             (connection) => {
                 try {
-                    connection.register_object ("/org/gnome/Shell", DBusAccelerator.init (wm.get_display ()));
-                    connection.register_object ("/org/gnome/Shell/Screenshot", ScreenshotManager.init (wm));
+                    connection.register_object ("/org/gnome/Shell", new DBusAccelerator (wm.get_display (), notifications_manager));
+                    connection.register_object ("/org/gnome/Shell/Screenshot", screenshot_manager);
                 } catch (Error e) { warning (e.message); }
             },
             () => {},

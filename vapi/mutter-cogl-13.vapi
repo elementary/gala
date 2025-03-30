@@ -1,1 +1,1 @@
-mutter-cogl-12.vapi
+mutter-cogl.vapi
