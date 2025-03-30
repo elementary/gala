@@ -1350,16 +1350,12 @@ namespace Gala {
 
                     mapping.add (actor);
 
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_pivot_point_z (0.2f);
-                    actor.set_scale (0.9f, 0.9f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
+                    actor.opacity = 255;
                     actor.restore_easing_state ();
 
                     ulong map_handler_id = 0UL;

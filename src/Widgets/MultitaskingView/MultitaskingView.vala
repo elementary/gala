@@ -356,7 +356,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         icon_groups.add_group (workspace.icon_group);
 
         workspace.window_selected.connect (window_selected);
-        workspace.selected.connect (activate_workspace);
 
         reposition_icon_groups (false);
     }
@@ -384,7 +383,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         }
 
         workspace.window_selected.disconnect (window_selected);
-        workspace.selected.disconnect (activate_workspace);
 
         if (icon_groups.contains (workspace.icon_group)) {
             icon_groups.remove_group (workspace.icon_group);
@@ -409,25 +407,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
     private void on_workspace_switched (int from, int to) {
         if ((int) (-get_current_commit (SWITCH_WORKSPACE)) != to) {
             workspaces_gesture_controller.goto (-to);
-        }
-    }
-
-    /**
-     * Activates the workspace of a WorkspaceClone
-     *
-     * @param close_view Whether to close the view as well. Will only be considered
-     *                   if the workspace is also the currently active workspace.
-     *                   Otherwise it will only be made active, but the view won't be
-     *                   closed.
-     */
-    private void activate_workspace (WorkspaceClone clone, bool close_view) {
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        close_view = close_view && manager.get_active_workspace () == clone.workspace;
-
-        clone.workspace.activate (display.get_current_time ());
-
-        if (close_view) {
-            close ();
         }
     }
 
