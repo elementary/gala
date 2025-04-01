@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -22,29 +22,60 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public Clutter.Actor? actor { get { return wm.stage; } }
 
-    public WindowManager wm { get; construct; }
+    public WindowManager wm { private get; construct; }
 
+    
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
-
-    private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
+    private GLib.HashTable<Meta.Window, PanelWindow> panel_windows;
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows;
+    public Gee.Set<Meta.Window> accept_windows;
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
 
     construct {
-        notifications_client = new NotificationsClient (wm.get_display ());
+        unowned var display = wm.get_display ();
 
+        notifications_client = new NotificationsClient (display);
+        panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+        positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
+        accept_windows = new Gee.HashSet<Meta.Window> (null, null);
+        
         start_clients.begin ();
 
         if (!Meta.Util.is_wayland_compositor ()) {
-            wm.get_display ().window_created.connect ((window) => {
+            display.window_created.connect ((window) => {
                 window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
                 parse_mutter_hints (window);
             });
         }
+
+        display.grab_op_begin.connect ((window, grab) => {
+            // TODO: connect to position_changed and wait until it intersects with the dock
+            // after a timeout start dock animation
+
+            window.position_changed.connect ((_window) => {
+                var frame_rect = _window.get_frame_rect ();
+                
+                foreach (var target_window in accept_windows) {
+                    var target_window_frame_rect =
+                        (target_window in panel_windows) ?
+                        panel_windows[target_window].get_custom_window_rect () :
+                        target_window.get_frame_rect ();
+
+                    var cursor_tracker = display.get_cursor_tracker ();
+                    cursor_tracker.position_invalidated.connect (() => {
+
+                    });
+                }
+            });
+        });
+
+        display.grab_op_end.connect ((window, grab) => {
+            // TODO: Disconnect, if timeout passed, call wayland func
+        });
     }
 
     private async void start_clients () {
@@ -183,6 +214,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         panel_windows[window].hide_mode = hide_mode;
+    }
+
+    public void make_accept_windows (Meta.Window window) {
+        if (window in accept_windows) {
+            return;
+        }
+
+        accept_windows.add (window);
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
