@@ -54,7 +54,9 @@ all_doc_target = custom_target(
         '--pkg', 'gmodule-2.0',
         '--pkg', 'wayland-server',
         '--pkg', 'pantheon-desktop-shell',
+        '--pkg', 'pantheon-blur',
         '--vapidir=' + join_paths(meson.global_source_root(), 'protocol'),
+        '--vapidir=' + join_paths(meson.global_source_root(), 'blur-protocol'),
         '-o', '@OUTPUT@',
         '@INPUT@'
     ],
