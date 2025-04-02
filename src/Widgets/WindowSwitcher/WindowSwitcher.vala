@@ -83,7 +83,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         get_accessible ().accessible_name = _("Window switcher");
         container.get_accessible ().accessible_role = LIST;
 
-        caption = new Clutter.Text () {
+        caption = new Gala.Text () {
             font_name = CAPTION_FONT_NAME,
             ellipsize = END,
             line_alignment = CENTER
