@@ -57,6 +57,7 @@ namespace Pantheon.Desktop {
         public Destroy destroy;
         public SetKeepAbove set_keep_above;
         public MakeCentered make_centered;
+        public MakeMonitorLabel make_monitor_label;
         public Focus focus;
     }
 
@@ -78,6 +79,8 @@ namespace Pantheon.Desktop {
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void MakeCentered (Wl.Client client, Wl.Resource resource);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeMonitorLabel (Wl.Client client, Wl.Resource resource, int monitor_index);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }
