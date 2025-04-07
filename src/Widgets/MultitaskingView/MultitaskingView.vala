@@ -35,7 +35,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
     private List<MonitorClone> window_containers_monitors;
 
     private IconGroupContainer icon_groups;
-    private ActorTarget workspaces;
+    private WorkspaceRow workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
 
@@ -62,7 +62,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
-        workspaces = new WorkspaceRow (display);
+        workspaces = new WorkspaceRow (wm, display.get_monitor_scale (display.get_primary_monitor ()));
 
         workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this, wm) {
             overshoot_upper_clamp = 0.1
@@ -92,8 +92,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         add_child (StaticWindowContainer.get_instance (display));
 
         unowned var manager = display.get_workspace_manager ();
-        manager.workspace_added.connect (add_workspace);
-        manager.workspace_removed.connect (remove_workspace);
+        manager.workspace_removed.connect (sync_active);
         manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
@@ -119,6 +118,8 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         });
 
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
+
+        workspaces.window_selected.connect (window_selected);
     }
 
     private void update_brightness_effect () {
@@ -134,8 +135,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
      * MonitorClones at the right positions
      */
     private void update_monitors () {
-        update_workspaces ();
-
         foreach (var monitor_clone in window_containers_monitors) {
             monitor_clone.destroy ();
         }
@@ -160,28 +159,10 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         var primary_geometry = display.get_monitor_geometry (primary);
         var scale = display.get_monitor_scale (primary);
         icon_groups.scale_factor = scale;
+        workspaces.scale_factor = scale;
 
         primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
         primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.scale_factor = scale;
-            workspace_clone.update_size (primary_geometry);
-        }
-    }
-
-    private void update_workspaces () {
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            icon_groups.remove_group (workspace_clone.icon_group);
-            workspace_clone.destroy ();
-        }
-
-        unowned var manager = display.get_workspace_manager ();
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            add_workspace (i);
-        }
     }
 
     /**
@@ -347,58 +328,14 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         }
     }
 
-    private void add_workspace (int num) {
+    private void sync_active () {
         unowned var manager = display.get_workspace_manager ();
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
-
-        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
-        workspaces.insert_child_at_index (workspace, num);
-        icon_groups.add_group (workspace.icon_group);
-
-        workspace.window_selected.connect (window_selected);
-
-        reposition_icon_groups (false);
-    }
-
-    private void remove_workspace (int num) {
-        WorkspaceClone? workspace = null;
-
-        // FIXME is there a better way to get the removed workspace?
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        List<Meta.Workspace> existing_workspaces = null;
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            existing_workspaces.append (manager.get_workspace_by_index (i));
-        }
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var clone = (WorkspaceClone) child;
-            if (existing_workspaces.index (clone.workspace) < 0) {
-                workspace = clone;
-                break;
-            }
-        }
-
-        if (workspace == null) {
-            return;
-        }
-
-        workspace.window_selected.disconnect (window_selected);
-
-        if (icon_groups.contains (workspace.icon_group)) {
-            icon_groups.remove_group (workspace.icon_group);
-        }
-
-        workspace.destroy ();
-
-        reposition_icon_groups (opened);
-
         workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
 
     private void on_workspaces_reordered () {
         if (!visible) {
-            unowned var manager = display.get_workspace_manager ();
-            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+            sync_active ();
         }
 
         reposition_icon_groups (false);

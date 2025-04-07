@@ -166,10 +166,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, scale_factor) {
-            width = monitor_geometry.width,
-            height = monitor_geometry.height,
-        };
+        window_container = new WindowCloneContainer (wm, scale_factor);
         window_container.window_selected.connect ((w) => { window_selected (w); });
         window_container.requested_close.connect (() => activate (true));
 
@@ -287,13 +284,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         }
     }
 
-    public void update_size (Mtk.Rectangle monitor_geometry) {
-        if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            background.set_size (window_container.width, window_container.height);
-        }
-    }
-
     private void update_targets () {
         remove_all_targets ();
 
@@ -316,6 +306,9 @@ public class Gala.WorkspaceClone : ActorTarget {
         window_container.padding_left =
             window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
         window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
+
+        window_container.width = monitor.width;
+        window_container.height = monitor.height;
     }
 
     public override void update_progress (GestureAction action, double progress) {
