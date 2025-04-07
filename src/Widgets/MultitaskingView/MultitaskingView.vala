@@ -32,8 +32,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
     private ModalProxy modal_proxy;
     private bool opened = false;
 
-    private List<MonitorClone> window_containers_monitors;
-
+    private Clutter.Actor monitors;
     private IconGroupContainer icon_groups;
     private ActorTarget workspaces;
     private Clutter.Actor primary_monitor_container;
@@ -87,8 +86,13 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         primary_monitor_container = new ActorTarget ();
         primary_monitor_container.add_child (icon_groups);
         primary_monitor_container.add_child (workspaces);
-        add_child (primary_monitor_container);
 
+        monitors = new ActorTarget () {
+            layout_manager = new MonitorLayout (display)
+        };
+        monitors.add_child (primary_monitor_container);
+
+        add_child (monitors);
         add_child (StaticWindowContainer.get_instance (display));
 
         unowned var manager = display.get_workspace_manager ();
@@ -107,7 +111,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
             }
         );
 
-        window_containers_monitors = new List<MonitorClone> ();
         update_monitors ();
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_monitors);
@@ -136,33 +139,33 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
     private void update_monitors () {
         update_workspaces ();
 
-        foreach (var monitor_clone in window_containers_monitors) {
-            monitor_clone.destroy ();
-        }
-
         var primary = display.get_primary_monitor ();
+        var n_monitors = display.get_n_monitors ();
+        var n_children = monitors.get_n_children ();
+        var monitor_clone = monitors.get_first_child ();
+        for (int i = 0; i < int.max (n_monitors, n_children); i++) {
+            if (!(monitor_clone is MonitorClone) && i != primary) {
+                monitors.insert_child_at_index (new MonitorClone (wm, i), i);
+                monitors.remove_child (monitors.get_child_at_index (primary));
+                monitors.set_child_at_index (primary_monitor_container, primary);
+            }
 
-        if (Meta.Prefs.get_workspaces_only_on_primary ()) {
-            for (var monitor = 0; monitor < display.get_n_monitors (); monitor++) {
-                if (monitor == primary) {
-                    continue;
-                }
+            if (monitor_clone is MonitorClone) {
+                monitor_clone.update_scale (display.get_monitor_scale (i));
+            }
 
-                var monitor_clone = new MonitorClone (wm, monitor);
-                monitor_clone.window_selected.connect (window_selected);
-                monitor_clone.visible = opened;
-
-                window_containers_monitors.append (monitor_clone);
-                add_child (monitor_clone);
+            if (monitor_clone == null) {
+                monitors.add_child (new MonitorClone (wm, i));
+            } else if (i >= n_monitors) {
+                monitors.remove_child (monitors.get_last_child ());
+            } else {
+                monitor_clone = monitor_clone.get_next_sibling ();
             }
         }
 
         var primary_geometry = display.get_monitor_geometry (primary);
         var scale = display.get_monitor_scale (primary);
         icon_groups.scale_factor = scale;
-
-        primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
-        primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
 
         foreach (unowned var child in workspaces.get_children ()) {
             unowned var workspace_clone = (WorkspaceClone) child;

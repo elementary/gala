@@ -34,6 +34,7 @@ public class Gala.MonitorClone : ActorTarget {
         var scale = display.get_monitor_scale (monitor);
 
         window_container = new WindowCloneContainer (wm, scale);
+        window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0));
         window_container.window_selected.connect ((w) => { window_selected (w); });
 
         display.window_entered_monitor.connect (window_entered);
@@ -55,8 +56,6 @@ public class Gala.MonitorClone : ActorTarget {
 
         var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         add_action (drop);
-
-        update_allocation ();
     }
 
     ~MonitorClone () {
@@ -65,19 +64,7 @@ public class Gala.MonitorClone : ActorTarget {
         display.window_left_monitor.disconnect (window_left);
     }
 
-    /**
-     * Make sure the MonitorClone is at the location of the monitor on the stage
-     */
-    public void update_allocation () {
-        unowned var display = wm.get_display ();
-
-        var monitor_geometry = display.get_monitor_geometry (monitor);
-
-        set_position (monitor_geometry.x, monitor_geometry.y);
-        set_size (monitor_geometry.width, monitor_geometry.height);
-        window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-
-        var scale = display.get_monitor_scale (monitor);
+    public void update_scale (float scale) {
         window_container.monitor_scale = scale;
     }
 
