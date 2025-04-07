@@ -16,6 +16,7 @@ public class Gala.WorkspaceManager : Object {
     private static WorkspaceManager? instance = null;
 
     public WindowManager wm { get; construct; }
+    public ListStore workspaces { get; construct; }
 
     private int remove_freeze_count = 0;
     private uint check_workspaces_id = 0;
@@ -25,6 +26,8 @@ public class Gala.WorkspaceManager : Object {
     }
 
     construct {
+        workspaces = new ListStore (typeof (Meta.Workspace));
+
         unowned var display = wm.get_display ();
         unowned var manager = display.get_workspace_manager ();
 
@@ -36,6 +39,8 @@ public class Gala.WorkspaceManager : Object {
 
         manager.workspace_switched.connect_after (queue_check_workspaces);
         manager.workspace_added.connect (workspace_added);
+        manager.workspace_removed.connect ((index) => workspaces.remove (index));
+        manager.workspaces_reordered.connect (() => workspaces.sort (sort_func));
         display.window_entered_monitor.connect (window_entered_monitor);
         display.window_left_monitor.connect (window_left_monitor);
     }
@@ -48,6 +53,8 @@ public class Gala.WorkspaceManager : Object {
 
         workspace.window_added.connect (queue_check_workspaces);
         workspace.window_removed.connect (queue_check_workspaces);
+
+        workspaces.insert (index, workspace);
     }
 
     private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
@@ -169,5 +176,9 @@ public class Gala.WorkspaceManager : Object {
 
         check_workspaces_id = 0;
         return Source.REMOVE;
+    }
+
+    private int sort_func (Object a, Object b) {
+        return ((Meta.Workspace) a).index () - ((Meta.Workspace) b).index ();
     }
 }

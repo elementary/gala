@@ -176,6 +176,7 @@ namespace Gala {
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
             WindowAttentionTracker.init (display);
+            WorkspaceManager.init (this);
 
             notification_stack = new NotificationStack (display);
 
@@ -187,12 +188,6 @@ namespace Gala {
 #else
             stage.background_color = Clutter.Color.from_string (color);
 #endif
-
-            unowned var laters = display.get_compositor ().get_laters ();
-            laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
-                WorkspaceManager.init (this);
-                return false;
-            });
 
             /* our layer structure:
              * stage

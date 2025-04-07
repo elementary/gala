@@ -19,14 +19,8 @@ public class Gala.WorkspaceRow : ActorTarget {
     }
 
     construct {
-        unowned var manager = wm.get_display ().get_workspace_manager ();
-        manager.workspace_added.connect (add_workspace);
-        manager.workspace_removed.connect (remove_workspace);
-        manager.workspaces_reordered.connect (update_order);
-
-        for (int i = 0; i < manager.n_workspaces; i++) {
-            add_workspace (i);
-        }
+        unowned var manager = WorkspaceManager.get_default ();
+        bind_model (manager.workspaces, create_child_func);
     }
 
     public override void allocate (Clutter.ActorBox allocation) {
@@ -52,23 +46,10 @@ public class Gala.WorkspaceRow : ActorTarget {
         }
     }
 
-    private void add_workspace (int index) {
-        unowned var workspace = wm.get_display ().get_workspace_manager ().get_workspace_by_index (index);
-        var workspace_clone = new WorkspaceClone (wm, workspace, scale_factor);
+    private Clutter.Actor create_child_func (Object item) {
+        var workspace_clone = new WorkspaceClone (wm, (Meta.Workspace) item, scale_factor);
         bind_property ("scale-factor", workspace_clone, "scale-factor");
-        insert_child_at_index (workspace_clone, index);
-
         workspace_clone.window_selected.connect ((window) => window_selected (window));
-    }
-
-    private void remove_workspace (int index) {
-        remove_child (get_child_at_index (index));
-    }
-
-    private void update_order () {
-        for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            set_child_at_index (workspace_clone, workspace_clone.workspace.index ());
-        }
+        return workspace_clone;
     }
 }
