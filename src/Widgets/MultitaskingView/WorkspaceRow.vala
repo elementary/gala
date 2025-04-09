@@ -19,8 +19,9 @@ public class Gala.WorkspaceRow : ActorTarget {
     }
 
     construct {
-        unowned var manager = WorkspaceManager.get_default ();
-        bind_model (manager.workspaces, create_child_func);
+        unowned var workspaces = WorkspaceManager.get_default ().workspaces;
+        workspaces.items_changed.connect (on_items_changed);
+        on_items_changed (workspaces, 0, 0, workspaces.n_items);
     }
 
     public override void allocate (Clutter.ActorBox allocation) {
@@ -46,10 +47,24 @@ public class Gala.WorkspaceRow : ActorTarget {
         }
     }
 
-    private Clutter.Actor create_child_func (Object item) {
-        var workspace_clone = new WorkspaceClone (wm, (Meta.Workspace) item, scale_factor);
-        bind_property ("scale-factor", workspace_clone, "scale-factor");
-        workspace_clone.window_selected.connect ((window) => window_selected (window));
-        return workspace_clone;
+    private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
+        if (removed == added) { // Only reordered
+            for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
+                unowned var workspace_clone = (WorkspaceClone) child;
+                set_child_at_index (workspace_clone, workspace_clone.workspace.index ());
+            }
+            return;
+        }
+
+        for (int i = 0; i < removed; i++) {
+            remove_child (get_child_at_index ((int) pos));
+        }
+
+        for (int i = 0; i < added; i++) {
+            var workspace_clone = new WorkspaceClone (wm, (Meta.Workspace) model.get_item (pos + i), scale_factor);
+            bind_property ("scale-factor", workspace_clone, "scale-factor");
+            workspace_clone.window_selected.connect ((window) => window_selected (window));
+            insert_child_at_index (workspace_clone, (int) pos + i);
+        }
     }
 }
