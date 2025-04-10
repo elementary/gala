@@ -49,6 +49,7 @@ public class Gala.WindowListener : Object {
     }
 
     public signal void window_on_all_workspaces_changed (Meta.Window window);
+    public signal void window_workspace_changed (Meta.Window window);
 
     private Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
@@ -58,6 +59,7 @@ public class Gala.WindowListener : Object {
 
     private void monitor_window (Meta.Window window) {
         window.notify.connect (window_notify);
+        window.workspace_changed.connect ((win) => window_workspace_changed (win));
         window.unmanaged.connect (window_removed);
 
         window_maximized_changed (window);

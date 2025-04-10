@@ -16,6 +16,7 @@ gala_bin_sources = files(
     'SuperScrollAction.vala',
     'WindowAttentionTracker.vala',
     'WindowListener.vala',
+    'WindowListModel.vala',
     'WindowManager.vala',
     'WindowStateSaver.vala',
     'WindowTracker.vala',
