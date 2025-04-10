@@ -23,6 +23,11 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
+        public ListStore windows { get; construct; }
+
+        /**
+         * {@inheritDoc}
+         */
         public Clutter.Actor ui_group { get; protected set; }
 
         /**
@@ -88,8 +93,6 @@ namespace Gala {
         private DaemonManager daemon_manager;
 
         private NotificationStack notification_stack;
-
-        public ListStore windows { get; construct; }
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 

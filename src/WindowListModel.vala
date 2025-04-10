@@ -5,17 +5,17 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-//filter by ws, monitor, normal
 public class Gala.WindowListModel : Object, ListModel {
-    public WindowManagerGala wm { get; construct; }
+    public WindowManager wm { get; construct; }
 
     /**
-     * If > 0 only present windows that are on this monitor.
+     * If >= 0 only present windows that are on this monitor.
      */
     public int monitor_filter { get; set; default = -1; }
 
     /**
      * If not null only present windows that are on this workspace.
+     * This also excludes static windows as defined by {@link StaticWindowContainer.is_static}.
      */
     public Meta.Workspace? workspace_filter { get; set; default = null; }
 
@@ -27,7 +27,7 @@ public class Gala.WindowListModel : Object, ListModel {
     private ListStore windows;
     private Gee.TreeSet<uint> tree_set;
 
-    public WindowListModel (WindowManagerGala wm) {
+    public WindowListModel (WindowManager wm) {
         Object (wm: wm);
     }
 
@@ -94,7 +94,10 @@ public class Gala.WindowListModel : Object, ListModel {
             return false;
         }
 
-        if (workspace_filter != null && (window.on_all_workspaces || !window.located_on_workspace (workspace_filter))) {
+        if (workspace_filter != null &&
+            (StaticWindowContainer.get_instance (wm.get_display ()).is_static (window) ||
+            !window.located_on_workspace (workspace_filter))
+        ) {
             return false;
         }
 
