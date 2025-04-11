@@ -422,7 +422,9 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     /**
-     * The window unmanaged by the compositor, so we need to destroy ourselves too.
+     * The window unmanaged by the compositor, so we need to destroy the clone.
+     * We mustn't destroy ourselves because this is handled by the WindowCloneContainer
+     * and its model and would fuck up indeces.
      */
     private void unmanaged () {
         remove_all_transitions ();
@@ -439,8 +441,6 @@ public class Gala.WindowClone : ActorTarget {
             SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
             check_confirm_dialog_cb = 0;
         }
-
-        destroy ();
     }
 
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {

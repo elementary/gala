@@ -109,6 +109,11 @@ namespace Gala {
 
     public interface WindowManager : Meta.Plugin {
         /**
+         * A list of all currently active windows.
+         */
+        public abstract ListStore windows { get; construct; }
+
+        /**
          * This is the container you'll most likely want to add your component to. It wraps
          * every other container listed in this interface and is a direct child of the stage.
          */

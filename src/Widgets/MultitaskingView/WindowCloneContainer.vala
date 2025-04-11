@@ -17,6 +17,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public int padding_bottom { get; set; default = 12; }
 
     public WindowManager wm { get; construct; }
+    public ListModel windows { get; construct; }
     public bool overview_mode { get; construct; }
 
     private float _monitor_scale = 1.0f;
@@ -40,8 +41,13 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, float scale, bool overview_mode = false) {
-        Object (wm: wm, monitor_scale: scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, ListModel windows, float scale, bool overview_mode = false) {
+        Object (wm: wm, windows: windows, monitor_scale: scale, overview_mode: overview_mode);
+    }
+
+    construct {
+        windows.items_changed.connect (on_items_changed);
+        on_items_changed (0, 0, windows.get_n_items ());
     }
 
     private void reallocate () {
@@ -51,106 +57,37 @@ public class Gala.WindowCloneContainer : ActorTarget {
         }
     }
 
-    /**
-     * Create a WindowClone for a MetaWindow and add it to the group
-     *
-     * @param window The window for which to create the WindowClone for
-     */
-    public void add_window (Meta.Window window) {
-        var windows = new List<Meta.Window> ();
-        foreach (unowned var child in get_children ()) {
-            unowned var clone = (WindowClone) child;
-            windows.append (clone.window);
+    private void on_items_changed (uint pos, uint removed, uint added) {
+        var to_remove = new HashTable<Meta.Window, WindowClone> (null, null);
+
+        for (uint i = 0; i < removed; i++) {
+            var window_clone = (WindowClone) get_child_at_index ((int) pos);
+            to_remove[window_clone.window] = window_clone;
+            remove_child (window_clone);
         }
-        windows.append (window);
 
-        unowned var display = wm.get_display ();
-        var windows_ordered = InternalUtils.sort_windows (display, windows);
-
-        var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
-
-        new_window.selected.connect ((clone) => window_selected (clone.window));
-        new_window.destroy.connect ((_new_window) => {
-            // make sure to release reference if the window is selected
-            if (_new_window == current_window) {
-                select_next_window (Meta.MotionDirection.RIGHT, false);
+        for (uint i = pos; i < pos + added; i++) {
+            var window = (Meta.Window) windows.get_item (i);
+            var window_clone = to_remove.take (window);
+            if (window_clone == null) {
+                window_clone = new WindowClone (wm, window, monitor_scale, overview_mode);
+                window_clone.selected.connect ((clone) => window_selected (clone.window));
+                window_clone.request_reposition.connect (() => reflow (false));
             }
+            insert_child_at_index (window_clone, (int) pos);
+        }
 
-            // if window is still selected, reset the selection
-            if (_new_window == current_window) {
+        // Make sure we release the reference on the window
+        if (current_window != null && current_window.window in to_remove) {
+            select_next_window (RIGHT, false);
+
+            // There is no next window so select nothing
+            if (current_window.window in to_remove) {
                 current_window = null;
-            }
-
-            reflow (false);
-        });
-        new_window.request_reposition.connect (() => reflow (false));
-
-        unowned Meta.Window? target = null;
-        foreach (unowned var w in windows_ordered) {
-            if (w != window) {
-                target = w;
-                continue;
-            }
-            break;
-        }
-
-        // top most or no other children
-        if (target == null) {
-            add_child (new_window);
-        }
-
-        foreach (unowned var child in get_children ()) {
-            unowned var clone = (WindowClone) child;
-            if (target == clone.window) {
-                insert_child_below (new_window, clone);
-                break;
             }
         }
 
         reflow (false);
-    }
-
-    /**
-     * Find and remove the WindowClone for a MetaWindow
-     */
-    public void remove_window (Meta.Window window) {
-        foreach (unowned var child in get_children ()) {
-            if (((WindowClone) child).window == window) {
-                remove_child (child);
-                reflow (false);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Sort the windows z-order by their actual stacking to make intersections
-     * during animations correct.
-     */
-    private void restack_windows () {
-        unowned var display = wm.get_display ();
-
-        var children = get_children ();
-
-        var windows = new List<Meta.Window> ();
-        foreach (unowned Clutter.Actor child in children) {
-            windows.prepend (((WindowClone) child).window);
-        }
-
-        var windows_ordered = InternalUtils.sort_windows (display, windows);
-        windows_ordered.reverse ();
-
-        var i = 0;
-        foreach (unowned var window in windows_ordered) {
-            foreach (unowned var child in children) {
-                if (((WindowClone) child).window == window) {
-                    set_child_at_index (child, i);
-                    children.remove (child);
-                    i++;
-                    break;
-                }
-            }
-        }
     }
 
     /**
@@ -371,10 +308,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 }
             }
 
-            restack_windows ();
             reflow (true);
-        } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
-            restack_windows ();
         }
     }
 

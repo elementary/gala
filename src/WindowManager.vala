@@ -23,6 +23,11 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
+        public ListStore windows { get; construct; }
+
+        /**
+         * {@inheritDoc}
+         */
         public Clutter.Actor ui_group { get; protected set; }
 
         /**
@@ -114,11 +119,17 @@ namespace Gala {
 
             //Make it start watching the settings daemon bus
             Drawing.StyleManager.get_instance ();
+
+            windows = new ListStore (typeof (Meta.Window));
         }
 
         public override void start () {
+            unowned var display = get_display ();
+
+            display.window_created.connect (window_created);
+
             ShellClientsManager.init (this);
-            daemon_manager = new DaemonManager (get_display ());
+            daemon_manager = new DaemonManager (display);
 
             show_stage ();
 
@@ -126,7 +137,6 @@ namespace Gala {
 
             AccessDialog.watch_portal ();
 
-            unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
@@ -139,6 +149,20 @@ namespace Gala {
                 });
             }
 #endif
+        }
+
+        private void window_created (Meta.Window window) {
+            windows.append (window);
+            window.unmanaged.connect (window_unmanaged);
+        }
+
+        private void window_unmanaged (Meta.Window window) {
+            uint pos;
+            if (windows.find (window, out pos)) {
+                windows.remove (pos);
+            } else {
+                warning ("Window unmanaged but not found");
+            }
         }
 
 #if WITH_SYSTEMD
