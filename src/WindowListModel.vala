@@ -6,40 +6,59 @@
  */
 
 public class Gala.WindowListModel : Object, ListModel {
+    public enum SortMode {
+        NONE,
+        STACKING
+    }
+
     public WindowManager wm { get; construct; }
+
+    public SortMode sort_mode { get; construct; }
+
+    /**
+     * If true only present windows that are normal as gotten by {@link InternalUtils.get_window_is_normal}.
+     */
+    public bool normal_filter { get; construct set; }
 
     /**
      * If >= 0 only present windows that are on this monitor.
      */
-    public int monitor_filter { get; set; default = -1; }
+    public int monitor_filter { get; construct set; }
 
     /**
      * If not null only present windows that are on this workspace.
      * This also excludes static windows as defined by {@link StaticWindowContainer.is_static}.
      */
-    public Meta.Workspace? workspace_filter { get; set; default = null; }
-
-    /**
-     * If true only present windows that are normal as gotten by {@link InternalUtils.get_window_is_normal}.
-     */
-    public bool normal_filter { get; set; default = false; }
+    public Meta.Workspace? workspace_filter { get; construct set; }
 
     private ListStore windows;
     private Gee.TreeSet<uint> tree_set;
+    private Gee.ArrayList<uint> sorted;
 
-    public WindowListModel (WindowManager wm) {
-        Object (wm: wm);
+    public WindowListModel (
+        WindowManager wm, SortMode sort_mode = NONE,
+        bool normal_filter = false, int monitor_filter = -1,
+        Meta.Workspace? workspace_filter = null
+    ) {
+        Object (
+            wm: wm, sort_mode: sort_mode, normal_filter: normal_filter,
+            monitor_filter: monitor_filter, workspace_filter: workspace_filter
+        );
     }
 
     construct {
         windows = wm.windows;
         tree_set = new Gee.TreeSet<uint> ();
+        sorted = new Gee.ArrayList<uint> ();
 
         windows.items_changed.connect (on_items_changed);
         on_items_changed (0, 0, windows.n_items);
 
         WindowListener.get_default ().window_workspace_changed.connect (refilter_window);
-        wm.get_display ().window_entered_monitor.connect ((monitor, win) => refilter_window (win));
+
+        unowned var display = wm.get_display ();
+        StaticWindowContainer.get_instance (display).window_changed.connect (refilter_window);
+        display.window_entered_monitor.connect ((monitor, win) => refilter_window (win));
 
         notify.connect (() => on_items_changed (0, windows.n_items, windows.n_items));
     }
@@ -85,7 +104,17 @@ public class Gala.WindowListModel : Object, ListModel {
         // => tree_set fully valid
 
         if (removed_filtered != 0 || added_filtered != 0) {
-            items_changed (pos_filtered, removed_filtered, added_filtered);
+            var removed_sorted = sorted.size;
+
+            sorted.clear ();
+            sorted.add_all (tree_set);
+
+            if (sort_mode == STACKING) {
+                sorted.sort (stacking_sort_func);
+                items_changed (0, removed_sorted, sorted.size);
+            } else {
+                items_changed (pos_filtered, removed_filtered, added_filtered);
+            }
         }
     }
 
@@ -115,17 +144,15 @@ public class Gala.WindowListModel : Object, ListModel {
         }
     }
 
-    public Object? get_item (uint position) {
-        uint current_pos = 0;
-        var iter = tree_set.iterator ();
-        while (iter.next ()) {
-            if (current_pos == position) {
-                return windows.get_item (iter.get ());
-            }
-            current_pos++;
+    public void resort () {
+        if (sort_mode == STACKING) {
+            sorted.sort (stacking_sort_func);
+            items_changed (0, sorted.size, sorted.size);
         }
+    }
 
-        return null;
+    public Object? get_item (uint position) {
+        return windows.get_item (sorted.get ((int) position));
     }
 
     public uint get_n_items () {
@@ -134,5 +161,12 @@ public class Gala.WindowListModel : Object, ListModel {
 
     public Type get_item_type () {
         return typeof (Meta.Window);
+    }
+
+    private int stacking_sort_func (uint a, uint b) {
+        var window_a = (Meta.Window) windows.get_item (a);
+        var window_b = (Meta.Window) windows.get_item (b);
+
+        return (int) window_a.user_time - (int) window_b.user_time;
     }
 }
