@@ -129,6 +129,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             pivot_point = { 0.5f, 0.5f }
         };
 
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, monitor_scale) {
+            visible = !overview_mode,
+            opacity = 0,
+            pivot_point = { 0.5f, 0.5f }
+        };
+        bind_property ("monitor-scale-factor", window_icon, "monitor-scale");
+
         window_title = new Tooltip ();
 
         close_button = new Gala.CloseButton (monitor_scale_factor) {
@@ -140,11 +147,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         add_child (active_shape);
         add_child (clone_container);
+        add_child (window_icon);
         add_child (window_title);
         add_child (close_button);
-
-        notify["monitor-scale"].connect (reallocate);
-        reallocate ();
 
         InternalUtils.wait_for_window_actor (window, load_clone);
 
@@ -159,18 +164,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
-    }
-
-    private void reallocate () {
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
-            visible = !overview_mode
-        };
-        window_icon.opacity = 0;
-        window_icon.set_pivot_point (0.5f, 0.5f);
-
-        add_child (window_icon);
-
-        set_child_below_sibling (window_icon, window_title);
     }
 
     /**

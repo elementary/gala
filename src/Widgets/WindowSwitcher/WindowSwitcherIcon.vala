@@ -36,7 +36,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
     public WindowSwitcherIcon (Meta.Window window, int icon_size, float scale_factor) {
         Object (window: window);
 
-        icon = new WindowIcon (window, Utils.scale_to_int (icon_size, scale_factor));
+        icon = new WindowIcon (window, icon_size, scale_factor);
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 

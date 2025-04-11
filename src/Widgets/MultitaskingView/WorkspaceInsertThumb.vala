@@ -60,7 +60,7 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     public void set_window_thumb (Meta.Window window) {
         destroy_all_children ();
 
-        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, (int)Math.round (scale_factor)) {
+        var icon = new WindowIcon (window, IconGroupContainer.GROUP_WIDTH, scale_factor) {
             x = IconGroupContainer.SPACING,
             x_align = Clutter.ActorAlign.CENTER
         };

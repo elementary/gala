@@ -126,7 +126,7 @@ public class Gala.WindowIconActor : Clutter.Actor {
      * Fades out the old icon and fades in the new icon
      */
     private void fade_new_icon () {
-        var new_icon = new WindowIcon (window, icon_size, (int)Math.round (cur_icon_scale));
+        var new_icon = new WindowIcon (window, icon_size, 1f, (int) Math.round (cur_icon_scale));
         new_icon.add_constraint (new Clutter.BindConstraint (this, Clutter.BindCoordinate.SIZE, 0));
         new_icon.opacity = 0;
 
