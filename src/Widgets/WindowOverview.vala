@@ -114,10 +114,7 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            var model = new WindowListModel (wm) {
-                monitor_filter = i,
-                normal_filter = true,
-            };
+            var model = new WindowListModel (wm, STACKING, true, i);
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,

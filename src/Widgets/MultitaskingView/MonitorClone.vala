@@ -31,11 +31,7 @@ public class Gala.MonitorClone : ActorTarget {
 
         background = new BackgroundManager (display, monitor, false);
 
-        var model = new WindowListModel (wm) {
-            normal_filter = true,
-            monitor_filter = monitor,
-        };
-
+        var model = new WindowListModel (wm, STACKING, true, monitor);
         var scale = display.get_monitor_scale (monitor);
 
         window_container = new WindowCloneContainer (wm, model, scale);
