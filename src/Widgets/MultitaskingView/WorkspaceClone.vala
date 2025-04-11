@@ -146,6 +146,7 @@ public class Gala.WorkspaceClone : ActorTarget {
     }
 
     private BackgroundManager background;
+    private WindowListModel model;
     private bool opened;
 
     private uint hover_activate_timeout = 0;
@@ -166,7 +167,13 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, scale_factor) {
+        model = new WindowListModel (wm) {
+            monitor_filter = primary_monitor,
+            workspace_filter = workspace,
+            normal_filter = true,
+        };
+
+        window_container = new WindowCloneContainer (wm, model, scale_factor) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
@@ -197,27 +204,8 @@ public class Gala.WorkspaceClone : ActorTarget {
             }
         });
 
-        display.window_entered_monitor.connect (window_entered_monitor);
-        display.window_left_monitor.connect (window_left_monitor);
-        workspace.window_added.connect (add_window);
-        workspace.window_removed.connect (remove_window);
-
         add_child (background);
         add_child (window_container);
-
-        // add existing windows
-        var windows = workspace.list_windows ();
-        foreach (var window in windows) {
-            if (window.window_type == Meta.WindowType.NORMAL
-                && !window.on_all_workspaces
-                && window.is_on_primary_monitor ()) {
-                window_container.add_window (window);
-                icon_group.add_window (window, true);
-            }
-        }
-
-        var static_windows = StaticWindowContainer.get_instance (display);
-        static_windows.window_changed.connect (on_window_static_changed);
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
@@ -226,13 +214,6 @@ public class Gala.WorkspaceClone : ActorTarget {
     }
 
     ~WorkspaceClone () {
-        unowned Meta.Display display = workspace.get_display ();
-
-        display.window_entered_monitor.disconnect (window_entered_monitor);
-        display.window_left_monitor.disconnect (window_left_monitor);
-        workspace.window_added.disconnect (add_window);
-        workspace.window_removed.disconnect (remove_window);
-
         background.destroy ();
         window_container.destroy ();
         icon_group.destroy ();
@@ -241,50 +222,6 @@ public class Gala.WorkspaceClone : ActorTarget {
     private void reallocate () {
         icon_group.scale_factor = scale_factor;
         window_container.monitor_scale = scale_factor;
-    }
-
-    /**
-     * Add a window to the WindowCloneContainer and the IconGroup if it really
-     * belongs to this workspace and this monitor.
-     */
-    private void add_window (Meta.Window window) {
-        if (window.window_type != Meta.WindowType.NORMAL
-            || window.get_workspace () != workspace
-            || StaticWindowContainer.get_instance (workspace.get_display ()).is_static (window)
-            || !window.is_on_primary_monitor ())
-            return;
-
-        foreach (var child in window_container.get_children ())
-            if (((WindowClone) child).window == window)
-                return;
-
-        window_container.add_window (window);
-        icon_group.add_window (window);
-    }
-
-    /**
-     * Remove a window from the WindowCloneContainer and the IconGroup
-     */
-    private void remove_window (Meta.Window window) {
-        window_container.remove_window (window);
-        icon_group.remove_window (window, opened);
-    }
-
-    private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-        add_window (window);
-    }
-
-    private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
-        if (monitor == display.get_primary_monitor ())
-            remove_window (window);
-    }
-
-    private void on_window_static_changed (Meta.Window window, bool is_static) {
-        if (is_static) {
-            remove_window (window);
-        } else {
-            add_window (window);
-        }
     }
 
     public void update_size (Mtk.Rectangle monitor_geometry) {
@@ -298,8 +235,11 @@ public class Gala.WorkspaceClone : ActorTarget {
         remove_all_targets ();
 
         unowned var display = workspace.get_display ();
+        var primary = display.get_primary_monitor ();
 
-        var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
+        model.monitor_filter = primary;
+
+        var monitor = display.get_monitor_geometry (primary);
 
         var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
         var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
