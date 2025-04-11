@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : ShellWindow {
+public class Gala.PanelWindow : ShellWindow, RootTarget {
     private const int ANIMATION_DURATION = 250;
 
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
@@ -50,8 +50,6 @@ public class Gala.PanelWindow : ShellWindow {
             if (window_struts.remove (window)) {
                 update_struts ();
             }
-
-            gesture_controller = null; // make it release its reference on us
         });
 
         notify["anchor"].connect (() => position = Position.from_anchor (anchor));
@@ -63,7 +61,8 @@ public class Gala.PanelWindow : ShellWindow {
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
 
-        gesture_controller = new GestureController (DOCK, this, wm);
+        gesture_controller = new GestureController (DOCK, wm);
+        add_controller (gesture_controller);
 
         window.display.in_fullscreen_changed.connect (() => {
             if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {

@@ -20,7 +20,7 @@
  * preparing the wm, opening the components and holds containers for
  * the icon groups, the WorkspaceClones and the MonitorClones.
  */
-public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
+public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
     private GestureController workspaces_gesture_controller;
@@ -57,18 +57,20 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, this, wm);
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm);
         multitasking_gesture_controller.enable_touchpad ();
+        add_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
         workspaces = new WorkspaceRow (display);
 
-        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, this, wm) {
+        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm) {
             overshoot_upper_clamp = 0.1
         };
         workspaces_gesture_controller.enable_touchpad ();
         workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
+        add_controller (workspaces_gesture_controller);
 
         icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 

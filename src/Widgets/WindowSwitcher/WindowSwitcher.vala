@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
+public class Gala.WindowSwitcher : CanvasActor, RootTarget, GestureTarget {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
@@ -63,13 +63,14 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS, wm) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
         gesture_controller.enable_touchpad ();
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
+        add_controller (gesture_controller);
 
         container = new Clutter.Actor () {
             reactive = true,

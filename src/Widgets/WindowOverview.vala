@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
+public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent {
     private const int BORDER = 10;
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
@@ -26,9 +26,10 @@ public class Gala.WindowOverview : ActorTarget, ActivatableComponent {
     construct {
         visible = false;
         reactive = true;
-        gesture_controller = new GestureController (MULTITASKING_VIEW, this, wm) {
+        gesture_controller = new GestureController (MULTITASKING_VIEW, wm) {
             enabled = false
         };
+        add_controller (gesture_controller);
     }
 
 

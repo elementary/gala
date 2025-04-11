@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : ActorTarget {
+public class Gala.WindowClone : ActorTarget, RootTarget {
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -104,8 +104,9 @@ public class Gala.WindowClone : ActorTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, this, wm);
+        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
+        add_controller (gesture_controller);
 
         window.unmanaged.connect (unmanaged);
         window.notify["fullscreen"].connect (check_shadow_requirements);

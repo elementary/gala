@@ -35,10 +35,10 @@ public class Gala.GestureController : Object {
     public GestureAction action { get; construct; }
     public WindowManager wm { get; construct; }
 
-    private GestureTarget? _target;
-    public GestureTarget target {
+    private unowned RootTarget? _target;
+    public RootTarget target {
         get { return _target; }
-        set {
+        private set {
             _target = value;
             target.propagate (UPDATE, action, progress);
         }
@@ -90,8 +90,13 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, GestureTarget target, WindowManager wm) {
-        Object (action: action, target: target, wm: wm);
+    public GestureController (GestureAction action, WindowManager wm) {
+        Object (action: action, wm: wm);
+    }
+
+    // Do not call this directly, use {@link RooTarget.add_controller} instead.
+    public void attached (RootTarget target) {
+        this.target = target;
     }
 
     public void enable_touchpad () {
