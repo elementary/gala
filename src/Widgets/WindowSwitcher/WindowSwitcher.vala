@@ -42,10 +42,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-
-                // _current_icon.grab_key_focus () sometimes results in a crash
-                // https://github.com/elementary/gala/issues/2308
-                get_stage ().set_key_focus (_current_icon);
+                _current_icon.grab_key_focus ();
             }
 
             update_caption_text ();
@@ -53,6 +50,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private double previous_progress = 0d;
+    private bool ignore_next_propagate = false;
 
     private float scaling_factor = 1.0f;
 
@@ -231,7 +229,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
-        if (update_type != UPDATE || container.get_n_children () == 0) {
+        if (update_type != UPDATE || container.get_n_children () == 0 || ignore_next_propagate) {
+            ignore_next_propagate = false;
             return;
         }
 
@@ -257,9 +256,11 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private void select_icon (WindowSwitcherIcon? icon) {
+        current_icon = icon;
+        ignore_next_propagate = true;
+
         if (icon == null) {
             gesture_controller.progress = 0;
-            current_icon = null;
             return;
         }
 
