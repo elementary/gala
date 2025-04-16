@@ -27,7 +27,30 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-      <release version="8.1.0" date="2025-01-11" urgency="medium">
+    <release version="8.2.0" date="2025-03-25" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+          <li>Window state is now saved on sleep and shutdown</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/137">Send a persistent notification after taking a screenshot</issue>
+        <issue url="https://github.com/elementary/gala/issues/321">Use org.gnome.desktop.interface enable-animations</issue>
+        <issue url="https://github.com/elementary/gala/issues/544">Multitasking View. Wingpanel shows for brief moment if a fullscreen wokspace is selected after coming from a wokspace that shows the wingpanel.</issue>
+        <issue url="https://github.com/elementary/gala/issues/898">Super+Number. When workspace doesn't exist, switch to last workspace instead.</issue>
+        <issue url="https://github.com/elementary/gala/issues/1202">Touchpad desktop switching gesture is sometimes unresponsive</issue>
+        <issue url="https://github.com/elementary/gala/issues/1661">Better post-screenshot animation</issue>
+        <issue url="https://github.com/elementary/gala/issues/2114">Wrong context menu placement</issue>
+        <issue url="https://github.com/elementary/gala/issues/2199">Swiping in the multitasking view can close applications</issue>
+        <issue url="https://github.com/elementary/gala/issues/2260">Ghost of window on another workspace appears when cancelling workspace swipe</issue>
+        <issue url="https://github.com/elementary/gala/issues/2267">Dock crash may crash Gala</issue>
+        <issue url="https://github.com/elementary/gala/issues/2279">Can't reveal dock when animations are disabled</issue>
+      </issues>
+    </release>
+
+    <release version="8.1.0" date="2025-01-11" urgency="medium">
       <description>
         <p>Improvements:</p>
         <ul>

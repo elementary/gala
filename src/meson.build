@@ -71,7 +71,7 @@ gala_bin_sources = files(
     'Widgets/MultitaskingView/WorkspaceRow.vala',
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
-    'Widgets/ScreenShield.vala',
+    'Widgets/SessionLocker.vala',
     'Widgets/SelectionArea.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
