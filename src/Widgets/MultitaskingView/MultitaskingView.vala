@@ -166,7 +166,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
 
         foreach (unowned var child in workspaces.get_children ()) {
             unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.scale_factor = scale;
+            workspace_clone.monitor_scale = scale;
             workspace_clone.update_size (primary_geometry);
         }
     }
