@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-24 21:59+0000\n"
+"POT-Creation-Date: 2025-04-16 17:34+0000\n"
 "PO-Revision-Date: 2019-12-16 18:35+0000\n"
 "Last-Translator: Daniel Foré <daniel@elementary.io>\n"
 "Language-Team: Tamil <https://l10n.elementary.io/projects/desktop/gala/ta/>\n"
@@ -105,19 +105,19 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr ""
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:99
-#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:131
-#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:188
-#: data/gala.metainfo.xml.in:213 data/gala.metainfo.xml.in:229
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:88 data/gala.metainfo.xml.in:101
-#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:135
-#: data/gala.metainfo.xml.in:151 data/gala.metainfo.xml.in:194
-#: data/gala.metainfo.xml.in:216 data/gala.metainfo.xml.in:231
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
+#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
 msgid "Updated translations"
 msgstr ""
 
@@ -125,57 +125,65 @@ msgstr ""
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:36
+msgid "Remove scaling effect from menus"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:37
+msgid "Swipe up to close windows in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:66
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:67
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:68
 msgid "Fixed crash when using tiling shortcuts"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:97
 msgid "Improved shadows performance"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:141
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:142
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:157
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:158
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:191
+#: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:192
+#: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:215
+#: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -245,56 +253,56 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:194
+#: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:79
+#: src/ScreenshotManager.vala:101
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
 
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:137
+#: src/ScreenshotManager.vala:159
 msgid "Show in Files"
 msgstr ""
 
-#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:488
+#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:396
+#: src/ScreenshotManager.vala:422
 msgid "Screenshots"
 msgstr ""
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1781
+#: src/WindowManager.vala:1775
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:1788
+#: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:1792
+#: src/WindowManager.vala:1786
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:1793
+#: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
 msgstr ""
