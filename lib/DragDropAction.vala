@@ -74,7 +74,7 @@ namespace Gala {
          *
          * @param button The button which was pressed
          */
-        public signal void actor_clicked (uint32 button);
+        public signal void actor_clicked (uint32 button, Clutter.InputDeviceType device_type);
 
         /**
          * The type of the action
@@ -290,7 +290,10 @@ namespace Gala {
 
                     // release has happened within bounds of actor
                     if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-                        actor_clicked (event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY);
+                        actor_clicked (
+                            event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY,
+                            event.get_source_device ().get_device_type ()
+                        );
                     }
 
                     if (clicked) {

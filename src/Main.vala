@@ -92,6 +92,8 @@ namespace Gala {
             return Posix.EXIT_FAILURE;
         }
 
+        WindowStateSaver.on_shutdown ();
+
         return Posix.EXIT_SUCCESS;
     }
 }

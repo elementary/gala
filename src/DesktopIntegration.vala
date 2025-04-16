@@ -29,7 +29,10 @@ public class Gala.DesktopIntegration : GLib.Object {
         this.wm = wm;
         time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
 
-        wm.window_tracker.windows_changed.connect (() => windows_changed ());
+        wm.window_tracker.windows_changed.connect (() => {
+            running_applications_changed ();
+            windows_changed ();
+        });
 
         unowned var display = wm.get_display ();
         unowned var workspace_manager = display.get_workspace_manager ();
@@ -243,5 +246,16 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
 
         wm.window_overview.open (hints);
+    }
+
+    public void reorder_workspace (int index, int new_index) throws DBusError, IOError {
+        unowned var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var workspace = workspace_manager.get_workspace_by_index (index);
+
+        if (workspace == null) {
+            throw new IOError.NOT_FOUND ("Invalid index, workspace not found");
+        }
+
+        workspace_manager.reorder_workspace (workspace, new_index);
     }
 }

@@ -50,7 +50,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    public float scale_factor { get; set; default = 1; }
+    public float monitor_scale { get; construct set; }
+
     public uint8 shadow_opacity { get; set; default = 255; }
     public int border_radius { get; set; default = 9;}
 
@@ -58,8 +59,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
     private Cogl.Pipeline? pipeline;
     private string? current_key = null;
 
-    public ShadowEffect (string css_class = "") {
-        Object (css_class: css_class);
+    public ShadowEffect (string css_class, float monitor_scale) {
+        Object (css_class: css_class, monitor_scale: monitor_scale);
     }
 
     ~ShadowEffect () {
@@ -122,7 +123,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         cr.save ();
         cr.set_operator (Cairo.Operator.CLEAR);
-        var size = shadow_size * scale_factor;
+        var size = shadow_size * monitor_scale;
         Drawing.Utilities.cairo_rounded_rectangle (cr, size, size, actor.width, actor.height, border_radius);
         cr.fill ();
         cr.restore ();
@@ -161,7 +162,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox get_bounding_box () {
-        var size = shadow_size * scale_factor;
+        var size = shadow_size * monitor_scale;
         var bounding_box = Clutter.ActorBox ();
 
         bounding_box.set_origin (-size, -size);

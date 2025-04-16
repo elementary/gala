@@ -1,16 +1,24 @@
 /*
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 public class Gala.WindowStateSaver : GLib.Object {
+    [DBus (name = "org.freedesktop.login1.Manager")]
+    private interface LoginManager : Object {
+        public signal void prepare_for_sleep (bool about_to_suspend);
+    }
+
     private static unowned WindowTracker window_tracker;
     private static GLib.HashTable<string, GLib.Array<Meta.Window?>> app_windows;
+    private static LoginManager? login_manager;
     private static Sqlite.Database db;
 
     public static void init (WindowTracker window_tracker) {
         WindowStateSaver.window_tracker = window_tracker;
         app_windows = new GLib.HashTable<string, GLib.Array<Meta.Window?>> (GLib.str_hash, GLib.str_equal);
+
+        connect_to_logind.begin ();
 
         var dir = Path.build_filename (GLib.Environment.get_user_data_dir (), "io.elementary.gala");
         Posix.mkdir (dir, 0775);
@@ -52,6 +60,19 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         critical ("Cannot create table 'apps': %d, %s", rc, db.errmsg ());
+    }
+
+    private async static void connect_to_logind () {
+        try {
+            login_manager = yield Bus.get_proxy (SYSTEM, "org.freedesktop.login1", "/org/freedesktop/login1");
+            login_manager.prepare_for_sleep.connect ((about_to_suspend) => {
+                if (about_to_suspend) {
+                    save_all_windows_state ();
+                }
+            });
+        } catch (Error e) {
+            warning ("Unable to connect to logind bus: %s", e.message);
+        }
     }
 
     public static void on_map (Meta.Window window) {
@@ -114,11 +135,15 @@ public class Gala.WindowStateSaver : GLib.Object {
         critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
     }
 
-    private static void track_window (Meta.Window window, string app_id) {
-        window.unmanaging.connect (on_window_unmanaging);
+    public static void on_shutdown () {
+        save_all_windows_state ();
     }
 
-    private static void on_window_unmanaging (Meta.Window window) {
+    private static void track_window (Meta.Window window, string app_id) {
+        window.unmanaging.connect (save_window_state);
+    }
+
+    private static void save_window_state (Meta.Window window) {
         var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
 
         var window_index = find_window_index (window, app_id);
@@ -143,6 +168,14 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+    }
+
+    private static void save_all_windows_state () {
+        foreach (unowned var windows in app_windows.get_values ()) {
+            foreach (var window in windows) {
+                save_window_state (window);
+            }
+        }
     }
 
     private static int find_window_index (Meta.Window window, string app_id) requires (app_id in app_windows) {

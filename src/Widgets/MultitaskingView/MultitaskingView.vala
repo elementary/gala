@@ -94,7 +94,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         unowned var manager = display.get_workspace_manager ();
         manager.workspace_added.connect (add_workspace);
         manager.workspace_removed.connect (remove_workspace);
-        manager.workspaces_reordered.connect (() => reposition_icon_groups (false));
+        manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
         manager.bind_property (
@@ -148,7 +148,7 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
                     continue;
                 }
 
-                var monitor_clone = new MonitorClone (display, monitor);
+                var monitor_clone = new MonitorClone (wm, monitor);
                 monitor_clone.window_selected.connect (window_selected);
                 monitor_clone.visible = opened;
 
@@ -351,12 +351,11 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         unowned var manager = display.get_workspace_manager ();
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
 
-        var workspace = new WorkspaceClone (manager.get_workspace_by_index (num), scale);
+        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
         workspaces.insert_child_at_index (workspace, num);
         icon_groups.add_group (workspace.icon_group);
 
         workspace.window_selected.connect (window_selected);
-        workspace.selected.connect (activate_workspace);
 
         reposition_icon_groups (false);
     }
@@ -384,7 +383,6 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         }
 
         workspace.window_selected.disconnect (window_selected);
-        workspace.selected.disconnect (activate_workspace);
 
         if (icon_groups.contains (workspace.icon_group)) {
             icon_groups.remove_group (workspace.icon_group);
@@ -397,28 +395,18 @@ public class Gala.MultitaskingView : ActorTarget, ActivatableComponent {
         workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
 
+    private void on_workspaces_reordered () {
+        if (!visible) {
+            unowned var manager = display.get_workspace_manager ();
+            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+        }
+
+        reposition_icon_groups (false);
+    }
+
     private void on_workspace_switched (int from, int to) {
         if ((int) (-get_current_commit (SWITCH_WORKSPACE)) != to) {
             workspaces_gesture_controller.goto (-to);
-        }
-    }
-
-    /**
-     * Activates the workspace of a WorkspaceClone
-     *
-     * @param close_view Whether to close the view as well. Will only be considered
-     *                   if the workspace is also the currently active workspace.
-     *                   Otherwise it will only be made active, but the view won't be
-     *                   closed.
-     */
-    private void activate_workspace (WorkspaceClone clone, bool close_view) {
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        close_view = close_view && manager.get_active_workspace () == clone.workspace;
-
-        clone.workspace.activate (display.get_current_time ());
-
-        if (close_view) {
-            close ();
         }
     }
 
