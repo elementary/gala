@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Zoom : Object, RootTarget, GestureTarget {
+public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private const float MIN_ZOOM = 1.0f;
     private const float MAX_ZOOM = 10.0f;
     private const float SHORTCUT_DELTA = 0.5f;

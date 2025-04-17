@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : CanvasActor, RootTarget, GestureTarget {
+public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 

@@ -8,8 +8,6 @@
 public interface Gala.RootTarget : Object, GestureTarget {
     public void add_gesture_controller (GestureController controller) requires (controller.target == null) {
         controller.attached (this);
-
-        // Bind the controller lifetime to #this lifetime
         weak_ref (controller.detached);
     }
 }
