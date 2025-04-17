@@ -52,7 +52,6 @@
         <issue url="https://github.com/elementary/gala/issues/2267">Dock crash may crash Gala</issue>
         <issue url="https://github.com/elementary/gala/issues/2279">Can't reveal dock when animations are disabled</issue>
         <issue url="https://github.com/elementary/gala/issues/2294">Unlocking firewall settings leads to crash</issue>
-        <issue url="https://github.com/elementary/gala/issues/2308">Random crash when using window switcher</issue>
         <issue url="https://github.com/elementary/gala/issues/2341">Lutris Flatpak crashes gala with GE setup</issue>
         <issue url="https://github.com/elementary/portals/issues/97">False detection of "background activity" for some Flatpak apps</issue>
       </issues>
