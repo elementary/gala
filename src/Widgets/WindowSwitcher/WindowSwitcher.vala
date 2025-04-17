@@ -70,7 +70,7 @@ public class Gala.WindowSwitcher : CanvasActor, RootTarget, GestureTarget {
         };
         gesture_controller.enable_touchpad ();
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
-        add_controller (gesture_controller);
+        add_gesture_controller (gesture_controller);
 
         container = new Clutter.Actor () {
             reactive = true,

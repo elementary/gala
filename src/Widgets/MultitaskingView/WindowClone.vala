@@ -106,7 +106,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         gesture_controller = new GestureController (CLOSE_WINDOW, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
-        add_controller (gesture_controller);
+        add_gesture_controller (gesture_controller);
 
         window.unmanaged.connect (unmanaged);
         window.notify["fullscreen"].connect (check_shadow_requirements);

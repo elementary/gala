@@ -40,7 +40,7 @@ public class Gala.GestureController : Object {
         get { return _target; }
         private set {
             _target = value;
-            target.propagate (UPDATE, action, progress);
+            _target.propagate (UPDATE, action, progress);
         }
     }
 
@@ -96,7 +96,13 @@ public class Gala.GestureController : Object {
 
     // Do not call this directly, use {@link RooTarget.add_controller} instead.
     public void attached (RootTarget target) {
+        ref ();
         this.target = target;
+    }
+
+    public void detached () {
+        _target = null;
+        unref ();
     }
 
     public void enable_touchpad () {

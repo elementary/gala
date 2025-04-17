@@ -62,7 +62,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         window.position_changed.connect (update_strut);
 
         gesture_controller = new GestureController (DOCK, wm);
-        add_controller (gesture_controller);
+        add_gesture_controller (gesture_controller);
 
         window.display.in_fullscreen_changed.connect (() => {
             if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {

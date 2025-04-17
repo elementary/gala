@@ -59,7 +59,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm);
         multitasking_gesture_controller.enable_touchpad ();
-        add_controller (multitasking_gesture_controller);
+        add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
@@ -70,7 +70,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         };
         workspaces_gesture_controller.enable_touchpad ();
         workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
-        add_controller (workspaces_gesture_controller);
+        add_gesture_controller (workspaces_gesture_controller);
 
         icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
