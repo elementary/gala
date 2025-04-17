@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-03-28 19:55+0000\n"
+"PO-Revision-Date: 2025-04-18 01:55+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/uk/>\n"
@@ -131,11 +131,11 @@ msgstr "Стан вікна тепер зберігається під час з
 
 #: data/gala.metainfo.xml.in:36
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Прибрано ефект масштабування з меню"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Закриття вікна в багатозадачному поданні посуванням угору"
 
 #: data/gala.metainfo.xml.in:66
 msgid "Fixed rare crash when a dock window was killed"
