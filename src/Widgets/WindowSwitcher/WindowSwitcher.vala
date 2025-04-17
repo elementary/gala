@@ -42,10 +42,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-
-                // _current_icon.grab_key_focus () sometimes results in a crash
-                // https://github.com/elementary/gala/issues/2308
-                get_stage ().set_key_focus (_current_icon);
+                _current_icon.grab_key_focus ();
             }
 
             update_caption_text ();
@@ -334,14 +331,13 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
@@ -357,6 +353,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
@@ -368,8 +365,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         if (current_window == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app = window_tracker.get_app_for_window (current_window);
