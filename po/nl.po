@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-03-26 21:11+0000\n"
+"PO-Revision-Date: 2025-04-19 13:20+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementaryos.org/projects/desktop/gala/nl/"
 ">\n"
@@ -131,11 +131,11 @@ msgstr "Vensterstaat wordt nu opgeslagen bij slaapstand en afsluiten"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Verwijder schaling-effect van menus"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Veeg omhoog om vensters te sluiten in multitasking-weergave"
 
 #: data/gala.metainfo.xml.in:66
 msgid "Fixed rare crash when a dock window was killed"
