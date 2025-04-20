@@ -56,13 +56,6 @@ gala_bin_sources = files(
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
     'Widgets/DwellClickTimer.vala',
-<<<<<<< HEAD
-    'Widgets/IconGroup.vala',
-    'Widgets/IconGroupContainer.vala',
-    'Widgets/ModalActor.vala',
-    'Widgets/MonitorClone.vala',
-    'Widgets/MultitaskingView.vala',
-=======
     'Widgets/MultitaskingView/IconGroup.vala',
     'Widgets/MultitaskingView/IconGroupContainer.vala',
     'Widgets/MultitaskingView/MonitorClone.vala',
@@ -76,7 +69,6 @@ gala_bin_sources = files(
     'Widgets/MultitaskingView/WorkspaceClone.vala',
     'Widgets/MultitaskingView/WorkspaceInsertThumb.vala',
     'Widgets/MultitaskingView/WorkspaceRow.vala',
->>>>>>> main
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
     'Widgets/SessionLocker.vala',
