@@ -10,9 +10,10 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
     public signal void changed ();
 
-    public WindowManager wm { get; construct; }
+    public Meta.Display display { get; construct; }
     public int monitor_index { get; construct; }
     public bool control_position { get; construct; }
+    public bool rounded_corners { get; construct; }
     public Meta.BackgroundActor newest_background_actor {
         get {
             return (new_background_actor != null) ? new_background_actor : background_actor;
@@ -23,12 +24,12 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     private Meta.BackgroundActor? background_actor;
     private Meta.BackgroundActor? new_background_actor = null;
 
-    public BackgroundManager (WindowManager wm, int monitor_index, bool control_position = true) {
-        Object (wm: wm, monitor_index: monitor_index, control_position: control_position);
+    public BackgroundManager (Meta.Display display, int monitor_index, bool control_position = true, bool rounded_corners = true) {
+        Object (display: display, monitor_index: monitor_index, control_position: control_position, rounded_corners: rounded_corners);
     }
 
     construct {
-        background_source = BackgroundCache.get_default ().get_background_source (wm.get_display ());
+        background_source = BackgroundCache.get_default ().get_background_source (display);
         update_background_actor (false);
 
         destroy.connect (on_destroy);
@@ -60,7 +61,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             return;
         }
 
-        if (animate && wm.enable_animations) {
+        if (animate && Meta.Prefs.get_gnome_animations ()) {
             var transition = new Clutter.PropertyTransition ("opacity");
             transition.set_from_value (255);
             transition.set_to_value (0);
@@ -91,7 +92,10 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
+            if (rounded_corners) {
+                new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+            }
+
             swap_background_actor (animate);
             return;
         }
@@ -101,8 +105,11 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             background.disconnect (handler);
             background.set_data<ulong> ("background-loaded-handler", 0);
 
+            if (rounded_corners) {
+                new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+            }
+
             swap_background_actor (animate);
-            new_content.rounded_clip_radius = Utils.scale_to_int (6, wm.get_display ().get_monitor_scale (monitor_index));
         });
         background.set_data<ulong> ("background-loaded-handler", handler);
     }
@@ -114,8 +121,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     private Meta.BackgroundActor create_background_actor () {
-        unowned var display = wm.get_display ();
-
         var background = background_source.get_background (monitor_index);
         var background_actor = new Meta.BackgroundActor (display, monitor_index);
 

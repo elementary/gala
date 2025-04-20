@@ -5,63 +5,78 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : Object {
-    private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
+public class Gala.PanelWindow : ShellWindow {
+    private const int ANIMATION_DURATION = 250;
 
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
-    public Meta.Window window { get; construct; }
+    public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
-    public bool hidden { get; private set; default = false; }
+    public Pantheon.Desktop.HideMode hide_mode {
+        get {
+            return hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode;
+        }
+        set {
+            if (value == NEVER) {
+                hide_tracker = null;
+                show ();
+                make_exclusive ();
+                return;
+            } else if (hide_tracker == null) {
+                unmake_exclusive ();
 
-    public Meta.Side anchor;
+                hide_tracker = new HideTracker (wm.get_display (), this);
+                hide_tracker.hide.connect (hide);
+                hide_tracker.show.connect (show);
+            }
 
-    private Barrier? barrier;
+            hide_tracker.hide_mode = value;
+        }
+    }
 
-    private PanelClone clone;
-
-    private uint idle_move_id = 0;
+    private GestureController gesture_controller;
+    private HideTracker? hide_tracker;
 
     private int width = -1;
     private int height = -1;
 
-    public PanelWindow (WindowManager wm, Meta.Window window, Meta.Side anchor) {
-        Object (wm: wm, window: window);
-
-        // Meta.Side seems to be currently not supported as GLib.Object property ...?
-        // At least it always crashed for me with some paramspec, g_type_fundamental backtrace
-        this.anchor = anchor;
+    public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
+        Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
 
     construct {
-        window.size_changed.connect (position_window);
-
-        window.unmanaged.connect (() => {
-            destroy_barrier ();
-
+        window.unmanaging.connect (() => {
             if (window_struts.remove (window)) {
                 update_struts ();
             }
+
+            gesture_controller = null; // make it release its reference on us
         });
 
-        window.stick ();
+        notify["anchor"].connect (() => position = Position.from_anchor (anchor));
 
-        clone = new PanelClone (wm, this);
-
-        var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => update_anchor (anchor));
-
-        var workspace_manager = wm.get_display ().get_workspace_manager ();
+        unowned var workspace_manager = window.display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
         workspace_manager.workspace_removed.connect (update_strut);
+
+        window.size_changed.connect (update_strut);
+        window.position_changed.connect (update_strut);
+
+        gesture_controller = new GestureController (DOCK, this, wm);
+
+        window.display.in_fullscreen_changed.connect (() => {
+            if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
+                hide ();
+            } else if (hide_mode == NEVER) {
+                show ();
+            } else {
+                hide_tracker.update_overlap ();
+            }
+        });
     }
 
-#if HAS_MUTTER46
     public Mtk.Rectangle get_custom_window_rect () {
-#else
-    public Meta.Rectangle get_custom_window_rect () {
-#endif
         var window_rect = window.get_frame_rect ();
 
         if (width > 0) {
@@ -70,6 +85,11 @@ public class Gala.PanelWindow : Object {
 
         if (height > 0) {
             window_rect.height = height;
+
+            if (anchor == BOTTOM) {
+                var geom = wm.get_display ().get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
         }
 
         return window_rect;
@@ -79,84 +99,19 @@ public class Gala.PanelWindow : Object {
         this.width = width;
         this.height = height;
 
-        position_window ();
-        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
-    }
-
-    public void update_anchor (Meta.Side anchor) {
-        this.anchor = anchor;
-
-        position_window ();
-        set_hide_mode (clone.hide_mode); // Resetup barriers etc.
-    }
-
-    private void position_window () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var window_rect = get_custom_window_rect ();
-
-        switch (anchor) {
-            case TOP:
-                position_window_top (monitor_geom, window_rect);
-                break;
-
-            case BOTTOM:
-                position_window_bottom (monitor_geom, window_rect);
-                break;
-
-            default:
-                warning ("Side not supported yet");
-                break;
-        }
-
         update_strut ();
     }
 
-#if HAS_MUTTER45
-    private void position_window_top (Mtk.Rectangle monitor_geom, Mtk.Rectangle window_rect) {
-#else
-    private void position_window_top (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
-#endif
-        var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
-
-        move_window_idle (x, monitor_geom.y);
+    private void hide () {
+        gesture_controller.goto (1);
     }
 
-#if HAS_MUTTER45
-    private void position_window_bottom (Mtk.Rectangle monitor_geom, Mtk.Rectangle window_rect) {
-#else
-    private void position_window_bottom (Meta.Rectangle monitor_geom, Meta.Rectangle window_rect) {
-#endif
-        var x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
-        var y = monitor_geom.y + monitor_geom.height - window_rect.height;
-
-        move_window_idle (x, y);
-    }
-
-    private void move_window_idle (int x, int y) {
-        if (idle_move_id != 0) {
-            Source.remove (idle_move_id);
+    private void show () {
+        if (window.display.get_monitor_in_fullscreen (window.get_monitor ())) {
+            return;
         }
 
-        idle_move_id = Idle.add (() => {
-            window.move_frame (false, x, y);
-
-            idle_move_id = 0;
-            return Source.REMOVE;
-        });
-    }
-
-    public void set_hide_mode (Pantheon.Desktop.HideMode hide_mode) {
-        clone.hide_mode = hide_mode;
-
-        destroy_barrier ();
-
-        if (hide_mode == NEVER) {
-            make_exclusive ();
-        } else {
-            unmake_exclusive ();
-            setup_barrier ();
-        }
+        gesture_controller.goto (0);
     }
 
     private void make_exclusive () {
@@ -164,7 +119,7 @@ public class Gala.PanelWindow : Object {
     }
 
     private void update_strut () {
-        if (clone.hide_mode != NEVER) {
+        if (hide_mode != NEVER) {
             return;
         }
 
@@ -172,7 +127,7 @@ public class Gala.PanelWindow : Object {
 
         Meta.Strut strut = {
             rect,
-            anchor
+            side_from_anchor (anchor)
         };
 
         window_struts[window] = strut;
@@ -199,70 +154,19 @@ public class Gala.PanelWindow : Object {
         }
     }
 
-    private void destroy_barrier () {
-        barrier = null;
-    }
-
-    private void setup_barrier () {
-        var display = wm.get_display ();
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
-        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
-
+    private Meta.Side side_from_anchor (Pantheon.Desktop.Anchor anchor) {
         switch (anchor) {
-            case TOP:
-                setup_barrier_top (monitor_geom, offset);
-                break;
-
             case BOTTOM:
-                setup_barrier_bottom (monitor_geom, offset);
-                break;
+                return BOTTOM;
+
+            case LEFT:
+                return LEFT;
+
+            case RIGHT:
+                return RIGHT;
 
             default:
-                warning ("Barrier side not supported yet");
-                break;
+                return TOP;
         }
-    }
-
-#if HAS_MUTTER45
-    private void setup_barrier_top (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_top (Meta.Rectangle monitor_geom, int offset) {
-#endif
-        barrier = new Barrier (
-            wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
-            monitor_geom.y,
-            monitor_geom.x + monitor_geom.width - offset,
-            monitor_geom.y,
-            POSITIVE_Y,
-            0,
-            0,
-            int.MAX,
-            int.MAX
-        );
-
-        barrier.trigger.connect (clone.show);
-    }
-
-#if HAS_MUTTER45
-    private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
-#else
-    private void setup_barrier_bottom (Meta.Rectangle monitor_geom, int offset) {
-#endif
-        barrier = new Barrier (
-            wm.get_display ().get_context ().get_backend (),
-            monitor_geom.x + offset,
-            monitor_geom.y + monitor_geom.height,
-            monitor_geom.x + monitor_geom.width - offset,
-            monitor_geom.y + monitor_geom.height,
-            NEGATIVE_Y,
-            0,
-            0,
-            int.MAX,
-            int.MAX
-        );
-
-        barrier.trigger.connect (clone.show);
     }
 }

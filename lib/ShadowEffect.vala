@@ -17,12 +17,15 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
     // the sizes of the textures often repeat, especially for the background actor
     // so we keep a cache to avoid creating the same texture all over again.
-    private static Gee.HashMap<string,Shadow> shadow_cache;
-    // Delay the style context creation at render stage as Gtk need to access
-    // the current display.
+    private static Gee.HashMap<string, Shadow> shadow_cache;
+
+    // Sometimes we use a shadow in only one place and rapidly switch between two shadows
+    // In order to not drop them and create them all over again we wait 5 seconds before finally dropping a shadow.
+    private static Gee.HashMap<string, uint> shadows_marked_for_dropping;
 
     static construct {
-        shadow_cache = new Gee.HashMap<string,Shadow> ();
+        shadow_cache = new Gee.HashMap<string, Shadow> ();
+        shadows_marked_for_dropping = new Gee.HashMap<string, uint> ();
     }
 
     private string _css_class;
@@ -47,25 +50,36 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    public float scale_factor { get; set; default = 1; }
+    public float monitor_scale { get; construct set; }
+
     public uint8 shadow_opacity { get; set; default = 255; }
     public int border_radius { get; set; default = 9;}
 
     private int shadow_size;
-    private Cogl.Pipeline pipeline;
+    private Cogl.Pipeline? pipeline;
     private string? current_key = null;
 
-    public ShadowEffect (string css_class = "") {
-        Object (css_class: css_class);
-    }
-
-    construct {
-        pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+    public ShadowEffect (string css_class, float monitor_scale) {
+        Object (css_class: css_class, monitor_scale: monitor_scale);
     }
 
     ~ShadowEffect () {
         if (current_key != null) {
             decrement_shadow_users (current_key);
+        }
+    }
+
+    public override void set_actor (Clutter.Actor? actor) {
+        base.set_actor (actor);
+
+        if (actor != null) {
+#if HAS_MUTTER47
+            pipeline = new Cogl.Pipeline (actor.context.get_backend ().get_cogl_context ());
+#else
+            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
+#endif
+        } else {
+            pipeline = null;
         }
     }
 
@@ -80,9 +94,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
             decrement_shadow_users (old_key);
         }
 
-        Shadow? shadow = null;
-        if ((shadow = shadow_cache.@get (current_key)) != null) {
-            shadow.users++;
+        var shadow = shadow_cache.@get (current_key);
+        if (shadow != null) {
+            increment_shadow_users (current_key);
             return shadow.texture;
         }
 
@@ -109,7 +123,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         cr.save ();
         cr.set_operator (Cairo.Operator.CLEAR);
-        var size = shadow_size * scale_factor;
+        var size = shadow_size * monitor_scale;
         Drawing.Utilities.cairo_rounded_rectangle (cr, size, size, actor.width, actor.height, border_radius);
         cr.fill ();
         cr.restore ();
@@ -123,18 +137,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
         } catch (Error e) {
             debug (e.message);
             return null;
-        }
-    }
-
-    private void decrement_shadow_users (string key) {
-        var shadow = shadow_cache.@get (key);
-
-        if (shadow == null) {
-            return;
-        }
-
-        if (--shadow.users == 0) {
-            shadow_cache.unset (key);
         }
     }
 
@@ -159,8 +161,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
         actor.continue_paint (context);
     }
 
-    public virtual Clutter.ActorBox get_bounding_box () {
-        var size = shadow_size * scale_factor;
+    private Clutter.ActorBox get_bounding_box () {
+        var size = shadow_size * monitor_scale;
         var bounding_box = Clutter.ActorBox ();
 
         bounding_box.set_origin (-size, -size);
@@ -183,5 +185,40 @@ public class Gala.ShadowEffect : Clutter.Effect {
         volume.set_origin (origin);
 
         return true;
+    }
+
+    private static void increment_shadow_users (string key) {
+        var shadow = shadow_cache.@get (key);
+
+        if (shadow == null) {
+            return;
+        }
+
+        shadow.users++;
+
+        uint timeout_id;
+        if (shadows_marked_for_dropping.unset (key, out timeout_id)) {
+            Source.remove (timeout_id);
+        }
+    }
+
+    private static void decrement_shadow_users (string key) {
+        var shadow = shadow_cache.@get (key);
+
+        if (shadow == null) {
+            return;
+        }
+
+        if (--shadow.users == 0) {
+            queue_shadow_drop (key);
+        }
+    }
+
+    private static void queue_shadow_drop (string key) {
+        shadows_marked_for_dropping[key] = Timeout.add_seconds (5, () => {
+            shadow_cache.unset (key);
+            shadows_marked_for_dropping.unset (key);
+            return Source.REMOVE;
+        });
     }
 }

@@ -19,7 +19,6 @@ namespace Gala {
     public enum PluginFunction {
         ADDITION,
         WINDOW_SWITCHER,
-        WORKSPACE_VIEW,
         WINDOW_OVERVIEW
     }
 
@@ -85,13 +84,8 @@ namespace Gala {
          * It is calculated by the system whenever update_region is called.
          * You can influce it with the custom_region and the track_actor function.
          */
-#if HAS_MUTTER45
         private Mtk.Rectangle[] region;
         public unowned Mtk.Rectangle[] get_region () {
-#else
-        private Meta.Rectangle[] region;
-        public unowned Meta.Rectangle[] get_region () {
-#endif
             return region;
         }
         /**
@@ -99,20 +93,11 @@ namespace Gala {
          * more details. Changing this property will cause update_region to be
          * called. Default to null.
          */
-#if HAS_MUTTER45
         private Mtk.Rectangle[]? _custom_region = null;
         protected unowned Mtk.Rectangle[]? get_custom_region () {
-#else
-        private Meta.Rectangle[]? _custom_region = null;
-        protected unowned Meta.Rectangle[]? get_custom_region () {
-#endif
             return _custom_region;
         }
-#if HAS_MUTTER45
         protected void set_custom_region (Mtk.Rectangle[]? custom_region) {
-#else
-        protected void set_custom_region (Meta.Rectangle[]? custom_region) {
-#endif
             _custom_region = custom_region;
             update_region ();
         }
@@ -190,11 +175,7 @@ namespace Gala {
             var has_custom = custom_region != null;
             var len = tracked_actors.length () + (has_custom ? custom_region.length : 0);
 
-#if HAS_MUTTER45
             var regions = new Mtk.Rectangle[len];
-#else
-            var regions = new Meta.Rectangle[len];
-#endif
             var i = 0;
 
             if (has_custom) {

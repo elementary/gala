@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
+ * Copyright 2021-2025 elementary, Inc (https://elementary.io)
  *           2021 José Expósito <jose.exposito89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,17 +19,12 @@
 /**
  * This gesture backend transforms the touchpad scroll events received by an actor into gestures.
  */
-public class Gala.ScrollBackend : Object {
+public class Gala.ScrollBackend : Object, GestureBackend {
     // Mutter does not expose the size of the touchpad, so we use the same values as GTK apps.
     // From GNOME Shell, TOUCHPAD_BASE_[WIDTH|HEIGHT] / SCROLL_MULTIPLIER
     // https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/swipeTracker.js
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
-
-    public signal void on_gesture_detected (Gesture gesture);
-    public signal void on_begin (double delta, uint64 time);
-    public signal void on_update (double delta, uint64 time);
-    public signal void on_end (double delta, uint64 time);
 
     public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
@@ -39,6 +34,9 @@ public class Gala.ScrollBackend : Object {
     private double delta_x;
     private double delta_y;
     private GestureDirection direction;
+
+    // When we receive a cancel call, we start ignoring the ongoing scroll until it's over
+    private bool ignoring = false;
 
     construct {
         started = false;
@@ -50,19 +48,26 @@ public class Gala.ScrollBackend : Object {
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
         Object (actor: actor, orientation: orientation, settings: settings);
 
-        actor.scroll_event.connect (on_scroll_event);
+        actor.captured_event.connect (on_scroll_event);
+        actor.leave_event.connect (on_leave_event);
+        // When the actor is turned invisible, we don't receive a scroll finish event which would cause
+        // us to ignore the first new scroll event if we're currently ignoring.
+        actor.notify["visible"].connect (() => ignoring = false);
     }
 
-#if HAS_MUTTER45
     private bool on_scroll_event (Clutter.Event event) {
-#else
-    private bool on_scroll_event (Clutter.ScrollEvent event) {
-#endif
         if (!can_handle_event (event)) {
-            return false;
+            return Clutter.EVENT_PROPAGATE;
         }
 
-        uint64 time = event.get_time ();
+        if (ignoring) {
+            if (event.get_scroll_finish_flags () != NONE) {
+                ignoring = false;
+            }
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        var time = event.get_time ();
         double x, y;
         event.get_scroll_delta (out x, out y);
 
@@ -80,10 +85,20 @@ public class Gala.ScrollBackend : Object {
 
         if (!started) {
             if (delta_x != 0 || delta_y != 0) {
-                Gesture gesture = build_gesture (delta_x, delta_y, orientation);
+                if (delta_x.abs () > delta_y.abs () && orientation != HORIZONTAL ||
+                    delta_y.abs () > delta_x.abs () && orientation != VERTICAL
+                ) {
+                    ignoring = true;
+                    reset ();
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
+                float origin_x, origin_y;
+                event.get_coords (out origin_x, out origin_y);
+                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
                 started = true;
                 direction = gesture.direction;
-                on_gesture_detected (gesture);
+                on_gesture_detected (gesture, time);
 
                 double delta = calculate_delta (delta_x, delta_y, direction);
                 on_begin (delta, time);
@@ -91,30 +106,49 @@ public class Gala.ScrollBackend : Object {
         } else {
             double delta = calculate_delta (delta_x, delta_y, direction);
             if (x == 0 && y == 0) {
-                started = false;
-                delta_x = 0;
-                delta_y = 0;
-                direction = GestureDirection.UNKNOWN;
                 on_end (delta, time);
+                reset ();
             } else {
                 on_update (delta, time);
             }
         }
 
-        return true;
+        return Clutter.EVENT_STOP;
     }
 
-#if HAS_MUTTER45
+    private bool on_leave_event (Clutter.Event event) requires (event.get_type () == LEAVE) {
+        if (!started) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        double delta = calculate_delta (delta_x, delta_y, direction);
+        on_end (delta, event.get_time ());
+        reset ();
+
+        return Clutter.EVENT_PROPAGATE;
+    }
+
     private static bool can_handle_event (Clutter.Event event) {
-#else
-    private static bool can_handle_event (Clutter.ScrollEvent event) {
-#endif
         return event.get_type () == Clutter.EventType.SCROLL
             && event.get_source_device ().get_device_type () == Clutter.InputDeviceType.TOUCHPAD_DEVICE
             && event.get_scroll_direction () == Clutter.ScrollDirection.SMOOTH;
     }
 
-    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation) {
+    private void reset () {
+        started = false;
+        delta_x = 0;
+        delta_y = 0;
+        direction = GestureDirection.UNKNOWN;
+    }
+
+    public override void cancel_gesture () {
+        if (started) {
+            ignoring = true;
+            reset ();
+        }
+    }
+
+    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -126,7 +160,9 @@ public class Gala.ScrollBackend : Object {
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
+            origin_x = origin_x,
+            origin_y = origin_y
         };
     }
 
@@ -136,10 +172,7 @@ public class Gala.ScrollBackend : Object {
         double finish_delta = is_horizontal ? FINISH_DELTA_HORIZONTAL : FINISH_DELTA_VERTICAL;
 
         bool is_positive = (direction == GestureDirection.RIGHT || direction == GestureDirection.DOWN);
-        double clamp_low = is_positive ? 0 : -1;
-        double clamp_high = is_positive ? 1 : 0;
 
-        double normalized_delta = (used_delta / finish_delta).clamp (clamp_low, clamp_high).abs ();
-        return normalized_delta;
+        return (used_delta / finish_delta) * (is_positive ? 1 : -1);
     }
 }

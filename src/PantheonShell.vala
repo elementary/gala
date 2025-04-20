@@ -5,32 +5,13 @@
  */
 
 namespace Gala {
-#if !HAS_MUTTER45
-    [Compact]
-    public class FakeMetaWaylandCompositor : GLib.Object {
-        // It is the third field and Vala adds a FakeMetaWaylandCompositorPrivate *priv
-        public Wl.Display wayland_display;
-
-        [CCode (cname = "meta_context_get_wayland_compositor")]
-        public extern static unowned Gala.FakeMetaWaylandCompositor from_context (Meta.Context context);
-    }
-#endif
     public static inline unowned Wl.Display? get_display_from_context (Meta.Context context) {
-#if HAS_MUTTER45
         unowned Meta.WaylandCompositor? compositor = context.get_wayland_compositor ();
         if (compositor == null) {
             return null;
         }
 
         return (Wl.Display) compositor.get_wayland_display ();
-#else
-        unowned FakeMetaWaylandCompositor compositor = Gala.FakeMetaWaylandCompositor.from_context (context);
-        if (compositor == null) {
-            return null;
-        }
-
-        return compositor.wayland_display;
-#endif
     }
 
     private static Pantheon.Desktop.ShellInterface wayland_pantheon_shell_interface;
@@ -55,7 +36,7 @@ namespace Gala {
         wayland_pantheon_panel_interface = {
             destroy_panel_surface,
             set_anchor,
-            focus,
+            focus_panel,
             set_size,
             set_hide_mode,
         };
@@ -67,10 +48,13 @@ namespace Gala {
         wayland_pantheon_extended_behavior_interface = {
             destroy_extended_behavior_surface,
             set_keep_above,
+            make_centered,
+            focus_extended_behavior,
             make_modal,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
+        WidgetSurface.quark = GLib.Quark.from_string ("-gala-wayland-widget-surface-data");
         ExtendedBehaviorSurface.quark = GLib.Quark.from_string ("-gala-wayland-extended-behavior-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
@@ -241,36 +225,32 @@ namespace Gala {
             return;
         }
 
-        Meta.Side side = TOP;
-        switch (anchor) {
-            case TOP:
-                break;
-
-            case BOTTOM:
-                side = BOTTOM;
-                break;
-
-            case LEFT:
-                side = LEFT;
-                break;
-
-            case RIGHT:
-                side = RIGHT;
-                break;
-        }
-
-        ShellClientsManager.get_instance ().set_anchor (window, side);
+        ShellClientsManager.get_instance ().set_anchor (window, anchor);
     }
 
-    internal static void focus (Wl.Client client, Wl.Resource resource) {
+    internal static void focus_panel (Wl.Client client, Wl.Resource resource) {
         unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
         if (panel_surface.wayland_surface == null) {
             warning ("Window tried to focus but wayland surface is null.");
             return;
         }
 
+        focus (panel_surface.wayland_surface);
+    }
+
+    internal static void focus_extended_behavior (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? extended_behavior_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (extended_behavior_surface.wayland_surface == null) {
+            warning ("Window tried to focus but wayland surface is null.");
+            return;
+        }
+
+        focus (extended_behavior_surface.wayland_surface);
+    }
+
+    internal static void focus (Object wayland_surface) {
         Meta.Window? window;
-        panel_surface.wayland_surface.get ("window", out window, null);
+        wayland_surface.get ("window", out window, null);
         if (window == null) {
             warning ("Window tried to focus but wayland surface had no associated window.");
             return;
@@ -328,21 +308,34 @@ namespace Gala {
         window.make_above ();
     }
 
+<<<<<<< HEAD
     internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
         unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
         if (eb_surface.wayland_surface == null) {
             warning ("Window tried to make modal but wayland surface is null.");
+=======
+    internal static void make_centered (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+>>>>>>> main
             return;
         }
 
         Meta.Window? window;
         eb_surface.wayland_surface.get ("window", out window, null);
         if (window == null) {
+<<<<<<< HEAD
             warning ("Window tried to make modal but wayland surface had no associated window.");
             return;
         }
 
         ShellClientsManager.get_instance ().make_modal (window, dim == 1);
+=======
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_centered (window);
+>>>>>>> main
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

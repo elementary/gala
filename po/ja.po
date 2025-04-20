@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2024-06-19 13:09+0000\n"
+"POT-Creation-Date: 2025-04-16 17:34+0000\n"
+"PO-Revision-Date: 2025-04-18 01:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
-"Language-Team: Japanese <https://l10n.elementary.io/projects/desktop/gala/ja/"
-">\n"
+"Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
+"ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.10.4\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -32,11 +32,11 @@ msgstr "ディスプレイの設定…"
 msgid "System Settings…"
 msgstr "システム設定…"
 
-#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "システム設定を開けませんでした"
 
-#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 "“settings://” URI スキーム用のハンドラーをインストールする必要があります。"
@@ -109,88 +109,90 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
+#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+msgid "Updated translations"
+msgstr "翻訳の更新"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Window state is now saved on sleep and shutdown"
+msgstr "スリープ・シャットダウン時にウィンドウの状態を保持するように修正"
+
+#: data/gala.metainfo.xml.in:36
+msgid "Remove scaling effect from menus"
+msgstr "メニューのスケーリング効果を削除"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Swipe up to close windows in Multitasking View"
+msgstr "マルチタスク画面で上にスワイプするとウィンドウを閉じるように修正"
+
+#: data/gala.metainfo.xml.in:66
+msgid "Fixed rare crash when a dock window was killed"
+msgstr "ドックウィンドウが強制終了されると、まれにクラッシュする不具合を修正"
+
+#: data/gala.metainfo.xml.in:67
+msgid "Added interactive screenshot shortcut"
+msgstr "対話式スクリーンショットのショートカットを追加"
+
+#: data/gala.metainfo.xml.in:68
+msgid "Fixed crash when using tiling shortcuts"
+msgstr "ウィンドウを並べるショートカット使用時のクラッシュを修正"
+
+#: data/gala.metainfo.xml.in:97
+msgid "Improved shadows performance"
+msgstr "影のパフォーマンスを改善"
+
+#: data/gala.metainfo.xml.in:141
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr "ワークスペース間でウィンドウを移動した際に起こりうるクラッシュを修正"
+
+#: data/gala.metainfo.xml.in:142
+msgid "Fix notification animation when entering multitasking view"
+msgstr "マルチタスク画面に遷移した際の通知のアニメーションを修正"
+
+#: data/gala.metainfo.xml.in:157
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "“マルチタスク画面”でのキーボード操作を改善"
+
+#: data/gala.metainfo.xml.in:158
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "壁紙の遷移と同時にパネルの色を変更するように修正"
+
+#: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定に従うように修正"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "ウィンドウ移動時、ドラッグ & ドロップの形をした適切なポインターを使用するよう"
 "に修正"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "マルチタスク画面でジェスチャーが動作しなくなる可能性がある不具合を修正"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "マルチモニター環境におけるダイナミックワークスペースの挙動を改善"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "翻訳の更新"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "“move-to-workspace”ショートカットの処理を改善"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"起動時にキーボードレイアウトを適切に設定することで、インジケーターの表示が実"
-"際に有効なレイアウトと一致するように修正"
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr ""
-"“マルチタスク画面”でスクリーンショット取得のキーボードショートカットが効かな"
-"い不具合を修正"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライトし、"
-"手の動きに合わせてアニメーション表示されるように修正"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "壁紙を暗くした場合にパネルの色を更新するように修正"
-
-#: data/gala.metainfo.xml.in:106
-msgid "Scale rounded corners per-display"
-msgstr "画面四隅を丸く表示する比率を画面ごとに計算するように修正"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "分数スケーリングに対応"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "パフォーマンスの改善"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "マルチタスク画面からテクスチャを削除"
-
-#: data/gala.metainfo.xml.in:129
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -203,7 +205,7 @@ msgstr "すべての開いているウィンドウとワークスペースを参
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr "そのほか"
+msgstr "その他"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
@@ -213,83 +215,134 @@ msgstr ""
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "不明なプログラム"
 
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr "“%s”は応答していません"
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr "アプリケーションは応答していません"
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
 msgstr "強制終了"
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr "待機"
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
 msgstr "“%s”がシステムショートカットを横取りしようとしています"
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
 msgstr "アプリケーションがシステムショートカットを横取りしようとしています"
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
 msgstr "すべてのシステムショートカットはこのアプリケーションに送られます。"
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
 msgstr "許可"
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
 msgstr "拒否"
 
-#: src/ScreenshotManager.vala:290
-msgid "Screenshots"
-msgstr "スクリーンショット"
+#: src/DesktopIntegration.vala:197
+msgid "Window has already focus"
+msgstr "ウィンドウはすでにアクティブです"
 
-#: src/ScreenshotManager.vala:369
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:101
+#, c-format
+msgid "Screenshot from %s"
+msgstr "スクリーンショット %s"
+
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:159
+msgid "Show in Files"
+msgstr "“ファイル”で表示"
+
+#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/WindowManager.vala:2318
+#: src/ScreenshotManager.vala:166
+msgid "Screenshot is saved to clipboard"
+msgstr "スクリーンショットをクリップボードに保存しました"
+
+#: src/ScreenshotManager.vala:166
+msgid "Screenshot saved to screenshots folder"
+msgstr "スクリーンショットを“スクリーンショット”フォルダーに保存しました"
+
+#: src/ScreenshotManager.vala:422
+msgid "Screenshots"
+msgstr "スクリーンショット"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+msgid "Window switcher"
+msgstr "ウィンドウスイッチャー"
+
+#: src/WindowManager.vala:1775
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
 
-#: src/WindowManager.vala:2325
+#: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか?"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:1786
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:2330
+#: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2369
-#, c-format
-msgid "Screenshot from %s"
-msgstr "スクリーンショット %s"
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "起動時にキーボードレイアウトを適切に設定することで、インジケーターの表示が"
+#~ "実際に有効なレイアウトと一致するように修正"
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "“マルチタスク画面”に切り替える際、現在のワークスペースを適切にハイライト"
+#~ "し、手の動きに合わせてアニメーション表示されるように修正"
+
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "画面四隅を丸く表示する比率を画面ごとに計算するように修正"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "分数スケーリングに対応"
+
+#~ msgid "Performance improvements"
+#~ msgstr "パフォーマンスの改善"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "マルチタスク画面からテクスチャを削除"
+
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "ウィンドウスイッチャーで誤ってウィンドウを選択することがないように修正"
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "タイムゾーン変更時に動く壁紙を再読み込みするように修正"
@@ -356,9 +409,6 @@ msgstr "スクリーンショット %s"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
-
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
 
 #~ msgid "New features:"
 #~ msgstr "新機能:"
@@ -437,15 +487,6 @@ msgstr "スクリーンショット %s"
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr ""
 #~ "ヘッダーバーのメニューにキーボードショートカットを表示するように修正"
-
-#~ msgid "Improve window shadows for legacy apps"
-#~ msgstr "レガシーなアプリのウィンドウの影を改善"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr "スクリーンショットを撮る際に起こりうるクラッシュを修正"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "DPI を変更すると通知が間違った位置に表示される不具合を修正"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr ""

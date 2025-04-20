@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2024-07-08 13:44+0000\n"
-"PO-Revision-Date: 2024-06-17 03:16+0000\n"
+"POT-Creation-Date: 2025-04-16 17:34+0000\n"
+"PO-Revision-Date: 2024-09-19 07:21+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://l10n.elementary.io/projects/desktop/"
 "gala/nb/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5.5\n"
+"X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -32,13 +32,13 @@ msgstr "Skjerminnstillinger …"
 msgid "System Settings…"
 msgstr "Systeminnstillinger …"
 
-#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "Systeminnstillinger …"
 
-#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 #, fuzzy
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Noe som håndterer «settings://»-adresser må installeres."
@@ -111,95 +111,96 @@ msgstr ""
 "elementary for bruk med Pantheon."
 
 #: data/gala.metainfo.xml.in:24
-#, fuzzy
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:88
-#: data/gala.metainfo.xml.in:100 data/gala.metainfo.xml.in:125
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
+#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
 msgstr "Forbedringer:"
 
-#: data/gala.metainfo.xml.in:34
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
+#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+msgid "Updated translations"
+msgstr "Oppdaterte oversettelser"
+
+#: data/gala.metainfo.xml.in:35
+msgid "Window state is now saved on sleep and shutdown"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36
+msgid "Remove scaling effect from menus"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:37
+msgid "Swipe up to close windows in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:66
+msgid "Fixed rare crash when a dock window was killed"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:67
+msgid "Added interactive screenshot shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:68
+#, fuzzy
+#| msgid "Fix potential crash when taking screenshots"
+msgid "Fixed crash when using tiling shortcuts"
+msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
+
+#: data/gala.metainfo.xml.in:97
+#, fuzzy
+#| msgid "Improve window shadows for legacy apps"
+msgid "Improved shadows performance"
+msgstr "Forbedre vindusskygger for eldre programmer"
+
+#: data/gala.metainfo.xml.in:141
+msgid "Fix a potential crash when moving windows between workspaces"
+msgstr "Fiks av potensielt krasj ved bytting av arbeidsområder"
+
+#: data/gala.metainfo.xml.in:142
+msgid "Fix notification animation when entering multitasking view"
+msgstr "Fiks merknadsposisjon etter at man går inn i fleroppgavevisning"
+
+#: data/gala.metainfo.xml.in:157
+msgid "Improve keyboard navigation in Multitasking View"
+msgstr "Fikset tastaturnavigasjon i fleroppgavesvisning"
+
+#: data/gala.metainfo.xml.in:158
+msgid "Change panel color at the same time as wallpaper transition"
+msgstr "Oppdater panelfarge samtidig som skjermbildeovergang"
+
+#: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "Endring av bakgrunnsbilde eller dvalemodus respekterer «Reduser bevegelse»"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Bruk av riktige dra- og slipp-pekere ved flytting av vinduer"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
-"Fikset problem der håndvendinger i fleroppgaveløsningsvisning sluttet å "
-"fungere"
+"Fikset problem der håndvendinger i fleroppgavevisning sluttet å fungere"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Forbedret adferd for dynamiske arbeidsområder med flere skjermer"
 
-#: data/gala.metainfo.xml.in:38 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:90
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:130
-msgid "Updated translations"
-msgstr "Oppdaterte oversettelser"
-
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Forbedret håndtering av snarveien for flytting til arbeidsområde"
-
-#: data/gala.metainfo.xml.in:102
-msgid ""
-"Set the keyboard layout correctly at startup so that the indicator matches "
-"the selected layout"
-msgstr ""
-"Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren samsvarer "
-"med valgt oppsett."
-
-#: data/gala.metainfo.xml.in:103
-msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
-msgstr "Fikset snarveier for skjermavbildning i fleroppgaveløsningsvisning"
-
-#: data/gala.metainfo.xml.in:104
-msgid ""
-"Correctly set the active workspace highlight when entering Multitasking View "
-"and animate 1:1 with multitouch gestures"
-msgstr ""
-"Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning og "
-"animert 1:1 med flerpekingshåndvendinger"
-
-#: data/gala.metainfo.xml.in:105
-msgid "Update panel color after dimming the wallpaper"
-msgstr "Oppdater panelfarge etter fordunkling av bakgrunnsbildet"
-
-#: data/gala.metainfo.xml.in:106
-#, fuzzy
-#| msgid "Enable rounded corner mask"
-msgid "Scale rounded corners per-display"
-msgstr "Bruk maske for avrundede hjørner"
-
-#: data/gala.metainfo.xml.in:107
-msgid "Support fractional scaling"
-msgstr "Støtte for brøkbasert skalering"
-
-#: data/gala.metainfo.xml.in:127
-msgid "Performance improvements"
-msgstr "Ytelsesforbedringer"
-
-#: data/gala.metainfo.xml.in:128
-msgid "Remove texture from Multitasking View"
-msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
-
-#: data/gala.metainfo.xml.in:129
-#, fuzzy
-msgid "Avoid accidentally selecting windows in the window switcher"
-msgstr ""
-"Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
-"bytteren."
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -221,18 +222,18 @@ msgstr "Tilbakefallsskrivebordsfil for varsler fra utdaterte programmer."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Ukjent"
 
-#: src/Dialogs.vala:144
+#: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
 msgstr "«%s» svarer ikke"
 
-#: src/Dialogs.vala:146
+#: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
 msgstr "Programmet svarer ikke"
 
-#: src/Dialogs.vala:149
+#: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
@@ -240,67 +241,123 @@ msgstr ""
 "Du kan velge å vente på at programmet skal fortsette en kort stund, eller "
 "påtvinge avslutning av det."
 
-#: src/Dialogs.vala:150
+#: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
 msgstr "Tving avslutning"
 
-#: src/Dialogs.vala:151
+#: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
 msgstr "Vent"
 
-#: src/Dialogs.vala:217
+#: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "«%s» ønsker å ta over for systemsnarveier:"
 
-#: src/Dialogs.vala:219
+#: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Et program ønsker å ta over for systemsnarveier"
 
-#: src/Dialogs.vala:222
+#: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Alle systemsnarveier vil bli videresendt til programmet."
 
-#: src/Dialogs.vala:223
+#: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
-msgstr ""
+msgstr "Tillat"
 
-#: src/Dialogs.vala:224
+#: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
+msgstr "Nekt"
+
+#: src/DesktopIntegration.vala:197
+#, fuzzy
+msgid "Window has already focus"
+msgstr "Vinduet har allerede fokus"
+
+#. / TRANSLATORS: %s represents a timestamp here
+#: src/ScreenshotManager.vala:101
+#, c-format
+msgid "Screenshot from %s"
+msgstr "Skjermavbildning fra %s"
+
+#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
+#: src/ScreenshotManager.vala:159
+msgid "Show in Files"
 msgstr ""
 
-#: src/ScreenshotManager.vala:290
-msgid "Screenshots"
-msgstr "Skjermavbildninger"
-
-#: src/ScreenshotManager.vala:369
+#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
 msgstr "Skjermavbildning utført"
 
-#: src/WindowManager.vala:2318
+#: src/ScreenshotManager.vala:166
+msgid "Screenshot is saved to clipboard"
+msgstr ""
+
+#: src/ScreenshotManager.vala:166
+msgid "Screenshot saved to screenshots folder"
+msgstr ""
+
+#: src/ScreenshotManager.vala:422
+msgid "Screenshots"
+msgstr "Skjermavbildninger"
+
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+msgid "Window switcher"
+msgstr "Vindusbytter"
+
+#: src/WindowManager.vala:1775
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringer vil endres tilbake automatisk etter ett sekund."
 msgstr[1] "Endringer vil endres tilbake automatisk etter %i sekunder."
 
-#: src/WindowManager.vala:2325
+#: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
 msgstr "Behold de nye skjerminnstillingene?"
 
-#: src/WindowManager.vala:2329
+#: src/WindowManager.vala:1786
 msgid "Keep Settings"
 msgstr "Behold innstillinger"
 
-#: src/WindowManager.vala:2330
+#: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
 msgstr "Bruk tidligere oppsett"
 
-#. / TRANSLATORS: %s represents a timestamp here
-#: src/WindowManager.vala:2369
-#, c-format
-msgid "Screenshot from %s"
-msgstr "Skjermavbildning fra %s"
+#~ msgid ""
+#~ "Set the keyboard layout correctly at startup so that the indicator "
+#~ "matches the selected layout"
+#~ msgstr ""
+#~ "Tastaturoppsett innstilt riktig ved oppstart slik at indikatoren "
+#~ "samsvarer med valgt oppsett."
+
+#~ msgid ""
+#~ "Correctly set the active workspace highlight when entering Multitasking "
+#~ "View and animate 1:1 with multitouch gestures"
+#~ msgstr ""
+#~ "Aktivt arbeidsområde satt riktig ved åpning av fleroppgaveløsningsvisning "
+#~ "og animert 1:1 med flerpekingshåndvendinger"
+
+#, fuzzy
+#~| msgid "Enable rounded corner mask"
+#~ msgid "Scale rounded corners per-display"
+#~ msgstr "Bruk maske for avrundede hjørner"
+
+#~ msgid "Support fractional scaling"
+#~ msgstr "Støtte for brøkbasert skalering"
+
+#~ msgid "Performance improvements"
+#~ msgstr "Ytelsesforbedringer"
+
+#~ msgid "Remove texture from Multitasking View"
+#~ msgstr "Fjern tekstur fra fleroppgaveløsningsvisningen"
+
+#, fuzzy
+#~ msgid "Avoid accidentally selecting windows in the window switcher"
+#~ msgstr ""
+#~ "Ugjennomsiktigheten for vindu som befinner seg i bakgrunnen i alt+tab-"
+#~ "bytteren."
 
 #~ msgid "Reload animated wallpapers when timezone changes"
 #~ msgstr "Gjeninnlast animerte bakgrunner når tidssone endrer seg"
@@ -368,9 +425,6 @@ msgstr "Skjermavbildning fra %s"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
-
-#~ msgid "Fix a potential crash when taking screenshots"
-#~ msgstr "Fiks av potensielt krasj ved knipsing av skjermavbildninger"
 
 #~ msgid "New features:"
 #~ msgstr "Nye funksjoner:"
@@ -445,15 +499,6 @@ msgstr "Skjermavbildning fra %s"
 #, fuzzy
 #~ msgid "Show keyboard shortcuts in HeaderBar menus"
 #~ msgstr "Vis tastatursnarveier i tittelfelt-menyer"
-
-#~ msgid "Improve window shadows for legacy apps"
-#~ msgstr "Forbedre vindusskygger for eldre programmer"
-
-#~ msgid "Fix potential crash when taking screenshots"
-#~ msgstr "Fiks potensielt krasj ved knipsing av skjermavbildninger"
-
-#~ msgid "Fix notification position after changing DPI"
-#~ msgstr "Fiks merknadsposisjon etter endring av DPI"
 
 #~ msgid "Fix animations for moving and maximizing tiled windows"
 #~ msgstr "Fiks animasjoner for flytting og maksimering av flislagte vinduer"

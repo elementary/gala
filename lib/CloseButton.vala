@@ -79,11 +79,7 @@ public class Gala.CloseButton : Clutter.Actor {
         pixbuf_actor.background_color = { 255, 0, 0, 255 };
     }
 
-#if HAS_MUTTER45
     public override bool button_press_event (Clutter.Event e) {
-#else
-    public override bool button_press_event (Clutter.ButtonEvent e) {
-#endif
         var estimated_duration = (uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2);
 
         pixbuf_actor.save_easing_state ();
@@ -97,11 +93,7 @@ public class Gala.CloseButton : Clutter.Actor {
         return Clutter.EVENT_STOP;
     }
 
-#if HAS_MUTTER45
     public override bool button_release_event (Clutter.Event e) {
-#else
-    public override bool button_release_event (Clutter.ButtonEvent e) {
-#endif
         reset_scale ();
 
         if (is_pressed) {
@@ -112,11 +104,7 @@ public class Gala.CloseButton : Clutter.Actor {
         return Clutter.EVENT_STOP;
     }
 
-#if HAS_MUTTER45
     public override bool leave_event (Clutter.Event event) {
-#else
-    public override bool leave_event (Clutter.CrossingEvent event) {
-#endif
         reset_scale ();
         is_pressed = false;
 

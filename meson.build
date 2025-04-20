@@ -1,7 +1,7 @@
 project('gala',
     'c', 'vala',
-    version: '7.1.3',
-    meson_version: '>= 0.58.0',
+    version: '8.1.0',
+    meson_version: '>= 0.59.0',
     license: 'GPL3',
 )
 
@@ -36,7 +36,6 @@ conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
 conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', gala_version)
-conf.set_quoted('SCHEMA', 'org.pantheon.desktop.gala')
 config_h = configure_file(
     output: 'config.h',
     configuration: conf
@@ -69,17 +68,18 @@ add_project_arguments([
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
         '-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
-        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_44',
-        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_44',
+        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
+        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
     ],
     language: 'c',
 )
 
 
 # Dependencies
-glib_version_required = '2.44.0'
+glib_version_required = '2.74.0'
 gtk_version_required = '3.10.0'
 
+atk_bridge_dep = dependency('atk-bridge-2.0')
 canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
@@ -103,39 +103,6 @@ libmutter_dep = []
 
 vala_flags = []
 
-mutter42_dep = dependency('libmutter-10', version: ['>= 42', '< 43'], required: false)
-if mutter42_dep.found()
-	libmutter_dep = dependency('libmutter-10', version: '>= 42')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-10'), dependency('mutter-cogl-pango-10'),
-		dependency('mutter-clutter-10')
-	]
-	vala_flags = []
-endif
-
-mutter43_dep = dependency('libmutter-11', version: ['>= 43', '< 44'], required: false)
-if mutter43_dep.found()
-	libmutter_dep = dependency('libmutter-11', version: '>= 43')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-11'), dependency('mutter-cogl-pango-11'),
-		dependency('mutter-clutter-11')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER43']
-endif
-
-mutter44_dep = dependency('libmutter-12', version: ['>= 44', '< 45'], required: false)
-if mutter44_dep.found()
-	libmutter_dep = dependency('libmutter-12', version: '>= 44')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-cogl-12'), dependency('mutter-cogl-pango-12'),
-		dependency('mutter-clutter-12')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44']
-endif
-
 mutter45_dep = dependency('libmutter-13', version: ['>= 45', '< 46'], required: false)
 if mutter45_dep.found()
 	libmutter_dep = dependency('libmutter-13', version: '>= 45')
@@ -158,6 +125,17 @@ if mutter46_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46']
 endif
 
+mutter47_dep = dependency('libmutter-15', version: ['>= 47', '< 48'], required: false)
+if mutter47_dep.found()
+	libmutter_dep = dependency('libmutter-15', version: '>= 47')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-15'), dependency('mutter-cogl-15'),
+		dependency('mutter-cogl-pango-15'), dependency('mutter-clutter-15')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
@@ -171,7 +149,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
@@ -195,4 +173,7 @@ if vapigen.found()
     subdir('vapi')
 endif
 
-meson.add_install_script('build-aux/meson/post_install.py')
+gnome.post_install(
+    glib_compile_schemas: true,
+    update_desktop_database: true
+)

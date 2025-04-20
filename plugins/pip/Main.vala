@@ -22,11 +22,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private Gala.WindowManager? wm = null;
     private SelectionArea? selection_area;
 
-#if HAS_MUTTER45
     private static inline bool meta_rectangle_contains (Mtk.Rectangle rect, int x, int y) {
-#else
-    private static inline bool meta_rectangle_contains (Meta.Rectangle rect, int x, int y) {
-#endif
         return x >= rect.x && x < rect.x + rect.width
             && y >= rect.y && y < rect.y + rect.height;
     }
@@ -38,7 +34,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     public override void initialize (Gala.WindowManager wm) {
         this.wm = wm;
         var display = wm.get_display ();
-        var settings = new GLib.Settings (Config.SCHEMA + ".keybindings");
+        var settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
         display.add_keybinding ("pip", settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) on_initiate);
     }
@@ -92,7 +88,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
                 var rect = Graphene.Rect.alloc ();
                 rect.init (point_x, point_y, width, height);
 
-                var popup_window = new PopupWindow (wm, active);
+                var popup_window = new PopupWindow (wm.get_display (), active);
                 popup_window.set_container_clip (rect);
                 popup_window.show.connect (on_popup_window_show);
                 popup_window.hide.connect (on_popup_window_hide);
@@ -114,7 +110,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
-            var popup_window = new PopupWindow (wm, selected);
+            var popup_window = new PopupWindow (wm.get_display (), selected);
             popup_window.show.connect (on_popup_window_show);
             popup_window.hide.connect (on_popup_window_hide);
             add_window (popup_window);

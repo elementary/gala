@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellClientsManager : Object {
+public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
     public static void init (WindowManagerGala wm) {
@@ -16,16 +16,19 @@ public class Gala.ShellClientsManager : Object {
         instance = new ShellClientsManager (wm);
     }
 
-    public static ShellClientsManager? get_instance () {
+    public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
 
-    public WindowManagerGala wm { get; construct; }
+    public Clutter.Actor? actor { get { return wm.stage; } }
+
+    public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
-    private GLib.HashTable<Meta.Window, PanelWindow> windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
     private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
@@ -35,6 +38,13 @@ public class Gala.ShellClientsManager : Object {
         notifications_client = new NotificationsClient (wm.get_display ());
 
         start_clients.begin ();
+
+        if (!Meta.Util.is_wayland_compositor ()) {
+            wm.get_display ().window_created.connect ((window) => {
+                window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
+                parse_mutter_hints (window);
+            });
+        }
     }
 
     private async void start_clients () {
@@ -97,26 +107,57 @@ public class Gala.ShellClientsManager : Object {
         }
     }
 
-    public void set_anchor (Meta.Window window, Meta.Side side) {
-        if (window in windows) {
-            windows[window].update_anchor (side);
-            return;
+    public void make_dock (Meta.Window window) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            make_dock_wayland (window);
+        } else {
+            make_dock_x11 (window);
         }
+    }
 
-#if HAS_MUTTER46
+    private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
+#if HAS_MUTTER46
                 client.wayland_client.make_dock (window);
+#endif
                 break;
             }
         }
+    }
+
+    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+        unowned var x11_display = wm.get_display ().get_x11_display ();
+
+#if HAS_MUTTER46
+        var x_window = x11_display.lookup_xwindow (window);
+#else
+        var x_window = window.get_xwindow ();
 #endif
+        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
+        unowned var xdisplay = x11_display.get_xdisplay ();
+        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
+        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
+
+        // (X.Atom) 4 is XA_ATOM
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+    }
+
+    public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
+        if (window in panel_windows) {
+            panel_windows[window].anchor = anchor;
+            return;
+        }
+
+        make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
-        windows[window] = new PanelWindow (wm, window, side);
+        panel_windows[window] = new PanelWindow (wm, window, anchor);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
-        window.unmanaged.connect_after (() => windows.remove (window));
+        window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
     }
 
     /**
@@ -127,21 +168,136 @@ public class Gala.ShellClientsManager : Object {
      * TODO: Maybe use for strut only?
      */
     public void set_size (Meta.Window window, int width, int height) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before size.");
             return;
         }
 
-        windows[window].set_size (width, height);
+        panel_windows[window].set_size (width, height);
     }
 
     public void set_hide_mode (Meta.Window window, Pantheon.Desktop.HideMode hide_mode) {
-        if (!(window in windows)) {
+        if (!(window in panel_windows)) {
             warning ("Set anchor for window before hide mode.");
             return;
         }
 
-        windows[window].set_hide_mode (hide_mode);
+        panel_windows[window].hide_mode = hide_mode;
+    }
+
+    public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
+        positioned_windows[window] = new ShellWindow (window, CENTER);
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
+
+    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+        foreach (var window in positioned_windows.get_values ()) {
+            window.propagate (update_type, action, progress);
+        }
+
+        foreach (var window in panel_windows.get_values ()) {
+            window.propagate (update_type, action, progress);
+        }
+    }
+
+    public bool is_itself_positioned (Meta.Window window) {
+        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
+    }
+
+    public bool is_positioned_window (Meta.Window window) {
+        bool positioned = is_itself_positioned (window);
+        window.foreach_ancestor ((ancestor) => {
+            if (is_itself_positioned (ancestor)) {
+                positioned = true;
+            }
+
+            return !positioned;
+        });
+
+        return positioned;
+    }
+
+    //X11 only
+    private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+        if (window.mutter_hints == null) {
+            return;
+        }
+
+        var mutter_hints = window.mutter_hints.split (":");
+        foreach (var mutter_hint in mutter_hints) {
+            var split = mutter_hint.split ("=");
+
+            if (split.length != 2) {
+                continue;
+            }
+
+            var key = split[0];
+            var val = split[1];
+
+            switch (key) {
+                case "anchor":
+                    int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
+                    if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
+                        //FIXME: Next major release change dock and wingpanel calls to get rid of this
+                        Pantheon.Desktop.Anchor parsed = TOP;
+                        switch ((Meta.Side) meta_side_parsed) {
+                            case BOTTOM:
+                                parsed = BOTTOM;
+                                break;
+
+                            case LEFT:
+                                parsed = LEFT;
+                                break;
+
+                            case RIGHT:
+                                parsed = RIGHT;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        set_anchor (window, parsed);
+                        // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
+                        // but on X the window was already shown when we get here so we have to call again to instantly apply it.
+                        set_anchor (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as anchor", val);
+                    }
+                    break;
+
+                case "hide-mode":
+                    int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
+                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 4) {
+                        set_hide_mode (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as hide mode", val);
+                    }
+                    break;
+
+                case "size":
+                    var split_val = val.split (",");
+                    if (split_val.length != 2) {
+                        break;
+                    }
+                    int parsed_width, parsed_height = 0; //set to 0 because vala doesn't realize height will be set too
+                    if (int.try_parse (split_val[0], out parsed_width) && int.try_parse (split_val[1], out parsed_height)) {
+                        set_size (window, parsed_width, parsed_height);
+                    } else {
+                        warning ("Failed to parse %s as width and height", val);
+                    }
+                    break;
+
+                case "centered":
+                    make_centered (window);
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 
     public void make_modal (Meta.Window window, bool dim) {
