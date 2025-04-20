@@ -308,34 +308,34 @@ namespace Gala {
         window.make_above ();
     }
 
-<<<<<<< HEAD
-    internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
-        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
-        if (eb_surface.wayland_surface == null) {
-            warning ("Window tried to make modal but wayland surface is null.");
-=======
     internal static void make_centered (Wl.Client client, Wl.Resource resource) {
         unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
         if (eb_surface.wayland_surface == null) {
->>>>>>> main
             return;
         }
 
         Meta.Window? window;
         eb_surface.wayland_surface.get ("window", out window, null);
         if (window == null) {
-<<<<<<< HEAD
-            warning ("Window tried to make modal but wayland surface had no associated window.");
-            return;
-        }
-
-        ShellClientsManager.get_instance ().make_modal (window, dim == 1);
-=======
             return;
         }
 
         ShellClientsManager.get_instance ().make_centered (window);
->>>>>>> main
+    }
+
+    internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_modal (window, dim == 1);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {
