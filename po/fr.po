@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-04-01 13:55+0000\n"
+"PO-Revision-Date: 2025-04-23 10:55+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementaryos.org/projects/desktop/gala/"
 "fr/>\n"
@@ -133,11 +133,11 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:36
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Retrait de l'effet d'échelle dans les menus"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Balayez vers le haut pour fermer les fenêtres dans la vue multitâche"
 
 #: data/gala.metainfo.xml.in:66
 msgid "Fixed rare crash when a dock window was killed"
