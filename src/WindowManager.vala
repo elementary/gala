@@ -1694,15 +1694,7 @@ namespace Gala {
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
-<<<<<<< HEAD
-            if (modal_actor.is_modal ()) {
-                return true;
-            }
-
-            if (!is_modal ())
-=======
             if (!is_modal ()) {
->>>>>>> main
                 return false;
             }
 
