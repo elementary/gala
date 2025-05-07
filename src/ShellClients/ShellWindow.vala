@@ -8,6 +8,9 @@
 public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public Clutter.Actor? actor { get { return window_actor; } }
 
+    public bool modal { get; private set; }
+    public bool dim { get; private set; }
+
     private Meta.WindowActor window_actor;
     private double custom_progress = 0;
     private double multitasking_view_progress = 0;
@@ -138,5 +141,10 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
             default:
                 return hidden ? 0u : 255u;
         }
+    }
+
+    public void make_modal (bool _dim) {
+        modal = true;
+        dim = _dim;
     }
 }
