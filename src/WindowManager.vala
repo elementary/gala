@@ -72,6 +72,8 @@ namespace Gala {
 
         private HotCornerManager? hot_corner_manager = null;
 
+        private KeyboardManager keyboard_manager;
+
         public WindowTracker? window_tracker { get; private set; }
 
         private NotificationsManager notifications_manager;
@@ -171,7 +173,7 @@ namespace Gala {
             DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
-            KeyboardManager.init (display);
+            keyboard_manager = new KeyboardManager (display);
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
@@ -294,8 +296,14 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
-            display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
-            display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
+
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
+                } else {
+                    multitasking_view.open ();
+                }
+            });
 
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
@@ -311,14 +319,6 @@ namespace Gala {
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
                 launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
-            });
-
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (multitasking_view.is_opened ()) {
-                    multitasking_view.close ();
-                } else {
-                    multitasking_view.open ();
-                }
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -523,12 +523,6 @@ namespace Gala {
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
-        }
-
-        [CCode (instance_pos = -1)]
-        private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
         }
 
         /**
@@ -1721,8 +1715,6 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_LEFT:
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                     return filter_action (SWITCH_WORKSPACE);
-                case Meta.KeyBindingAction.SHOW_DESKTOP:
-                    return filter_action (MULTITASKING_VIEW);
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS:
@@ -1743,6 +1735,8 @@ namespace Gala {
                 case "zoom-in":
                 case "zoom-out":
                     return filter_action (ZOOM);
+                case "toggle-multitasking-view":
+                    return filter_action (MULTITASKING_VIEW);
                 default:
                     break;
             }
