@@ -68,6 +68,8 @@ namespace Gala {
 
         public ActivatableComponent? window_overview { get; private set; }
 
+        public SessionLocker session_locker { get; private set;}
+
         public ScreenSaverManager? screensaver { get; private set; }
 
         private HotCornerManager? hot_corner_manager = null;
@@ -208,7 +210,7 @@ namespace Gala {
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
-             * +-- session locker
+             * +-- screen shield
              */
 
             system_background = new SystemBackground (display);
@@ -273,9 +275,10 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (display));
 
-            var session_locker = new SessionLocker (this);
-            ui_group.add_child (session_locker);
+            var screen_shield = new ScreenShield (this);
+            ui_group.add_child (screen_shield);
 
+            session_locker = new SessionLocker (screen_shield);
             screensaver = new ScreenSaverManager (session_locker);
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
