@@ -94,7 +94,9 @@ public class Gala.GestureController : Object {
         Object (action: action, wm: wm);
     }
 
-    // Do not call this directly, use {@link RooTarget.add_controller} instead.
+    /**
+     * Do not call this directly, use {@link RooTarget.add_controller} instead.
+     */
     public void attached (RootTarget target) {
         ref ();
         this.target = target;
