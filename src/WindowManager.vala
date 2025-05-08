@@ -323,8 +323,6 @@ namespace Gala {
                 launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
             });
 
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {});
-
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-left", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
@@ -1711,8 +1709,6 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_LEFT:
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                     return filter_action (SWITCH_WORKSPACE);
-                case Meta.KeyBindingAction.SHOW_DESKTOP:
-                    return filter_action (MULTITASKING_VIEW);
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS:
@@ -1733,6 +1729,8 @@ namespace Gala {
                 case "zoom-in":
                 case "zoom-out":
                     return filter_action (ZOOM);
+                case "toggle-multitasking-view":
+                    return filter_action (MULTITASKING_VIEW);
                 default:
                     break;
             }

@@ -195,7 +195,7 @@
       <description></description>
     </key>
     <key type="as" name="toggle-multitasking-view">
-      <default><![CDATA[['<Super>Down']]]></default>
+      <default><![CDATA[['<Super>Down','<Super>s']]]></default>
       <summary>Toggle multitasking view</summary>
       <description></description>
     </key>
