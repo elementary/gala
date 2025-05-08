@@ -297,6 +297,14 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
 
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
+                } else {
+                    multitasking_view.open ();
+                }
+            });
+
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
                     window_overview.close ();
@@ -311,14 +319,6 @@ namespace Gala {
 
             Meta.KeyBinding.set_custom_handler ("toggle-recording", () => {
                 launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
-            });
-
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (multitasking_view.is_opened ()) {
-                    multitasking_view.close ();
-                } else {
-                    multitasking_view.open ();
-                }
             });
 
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
@@ -1690,8 +1690,6 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_LEFT:
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                     return filter_action (SWITCH_WORKSPACE);
-                case Meta.KeyBindingAction.SHOW_DESKTOP:
-                    return filter_action (MULTITASKING_VIEW);
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS:
@@ -1712,6 +1710,8 @@ namespace Gala {
                 case "zoom-in":
                 case "zoom-out":
                     return filter_action (ZOOM);
+                case "toggle-multitasking-view":
+                    return filter_action (MULTITASKING_VIEW);
                 default:
                     break;
             }
