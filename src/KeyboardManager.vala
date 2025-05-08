@@ -1,6 +1,6 @@
 /*
  * Copyright 2016 Santiago León
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -11,43 +11,36 @@ public class Gala.KeyboardManager : Object {
         "grp:ctrl_shift_toggle", "grp:shift_caps_toggle"
     };
 
-    private static KeyboardManager? instance;
-    private static GLib.Settings settings;
+    public Meta.Display display { construct; private get; }
 
-    public unowned Meta.Display display { construct; private get; }
+    private GLib.Settings settings;
 
-    public static void init (Meta.Display display) {
-        if (instance != null) {
-            return;
-        }
-
-        instance = new KeyboardManager (display);
-
-        display.modifiers_accelerator_activated.connect ((display) => KeyboardManager.handle_modifiers_accelerator_activated (display, false));
-    }
-
-    static construct {
-        var schema = GLib.SettingsSchemaSource.get_default ().lookup ("org.gnome.desktop.input-sources", true);
-        if (schema == null) {
-            critical ("org.gnome.desktop.input-sources not found.");
-        }
-
-        settings = new GLib.Settings.full (schema, null, null);
-    }
-
-    construct {
-        settings.changed.connect (set_keyboard_layout);
-
-        set_keyboard_layout (settings, "sources"); // Update the list of layouts
-        set_keyboard_layout (settings, "current"); // Set current layout
-    }
-
-    private KeyboardManager (Meta.Display display) {
+    public KeyboardManager (Meta.Display display) {
         Object (display: display);
     }
 
-    [CCode (instance_pos = -1)]
-    public static bool handle_modifiers_accelerator_activated (Meta.Display display, bool backward) {
+    construct {
+        settings = new GLib.Settings ("org.gnome.desktop.input-sources");
+
+        on_settings_changed ("sources"); // Update the list of layouts
+        on_settings_changed ("current"); // Set current layout
+
+        settings.changed.connect (on_settings_changed);
+
+        display.modifiers_accelerator_activated.connect (() => switch_input_source (false));
+
+        var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
+        display.add_keybinding ("switch-input-source", keybinding_settings, IGNORE_AUTOREPEAT, handle_keybinding);
+        display.add_keybinding ("switch-input-source-backward", keybinding_settings, IGNORE_AUTOREPEAT, handle_keybinding);
+    }
+
+    private void handle_keybinding (
+        Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding
+    ) {
+        switch_input_source (binding.get_name ().has_suffix ("-backward"));
+    }
+
+    private bool switch_input_source (bool backward) {
 #if HAS_MUTTER46
         display.get_compositor ().backend.ungrab_keyboard (display.get_current_time ());
 #else
@@ -72,8 +65,7 @@ public class Gala.KeyboardManager : Object {
         return true;
     }
 
-    [CCode (instance_pos = -1)]
-    private void set_keyboard_layout (GLib.Settings settings, string key) {
+    private void on_settings_changed (string key) {
         unowned var backend = display.get_context ().get_backend ();
 
         if (key == "sources" || key == "xkb-options" || key == "xkb-model") {
