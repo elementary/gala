@@ -302,7 +302,7 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (trigger_show);
+        barrier.trigger.connect (on_barrier_triggered);
     }
 
     private void setup_barrier_bottom (Mtk.Rectangle monitor_geom, int offset) {
@@ -319,6 +319,11 @@ public class Gala.HideTracker : Object {
             int.MAX
         );
 
-        barrier.trigger.connect (trigger_show);
+        barrier.trigger.connect (on_barrier_triggered);
+    }
+
+    private void on_barrier_triggered () {
+        trigger_show ();
+        schedule_update ();
     }
 }

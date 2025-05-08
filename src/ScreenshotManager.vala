@@ -15,6 +15,28 @@ public class Gala.ScreenshotManager : Object {
     [DBus (visible = false)]
     public NotificationsManager notifications_manager { get; construct; }
 
+    private bool? _is_redacted_font_available = null;
+    private bool is_redacted_font_available {
+        get {
+            if (_is_redacted_font_available != null) {
+                return _is_redacted_font_available;
+            }
+
+            (unowned Pango.FontFamily)[] families;
+            Pango.CairoFontMap.get_default ().list_families (out families);
+
+            _is_redacted_font_available = false;
+            foreach (unowned var family in families) {
+                if (family.get_name () == "Redacted Script") {
+                    _is_redacted_font_available = true;
+                    break;
+                }
+            }
+
+            return _is_redacted_font_available;
+        }
+    }
+
     private Settings desktop_settings;
 
     private string prev_font_regular;
@@ -316,7 +338,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     private void unconceal_text () {
-        if (conceal_timeout == 0) {
+        if (!is_redacted_font_available || conceal_timeout == 0) {
             return;
         }
 
@@ -329,6 +351,10 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void conceal_text () throws DBusError, IOError {
+        if (!is_redacted_font_available) {
+            throw new DBusError.FAILED ("Redacted font is not installed.");
+        }
+
         if (conceal_timeout > 0) {
             Source.remove (conceal_timeout);
         } else {

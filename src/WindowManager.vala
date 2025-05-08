@@ -200,16 +200,15 @@ namespace Gala {
              * + ui group
              * +-- window group
              * +---- background manager
-             * +-- shell elements
              * +-- top window group
-             * +-- workspace view
+             * +-- multitasking view
              * +-- window switcher
              * +-- window overview
-             * +-- notification group
+             * +-- shell group
+             * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
-             * +-- screen shield
-             * +-- feedback group (e.g. DND icons)
+             * +-- session locker
              */
 
             system_background = new SystemBackground (display);
@@ -219,7 +218,6 @@ namespace Gala {
             stage.insert_child_below (system_background.background_actor, null);
 
             ui_group = new Clutter.Actor ();
-            ui_group.reactive = true;
             update_ui_group_size ();
             stage.add_child (ui_group);
 
@@ -275,10 +273,10 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (display));
 
-            var screen_shield = new ScreenShield (this);
-            ui_group.add_child (screen_shield);
+            var session_locker = new SessionLocker (this);
+            ui_group.add_child (session_locker);
 
-            screensaver = new ScreenSaverManager (screen_shield);
+            screensaver = new ScreenSaverManager (session_locker);
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
@@ -334,6 +332,7 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
             for (int i = 1; i < 13; i++) {
+                Meta.KeyBinding.set_custom_handler ("switch-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_switch_to_workspace);
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
             }
 
@@ -465,8 +464,9 @@ namespace Gala {
                 var direction = (name == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
                 target_workspace = active_workspace.get_neighbor (direction);
             } else {
-                var workspace_number = int.parse (name.offset ("move-to-workspace-".length));
-                var workspace_index = workspace_number - 1;
+                var workspace_number = int.parse (name.offset ("move-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
                 target_workspace = workspace_manager.get_workspace_by_index (workspace_index);
             }
 
@@ -491,8 +491,24 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction, event.get_time ());
+            unowned var name = binding.get_name ();
+
+            if (name == "switch-to-workspace-left" || name == "switch-to-workspace-right") {
+                var direction = (name == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+                switch_to_next_workspace (direction, event.get_time ());
+            } else {
+                unowned var workspace_manager = get_display ().get_workspace_manager ();
+
+                var workspace_number = int.parse (name.offset ("switch-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
+                var workspace = workspace_manager.get_workspace_by_index (workspace_index);
+                if (workspace == null) {
+                    return;
+                }
+
+                workspace.activate (event.get_time ());
+            }
         }
 
         [CCode (instance_pos = -1)]
@@ -1334,16 +1350,12 @@ namespace Gala {
 
                     mapping.add (actor);
 
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_pivot_point_z (0.2f);
-                    actor.set_scale (0.9f, 0.9f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
+                    actor.opacity = 255;
                     actor.restore_easing_state ();
 
                     ulong map_handler_id = 0UL;

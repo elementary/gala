@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
+public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
@@ -60,13 +60,14 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS, wm) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
         gesture_controller.enable_touchpad ();
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
+        add_gesture_controller (gesture_controller);
 
         container = new Clutter.Actor () {
             reactive = true,
@@ -96,7 +97,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             orientation = VERTICAL
         };
 
-        shadow_effect = new ShadowEffect ("window-switcher") {
+        shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
             border_radius = InternalUtils.scale_to_int (9, scaling_factor),
             shadow_opacity = 100
         };
@@ -118,7 +119,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     private void scale () {
         scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
 
-        shadow_effect.scale_factor = scaling_factor;
+        shadow_effect.monitor_scale = scaling_factor;
 
         var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
@@ -331,14 +332,13 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
@@ -354,6 +354,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
@@ -365,8 +366,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         if (current_window == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app = window_tracker.get_app_for_window (current_window);

@@ -90,8 +90,8 @@ src/Widgets/MultitaskingView/WorkspaceInsertThumb.vala
 src/Widgets/MultitaskingView/WorkspaceRow.vala
 src/Widgets/PixelPicker.vala
 src/Widgets/PointerLocator.vala
-src/Widgets/ScreenShield.vala
 src/Widgets/SelectionArea.vala
+src/Widgets/SessionLocker.vala
 src/Widgets/WindowOverview.vala
 src/Widgets/WindowSwitcher/WindowSwitcherIcon.vala
 src/Widgets/WindowSwitcher/WindowSwitcher.vala

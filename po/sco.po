@@ -5,102 +5,107 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gala 3.2.0\n"
+"Project-Id-Version: gala 8.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: br\n"
+"PO-Revision-Date: 2025-04-16 14:55+0000\n"
+"Last-Translator: Ben Gordon Agnew <ben.gordon@posteo.de>\n"
+"Language-Team: Scots <https://l10n.elementaryos.org/projects/desktop/gala/"
+"sco/>\n"
+"Language: sco\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.4\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Change Hintergroond…"
 
 #: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "Display Settins…"
 
 #: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "System Settins…"
 
 #: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "Mist tae apen System Settins"
 
 #: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "A handler for the \"setting://\" URI scheme maun be instawed."
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
-msgstr ""
+msgstr "Hide"
 
 #: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
-msgstr ""
+msgstr "Muve"
 
 #: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
 msgid "Resize"
-msgstr ""
+msgstr "Resize"
 
 #: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
 msgid "Always on Top"
-msgstr ""
+msgstr "Aye in foregroond"
 
 #: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
-msgstr ""
+msgstr "Aye on the Vizible Werkspace"
 
 #: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Muve tae Werkspace Left"
 
 #: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Muve tae Werkspace Richt"
 
 #: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Tay Screenshot"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
-msgstr ""
+msgstr "Quit"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "Detile"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
-msgstr ""
+msgstr "Demaximize"
 
 #: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
 msgid "Maximize"
-msgstr ""
+msgstr "Maximize"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitaskin &amp; Winda Management"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "A winda &amp; compositin manager for Pantheon"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"A winda &amp; compositin manager based upon libmutter an designed by "
+"elementary for use wi Pantheon."
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
 #: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
@@ -108,7 +113,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
 #: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
-msgstr ""
+msgstr "Imbetterments:"
 
 #: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
 #: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
@@ -116,11 +121,11 @@ msgstr ""
 #: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
 #: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
 msgid "Updated translations"
-msgstr ""
+msgstr "Rewerkt translaitions"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Window state is now saved on sleep and shutdown"
-msgstr ""
+msgstr "Winda state is noo saved on sleep an Sneckdoon"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Remove scaling effect from menus"
@@ -132,174 +137,179 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:66
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Fixt seldin crash when a dock winda was be-ended"
 
 #: data/gala.metainfo.xml.in:67
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Added interactive screenshot shortcut"
 
 #: data/gala.metainfo.xml.in:68
 msgid "Fixed crash when using tiling shortcuts"
-msgstr ""
+msgstr "Fixt crash when usin tilin shortcuts"
 
 #: data/gala.metainfo.xml.in:97
 msgid "Improved shadows performance"
-msgstr ""
+msgstr "Bettert performance o' shadas"
 
 #: data/gala.metainfo.xml.in:141
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr ""
+msgstr "Fix a potential crash when muvin windas between werkspaces"
 
 #: data/gala.metainfo.xml.in:142
 msgid "Fix notification animation when entering multitasking view"
-msgstr ""
+msgstr "Fix notificaition animaition when enterin the multitaskin view"
 
 #: data/gala.metainfo.xml.in:157
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr ""
+msgstr "Better the keybuird navigaition in Multitaskin View"
 
 #: data/gala.metainfo.xml.in:158
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr ""
+msgstr "Change panel coleur alang wi hintergroond transition"
 
 #: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Changin the hintergroond or gaein tae sleep respects the \"Reduce Motion\" "
+"option"
 
 #: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Use appropriate click-an-drag pointers when muvin windas"
 
 #: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Fix the issue in the multitaskin view whar gestures micht nae langer werk"
 
 #: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Better the behaviour o' dynamic werkspaces wi multiple monitors"
 
 #: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Better the handlin o' the muve-tae-werkspace shortcut"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
 msgid "Multitasking View"
-msgstr ""
+msgstr "Multitaskin View"
 
 #: data/gala-multitaskingview.desktop.in:5
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "View aw the apen windas an werkspaces"
 
 #: data/gala-other.desktop.in:4
 msgid "Other"
-msgstr ""
+msgstr "Ither"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
+"A reserve desktap file for the notificaitions frae ootdated applicaitions."
 
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Unbekent"
 
 #: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "“%s” isna respondin"
 
 #: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
-msgstr ""
+msgstr "Applicaition isna respondin"
 
 #: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Ye may haud a wheen until the applicaition responds, or force hit tae quit."
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr ""
+msgstr "Force Quit"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
-msgstr ""
+msgstr "Wait"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” wants tae hinder system shortcuts"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "A applicaition wants tae hinder system shortcuts"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Aw the system shortcuts sill be re-airted tae the applicaition."
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
-msgstr ""
+msgstr "Allow"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
-msgstr ""
+msgstr "Deny"
 
 #: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
-msgstr ""
+msgstr "Winda his awreddie focus"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/ScreenshotManager.vala:101
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Screenshot frae %s"
 
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
 #: src/ScreenshotManager.vala:159
 msgid "Show in Files"
-msgstr ""
+msgstr "Show in Files"
 
 #: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Screenshot tain"
 
 #: src/ScreenshotManager.vala:166
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Screenshot is saved tae clipbuird"
 
 #: src/ScreenshotManager.vala:166
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Screenshot saved tae screenshot fowder"
 
 #: src/ScreenshotManager.vala:422
 msgid "Screenshots"
-msgstr ""
+msgstr "Screenshots"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
 msgid "Window switcher"
-msgstr ""
+msgstr "Winda switcher"
 
 #: src/WindowManager.vala:1775
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Changes sill automaticlie change back after %i second."
+msgstr[1] "Changes sill automaticlie change back after %i second."
 
 #: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Keep the new display settins?"
 
 #: src/WindowManager.vala:1786
 msgid "Keep Settings"
-msgstr ""
+msgstr "Keep Settins"
 
 #: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Use Previous Settins"

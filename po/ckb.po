@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-12 22:19+0000\n"
+"POT-Creation-Date: 2025-04-16 17:34+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -32,13 +32,13 @@ msgstr "ڕێکخستنەکانی ڕونما…"
 msgid "System Settings…"
 msgstr "ڕێکخستنەکانی سیستەم…"
 
-#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "ڕێکخستنەکانی سیستەم…"
 
-#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
@@ -111,82 +111,94 @@ msgid "elementary, Inc."
 msgstr "کۆمپانیای ئێلەمێنتەری هاوپشک."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:124
-#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:190
-#: data/gala.metainfo.xml.in:206
+#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
 msgstr "پێشکەوتنەکان:"
 
 #: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:78 data/gala.metainfo.xml.in:93
-#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:128
-#: data/gala.metainfo.xml.in:171 data/gala.metainfo.xml.in:193
-#: data/gala.metainfo.xml.in:208
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
+#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
 msgid "Updated translations"
 msgstr "وەرگێڕانەکان نوێکراونەوە"
 
 #: data/gala.metainfo.xml.in:35
-msgid "Fixed rare crash when a dock window was killed"
+msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:36
-msgid "Added interactive screenshot shortcut"
+msgid "Remove scaling effect from menus"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:37
+msgid "Swipe up to close windows in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:66
+msgid "Fixed rare crash when a dock window was killed"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:67
+msgid "Added interactive screenshot shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:68
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "چارەسەرکردنی کێشەیەک کە ئەگەری ڕوودانی هەبوو لە کاتی سکرینشوت کردندا"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:97
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "پێشخستنی سێبەری پەنجەرەکان بۆ ئەپە بەپارەکان"
 
-#: data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:141
 #, fuzzy
 #| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "چاککردنی کێشەیەک کە لەوانەیە ڕووبدات لە کاتی سکرینشوت کردندا"
 
-#: data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:142
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
 msgstr "چاککردنی شوێنی ئاگادارکەرەوە دوای گۆڕینی DPI"
 
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:157
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "دیمەنی مەڵتی-تاسکینگ"
 
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:158
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:167
+#: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:169
+#: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:170
+#: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:192
+#: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -263,42 +275,42 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:194
+#: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:79
+#: src/ScreenshotManager.vala:101
 #, c-format
 msgid "Screenshot from %s"
 msgstr "سکرینشوت لە %s"
 
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:137
+#: src/ScreenshotManager.vala:159
 msgid "Show in Files"
 msgstr ""
 
-#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
+#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
 msgstr "سکرینشوت کرا"
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:409
+#: src/ScreenshotManager.vala:422
 msgid "Screenshots"
 msgstr "سکرینشوتەکان"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1735
+#: src/WindowManager.vala:1775
 #, fuzzy, c-format
 #| msgid "Changes will automatically revert after 30 seconds."
 msgid "Changes will automatically revert after %i second."
@@ -306,15 +318,15 @@ msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 msgstr[1] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 
-#: src/WindowManager.vala:1742
+#: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
 msgstr "هێشتنەوەی ڕێکخستنە تازەکانی ڕونما؟"
 
-#: src/WindowManager.vala:1746
+#: src/WindowManager.vala:1786
 msgid "Keep Settings"
 msgstr "هێشتنەوەی ڕێکخستنەکان"
 
-#: src/WindowManager.vala:1747
+#: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 

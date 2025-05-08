@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
+ * Copyright 2021-2025 elementary, Inc (https://elementary.io)
  *           2021 José Expósito <jose.exposito89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
-    public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
     public GestureSettings settings { get; construct; }
 
@@ -46,9 +45,10 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     }
 
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
-        Object (actor: actor, orientation: orientation, settings: settings);
+        Object (orientation: orientation, settings: settings);
 
-        actor.scroll_event.connect (on_scroll_event);
+        actor.captured_event.connect (on_scroll_event);
+        actor.leave_event.connect (on_leave_event);
         // When the actor is turned invisible, we don't receive a scroll finish event which would cause
         // us to ignore the first new scroll event if we're currently ignoring.
         actor.notify["visible"].connect (() => ignoring = false);
@@ -56,14 +56,14 @@ public class Gala.ScrollBackend : Object, GestureBackend {
 
     private bool on_scroll_event (Clutter.Event event) {
         if (!can_handle_event (event)) {
-            return false;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         if (ignoring) {
             if (event.get_scroll_finish_flags () != NONE) {
                 ignoring = false;
             }
-            return false;
+            return Clutter.EVENT_PROPAGATE;
         }
 
         var time = event.get_time ();
@@ -84,6 +84,14 @@ public class Gala.ScrollBackend : Object, GestureBackend {
 
         if (!started) {
             if (delta_x != 0 || delta_y != 0) {
+                if (delta_x.abs () > delta_y.abs () && orientation != HORIZONTAL ||
+                    delta_y.abs () > delta_x.abs () && orientation != VERTICAL
+                ) {
+                    ignoring = true;
+                    reset ();
+                    return Clutter.EVENT_PROPAGATE;
+                }
+
                 float origin_x, origin_y;
                 event.get_coords (out origin_x, out origin_y);
                 Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
@@ -104,7 +112,19 @@ public class Gala.ScrollBackend : Object, GestureBackend {
             }
         }
 
-        return true;
+        return Clutter.EVENT_STOP;
+    }
+
+    private bool on_leave_event (Clutter.Event event) requires (event.get_type () == LEAVE) {
+        if (!started) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        double delta = calculate_delta (delta_x, delta_y, direction);
+        on_end (delta, event.get_time ());
+        reset ();
+
+        return Clutter.EVENT_PROPAGATE;
     }
 
     private static bool can_handle_event (Clutter.Event event) {

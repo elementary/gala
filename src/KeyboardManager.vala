@@ -12,7 +12,6 @@ public class Gala.KeyboardManager : Object {
     };
 
     private static KeyboardManager? instance;
-    private static VariantType sources_variant_type;
     private static GLib.Settings settings;
 
     public unowned Meta.Display display { construct; private get; }
@@ -28,8 +27,6 @@ public class Gala.KeyboardManager : Object {
     }
 
     static construct {
-        sources_variant_type = new VariantType ("a(ss)");
-
         var schema = GLib.SettingsSchemaSource.get_default ().lookup ("org.gnome.desktop.input-sources", true);
         if (schema == null) {
             critical ("org.gnome.desktop.input-sources not found.");
@@ -58,9 +55,6 @@ public class Gala.KeyboardManager : Object {
 #endif
 
         var sources = settings.get_value ("sources");
-        if (!sources.is_of_type (sources_variant_type)) {
-            return true;
-        }
 
         var n_sources = (uint) sources.n_children ();
         if (n_sources < 2) {
@@ -80,14 +74,12 @@ public class Gala.KeyboardManager : Object {
 
     [CCode (instance_pos = -1)]
     private void set_keyboard_layout (GLib.Settings settings, string key) {
-        if (key == "sources" || key == "xkb-options") {
+        unowned var backend = display.get_context ().get_backend ();
+
+        if (key == "sources" || key == "xkb-options" || key == "xkb-model") {
             string[] layouts = {}, variants = {};
 
             var sources = settings.get_value ("sources");
-            if (!sources.is_of_type (sources_variant_type)) {
-                return;
-            }
-
             for (int i = 0; i < sources.n_children (); i++) {
                 unowned string? type = null, name = null;
                 sources.get_child (i, "(&s&s)", out type, out name);
@@ -121,13 +113,12 @@ public class Gala.KeyboardManager : Object {
             var options = string.joinv (",", xkb_options);
 
 #if HAS_MUTTER46
-            //TODO: add model support
-            display.get_context ().get_backend ().set_keymap (layout, variant, options, "");
+            backend.set_keymap (layout, variant, options, settings.get_string ("xkb-model"));
 #else
-            display.get_context ().get_backend ().set_keymap (layout, variant, options);
+            backend.set_keymap (layout, variant, options);
 #endif
         } else if (key == "current") {
-            display.get_context ().get_backend ().lock_layout_group (settings.get_uint ("current"));
+            backend.lock_layout_group (settings.get_uint ("current"));
         }
     }
 }
