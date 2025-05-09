@@ -1477,31 +1477,6 @@ namespace Gala {
                         destroying.remove (actor);
                         destroy_completed (actor);
                     });
-
-                    break;
-                case Meta.WindowType.MENU:
-                case Meta.WindowType.DROPDOWN_MENU:
-                case Meta.WindowType.POPUP_MENU:
-                    var duration = AnimationDuration.MENU_MAP;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
-
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
                     break;
                 default:
                     destroy_completed (actor);
