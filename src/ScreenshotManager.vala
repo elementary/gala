@@ -78,19 +78,19 @@ public class Gala.ScreenshotManager : Object {
                 wm.launch_action (ActionKeys.INTERACTIVE_SCREENSHOT_ACTION);
                 break;
             case "area-screenshot":
-            handle_screenshot_area_shortcut.begin (false);
+                handle_screenshot_area_shortcut.begin (false);
                 break;
             case "window-screenshot":
-            handle_screenshot_current_window_shortcut.begin (false);
+                handle_screenshot_current_window_shortcut.begin (false);
                 break;
             case "screenshot-clip":
                 handle_screenshot_screen_shortcut.begin (true);
                 break;
             case "area-screenshot-clip":
-            handle_screenshot_area_shortcut.begin (true);
+                handle_screenshot_area_shortcut.begin (true);
                 break;
             case "window-screenshot-clip":
-            handle_screenshot_current_window_shortcut.begin (true);
+                handle_screenshot_current_window_shortcut.begin (true);
                 break;
         }
     }
@@ -280,15 +280,12 @@ public class Gala.ScreenshotManager : Object {
 
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
-        float actor_x, actor_y;
-        window_actor.get_position (out actor_x, out actor_y);
-
-        var rect = window.get_frame_rect ();
+        var rect = window.get_buffer_rect ();
         if (!include_frame) {
-            rect = window.frame_rect_to_client_rect (rect);
+            rect = window.get_frame_rect ();
         }
 
-        Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+        Mtk.Rectangle clip = { rect.x - (int) window_actor.x, rect.y - (int) window_actor.y, rect.width, rect.height };
         var image = (Cairo.ImageSurface) window_actor.get_image (clip);
         if (include_cursor) {
             if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {
