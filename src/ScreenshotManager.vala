@@ -64,6 +64,10 @@ public class Gala.ScreenshotManager : Object {
         var show_in_files_action = new GLib.SimpleAction ("show-in-files", GLib.VariantType.STRING);
         show_in_files_action.activate.connect (show_in_files);
         notifications_manager.add_action (show_in_files_action);
+
+        var open_in_photos_action = new GLib.SimpleAction ("open-in-photos", GLib.VariantType.STRING);
+        open_in_photos_action.activate.connect (open_in_photos);
+        notifications_manager.add_action (open_in_photos_action);
     }
 
     [CCode (instance_pos = -1)]
@@ -155,8 +159,23 @@ public class Gala.ScreenshotManager : Object {
 
         string[] actions = {};
         if (!clipboard) {
-            /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-            actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
+            var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+            var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
+
+            actions = {
+                GLib.Action.print_detailed_name (
+                    "show-in-files",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of file manager
+                    _("Show in %s").printf (files_appinfo.get_display_name ()
+                ),
+                GLib.Action.print_detailed_name (
+                    "open-in-photos",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of image viewer
+                    _("Open in %s").printf (photos_appinfo.get_display_name ()
+                )
+            };
         }
 
         notifications_manager.send.begin (
@@ -177,6 +196,19 @@ public class Gala.ScreenshotManager : Object {
 
         try {
             files_appinfo.launch (files_list, null);
+        } catch (Error e) {
+            warning (e.message);
+        }
+    }
+
+    private void open_in_photos (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
+        var files_list = new GLib.List<GLib.File> ();
+        files_list.append (GLib.File.new_for_path (variant.get_string ()));
+
+        var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
+
+        try {
+            photos_appinfo.launch (files_list, null);
         } catch (Error e) {
             warning (e.message);
         }
