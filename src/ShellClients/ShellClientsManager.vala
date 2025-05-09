@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
@@ -30,7 +30,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
-    private ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 
@@ -192,6 +192,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
+    public void make_modal (Meta.Window window, bool dim) requires (is_itself_positioned (window)) {
+        positioned_windows[window].make_modal (dim);
+    }
+
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
@@ -217,6 +221,16 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         });
 
         return positioned;
+    }
+
+    public bool is_system_modal_window (Meta.Window window, out bool dim) {
+        if (window in positioned_windows && positioned_windows[window].modal) {
+            dim = positioned_windows[window].dim;
+            return true;
+        }
+
+        dim = false;
+        return false;
     }
 
     //X11 only
