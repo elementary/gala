@@ -9,7 +9,8 @@ public class Gala.PositionedWindow : Object {
     public enum Position {
         TOP,
         BOTTOM,
-        CENTER;
+        CENTER,
+        MONITOR_LABEL;
 
         public static Position from_anchor (Pantheon.Desktop.Anchor anchor) {
             if (anchor > 1) {
@@ -72,6 +73,17 @@ public class Gala.PositionedWindow : Object {
                 var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
                 x = monitor_geom.x + (monitor_geom.width - window_rect.width) / 2;
                 y = monitor_geom.y + monitor_geom.height - window_rect.height;
+                break;
+
+            case MONITOR_LABEL:
+                if (position_data == null || !position_data.is_of_type (VariantType.INT32)) {
+                    warning ("Invalid position data for MONITOR_LABEL");
+                    return;
+                }
+
+                var geom = window.get_workspace ().get_work_area_for_monitor (position_data.get_int32 ());
+                x = geom.x + 12;
+                y = geom.y + 12;
                 break;
         }
 
