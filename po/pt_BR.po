@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2024-10-26 22:46+0000\n"
-"Last-Translator: Diogo Pessoa <diogopessoabr@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <https://l10n.elementary.io/projects/"
+"PO-Revision-Date: 2025-05-13 17:03+0000\n"
+"Last-Translator: Max2020 <alcizmaxpereira@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) <https://l10n.elementaryos.org/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.10.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -127,10 +127,11 @@ msgstr "Traduções atualizadas"
 #: data/gala.metainfo.xml.in:35
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
+"O estado da janela agora é salvo durante o modo de suspensão e desligamento"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Remover efeito de escala dos menus"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Swipe up to close windows in Multitasking View"
