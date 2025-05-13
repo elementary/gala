@@ -1,3 +1,9 @@
+gala (8.2.0) noble; urgency=medium
+
+  * Release 8.2.0
+
+ -- Danielle Foré <danielle@elementary.io>  Tue, 13 May 2025 10:00:30 -0700
+
 gala (8.1.0) jammy; urgency=medium
 
   * Release 8.1.0 (#2206)
