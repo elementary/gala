@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-05-13 17:06+0000\n"
-"Last-Translator: Max2020 <alcizmaxpereira@gmail.com>\n"
+"PO-Revision-Date: 2025-05-13 17:42+0000\n"
+"Last-Translator: Leonardo Lemos <leonardolemos@live.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementaryos.org/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -143,7 +143,7 @@ msgstr "Corrigida a falha rara quando uma janela do dock era fechada"
 
 #: data/gala.metainfo.xml.in:67
 msgid "Added interactive screenshot shortcut"
-msgstr "Adicionado atalho para captura de tela interativa"
+msgstr "Adicionado atalho para captura interativa de tela"
 
 #: data/gala.metainfo.xml.in:68
 #, fuzzy
@@ -282,7 +282,7 @@ msgstr "Captura de tela de %s"
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
 #: src/ScreenshotManager.vala:159
 msgid "Show in Files"
-msgstr ""
+msgstr "Mostrar em Arquivos"
 
 #: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
