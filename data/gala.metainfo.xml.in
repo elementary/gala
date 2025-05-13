@@ -48,12 +48,14 @@
         <issue url="https://github.com/elementary/gala/issues/1235">Overview window title should follow keyboard focus</issue>
         <issue url="https://github.com/elementary/gala/issues/1661">Better post-screenshot animation</issue>
         <issue url="https://github.com/elementary/gala/issues/2114">Wrong context menu placement</issue>
+        <issue url="https://github.com/elementary/gala/issues/2172">Override redirect Popup menu type window under Xwayland can not be displayed on the second XMapWindow</issue>
         <issue url="https://github.com/elementary/gala/issues/2199">Swiping in the multitasking view can close applications</issue>
         <issue url="https://github.com/elementary/gala/issues/2260">Ghost of window on another workspace appears when cancelling workspace swipe</issue>
         <issue url="https://github.com/elementary/gala/issues/2267">Dock crash may crash Gala</issue>
         <issue url="https://github.com/elementary/gala/issues/2279">Can't reveal dock when animations are disabled</issue>
         <issue url="https://github.com/elementary/gala/issues/2294">Unlocking firewall settings leads to crash</issue>
         <issue url="https://github.com/elementary/gala/issues/2341">Lutris Flatpak crashes gala with GE setup</issue>
+        <issue url="https://github.com/elementary/gala/issues/2366">Menus only show once</issue>
         <issue url="https://github.com/elementary/portals/issues/97">False detection of "background activity" for some Flatpak apps</issue>
       </issues>
     </release>
