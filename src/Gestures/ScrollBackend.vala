@@ -26,7 +26,6 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
-    public Clutter.Actor actor { get; construct; }
     public Clutter.Orientation orientation { get; construct; }
     public GestureSettings settings { get; construct; }
 
@@ -46,7 +45,7 @@ public class Gala.ScrollBackend : Object, GestureBackend {
     }
 
     public ScrollBackend (Clutter.Actor actor, Clutter.Orientation orientation, GestureSettings settings) {
-        Object (actor: actor, orientation: orientation, settings: settings);
+        Object (orientation: orientation, settings: settings);
 
         actor.captured_event.connect (on_scroll_event);
         actor.leave_event.connect (on_leave_event);
