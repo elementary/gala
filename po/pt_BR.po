@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-05-13 17:05+0000\n"
+"PO-Revision-Date: 2025-05-13 17:06+0000\n"
 "Last-Translator: Max2020 <alcizmaxpereira@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementaryos.org/projects/"
 "desktop/gala/pt_BR/>\n"
@@ -143,7 +143,7 @@ msgstr "Corrigida a falha rara quando uma janela do dock era fechada"
 
 #: data/gala.metainfo.xml.in:67
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Adicionado atalho para captura de tela interativa"
 
 #: data/gala.metainfo.xml.in:68
 #, fuzzy
