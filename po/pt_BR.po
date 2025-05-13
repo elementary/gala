@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-04-16 17:34+0000\n"
 "PO-Revision-Date: 2025-05-13 17:42+0000\n"
-"Last-Translator: Max2020 <alcizmaxpereira@gmail.com>\n"
+"Last-Translator: Leonardo Lemos <leonardolemos@live.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementaryos.org/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -147,7 +147,7 @@ msgstr "Adicionado atalho para captura interativa de tela"
 
 #: data/gala.metainfo.xml.in:68
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Corrigir possíveis falhas ao capturar telas"
+msgstr "Correção de possíveis falhas ao capturar telas"
 
 #: data/gala.metainfo.xml.in:97
 msgid "Improved shadows performance"
