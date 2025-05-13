@@ -150,8 +150,6 @@ msgid "Fixed crash when using tiling shortcuts"
 msgstr "Corrigir possíveis falhas ao capturar telas"
 
 #: data/gala.metainfo.xml.in:97
-#, fuzzy
-#| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "Melhorar as sombras nas janelas para aplicações antigas"
 
