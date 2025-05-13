@@ -9,4 +9,15 @@ if [ "$action" = configure ]; then
         x-window-manager /usr/bin/gala 50
 fi
 
+
+current_binding=$(gsettings get org.gnome.desktop.wm.keybindings show-desktop)
+
+if [ ! -f /etc/gala-multitasking-keybinding-migration ]; then
+    if [ "$current_binding" != "@as []" ]; then
+        gsettings set io.elementary.desktop.wm.keybindings toggle-multitasking-view "$current_binding"
+        gsettings set org.gnome.desktop.wm.keybindings show-desktop "@as []"
+    fi
+    touch /etc/gala-multitasking-keybinding-migration
+fi
+
 #DEBHELPER#
