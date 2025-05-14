@@ -24,16 +24,6 @@ public class Gala.AppSystem : GLib.Object {
         app_cache = new AppCache ();
 
         update_desktop_files ();
-
-        var data_dirs = Environment.get_system_data_dirs ();
-        data_dirs += Environment.get_user_data_dir ();
-
-        foreach (unowned string data_dir in data_dirs) {
-            var app_dir = Path.build_filename (data_dir, "applications");
-            if (FileUtils.test (app_dir, FileTest.EXISTS)) {
-
-            }
-        }
     }
 
     private void update_desktop_files () {
