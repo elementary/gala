@@ -143,8 +143,8 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         }
     }
 
-    public void make_modal (bool _dim) {
+    public void make_modal (bool dim) {
         modal = true;
-        dim = _dim;
+        this.dim = dim;
     }
 }

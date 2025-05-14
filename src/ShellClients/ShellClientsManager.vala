@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManagerGala wm) {
+    public static void init (WindowManager wm) {
         if (instance != null) {
             return;
         }
@@ -30,7 +30,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
-    private ShellClientsManager (WindowManagerGala wm) {
+    private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
     }
 
