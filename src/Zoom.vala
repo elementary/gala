@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Zoom : Object, GestureTarget {
+public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private const float MIN_ZOOM = 1.0f;
     private const float MAX_ZOOM = 10.0f;
     private const float SHORTCUT_DELTA = 0.5f;
@@ -34,10 +34,11 @@ public class Gala.Zoom : Object, GestureTarget {
         display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
         display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
 
-        gesture_controller = new GestureController (ZOOM, this, wm) {
+        gesture_controller = new GestureController (ZOOM, wm) {
             snap = false
         };
         gesture_controller.enable_touchpad ();
+        add_gesture_controller (gesture_controller);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
