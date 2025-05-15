@@ -99,15 +99,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
-        manager.bind_property (
-            "n-workspaces",
-            workspaces_gesture_controller,
-            "overshoot-lower-clamp",
-            DEFAULT,
-            (binding, from_value, ref to_value) => {
-                to_value.set_double (-from_value.get_int () - 0.1 + 1);
-            }
-        );
+        workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
+        manager.notify["n-workspaces"].connect (() => {
+            workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
+        });
 
         window_containers_monitors = new List<MonitorClone> ();
         update_monitors ();
