@@ -113,7 +113,12 @@ public class Gala.WorkspaceManager : Object {
         foreach (var actor in window_actors) {
             var win = actor.meta_window;
 
-            if (win == null || win.on_all_workspaces || win.get_workspace () == null) {
+            if (
+                win == null ||
+                win.on_all_workspaces ||
+                Meta.Prefs.get_workspaces_only_on_primary () && !win.is_on_primary_monitor () ||
+                win.get_workspace () == null
+            ) {
                 continue;
             }
 
