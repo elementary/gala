@@ -27,6 +27,15 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.2.2" date="2025-05-16" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+    </release>
+
     <release version="8.2.1" date="2025-05-15" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -36,6 +45,8 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/2322">Workspace Switch</issue>
+        <issue url="https://github.com/elementary/gala/issues/2357">Very rough shadows around the workspace switcher in HiDPI mode.</issue>
+        <issue url="https://github.com/elementary/gala/issues/2380">ShadowEffect: corner radius doesn't use monitor scale</issue>
       </issues>
     </release>
 
