@@ -293,7 +293,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                 case "centered":
                     make_centered (window);
                     break;
-                
+
                 case "restore-previous-region":
                     set_restore_previous_x11_region (window);
                     break;
