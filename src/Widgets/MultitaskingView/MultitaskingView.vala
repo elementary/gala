@@ -145,9 +145,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
                     continue;
                 }
 
-                var monitor_clone = new MonitorClone (wm, monitor);
+                var monitor_clone = new MonitorClone (wm, monitor) {
+                    visible = true
+                };
                 monitor_clone.window_selected.connect (window_selected);
-                monitor_clone.visible = opened;
 
                 window_containers_monitors.append (monitor_clone);
                 add_child (monitor_clone);
