@@ -86,15 +86,15 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         var visible = double.max (multitasking_view_progress, custom_progress) < 0.1;
         var animating = animations_ongoing > 0;
 
+        window_actor.visible = animating || visible;
+
         if (!Meta.Util.is_wayland_compositor ()) {
-            if (!visible) {
-                Utils.x11_set_window_pass_through (window);
-            } else {
+            if (window_actor.visible) {
                 Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
+            } else {
+                Utils.x11_set_window_pass_through (window);
             }
         }
-
-        window_actor.visible = animating || visible;
 
         unowned var manager = ShellClientsManager.get_instance ();
         window.foreach_transient ((transient) => {

@@ -13,12 +13,6 @@ namespace X {
 		[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XFixesSetWindowShapeRegion")]
         public static void set_window_shape_region (X.Display display, X.Window win, int shape_kind, int x_off, int y_off, XserverRegion region);
 	}
-	namespace Shape {
-		[CCode (cheader_filename = "X11/extensions/shape.h", cname = "XShapeGetRectangles")]
-		public static X.Rectangle* get_rectangles (X.Display display, X.Window win, int kind, out int count, out int ordering);
-		[CCode (cheader_filename = "X11/extensions/shape.h", cname = "XShapeCombineRectangles")]
-		public static void combine_rectangles (X.Display display, X.Window win, int kind, int x, int y, [CCode (array_length_cname = "count", type = "XRectangle*")] X.Rectangle[] rectangles, int op, int ordering);
-	}
 	[SimpleType]
 	[CCode (cheader_filename = "X11/extensions/Xfixes.h", cname = "XserverRegion", has_type_id = false)]
 	public struct XserverRegion {
