@@ -7,6 +7,7 @@
 
 public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public Clutter.Actor? actor { get { return window_actor; } }
+    public bool restore_previous_x11_region { private get; set; default = false; }
 
     private Meta.WindowActor window_actor;
     private double custom_progress = 0;
@@ -89,7 +90,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
             if (!visible) {
                 Utils.x11_set_window_pass_through (window);
             } else {
-                Utils.x11_unset_window_pass_through (window);
+                Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
             }
         }
 

@@ -293,10 +293,20 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                 case "centered":
                     make_centered (window);
                     break;
+                
+                case "restore-previous-region":
+                    set_restore_previous_x11_region (window);
+                    break;
 
                 default:
                     break;
             }
         }
+    }
+
+    private void set_restore_previous_x11_region (Meta.Window window)
+    requires (!Meta.Util.is_wayland_compositor ())
+    requires (window in panel_windows) {
+        panel_windows[window].restore_previous_x11_region = true;
     }
 }
