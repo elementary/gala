@@ -102,6 +102,11 @@
       <summary>Whether hotcorners should be enabled when fullscreen window is opened</summary>
       <description></description>
     </key>
+    <key type="b" name="focus-on-demands-attention">
+      <default>true</default>
+      <summary>Whether windows should automatically be focused when they demand attention</summary>
+      <description></description>
+    </key>
     <key enum="SuperScrollAction" name="super-scroll-action">
       <default>"none"</default>
       <summary>What action should be performed on Super + Scroll</summary>
