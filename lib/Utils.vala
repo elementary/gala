@@ -404,8 +404,6 @@ namespace Gala {
             return texture;
         }
 
-        private static HashTable<Meta.Window, X.XserverRegion?> regions = new HashTable<Meta.Window, X.XserverRegion?> (null, null);
-
         public static void x11_set_window_pass_through (Meta.Window window) {
             unowned var x11_display = window.display.get_x11_display ();
 
@@ -416,10 +414,7 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            regions[window] = X.Fixes.create_region_from_window (xdisplay, x_window, 0);
-
             X.Xrectangle rect = {};
-
             var region = X.Fixes.create_region (xdisplay, {rect});
 
             X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
@@ -437,16 +432,7 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            var region = regions[window];
-
-            if (region == null) {
-                return;
-            }
-
-            X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
-
-            regions.remove (window);
-            X.Fixes.destroy_region (xdisplay, region);
+            X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, (X.XserverRegion) 0);
         }
 
         /**

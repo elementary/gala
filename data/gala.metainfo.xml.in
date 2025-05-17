@@ -27,7 +27,33 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-    <release version="8.2.0" date="2025-03-25" urgency="medium">
+    <release version="8.2.2" date="2025-05-16" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2387">Update broke secondary display workspace</issue>
+      </issues>
+    </release>
+
+    <release version="8.2.1" date="2025-05-15" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2322">Workspace Switch</issue>
+        <issue url="https://github.com/elementary/gala/issues/2357">Very rough shadows around the workspace switcher in HiDPI mode.</issue>
+        <issue url="https://github.com/elementary/gala/issues/2380">ShadowEffect: corner radius doesn't use monitor scale</issue>
+      </issues>
+    </release>
+
+    <release version="8.2.0" date="2025-05-13" urgency="medium">
       <description>
         <p>Improvements:</p>
           <ul>
@@ -49,12 +75,14 @@
         <issue url="https://github.com/elementary/gala/issues/1235">Overview window title should follow keyboard focus</issue>
         <issue url="https://github.com/elementary/gala/issues/1661">Better post-screenshot animation</issue>
         <issue url="https://github.com/elementary/gala/issues/2114">Wrong context menu placement</issue>
+        <issue url="https://github.com/elementary/gala/issues/2172">Override redirect Popup menu type window under Xwayland can not be displayed on the second XMapWindow</issue>
         <issue url="https://github.com/elementary/gala/issues/2199">Swiping in the multitasking view can close applications</issue>
         <issue url="https://github.com/elementary/gala/issues/2260">Ghost of window on another workspace appears when cancelling workspace swipe</issue>
         <issue url="https://github.com/elementary/gala/issues/2267">Dock crash may crash Gala</issue>
         <issue url="https://github.com/elementary/gala/issues/2279">Can't reveal dock when animations are disabled</issue>
         <issue url="https://github.com/elementary/gala/issues/2294">Unlocking firewall settings leads to crash</issue>
         <issue url="https://github.com/elementary/gala/issues/2341">Lutris Flatpak crashes gala with GE setup</issue>
+        <issue url="https://github.com/elementary/gala/issues/2366">Menus only show once</issue>
         <issue url="https://github.com/elementary/portals/issues/97">False detection of "background activity" for some Flatpak apps</issue>
       </issues>
     </release>
