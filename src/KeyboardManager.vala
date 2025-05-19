@@ -15,6 +15,7 @@ public class Gala.KeyboardManager : Object {
 
     private GLib.Settings settings;
     private GLib.HashTable<Meta.Window, uint?> windows_table;
+    private Meta.Window? previous_focus_window = null;
 
     public KeyboardManager (Meta.Display display) {
         Object (display: display);
@@ -49,12 +50,23 @@ public class Gala.KeyboardManager : Object {
         }
 
         var focus_window = display.focus_window;
+        if (focus_window == null) {
+            previous_focus_window = null;
+            return;
+        }
+        
+        if (!InternalUtils.get_window_is_normal (focus_window)) {
+            return;
+        }
+
         var target_layout_id = windows_table[focus_window];
         if (target_layout_id != null) {
             settings.set_uint ("current", target_layout_id);
         } else {
             windows_table[focus_window] = settings.get_uint ("current");
         }
+
+        previous_focus_window = focus_window;
     }
 
     private bool switch_input_source (bool backward) {
@@ -77,10 +89,6 @@ public class Gala.KeyboardManager : Object {
             settings.set_uint ("current", (current + 1) % n_sources);
         } else {
             settings.set_uint ("current", (current - 1) % n_sources);
-        }
-
-        if (settings.get_boolean ("per-window")) {
-            windows_table[display.focus_window] = settings.get_uint ("current");
         }
 
         return true;
@@ -131,7 +139,23 @@ public class Gala.KeyboardManager : Object {
             backend.set_keymap (layout, variant, options);
 #endif
         } else if (key == "current") {
-            backend.lock_layout_group (settings.get_uint ("current"));
+            var current = settings.get_uint ("current");
+            backend.lock_layout_group (current);
+
+            if (!settings.get_boolean ("per-window")) {
+                return;
+            }
+
+            var focus_window = display.focus_window;
+            if (
+                focus_window != null &&
+                !InternalUtils.get_window_is_normal (focus_window) &&
+                previous_focus_window != null
+            ) {
+                windows_table[previous_focus_window] = current;
+            } else {
+                windows_table[focus_window] = current;
+            }
         } else if (key == "per-window" && !settings.get_boolean ("per-window")) {
             windows_table = new GLib.HashTable<Meta.Window, uint> (GLib.direct_hash, GLib.direct_equal);
         }
