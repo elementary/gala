@@ -54,7 +54,7 @@ public class Gala.KeyboardManager : Object {
             previous_focus_window = null;
             return;
         }
-        
+
         if (!InternalUtils.get_window_is_normal (focus_window)) {
             return;
         }
