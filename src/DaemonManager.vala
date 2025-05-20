@@ -12,8 +12,8 @@ public class Gala.DaemonManager : GLib.Object {
 
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
-        public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
-        public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
+        public abstract async void show_window_menu (WindowFlags flags, int monitor, int monitor_width, int monitor_height, int x, int y) throws Error;
+        public abstract async void show_desktop_menu (int monitor, int monitor_width, int monitor_height, int x, int y) throws GLib.Error;
     }
 
     public Meta.Display display { get; construct; }
@@ -77,22 +77,22 @@ public class Gala.DaemonManager : GLib.Object {
     }
 
     private void handle_daemon_window (Meta.Window window) {
-        var info = window.title.split ("-");
-
-        if (info.length == 0) {
-            critical ("Couldn't handle daemon window: No title provided");
+        if (window.title == null) {
             return;
         }
 
+        var info = window.title.split ("-");
+
+        if (info.length < 2) {
+            critical ("Couldn't handle daemon window: Incorrect window title provided");
+            return;
+        }
+
+        var index = int.parse (info[1]);
+        var monitor_geometry = display.get_monitor_geometry (index);
+
         switch (info[0]) {
             case "LABEL":
-                if (info.length < 2) {
-                    return;
-                }
-
-                var index = int.parse (info[1]);
-
-                var monitor_geometry = display.get_monitor_geometry (index);
                 window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
                 window.make_above ();
                 break;
@@ -101,7 +101,7 @@ public class Gala.DaemonManager : GLib.Object {
 #if HAS_MUTTER46
                 daemon_client.make_dock (window);
 #endif
-                window.move_frame (false, 0, 0);
+                window.move_resize_frame (false, monitor_geometry.x, monitor_geometry.y, monitor_geometry.width, monitor_geometry.height);
                 window.make_above ();
                 break;
         }
@@ -123,31 +123,21 @@ public class Gala.DaemonManager : GLib.Object {
         }
     }
 
-    public async void show_background_menu (int x, int y) {
-        if (daemon_proxy == null) {
-            return;
-        }
-
-        int width, height;
-        display.get_size (out width, out height);
+    public async void show_background_menu (int monitor, int x, int y) requires (daemon_proxy != null) {
+        var monitor_geometry = display.get_monitor_geometry (monitor);
 
         try {
-            yield daemon_proxy.show_desktop_menu (width, height, x, y);
+            yield daemon_proxy.show_desktop_menu (monitor, monitor_geometry.width, monitor_geometry.height, x, y);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }
     }
 
-    public async void show_window_menu (WindowFlags flags, int x, int y) {
-        if (daemon_proxy == null) {
-            return;
-        }
-
-        int width, height;
-        display.get_size (out width, out height);
+    public async void show_window_menu (WindowFlags flags, int monitor, int x, int y) requires (daemon_proxy != null) {
+        var monitor_geometry = display.get_monitor_geometry (monitor);
 
         try {
-            yield daemon_proxy.show_window_menu (flags, width, height, x, y);
+            yield daemon_proxy.show_window_menu (flags, monitor, monitor_geometry.width, monitor_geometry.height, x, y);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }

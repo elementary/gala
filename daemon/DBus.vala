@@ -153,28 +153,29 @@ public class Gala.Daemon.DBus : GLib.Object {
         }
     }
 
-    public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
+    public void show_window_menu (Gala.WindowFlags flags, int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
         window_menu.update (flags);
 
-        show_menu (window_menu, display_width, display_height, x, y);
+        show_menu (window_menu, monitor, monitor_width, monitor_height, x, y);
     }
 
-    public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        show_menu (background_menu, display_width, display_height, x, y);
+    public void show_desktop_menu (int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
+        show_menu (background_menu, monitor, monitor_width, monitor_height, x, y);
     }
 
-    private void show_menu (Gtk.Popover menu, int display_width, int display_height, int x, int y) {
+    private void show_menu (Gtk.Popover menu, int monitor, int monitor_width, int monitor_height, int x, int y) {
         if (!DisplayConfig.is_logical_layout ()) {
             var scale_factor = window.scale_factor;
 
-            display_width /= scale_factor;
-            display_height /= scale_factor;
+            monitor_width /= scale_factor;
+            monitor_height /= scale_factor;
             x /= scale_factor;
             y /= scale_factor;
         }
 
-        window.default_width = display_width;
-        window.default_height = display_height;
+        window.title = "MODAL-%d".printf (monitor);
+        window.default_width = monitor_width;
+        window.default_height = monitor_height;
         window.present ();
 
         Gdk.Rectangle rect = {

@@ -29,6 +29,8 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     construct {
+        reactive = true;
+
         background_source = BackgroundCache.get_default ().get_background_source (display);
         update_background_actor (false);
 

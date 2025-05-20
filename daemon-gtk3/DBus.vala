@@ -64,7 +64,7 @@ public class Gala.Daemon.DBus : GLib.Object {
         }
     }
 
-    public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
+    public void show_window_menu (Gala.WindowFlags flags, int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
         if (window_menu == null) {
             window_menu = new WindowMenu ();
             window_menu.perform_action.connect (perform_action);
@@ -72,19 +72,21 @@ public class Gala.Daemon.DBus : GLib.Object {
 
         window_menu.update (flags);
 
-        show_menu (window_menu, display_width, display_height, x, y, true);
+        show_menu (window_menu, monitor, monitor_width, monitor_height, x, y, true);
     }
 
-    public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {
+    public void show_desktop_menu (int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
         if (background_menu == null) {
             background_menu = new BackgroundMenu ();
         }
 
-        show_menu (background_menu, display_width, display_height, x, y, false);
+        show_menu (background_menu, monitor, monitor_width, monitor_height, x, y, false);
     }
 
-    private void show_menu (Gtk.Menu menu, int display_width, int display_height, int x, int y, bool ignore_first_release) {
-        var window = new Window (display_width, display_height);
+    private void show_menu (Gtk.Menu menu, int monitor, int monitor_width, int monitor_height, int x, int y, bool ignore_first_release) {
+        var window = new Window (monitor_width, monitor_height) {
+            title = "MODAL-%d".printf (monitor)
+        };
         window.present ();
 
         menu.attach_to_widget (window.content, null);
