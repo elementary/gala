@@ -27,6 +27,18 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.2.3" date="2025-05-20" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2400">Switching workspaces makes the windows move down with multiple monitors</issue>
+      </issues>
+    </release>
+  
     <release version="8.2.2" date="2025-05-17" urgency="medium">
       <description>
         <p>Improvements:</p>
