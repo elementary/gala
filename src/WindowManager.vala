@@ -228,7 +228,7 @@ namespace Gala {
             ui_group.add_child (window_group);
 
             background_group = new BackgroundContainer (display);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
+            ((BackgroundContainer) background_group).show_background_menu.connect (daemon_manager.show_background_menu);
             window_group.add_child (background_group);
             window_group.set_child_below_sibling (background_group, null);
 
@@ -938,7 +938,15 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
-                    daemon_manager.show_window_menu.begin (flags, x, y);
+                    var monitor = window.get_monitor ();
+                    var monitor_geometry = window.display.get_monitor_geometry (monitor);
+
+                    daemon_manager.show_window_menu.begin (
+                        flags,
+                        monitor,
+                        x - monitor_geometry.x,
+                        y - monitor_geometry.y
+                    );
                     break;
                 case Meta.WindowMenuType.APP:
                     // FIXME we don't have any sort of app menus
