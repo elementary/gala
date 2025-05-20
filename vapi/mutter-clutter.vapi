@@ -6074,6 +6074,7 @@ namespace Clutter {
 #else
 		public unowned Cairo.Region get_redraw_clip ();
 #endif
+		public unowned Clutter.StageView? get_stage_view ();
 #if HAS_MUTTER47
 		public void pop_color_state ();
 #endif
@@ -6499,7 +6500,7 @@ namespace Clutter {
 		public void assign_next_scanout (Cogl.Scanout scanout);
 		public virtual Clutter.PaintFlag get_default_paint_flags ();
 		public unowned Cogl.Framebuffer get_framebuffer ();
-		public void get_layout (Mtk.Rectangle rect);
+		public void get_layout (ref Mtk.Rectangle rect);
 #if HAS_MUTTER47
 		public void get_offscreen_transformation_matrix (Graphene.Matrix matrix);
 #else

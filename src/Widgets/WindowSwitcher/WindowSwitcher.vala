@@ -28,6 +28,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private Clutter.Actor container;
     private Clutter.Text caption;
     private ShadowEffect shadow_effect;
+    private BackgroundBlurEffect blur_effect;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -103,6 +104,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         };
         add_effect (shadow_effect);
 
+
+        blur_effect = new BackgroundBlurEffect (40, 9, scaling_factor);
+        add_effect (blur_effect);
+
         scale ();
 
         container.button_release_event.connect (container_mouse_release);
@@ -120,6 +125,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
 
         shadow_effect.monitor_scale = scaling_factor;
+        blur_effect.monitor_scale = scaling_factor;
 
         var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
@@ -166,6 +172,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             caption_color = "#fafafa";
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
+
+        background_color.alpha = 0.6;
 
         var stroke_width = scaling_factor;
 
@@ -222,7 +230,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color.red,
             highlight_color.green,
             highlight_color.blue,
-            highlight_color.alpha
+            0.3
         );
         ctx.stroke ();
         ctx.restore ();
