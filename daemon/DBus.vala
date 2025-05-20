@@ -67,7 +67,8 @@ public class Gala.Daemon.DBus : GLib.Object {
     private WMDBus? wm_proxy = null;
 
     private Window window;
-    private WindowMenu? window_menu;
+    private WindowMenu window_menu;
+    private Gtk.GestureClick window_menu_click_controller;
     private Gtk.PopoverMenu background_menu;
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
@@ -123,6 +124,11 @@ public class Gala.Daemon.DBus : GLib.Object {
                 return Source.REMOVE;
             });
         });
+
+        window_menu_click_controller = new Gtk.GestureClick () {
+            propagation_phase = Gtk.PropagationPhase.BUBBLE
+        };
+        ((Gtk.Widget) window_menu).add_controller (window_menu_click_controller);
     }
 
     private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
@@ -156,14 +162,14 @@ public class Gala.Daemon.DBus : GLib.Object {
     public void show_window_menu (Gala.WindowFlags flags, int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
         window_menu.update (flags);
 
-        show_menu (window_menu, monitor, monitor_width, monitor_height, x, y);
+        show_menu (window_menu, monitor, monitor_width, monitor_height, x, y, true);
     }
 
     public void show_desktop_menu (int monitor, int monitor_width, int monitor_height, int x, int y) throws DBusError, IOError {
-        show_menu (background_menu, monitor, monitor_width, monitor_height, x, y);
+        show_menu (background_menu, monitor, monitor_width, monitor_height, x, y, false);
     }
 
-    private void show_menu (Gtk.Popover menu, int monitor, int monitor_width, int monitor_height, int x, int y) {
+    private void show_menu (Gtk.Popover menu, int monitor, int monitor_width, int monitor_height, int x, int y, bool ignore_first_release) {
         if (!DisplayConfig.is_logical_layout ()) {
             var scale_factor = window.scale_factor;
 
@@ -190,6 +196,18 @@ public class Gala.Daemon.DBus : GLib.Object {
             menu.popup ();
             return Source.REMOVE;
         });
+
+        if (ignore_first_release) {
+            var first = true;
+            window_menu_click_controller.released.connect (() => {
+                if (first) {
+                    first = false;
+                    window_menu_click_controller.set_state (Gtk.EventSequenceState.CLAIMED);
+                }
+
+                window_menu_click_controller.set_state (Gtk.EventSequenceState.NONE);
+            });
+        }
     }
 
     public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {
