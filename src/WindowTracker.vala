@@ -199,6 +199,34 @@ public class Gala.WindowTracker : GLib.Object {
         return null;
     }
 
+    private unowned Gala.App? get_app_by_guessing (Meta.Window window) {
+        unowned var app_system = Gala.AppSystem.get_default ();
+        unowned Gala.App? result = null;
+
+        unowned string? id = window.get_gtk_application_id ();
+        // if id contains '.' it's probably a valid app id but it doesn't provide the desktop file
+        if (id != null && !id.contains (".") && (result = app_system.guess_app_by_id (id)) != null) {
+            return result;
+        }
+
+        id = window.get_sandboxed_app_id ();
+        if (id != null && !id.contains (".") && (result = app_system.guess_app_by_id (id)) != null) {
+            return result;
+        }
+
+        id = window.get_wm_class ();
+        if (id != null && !id.contains (".") && (result = app_system.guess_app_by_id (id)) != null) {
+            return result;
+        }
+
+        id = window.get_wm_class_instance ();
+        if (id != null && !id.contains (".") && (result = app_system.guess_app_by_id (id)) != null) {
+            return result;
+        }
+
+        return null;
+    }
+
     public Gala.App get_app_for_window (Meta.Window window) {
         unowned Meta.Window? transient_for = window.get_transient_for ();
         if (transient_for != null) {
@@ -279,9 +307,15 @@ public class Gala.WindowTracker : GLib.Object {
             return result;
         }
 
+        /* Try to carefully guess .desktop file name based on application ids and wm class
+         */
+        result = get_app_by_guessing (window);
+        if (result != null) {
+            return result;
+        }
+
         /* Our last resort - we create a fake app from the window */
         return new Gala.App.for_window (window);
-
     }
 
     private void tracked_window_changed (Meta.Window window) {
