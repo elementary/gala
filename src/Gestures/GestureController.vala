@@ -125,17 +125,20 @@ public class Gala.GestureController : Object {
 
     private void prepare () {
         if (timeline != null) {
-            timeline.stop ();
             timeline = null;
+        } else {
+            target.propagate (START, action, progress);
         }
-
-        target.propagate (START, action, progress);
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
+        if (recognizing || !enabled) {
+            return false;
+        }
+
         var recognized_action = GestureSettings.get_action (gesture, out _action_info);
-        recognizing = enabled && (!wm.filter_action (recognized_action) && recognized_action == action ||
-            backend == scroll_backend && recognized_action == NONE);
+        recognizing = !wm.filter_action (recognized_action) && recognized_action == action ||
+            backend == scroll_backend && recognized_action == NONE;
 
         if (recognizing) {
             if (gesture.direction == UP || gesture.direction == RIGHT || gesture.direction == OUT) {
@@ -263,13 +266,10 @@ public class Gala.GestureController : Object {
         timeline = spring;
     }
 
-    private void finished (bool is_finished = true) {
+    private void finished (bool is_finished = true) requires (is_finished) {
         target.propagate (END, action, progress);
         timeline = null;
-
-        if (is_finished) {
-            _action_info = null;
-        }
+        _action_info = null;
     }
 
     /**
