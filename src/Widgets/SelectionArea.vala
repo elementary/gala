@@ -111,7 +111,7 @@ public class Gala.SelectionArea : CanvasActor {
         wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
     }
 
     public Graphene.Rect get_selection_rectangle () {
