@@ -34,7 +34,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     private void update_clip_rect () {
         var frame_rect = window.get_frame_rect ();
-        window_actor.clip_rect = {{0, 0}, {frame_rect.width, frame_rect.height}};
+        window_actor.set_clip (0, 0, frame_rect.width, frame_rect.height);
     }
 
     private void update_target () {
