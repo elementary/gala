@@ -21,8 +21,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public Clutter.Actor? actor { get { return wm.stage; } }
-
     public WindowManager wm { get; construct; }
+    public GLib.HashTable<Meta.Window, GLib.List<Mtk.Rectangle?>> workspace_areas { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -35,6 +35,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     construct {
+        workspace_areas = new GLib.HashTable<Meta.Window, GLib.List<Mtk.Rectangle?>> (null, null);
+
         notifications_client = new NotificationsClient (wm.get_display ());
 
         start_clients.begin ();
@@ -183,6 +185,16 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         panel_windows[window].hide_mode = hide_mode;
+    }
+
+    public void set_workspace_areas (Meta.Window window, GLib.List<Mtk.Rectangle?> rects) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before workspace areas.");
+            return;
+        }
+
+        workspace_areas[window] = rects;
+        window.unmanaging.connect_after ((_window) => workspace_areas.remove (_window));
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {

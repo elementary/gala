@@ -95,6 +95,18 @@ namespace Wl {
 	}
 
 	[Compact]
+	[CCode (cname = "struct wl_array", free_function = "wl_array_release")]
+	public class Array {
+		public uint size;
+		public uint alloc;
+		public void *data;
+		public void init ();
+		public void release ();
+		public void add (uint size);
+		public void copy (Wl.Array source);
+	}
+
+	[Compact]
 	[CCode (cname = "struct wl_global", free_function = "wl_global_destroy")]
 	public class Global {
 		[CCode (cname = "wl_global_create")]

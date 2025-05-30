@@ -32,6 +32,14 @@ namespace Pantheon.Desktop {
         ALWAYS
     }
 
+    [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_panel_v1_rect")]
+    public struct Rectangle {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
+
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_panel_v1_interface")]
     public struct PanelInterface {
         [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "io_elementary_pantheon_panel_v1_interface")]

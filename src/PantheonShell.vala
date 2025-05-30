@@ -227,6 +227,24 @@ namespace Gala {
         ShellClientsManager.get_instance ().set_anchor (window, anchor);
     }
 
+    internal static void set_workspace_areas (Wl.Client client, Wl.Resource resource, Wl.Array rects) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to set anchor but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set anchor but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().set_anchor (window, anchor);
+    }
+
     internal static void focus_panel (Wl.Client client, Wl.Resource resource) {
         unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
         if (panel_surface.wayland_surface == null) {

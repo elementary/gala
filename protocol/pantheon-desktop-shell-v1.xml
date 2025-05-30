@@ -98,6 +98,14 @@
 
       <arg name="hide_mode" type="uint" enum="hide_mode" summary="hide mode"/>
     </request>
+
+  <request name="set_workspace_areas">
+      <description summary="set panel workspace areas">
+        Tell the shell what part of the window to treat as a workspace switcher.
+      </description>
+
+      <arg name="rects" type="array" summary="workspace areas"/>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">
