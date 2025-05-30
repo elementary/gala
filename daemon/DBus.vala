@@ -173,8 +173,8 @@ public class Gala.Daemon.DBus : GLib.Object {
             y /= scale_factor;
         }
 
-        window.default_width = display_width;
-        window.default_height = display_height;
+        window.child.width_request = display_width;
+        window.child.height_request = display_height;
         window.present ();
 
         Gdk.Rectangle rect = {
