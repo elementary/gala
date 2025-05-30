@@ -8,7 +8,6 @@
  */
 
 public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
-    public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
     private const string CAPTION_FONT_NAME = "Inter";
@@ -342,7 +341,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
-            var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
+            var icon = new WindowSwitcherIcon (window, scaling_factor);
             add_icon (icon);
 
             if (window == current_window) {
@@ -371,7 +370,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         var app = window_tracker.get_app_for_window (current_window);
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
-                var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
+                var icon = new WindowSwitcherIcon (window, scaling_factor);
                 add_icon (icon);
 
                 if (window == current_window) {
