@@ -4,6 +4,7 @@
  */
 
 public class Gala.WindowSwitcherIcon : CanvasActor {
+    private const int ICON_SIZE = 64;
     private const int WRAPPER_BORDER_RADIUS = 3;
 
     public Meta.Window window { get; construct; }
@@ -26,18 +27,21 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
         get {
             return _scale_factor;
         }
-        set {
+        construct set {
             _scale_factor = value;
 
             update_size ();
         }
     }
 
-    public WindowSwitcherIcon (Meta.Window window, int icon_size, float scale_factor) {
-        Object (window: window);
+    public WindowSwitcherIcon (Meta.Window window, float scale_factor) {
+        Object (window: window, scale_factor: scale_factor);
+    }
 
-        icon = new WindowIcon (window, InternalUtils.scale_to_int (icon_size, scale_factor));
+    construct {
+        icon = new WindowIcon (window, ICON_SIZE, scale_factor);
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
+        bind_property ("monitor-scale", icon, "monitor-scale", GLib.BindingFlags.DEFAULT);
         add_child (icon);
 
         get_accessible ().accessible_name = window.title;
@@ -45,13 +49,11 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
         get_accessible ().notify_state_change (Atk.StateType.FOCUSABLE, true);
 
         reactive = true;
-
-        this.scale_factor = scale_factor;
     }
 
     private void update_size () {
         var indicator_size = InternalUtils.scale_to_int (
-            (WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2),
+            ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2,
             scale_factor
         );
         set_size (indicator_size, indicator_size);

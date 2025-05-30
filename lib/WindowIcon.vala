@@ -13,19 +13,21 @@
 public class Gala.WindowIcon : Clutter.Actor {
     public Meta.Window window { get; construct; }
     public int icon_size { get; construct; }
-    public int scale { get; construct; }
+    public float monitor_scale { get; construct set; }
 
     /**
      * Creates a new WindowIcon
      *
      * @param window               The window for which to create the icon
      * @param icon_size            The size of the icon in pixels
-     * @param scale                The desired scale of the icon
+     * @param scale                The scale of the monitor
      */
-    public WindowIcon (Meta.Window window, int icon_size, int scale = 1) {
-        Object (window: window,
+    public WindowIcon (Meta.Window window, int icon_size, float monitor_scale) {
+        Object (
+            window: window,
             icon_size: icon_size,
-            scale: scale);
+            monitor_scale: monitor_scale
+        );
     }
 
     construct {
@@ -42,15 +44,18 @@ public class Gala.WindowIcon : Clutter.Actor {
     }
 
     private void reload_icon () {
-        width = icon_size * scale;
-        height = icon_size * scale;
+        var scaled_icon_size = Utils.scale_to_int (icon_size, monitor_scale);
+        width = scaled_icon_size;
+        height = scaled_icon_size;
 
-        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
+        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, (int) Math.ceil (monitor_scale));
         try {
             var image = new Clutter.Image ();
-            Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+            var pixel_format = pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888;
             image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
             set_content (image);
-        } catch (Error e) {}
+        } catch (Error e) {
+            warning ("Couldn't create window icon: %s", e.message);
+        }
     }
 }
