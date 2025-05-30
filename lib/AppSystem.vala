@@ -65,10 +65,12 @@ public class Gala.AppSystem : GLib.Object {
 
     private string[] enumerate_children (string dir) throws Error {
         string[] result = {};
-        FileInfo file_info;
+        FileInfo? file_info;
         var enumerator = File.new_for_path (dir).enumerate_children (FileAttribute.STANDARD_NAME, 0);
-        while ((file_info = enumerator.next_file ()) != null)
+        while ((file_info = enumerator.next_file ()) != null) {
             result += file_info.get_name ();
+        }
+
         return result;
     }
 
