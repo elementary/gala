@@ -245,9 +245,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
 
         var window_rect = window.get_frame_rect ();
+        var monitor_geometry = window.display.get_monitor_geometry (window.get_monitor ());
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) window_rect.x, (float) slot.x));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) window_rect.y, (float) slot.y));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) (window_rect.x - monitor_geometry.x), (float) slot.x));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) (window_rect.y - monitor_geometry.y), (float) slot.y));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) window_rect.width, (float) slot.width));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "height", typeof (float), (float) window_rect.height, (float) slot.height));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
