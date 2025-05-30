@@ -220,7 +220,6 @@ namespace Gala {
             stage.insert_child_below (system_background.background_actor, null);
 
             ui_group = new Clutter.Actor ();
-            update_ui_group_size ();
             stage.add_child (ui_group);
 
             window_group = display.get_window_group ();
@@ -336,6 +335,7 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
             }
 
+            update_ui_group_size ();
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_ui_group_size);
 
@@ -397,6 +397,10 @@ namespace Gala {
             }
 
             ui_group.set_size (max_width, max_height);
+
+            var primary = display.get_primary_monitor ();
+            var primary_geometry = display.get_monitor_geometry (primary);
+            shell_group.set_clip (primary_geometry.x, primary_geometry.y, primary_geometry.width, primary_geometry.height);
         }
 
         public void launch_action (string action_key) {

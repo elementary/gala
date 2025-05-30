@@ -22,19 +22,11 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     construct {
-        update_clip_rect ();
-        window.size_changed.connect (update_clip_rect);
-
         window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
         window_actor.notify["height"].connect (update_target);
         notify["position"].connect (update_target);
         update_target ();
-    }
-
-    private void update_clip_rect () {
-        var frame_rect = window.get_frame_rect ();
-        window_actor.set_clip (0, 0, frame_rect.width, frame_rect.height);
     }
 
     private void update_target () {
