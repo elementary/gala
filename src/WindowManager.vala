@@ -335,9 +335,9 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
             }
 
-            update_ui_group_size ();
+            update_monitors ();
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-            monitor_manager.monitors_changed.connect (update_ui_group_size);
+            monitor_manager.monitors_changed.connect (update_monitors);
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
@@ -380,7 +380,7 @@ namespace Gala {
             AtkBridge.adaptor_init (ref _args);
         }
 
-        private void update_ui_group_size () {
+        private void update_monitors () {
             unowned var display = get_display ();
 
             int max_width = 0;
