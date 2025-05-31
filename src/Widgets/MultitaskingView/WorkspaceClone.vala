@@ -138,6 +138,7 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     construct {
         opened = false;
+        reactive = true;
 
         unowned Meta.Display display = workspace.get_display ();
 
@@ -294,6 +295,14 @@ public class Gala.WorkspaceClone : ActorTarget {
         }
     }
 
+    public override void commit_progress (GestureAction action, double progress) {
+        if (get_current_commit (MULTITASKING_VIEW) > 0 &&
+            (get_current_commit (SWITCH_WORKSPACE) + workspace.index ()).abs () < 0.5
+        ) {
+            grab_key_focus ();
+        }
+    }
+
     private void activate (bool close_view, Meta.Window? window = null) {
         if (close_view && workspace.active) {
             if (window != null) {
@@ -303,5 +312,10 @@ public class Gala.WorkspaceClone : ActorTarget {
         } else {
             workspace.activate (Meta.CURRENT_TIME);
         }
+    }
+    public override bool key_press_event (Clutter.Event event) {
+        // We take key focus and redirect to the container because we cant make it reactive
+        // because it has to be above the background which would mean it cant be clicked
+        return window_container.key_press_event (event);
     }
 }
