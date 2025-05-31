@@ -140,18 +140,13 @@ public class Gala.WorkspaceClone : ActorTarget {
         opened = false;
 
         unowned Meta.Display display = workspace.get_display ();
-        var primary_monitor = display.get_primary_monitor ();
-        var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, monitor_scale) {
-            width = monitor_geometry.width,
-            height = monitor_geometry.height,
-        };
+        window_container = new WindowCloneContainer (wm, monitor_scale);
         window_container.window_selected.connect ((win) => activate (true, win));
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
@@ -266,19 +261,15 @@ public class Gala.WorkspaceClone : ActorTarget {
         }
     }
 
-    public void update_size (Mtk.Rectangle monitor_geometry) {
-        if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            background.set_size (window_container.width, window_container.height);
-        }
-    }
-
     private void update_targets () {
         remove_all_targets ();
 
         unowned var display = workspace.get_display ();
 
         var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
+
+        window_container.set_size (monitor.width, monitor.height);
+        background.set_size (monitor.width, monitor.height);
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
