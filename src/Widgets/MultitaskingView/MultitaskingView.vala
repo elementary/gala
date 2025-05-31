@@ -35,7 +35,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     private List<MonitorClone> window_containers_monitors;
 
     private IconGroupContainer icon_groups;
-    private ActorTarget workspaces;
+    private WorkspaceRow workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
 
@@ -63,7 +63,9 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
-        workspaces = new WorkspaceRow (display);
+        var monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
+
+        workspaces = new WorkspaceRow (wm, monitor_scale);
 
         workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm) {
             overshoot_upper_clamp = 0.1
@@ -72,7 +74,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
         add_gesture_controller (workspaces_gesture_controller);
 
-        icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
+        icon_groups = workspaces.icon_groups;
 
         brightness_effect = new Clutter.BrightnessContrastEffect ();
         update_brightness_effect ();
@@ -94,8 +96,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         add_child (StaticWindowContainer.get_instance (display));
 
         unowned var manager = display.get_workspace_manager ();
-        manager.workspace_added.connect (add_workspace);
-        manager.workspace_removed.connect (remove_workspace);
+        manager.workspace_added.connect_after (add_workspace);
+        manager.workspace_removed.connect_after (remove_workspace);
         manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
@@ -131,8 +133,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
      * MonitorClones at the right positions
      */
     private void update_monitors () {
-        update_workspaces ();
-
         foreach (var monitor_clone in window_containers_monitors) {
             monitor_clone.destroy ();
         }
@@ -148,7 +148,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
                 var monitor_clone = new MonitorClone (wm, monitor) {
                     visible = true
                 };
-                monitor_clone.window_selected.connect (window_selected);
 
                 window_containers_monitors.append (monitor_clone);
                 add_child (monitor_clone);
@@ -161,25 +160,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
         primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.monitor_scale = scale;
-            workspace_clone.update_size (primary_geometry);
-        }
-    }
-
-    private void update_workspaces () {
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            icon_groups.remove_group (workspace_clone.icon_group);
-            workspace_clone.destroy ();
-        }
-
-        unowned var manager = display.get_workspace_manager ();
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            add_workspace (i);
-        }
+        workspaces.monitor_scale = scale;
     }
 
     /**
@@ -346,50 +327,13 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     }
 
     private void add_workspace (int num) {
-        unowned var manager = display.get_workspace_manager ();
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
-
-        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
-        workspaces.insert_child_at_index (workspace, num);
-        icon_groups.add_group (workspace.icon_group);
-
-        workspace.window_selected.connect (window_selected);
-
         reposition_icon_groups (false);
     }
 
     private void remove_workspace (int num) {
-        WorkspaceClone? workspace = null;
-
-        // FIXME is there a better way to get the removed workspace?
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        List<Meta.Workspace> existing_workspaces = null;
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            existing_workspaces.append (manager.get_workspace_by_index (i));
-        }
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var clone = (WorkspaceClone) child;
-            if (existing_workspaces.index (clone.workspace) < 0) {
-                workspace = clone;
-                break;
-            }
-        }
-
-        if (workspace == null) {
-            return;
-        }
-
-        workspace.window_selected.disconnect (window_selected);
-
-        if (icon_groups.contains (workspace.icon_group)) {
-            icon_groups.remove_group (workspace.icon_group);
-        }
-
-        workspace.destroy ();
-
         reposition_icon_groups (opened);
 
+        unowned var manager = display.get_workspace_manager ();
         workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
 
@@ -405,49 +349,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     private void on_workspace_switched (int from, int to) {
         if ((int) (-get_current_commit (SWITCH_WORKSPACE)) != to) {
             workspaces_gesture_controller.goto (-to);
-        }
-    }
-
-    /**
-     * Collect key events, mainly for redirecting them to the WindowCloneContainers to
-     * select the active window.
-     */
-    public override bool key_press_event (Clutter.Event event) {
-        if (!opened) {
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        return get_active_window_clone_container ().key_press_event (event);
-    }
-
-    /**
-     * Finds the active WorkspaceClone
-     *
-     * @return The active WorkspaceClone
-     */
-    private WindowCloneContainer get_active_window_clone_container () {
-        unowned var manager = display.get_workspace_manager ();
-        unowned var active_workspace = manager.get_active_workspace ();
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            if (workspace_clone.workspace == active_workspace) {
-                return workspace_clone.window_container;
-            }
-        }
-
-        assert_not_reached ();
-    }
-
-    private void window_selected (Meta.Window window) {
-        var time = display.get_current_time ();
-        unowned var manager = display.get_workspace_manager ();
-        unowned var workspace = window.get_workspace ();
-
-        if (workspace != manager.get_active_workspace ()) {
-            workspace.activate (time);
-        } else {
-            window.activate (time);
-            close ();
         }
     }
 
