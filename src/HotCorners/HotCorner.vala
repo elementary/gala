@@ -101,7 +101,7 @@ public class Gala.HotCorner : Object {
     }
 
     private static Mtk.Rectangle get_barrier_rect (float x, float y, float scale, string hot_corner_position, Clutter.Orientation orientation) {
-        var barrier_size = InternalUtils.scale_to_int (BARRIER_SIZE, scale);
+        var barrier_size = Utils.scale_to_int (BARRIER_SIZE, scale);
 
         int x1 = (int) x;
         int y1 = (int) y;

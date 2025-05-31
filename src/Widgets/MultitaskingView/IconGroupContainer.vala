@@ -115,8 +115,8 @@ public class Gala.IconGroupContainer : Clutter.Actor {
      * end states into account
      */
     public float calculate_total_width () {
-        var spacing = InternalUtils.scale_to_int (SPACING, scale_factor);
-        var group_width = InternalUtils.scale_to_int (GROUP_WIDTH, scale_factor);
+        var spacing = Utils.scale_to_int (SPACING, scale_factor);
+        var group_width = Utils.scale_to_int (GROUP_WIDTH, scale_factor);
 
         var width = 0.0f;
         foreach (var child in get_children ()) {

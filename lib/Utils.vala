@@ -260,7 +260,7 @@ namespace Gala {
          * Multiplies an integer by a floating scaling factor, and then
          * returns the result rounded to the nearest integer
          */
-         public static int scale_to_int (int value, float scale_factor) {
+        public static int scale_to_int (int value, float scale_factor) {
             return (int) (Math.round ((float)value * scale_factor));
         }
 
