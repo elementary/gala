@@ -135,7 +135,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
                 var monitor_clone = new MonitorClone (wm, monitor) {
                     visible = true
                 };
-                monitor_clone.window_selected.connect (window_selected);
 
                 window_containers_monitors.append (monitor_clone);
                 add_child (monitor_clone);
@@ -363,8 +362,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         workspaces.insert_child_at_index (workspace, num);
         icon_groups.add_group (workspace.icon_group);
 
-        workspace.window_selected.connect (window_selected);
-
         reposition_icon_groups (false);
     }
 
@@ -389,8 +386,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         if (workspace == null) {
             return;
         }
-
-        workspace.window_selected.disconnect (window_selected);
 
         if (icon_groups.contains (workspace.icon_group)) {
             icon_groups.remove_group (workspace.icon_group);
@@ -446,19 +441,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
 
         assert_not_reached ();
-    }
-
-    private void window_selected (Meta.Window window) {
-        var time = display.get_current_time ();
-        unowned var manager = display.get_workspace_manager ();
-        unowned var workspace = window.get_workspace ();
-
-        if (workspace != manager.get_active_workspace ()) {
-            workspace.activate (time);
-        } else {
-            window.activate (time);
-            close ();
-        }
     }
 
     /**
