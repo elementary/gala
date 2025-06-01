@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-12 22:19+0000\n"
+"POT-Creation-Date: 2025-04-16 17:34+0000\n"
 "PO-Revision-Date: 2024-10-05 18:16+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
@@ -33,11 +33,11 @@ msgstr "Nastavenia obrazovky…"
 msgid "System Settings…"
 msgstr "Nastavenia systému…"
 
-#: daemon/DBus.vala:207 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Nepodarilo sa otvoriť Nastavenia systému"
 
-#: daemon/DBus.vala:208 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Spracovač pre URI schému „settings://“ musí byť nainštalovaný."
 
@@ -110,55 +110,67 @@ msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:76 data/gala.metainfo.xml.in:91
-#: data/gala.metainfo.xml.in:108 data/gala.metainfo.xml.in:124
-#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:190
-#: data/gala.metainfo.xml.in:206
+#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
+#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
 msgid "Improvements:"
 msgstr "Vylepšenia:"
 
 #: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:78 data/gala.metainfo.xml.in:93
-#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:128
-#: data/gala.metainfo.xml.in:171 data/gala.metainfo.xml.in:193
-#: data/gala.metainfo.xml.in:208
+#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
+#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
+#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
 msgid "Updated translations"
 msgstr "Aktualizované preklady"
 
 #: data/gala.metainfo.xml.in:35
-msgid "Fixed rare crash when a dock window was killed"
+msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:36
-msgid "Added interactive screenshot shortcut"
+msgid "Remove scaling effect from menus"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:37
-msgid "Fixed crash when using tiling shortcuts"
+msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:66
+msgid "Fixed rare crash when a dock window was killed"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:67
+msgid "Added interactive screenshot shortcut"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:68
+msgid "Fixed crash when using tiling shortcuts"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:97
 msgid "Improved shadows performance"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:110
+#: data/gala.metainfo.xml.in:141
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Opravený potenciálny pád pri pohybovaní okien medzi pracovnými plochami"
 
-#: data/gala.metainfo.xml.in:111
+#: data/gala.metainfo.xml.in:142
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Opravená animácia oznámení pri prechode do zobrazenia úloh"
 
-#: data/gala.metainfo.xml.in:126
+#: data/gala.metainfo.xml.in:157
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Zlepšenie ovládania klávesnicou v Zobrazení úloh"
 
-#: data/gala.metainfo.xml.in:127
+#: data/gala.metainfo.xml.in:158
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Zmeniť farbu panelu v ten istý čas ako pri prechode tapety"
 
-#: data/gala.metainfo.xml.in:167
+#: data/gala.metainfo.xml.in:198
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -166,20 +178,20 @@ msgstr ""
 "Zmena tapety alebo prechod do režimu spánku rešpektuje možnosť „Obmedziť "
 "animácie“"
 
-#: data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:199
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Používať vhodné „drag-and-drop“ ukazovatele pri presúvaní okien"
 
-#: data/gala.metainfo.xml.in:169
+#: data/gala.metainfo.xml.in:200
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "Oprava chyby, kedy mohli prestať fungovať gestá v zobrazení úloh"
 
-#: data/gala.metainfo.xml.in:170
+#: data/gala.metainfo.xml.in:201
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Zlepšenie správania dynamických pracovných priestorov pre viaceré monitory"
 
-#: data/gala.metainfo.xml.in:192
+#: data/gala.metainfo.xml.in:223
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Zlepšenie spracovania skratky presunu na pracovnú plochu"
 
@@ -251,42 +263,42 @@ msgstr "Povoliť"
 msgid "Deny"
 msgstr "Zakázať"
 
-#: src/DesktopIntegration.vala:194
+#: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
 msgstr "Okno je už zamerané"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:79
+#: src/ScreenshotManager.vala:101
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Snímka obrazovky z %s"
 
 #. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:137
+#: src/ScreenshotManager.vala:159
 msgid "Show in Files"
 msgstr ""
 
-#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:501
+#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
 msgid "Screenshot taken"
 msgstr "Snímka obrazovky vytvorená"
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:166
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:409
+#: src/ScreenshotManager.vala:422
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
 msgid "Window switcher"
 msgstr "Prepínač okien"
 
-#: src/WindowManager.vala:1735
+#: src/WindowManager.vala:1775
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -294,15 +306,15 @@ msgstr[0] "Za %i sekundu sa zmeny automaticky vrátia späť."
 msgstr[1] "Za %i sekundy sa zmeny automaticky vrátia späť."
 msgstr[2] "Za %i sekúnd sa zmeny automaticky vrátia späť."
 
-#: src/WindowManager.vala:1742
+#: src/WindowManager.vala:1782
 msgid "Keep new display settings?"
 msgstr "Ponechať nové nastavenia obrazovky?"
 
-#: src/WindowManager.vala:1746
+#: src/WindowManager.vala:1786
 msgid "Keep Settings"
 msgstr "Ponechať nastavenia"
 
-#: src/WindowManager.vala:1747
+#: src/WindowManager.vala:1787
 msgid "Use Previous Settings"
 msgstr "Použiť predchádzajúce nastavenia"
 

@@ -14,25 +14,29 @@
 public class Gala.MonitorClone : ActorTarget {
     public signal void window_selected (Meta.Window window);
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
     public int monitor { get; construct; }
+    public float monitor_scale { get; construct set; }
 
     private WindowCloneContainer window_container;
     private BackgroundManager background;
 
-    public MonitorClone (Meta.Display display, int monitor) {
-        Object (display: display, monitor: monitor);
+    public MonitorClone (WindowManager wm, int monitor) {
+        Object (wm: wm, monitor: monitor);
     }
 
     construct {
         reactive = true;
+        update_allocation ();
+
+        unowned var display = wm.get_display ();
 
         background = new BackgroundManager (display, monitor, false);
 
-        var scale = display.get_monitor_scale (monitor);
-
-        window_container = new WindowCloneContainer (display, scale);
+        window_container = new WindowCloneContainer (wm, monitor_scale);
+        window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));
         window_container.window_selected.connect ((w) => { window_selected (w); });
+        bind_property ("monitor-scale", window_container, "monitor-scale");
 
         display.window_entered_monitor.connect (window_entered);
         display.window_left_monitor.connect (window_left);
@@ -53,11 +57,10 @@ public class Gala.MonitorClone : ActorTarget {
 
         var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         add_action (drop);
-
-        update_allocation ();
     }
 
     ~MonitorClone () {
+        unowned var display = wm.get_display ();
         display.window_entered_monitor.disconnect (window_entered);
         display.window_left_monitor.disconnect (window_left);
     }
@@ -66,14 +69,14 @@ public class Gala.MonitorClone : ActorTarget {
      * Make sure the MonitorClone is at the location of the monitor on the stage
      */
     public void update_allocation () {
+        unowned var display = wm.get_display ();
+
         var monitor_geometry = display.get_monitor_geometry (monitor);
 
         set_position (monitor_geometry.x, monitor_geometry.y);
         set_size (monitor_geometry.width, monitor_geometry.height);
-        window_container.set_size (monitor_geometry.width, monitor_geometry.height);
 
-        var scale = display.get_monitor_scale (monitor);
-        window_container.monitor_scale = scale;
+        monitor_scale = display.get_monitor_scale (monitor);
     }
 
     private void window_left (int window_monitor, Meta.Window window) {

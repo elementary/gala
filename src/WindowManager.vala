@@ -72,6 +72,8 @@ namespace Gala {
 
         private HotCornerManager? hot_corner_manager = null;
 
+        private KeyboardManager keyboard_manager;
+
         public WindowTracker? window_tracker { get; private set; }
 
         private NotificationsManager notifications_manager;
@@ -171,7 +173,7 @@ namespace Gala {
             DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
-            KeyboardManager.init (display);
+            keyboard_manager = new KeyboardManager (display);
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
@@ -200,16 +202,15 @@ namespace Gala {
              * + ui group
              * +-- window group
              * +---- background manager
-             * +-- shell elements
              * +-- top window group
-             * +-- workspace view
+             * +-- multitasking view
              * +-- window switcher
              * +-- window overview
-             * +-- notification group
+             * +-- shell group
+             * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
-             * +-- screen shield
-             * +-- feedback group (e.g. DND icons)
+             * +-- session locker
              */
 
             system_background = new SystemBackground (display);
@@ -219,7 +220,6 @@ namespace Gala {
             stage.insert_child_below (system_background.background_actor, null);
 
             ui_group = new Clutter.Actor ();
-            ui_group.reactive = true;
             update_ui_group_size ();
             stage.add_child (ui_group);
 
@@ -275,10 +275,10 @@ namespace Gala {
             ui_group.add_child (pointer_locator);
             ui_group.add_child (new DwellClickTimer (display));
 
-            var screen_shield = new ScreenShield (this);
-            ui_group.add_child (screen_shield);
+            var session_locker = new SessionLocker (this);
+            ui_group.add_child (session_locker);
 
-            screensaver = new ScreenSaverManager (screen_shield);
+            screensaver = new ScreenSaverManager (session_locker);
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
@@ -296,8 +296,14 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_applications_menu);
-            display.add_keybinding ("switch-input-source", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
-            display.add_keybinding ("switch-input-source-backward", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, (Meta.KeyHandlerFunc) handle_switch_input_source);
+
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
+                if (multitasking_view.is_opened ()) {
+                    multitasking_view.close ();
+                } else {
+                    multitasking_view.open ();
+                }
+            });
 
             display.add_keybinding ("expose-all-windows", keybinding_settings, Meta.KeyBindingFlags.IGNORE_AUTOREPEAT, () => {
                 if (window_overview.is_opened ()) {
@@ -315,14 +321,6 @@ namespace Gala {
                 launch_action (ActionKeys.TOGGLE_RECORDING_ACTION);
             });
 
-            Meta.KeyBinding.set_custom_handler ("show-desktop", () => {
-                if (multitasking_view.is_opened ()) {
-                    multitasking_view.close ();
-                } else {
-                    multitasking_view.open ();
-                }
-            });
-
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-up", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-down", () => {});
             Meta.KeyBinding.set_custom_handler ("switch-to-workspace-left", (Meta.KeyHandlerFunc) handle_switch_to_workspace);
@@ -334,6 +332,7 @@ namespace Gala {
             Meta.KeyBinding.set_custom_handler ("move-to-workspace-right", (Meta.KeyHandlerFunc) handle_move_to_workspace);
 
             for (int i = 1; i < 13; i++) {
+                Meta.KeyBinding.set_custom_handler ("switch-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_switch_to_workspace);
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), (Meta.KeyHandlerFunc) handle_move_to_workspace);
             }
 
@@ -465,8 +464,9 @@ namespace Gala {
                 var direction = (name == "move-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
                 target_workspace = active_workspace.get_neighbor (direction);
             } else {
-                var workspace_number = int.parse (name.offset ("move-to-workspace-".length));
-                var workspace_index = workspace_number - 1;
+                var workspace_number = int.parse (name.offset ("move-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
                 target_workspace = workspace_manager.get_workspace_by_index (workspace_index);
             }
 
@@ -491,8 +491,24 @@ namespace Gala {
         [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
-            switch_to_next_workspace (direction, event.get_time ());
+            unowned var name = binding.get_name ();
+
+            if (name == "switch-to-workspace-left" || name == "switch-to-workspace-right") {
+                var direction = (name == "switch-to-workspace-left" ? Meta.MotionDirection.LEFT : Meta.MotionDirection.RIGHT);
+                switch_to_next_workspace (direction, event.get_time ());
+            } else {
+                unowned var workspace_manager = get_display ().get_workspace_manager ();
+
+                var workspace_number = int.parse (name.offset ("switch-to-workspace-".length)) - 1;
+                var workspace_index = workspace_number.clamp (0, workspace_manager.n_workspaces - 1);
+
+                var workspace = workspace_manager.get_workspace_by_index (workspace_index);
+                if (workspace == null) {
+                    return;
+                }
+
+                workspace.activate (event.get_time ());
+            }
         }
 
         [CCode (instance_pos = -1)]
@@ -507,12 +523,6 @@ namespace Gala {
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent event, Meta.KeyBinding binding) {
             launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
-        }
-
-        [CCode (instance_pos = -1)]
-        private void handle_switch_input_source (Meta.Display display, Meta.Window? window,
-            Clutter.KeyEvent event, Meta.KeyBinding binding) {
-            KeyboardManager.handle_modifiers_accelerator_activated (display, binding.get_name ().has_suffix ("-backward"));
         }
 
         /**
@@ -1334,16 +1344,12 @@ namespace Gala {
 
                     mapping.add (actor);
 
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_pivot_point_z (0.2f);
-                    actor.set_scale (0.9f, 0.9f);
                     actor.opacity = 0;
 
                     actor.save_easing_state ();
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
+                    actor.opacity = 255;
                     actor.restore_easing_state ();
 
                     ulong map_handler_id = 0UL;
@@ -1462,31 +1468,6 @@ namespace Gala {
                     actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
                     actor.set_easing_duration (150);
                     actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
-
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
-
-                    break;
-                case Meta.WindowType.MENU:
-                case Meta.WindowType.DROPDOWN_MENU:
-                case Meta.WindowType.POPUP_MENU:
-                    var duration = AnimationDuration.MENU_MAP;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
                     actor.opacity = 0U;
                     actor.restore_easing_state ();
 
@@ -1709,8 +1690,6 @@ namespace Gala {
                 case Meta.KeyBindingAction.WORKSPACE_LEFT:
                 case Meta.KeyBindingAction.WORKSPACE_RIGHT:
                     return filter_action (SWITCH_WORKSPACE);
-                case Meta.KeyBindingAction.SHOW_DESKTOP:
-                    return filter_action (MULTITASKING_VIEW);
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS:
                 case Meta.KeyBindingAction.SWITCH_APPLICATIONS_BACKWARD:
                 case Meta.KeyBindingAction.SWITCH_WINDOWS:
@@ -1731,6 +1710,8 @@ namespace Gala {
                 case "zoom-in":
                 case "zoom-out":
                     return filter_action (ZOOM);
+                case "toggle-multitasking-view":
+                    return filter_action (MULTITASKING_VIEW);
                 default:
                     break;
             }

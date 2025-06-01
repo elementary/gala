@@ -404,7 +404,7 @@ namespace Gala {
             return texture;
         }
 
-        private static HashTable<Meta.Window, X.XserverRegion?> regions = new HashTable<Meta.Window, X.XserverRegion?> (null, null);
+        private static HashTable<Meta.Window, X.Rectangle?> regions = new HashTable<Meta.Window, X.Rectangle?> (null, null);
 
         public static void x11_set_window_pass_through (Meta.Window window) {
             unowned var x11_display = window.display.get_x11_display ();
@@ -416,10 +416,10 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            regions[window] = X.Fixes.create_region_from_window (xdisplay, x_window, 0);
+            int count, ordering;
+            regions[window] = X.Shape.get_rectangles (xdisplay, x_window, 2, out count, out ordering)[0];
 
             X.Xrectangle rect = {};
-
             var region = X.Fixes.create_region (xdisplay, {rect});
 
             X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
@@ -427,7 +427,7 @@ namespace Gala {
             X.Fixes.destroy_region (xdisplay, region);
         }
 
-        public static void x11_unset_window_pass_through (Meta.Window window) {
+        public static void x11_unset_window_pass_through (Meta.Window window, bool restore_previous_region) {
             unowned var x11_display = window.display.get_x11_display ();
 
 #if HAS_MUTTER46
@@ -437,16 +437,19 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            var region = regions[window];
+            if (restore_previous_region) {
+                var region = regions[window];
+                if (region == null) {
+                    debug ("Cannot unset pass through: window not found.");
+                    return;
+                }
 
-            if (region == null) {
-                return;
+                X.Shape.combine_rectangles (xdisplay, x_window, 2, 0, 0, { region }, 0, 3);
+            } else {
+                X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, (X.XserverRegion) 0);
             }
 
-            X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
-
             regions.remove (window);
-            X.Fixes.destroy_region (xdisplay, region);
         }
 
         /**

@@ -15,6 +15,28 @@ public class Gala.ScreenshotManager : Object {
     [DBus (visible = false)]
     public NotificationsManager notifications_manager { get; construct; }
 
+    private bool? _is_redacted_font_available = null;
+    private bool is_redacted_font_available {
+        get {
+            if (_is_redacted_font_available != null) {
+                return _is_redacted_font_available;
+            }
+
+            (unowned Pango.FontFamily)[] families;
+            Pango.CairoFontMap.get_default ().list_families (out families);
+
+            _is_redacted_font_available = false;
+            foreach (unowned var family in families) {
+                if (family.get_name () == "Redacted Script") {
+                    _is_redacted_font_available = true;
+                    break;
+                }
+            }
+
+            return _is_redacted_font_available;
+        }
+    }
+
     private Settings desktop_settings;
 
     private string prev_font_regular;
@@ -60,19 +82,19 @@ public class Gala.ScreenshotManager : Object {
                 wm.launch_action (ActionKeys.INTERACTIVE_SCREENSHOT_ACTION);
                 break;
             case "area-screenshot":
-            handle_screenshot_area_shortcut.begin (false);
+                handle_screenshot_area_shortcut.begin (false);
                 break;
             case "window-screenshot":
-            handle_screenshot_current_window_shortcut.begin (false);
+                handle_screenshot_current_window_shortcut.begin (false);
                 break;
             case "screenshot-clip":
                 handle_screenshot_screen_shortcut.begin (true);
                 break;
             case "area-screenshot-clip":
-            handle_screenshot_area_shortcut.begin (true);
+                handle_screenshot_area_shortcut.begin (true);
                 break;
             case "window-screenshot-clip":
-            handle_screenshot_current_window_shortcut.begin (true);
+                handle_screenshot_current_window_shortcut.begin (true);
                 break;
         }
     }
@@ -290,15 +312,12 @@ public class Gala.ScreenshotManager : Object {
 
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
-        float actor_x, actor_y;
-        window_actor.get_position (out actor_x, out actor_y);
-
-        var rect = window.get_frame_rect ();
+        var rect = window.get_buffer_rect ();
         if (!include_frame) {
-            rect = window.frame_rect_to_client_rect (rect);
+            rect = window.get_frame_rect ();
         }
 
-        Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+        Mtk.Rectangle clip = { rect.x - (int) window_actor.x, rect.y - (int) window_actor.y, rect.width, rect.height };
         var image = (Cairo.ImageSurface) window_actor.get_image (clip);
         if (include_cursor) {
             if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {
@@ -348,7 +367,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     private void unconceal_text () {
-        if (conceal_timeout == 0) {
+        if (!is_redacted_font_available || conceal_timeout == 0) {
             return;
         }
 
@@ -361,6 +380,10 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void conceal_text () throws DBusError, IOError {
+        if (!is_redacted_font_available) {
+            throw new DBusError.FAILED ("Redacted font is not installed.");
+        }
+
         if (conceal_timeout > 0) {
             Source.remove (conceal_timeout);
         } else {
