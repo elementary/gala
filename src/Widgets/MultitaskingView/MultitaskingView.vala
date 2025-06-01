@@ -258,7 +258,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
             icon_groups.force_reposition ();
-            icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
+            icon_groups.y = primary_monitor_container.height - Utils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             reposition_icon_groups (false);
 
             if (action != MULTITASKING_VIEW) {
@@ -345,8 +345,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         // make sure the active workspace's icongroup is always visible
         var icon_groups_width = icon_groups.calculate_total_width ();
         if (icon_groups_width > primary_monitor_container.width) {
-            icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
-                .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
+            icon_groups.x = (-active_index * Utils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
+                .clamp (primary_monitor_container.width - icon_groups_width - Utils.scale_to_int (64, scale), Utils.scale_to_int (64, scale));
         } else
             icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
 
