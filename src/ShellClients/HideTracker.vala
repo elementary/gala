@@ -271,7 +271,7 @@ public class Gala.HideTracker : Object {
     private void setup_barrier () {
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
-        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
+        var offset = Utils.scale_to_int (BARRIER_OFFSET, scale);
 
         switch (panel.anchor) {
             case TOP:

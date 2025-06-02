@@ -103,7 +103,7 @@ public class Gala.NotificationStack : Object {
             notification_x_pos = 0;
         }
 
-        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale));
+        move_window (notification, notification_x_pos, stack_y + TOP_OFFSET + Utils.scale_to_int (ADDITIONAL_MARGIN, scale));
         notifications.insert (0, notification);
     }
 
@@ -112,13 +112,13 @@ public class Gala.NotificationStack : Object {
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
         var scale = display.get_monitor_scale (primary);
-        stack_width = InternalUtils.scale_to_int (WIDTH + MARGIN, scale);
+        stack_width = Utils.scale_to_int (WIDTH + MARGIN, scale);
 
         stack_y = area.y;
     }
 
     private void update_positions (float scale, float add_y = 0.0f) {
-        var y = stack_y + TOP_OFFSET + add_y + InternalUtils.scale_to_int (ADDITIONAL_MARGIN, scale);
+        var y = stack_y + TOP_OFFSET + add_y + Utils.scale_to_int (ADDITIONAL_MARGIN, scale);
         var i = notifications.size;
         var delay_step = i > 0 ? 150 / i : 0;
         var iterator = 0;
