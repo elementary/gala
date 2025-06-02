@@ -147,18 +147,19 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     private void update_clip () {
-        switch (position) {
-            case TOP:
-                window_actor.set_clip (0, -window_actor.translation_y, window_actor.width, window_actor.height + window_actor.translation_y);
-                break;
+        if (position != TOP && position != BOTTOM) {
+            window_actor.remove_clip ();
+            return;
+        }
 
-            case BOTTOM:
-                window_actor.set_clip (0, 0, window_actor.width, window_actor.height - window_actor.translation_y);
-                break;
+        var monitor_geom = window.display.get_monitor_geometry (window.get_monitor ());
 
-            default:
-                window_actor.remove_clip ();
-                break;
+        var y = window_actor.y + window_actor.translation_y;
+
+        if (y + window_actor.height > monitor_geom.y + monitor_geom.height) {
+            window_actor.set_clip (0, 0, window_actor.width, monitor_geom.y + monitor_geom.height - y);
+        } else if (y < monitor_geom.y) {
+            window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
         }
     }
 }
