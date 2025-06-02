@@ -38,6 +38,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     private ActorTarget workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
+    private BackgroundManager? blurred_bg = null;
 
     private GLib.Settings gala_behavior_settings;
     private Drawing.StyleManager style_manager;
@@ -74,14 +75,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
-        brightness_effect = new Clutter.BrightnessContrastEffect ();
-        update_brightness_effect ();
-
-        var blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
-        blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
-        blurred_bg.add_effect (brightness_effect);
-
-        add_child (blurred_bg);
+        update_blurred_bg ();
 
         // Create a child container that will be sized to fit the primary monitor, to contain the "main"
         // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
@@ -118,19 +112,12 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
     }
 
-    private void update_brightness_effect () {
-        if (style_manager.prefers_color_scheme == DARK) {
-            brightness_effect.set_brightness (-0.4f);
-        } else {
-            brightness_effect.set_brightness (0.4f);
-        }
-    }
-
     /**
      * Places the primary container for the WorkspaceClones and the
      * MonitorClones at the right positions
      */
     private void update_monitors () {
+        update_blurred_bg ();
         update_workspaces ();
 
         foreach (var monitor_clone in window_containers_monitors) {
@@ -167,6 +154,29 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             workspace_clone.monitor_scale = scale;
             workspace_clone.update_size (primary_geometry);
         }
+    }
+
+    private void update_brightness_effect () {
+        if (style_manager.prefers_color_scheme == DARK) {
+            brightness_effect.set_brightness (-0.4f);
+        } else {
+            brightness_effect.set_brightness (0.4f);
+        }
+    }
+
+    private void update_blurred_bg () {
+        if (blurred_bg != null) {
+            remove_child (blurred_bg);
+        }
+
+        brightness_effect = new Clutter.BrightnessContrastEffect ();
+        update_brightness_effect ();
+
+        blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
+        blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+        blurred_bg.add_effect (brightness_effect);
+
+        insert_child_below (blurred_bg, null);
     }
 
     private void update_workspaces () {
