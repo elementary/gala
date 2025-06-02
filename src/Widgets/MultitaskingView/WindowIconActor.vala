@@ -32,7 +32,7 @@ public class Gala.WindowIconActor : Clutter.Actor {
             _icon_size = value;
             cur_icon_scale = desired_icon_scale;
 
-            var scaled_size = InternalUtils.scale_to_int (_icon_size, cur_icon_scale);
+            var scaled_size = Utils.scale_to_int (_icon_size, cur_icon_scale);
             set_size (scaled_size, scaled_size);
 
             fade_new_icon ();

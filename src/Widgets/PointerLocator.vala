@@ -49,8 +49,8 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
     private void update_surface (float cur_scale) {
         if (surface == null || cur_scale != scaling_factor) {
             scaling_factor = cur_scale;
-            surface_width = InternalUtils.scale_to_int (WIDTH_PX, scaling_factor);
-            surface_height = InternalUtils.scale_to_int (HEIGHT_PX, scaling_factor);
+            surface_width = Utils.scale_to_int (WIDTH_PX, scaling_factor);
+            surface_height = Utils.scale_to_int (HEIGHT_PX, scaling_factor);
 
             surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, surface_width, surface_height);
 
@@ -62,7 +62,7 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
         var radius = int.min (surface_width / 2, surface_height / 2);
 
         var cr = new Cairo.Context (surface);
-        var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
+        var border_width = Utils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
         // Clear the surface
         cr.save ();

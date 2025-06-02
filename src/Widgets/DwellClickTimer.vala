@@ -108,7 +108,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
 
         var radius = int.min (cursor_size / 2, cursor_size / 2);
         var end_angle = START_ANGLE + angle;
-        var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
+        var border_width = Utils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
         var cr = new Cairo.Context (surface);
 

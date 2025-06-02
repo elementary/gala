@@ -272,14 +272,6 @@ namespace Gala {
         }
 
         /**
-         * Multiplies an integer by a floating scaling factor, and then
-         * returns the result rounded to the nearest integer
-         */
-        public static int scale_to_int (int value, float scale_factor) {
-            return (int) (Math.round ((float)value * scale_factor));
-        }
-
-        /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
         public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
