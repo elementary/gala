@@ -1087,10 +1087,10 @@ namespace Gala {
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
                 float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
-                icon.x = InternalUtils.scale_to_int (icon.x, ui_scale);
-                icon.y = InternalUtils.scale_to_int (icon.y, ui_scale);
-                icon.width = InternalUtils.scale_to_int (icon.width, ui_scale);
-                icon.height = InternalUtils.scale_to_int (icon.height, ui_scale);
+                icon.x = Utils.scale_to_int (icon.x, ui_scale);
+                icon.y = Utils.scale_to_int (icon.y, ui_scale);
+                icon.width = Utils.scale_to_int (icon.width, ui_scale);
+                icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
                 float scale_x = (float)icon.width / actor.width;
                 float scale_y = (float)icon.height / actor.height;

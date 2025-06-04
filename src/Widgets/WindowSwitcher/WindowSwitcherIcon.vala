@@ -36,7 +36,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
     public WindowSwitcherIcon (Meta.Window window, int icon_size, float scale_factor) {
         Object (window: window);
 
-        icon = new WindowIcon (window, InternalUtils.scale_to_int (icon_size, scale_factor));
+        icon = new WindowIcon (window, Utils.scale_to_int (icon_size, scale_factor));
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
@@ -50,7 +50,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
     }
 
     private void update_size () {
-        var indicator_size = InternalUtils.scale_to_int (
+        var indicator_size = Utils.scale_to_int (
             (WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2),
             scale_factor
         );
@@ -73,7 +73,7 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
                 rgba.blue,
                 rgba.alpha
             );
-            var rect_radius = InternalUtils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
+            var rect_radius = Utils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
             Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
             ctx.set_operator (Cairo.Operator.SOURCE);
             ctx.fill ();
