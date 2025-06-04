@@ -49,6 +49,11 @@ namespace Gala {
         public Clutter.Actor shell_group { get; private set; }
 
         /**
+         * This group contains window menus.
+         */
+        public Clutter.Actor menu_group { get; private set; }
+
+        /**
          * {@inheritDoc}
          */
         public Meta.BackgroundGroup background_group { get; protected set; }
@@ -266,6 +271,9 @@ namespace Gala {
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();
             ui_group.add_child (shell_group);
+
+            menu_group = new Clutter.Actor ();
+            ui_group.add_child (menu_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1014,6 +1022,12 @@ namespace Gala {
 
             if (NotificationStack.is_notification (window)) {
                 notification_stack.show_notification (actor);
+            }
+
+            warning ("Checking window with type %d", window.window_type);
+            if (window.window_type == DROPDOWN_MENU) {
+                warning ("Menu, reparent");
+                InternalUtils.clutter_actor_reparent (actor, menu_group);
             }
         }
 

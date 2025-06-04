@@ -249,6 +249,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             wm.background_group.hide ();
             wm.window_group.hide ();
             wm.top_window_group.hide ();
+            wm.menu_group.hide ();
             show ();
             grab_key_focus ();
 
@@ -318,6 +319,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             wm.background_group.show ();
             wm.window_group.show ();
             wm.top_window_group.show ();
+            wm.menu_group.show ();
             icon_groups.show ();
             hide ();
 

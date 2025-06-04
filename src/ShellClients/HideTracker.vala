@@ -148,7 +148,7 @@ public class Gala.HideTracker : Object {
             }
 
             var type = window.get_window_type ();
-            if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
+            if (type == DESKTOP || type == DOCK || type == MENU || type == DROPDOWN_MENU || type == SPLASHSCREEN) {
                 continue;
             }
 
