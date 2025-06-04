@@ -1538,8 +1538,13 @@ namespace Gala {
 
             latest_window_snapshot = null;
 
+            var buffer_rect = window.get_buffer_rect ();
+            var frame_rect = window.get_frame_rect ();
+            var real_actor_offset_x = frame_rect.x - buffer_rect.x;
+            var real_actor_offset_y = frame_rect.y - buffer_rect.y;
+
             actor.set_pivot_point (0.0f, 0.0f);
-            actor.set_position (ex, ey);
+            actor.set_position (ex - real_actor_offset_x, ey - real_actor_offset_y);
             actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
             actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
