@@ -52,9 +52,9 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
     }
 
     private void reallocate () {
-        width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
-        height = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH, scale_factor);
-        y = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING, scale_factor) / 2;
+        width = Utils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
+        height = Utils.scale_to_int (IconGroupContainer.GROUP_WIDTH, scale_factor);
+        y = Utils.scale_to_int (IconGroupContainer.GROUP_WIDTH - IconGroupContainer.SPACING, scale_factor) / 2;
     }
 
     public void set_window_thumb (Meta.Window window) {
@@ -83,12 +83,12 @@ public class Gala.WorkspaceInsertThumb : Clutter.Actor {
         if (!expand) {
             remove_transition ("pulse");
             opacity = 0;
-            width = InternalUtils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
+            width = Utils.scale_to_int (IconGroupContainer.SPACING, scale_factor);
             expanded = false;
         } else {
             add_pulse_animation ();
             opacity = 200;
-            width = InternalUtils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2, scale_factor);
+            width = Utils.scale_to_int (IconGroupContainer.GROUP_WIDTH + IconGroupContainer.SPACING * 2, scale_factor);
             expanded = true;
         }
 
