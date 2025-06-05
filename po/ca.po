@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-03 19:09+0000\n"
-"PO-Revision-Date: 2025-04-19 13:20+0000\n"
+"PO-Revision-Date: 2025-06-05 07:55+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ca/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -287,16 +287,15 @@ msgstr "Captura de %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:170
-#, fuzzy, c-format
-#| msgid "Show in Files"
+#, c-format
 msgid "Show in %s"
-msgstr "Mostra-ho a Fitxers"
+msgstr "Mostra-ho a %s"
 
 #. / TRANSLATORS: %s represents a name of image viewer
 #: src/ScreenshotManager.vala:176
 #, c-format
 msgid "Open in %s"
-msgstr ""
+msgstr "Obre-ho a %s"
 
 #: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
