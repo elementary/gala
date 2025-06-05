@@ -64,6 +64,10 @@ public class Gala.ScreenshotManager : Object {
         var show_in_files_action = new GLib.SimpleAction ("show-in-files", GLib.VariantType.STRING);
         show_in_files_action.activate.connect (show_in_files);
         notifications_manager.add_action (show_in_files_action);
+
+        var open_in_photos_action = new GLib.SimpleAction ("open-in-photos", GLib.VariantType.STRING);
+        open_in_photos_action.activate.connect (open_in_photos);
+        notifications_manager.add_action (open_in_photos_action);
     }
 
     [CCode (instance_pos = -1)]
@@ -78,19 +82,19 @@ public class Gala.ScreenshotManager : Object {
                 wm.launch_action (ActionKeys.INTERACTIVE_SCREENSHOT_ACTION);
                 break;
             case "area-screenshot":
-            handle_screenshot_area_shortcut.begin (false);
+                handle_screenshot_area_shortcut.begin (false);
                 break;
             case "window-screenshot":
-            handle_screenshot_current_window_shortcut.begin (false);
+                handle_screenshot_current_window_shortcut.begin (false);
                 break;
             case "screenshot-clip":
                 handle_screenshot_screen_shortcut.begin (true);
                 break;
             case "area-screenshot-clip":
-            handle_screenshot_area_shortcut.begin (true);
+                handle_screenshot_area_shortcut.begin (true);
                 break;
             case "window-screenshot-clip":
-            handle_screenshot_current_window_shortcut.begin (true);
+                handle_screenshot_current_window_shortcut.begin (true);
                 break;
         }
     }
@@ -155,8 +159,23 @@ public class Gala.ScreenshotManager : Object {
 
         string[] actions = {};
         if (!clipboard) {
-            /// TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-            actions = { GLib.Action.print_detailed_name ("show-in-files", new Variant ("s", filename_used)), _("Show in Files") };
+            var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+            var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
+
+            actions = {
+                GLib.Action.print_detailed_name (
+                    "show-in-files",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of file manager
+                    _("Show in %s").printf (files_appinfo.get_display_name ()
+                ),
+                GLib.Action.print_detailed_name (
+                    "open-in-photos",
+                    new Variant ("s", filename_used)),
+                    /// TRANSLATORS: %s represents a name of image viewer
+                    _("Open in %s").printf (photos_appinfo.get_display_name ()
+                )
+            };
         }
 
         notifications_manager.send.begin (
@@ -177,6 +196,19 @@ public class Gala.ScreenshotManager : Object {
 
         try {
             files_appinfo.launch (files_list, null);
+        } catch (Error e) {
+            warning (e.message);
+        }
+    }
+
+    private void open_in_photos (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
+        var files_list = new GLib.List<GLib.File> ();
+        files_list.append (GLib.File.new_for_path (variant.get_string ()));
+
+        var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
+
+        try {
+            photos_appinfo.launch (files_list, null);
         } catch (Error e) {
             warning (e.message);
         }
@@ -280,15 +312,12 @@ public class Gala.ScreenshotManager : Object {
 
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
-        float actor_x, actor_y;
-        window_actor.get_position (out actor_x, out actor_y);
-
-        var rect = window.get_frame_rect ();
+        var rect = window.get_buffer_rect ();
         if (!include_frame) {
-            rect = window.frame_rect_to_client_rect (rect);
+            rect = window.get_frame_rect ();
         }
 
-        Mtk.Rectangle clip = { rect.x - (int) actor_x, rect.y - (int) actor_y, rect.width, rect.height };
+        Mtk.Rectangle clip = { rect.x - (int) window_actor.x, rect.y - (int) window_actor.y, rect.width, rect.height };
         var image = (Cairo.ImageSurface) window_actor.get_image (clip);
         if (include_cursor) {
             if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {

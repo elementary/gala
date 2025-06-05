@@ -83,9 +83,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int border_radius) {
         var old_key = current_key;
-        current_key = "%ix%i:%i".printf (width, height, shadow_size);
+        current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, border_radius);
         if (old_key == current_key) {
             return null;
         }
@@ -123,8 +123,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
         cr.save ();
         cr.set_operator (Cairo.Operator.CLEAR);
-        var size = shadow_size * monitor_scale;
-        Drawing.Utilities.cairo_rounded_rectangle (cr, size, size, actor.width, actor.height, border_radius);
+        Drawing.Utilities.cairo_rounded_rectangle (cr, shadow_size, shadow_size, actor.width, actor.height, border_radius);
         cr.fill ();
         cr.restore ();
 
@@ -145,7 +144,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var width = (int) (bounding_box.x2 - bounding_box.x1);
         var height = (int) (bounding_box.y2 - bounding_box.y1);
 
-        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size);
+        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, Utils.scale_to_int (shadow_size, monitor_scale), Utils.scale_to_int (border_radius, monitor_scale));
         if (shadow != null) {
             pipeline.set_layer_texture (0, shadow);
         }
@@ -162,9 +161,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox get_bounding_box () {
-        var size = shadow_size * monitor_scale;
-        var bounding_box = Clutter.ActorBox ();
+        var size = Utils.scale_to_int (shadow_size, monitor_scale);
 
+        var bounding_box = Clutter.ActorBox ();
         bounding_box.set_origin (-size, -size);
         bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
 

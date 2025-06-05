@@ -38,6 +38,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     private ActorTarget workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
+    private BackgroundManager? blurred_bg = null;
 
     private GLib.Settings gala_behavior_settings;
     private Drawing.StyleManager style_manager;
@@ -74,14 +75,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
 
-        brightness_effect = new Clutter.BrightnessContrastEffect ();
-        update_brightness_effect ();
-
-        var blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
-        blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
-        blurred_bg.add_effect (brightness_effect);
-
-        add_child (blurred_bg);
+        update_blurred_bg ();
 
         // Create a child container that will be sized to fit the primary monitor, to contain the "main"
         // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
@@ -99,15 +93,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         manager.workspaces_reordered.connect (on_workspaces_reordered);
         manager.workspace_switched.connect (on_workspace_switched);
 
-        manager.bind_property (
-            "n-workspaces",
-            workspaces_gesture_controller,
-            "overshoot-lower-clamp",
-            DEFAULT,
-            (binding, from_value, ref to_value) => {
-                to_value.set_double (-from_value.get_int () - 0.1 + 1);
-            }
-        );
+        workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
+        manager.notify["n-workspaces"].connect (() => {
+            workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
+        });
 
         window_containers_monitors = new List<MonitorClone> ();
         update_monitors ();
@@ -123,19 +112,12 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
     }
 
-    private void update_brightness_effect () {
-        if (style_manager.prefers_color_scheme == DARK) {
-            brightness_effect.set_brightness (-0.4f);
-        } else {
-            brightness_effect.set_brightness (0.4f);
-        }
-    }
-
     /**
      * Places the primary container for the WorkspaceClones and the
      * MonitorClones at the right positions
      */
     private void update_monitors () {
+        update_blurred_bg ();
         update_workspaces ();
 
         foreach (var monitor_clone in window_containers_monitors) {
@@ -150,9 +132,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
                     continue;
                 }
 
-                var monitor_clone = new MonitorClone (wm, monitor);
+                var monitor_clone = new MonitorClone (wm, monitor) {
+                    visible = true
+                };
                 monitor_clone.window_selected.connect (window_selected);
-                monitor_clone.visible = opened;
 
                 window_containers_monitors.append (monitor_clone);
                 add_child (monitor_clone);
@@ -171,6 +154,29 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             workspace_clone.monitor_scale = scale;
             workspace_clone.update_size (primary_geometry);
         }
+    }
+
+    private void update_brightness_effect () {
+        if (style_manager.prefers_color_scheme == DARK) {
+            brightness_effect.set_brightness (-0.4f);
+        } else {
+            brightness_effect.set_brightness (0.4f);
+        }
+    }
+
+    private void update_blurred_bg () {
+        if (blurred_bg != null) {
+            remove_child (blurred_bg);
+        }
+
+        brightness_effect = new Clutter.BrightnessContrastEffect ();
+        update_brightness_effect ();
+
+        blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
+        blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
+        blurred_bg.add_effect (brightness_effect);
+
+        insert_child_below (blurred_bg, null);
     }
 
     private void update_workspaces () {
@@ -252,7 +258,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
             var scale = display.get_monitor_scale (display.get_primary_monitor ());
             icon_groups.force_reposition ();
-            icon_groups.y = primary_monitor_container.height - InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
+            icon_groups.y = primary_monitor_container.height - Utils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             reposition_icon_groups (false);
 
             if (action != MULTITASKING_VIEW) {
@@ -339,8 +345,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         // make sure the active workspace's icongroup is always visible
         var icon_groups_width = icon_groups.calculate_total_width ();
         if (icon_groups_width > primary_monitor_container.width) {
-            icon_groups.x = (-active_index * InternalUtils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
-                .clamp (primary_monitor_container.width - icon_groups_width - InternalUtils.scale_to_int (64, scale), InternalUtils.scale_to_int (64, scale));
+            icon_groups.x = (-active_index * Utils.scale_to_int (IconGroupContainer.SPACING + IconGroup.SIZE, scale) + primary_monitor_container.width / 2)
+                .clamp (primary_monitor_container.width - icon_groups_width - Utils.scale_to_int (64, scale), Utils.scale_to_int (64, scale));
         } else
             icon_groups.x = primary_monitor_container.width / 2 - icon_groups_width / 2;
 

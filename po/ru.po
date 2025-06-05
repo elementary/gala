@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-04-16 17:34+0000\n"
+"POT-Creation-Date: 2025-06-03 19:09+0000\n"
 "PO-Revision-Date: 2025-04-21 05:55+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -109,67 +109,71 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
-#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:56 data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:103 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:162
+#: data/gala.metainfo.xml.in:179 data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:261
+#: data/gala.metainfo.xml.in:277
 msgid "Improvements:"
 msgstr "Улучшения:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
-#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
-#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:105 data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:149 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:183 data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:242 data/gala.metainfo.xml.in:264
+#: data/gala.metainfo.xml.in:279
 msgid "Updated translations"
 msgstr "Обновлены переводы"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:73
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "Состояние окон теперь сохраняется при сне и выключении"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:74
 msgid "Remove scaling effect from menus"
 msgstr "Удалён эффект приближения у меню"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:75
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "Жест проведения вверх для закрытия окон в Многозадачном виде"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:106
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "Исправлен редкий сбой, когда окно Дока оказывалось убито"
 
-#: data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:107
 msgid "Added interactive screenshot shortcut"
 msgstr "Добавлено сочетание клавиш интерактивного снимка экрана"
 
-#: data/gala.metainfo.xml.in:68
+#: data/gala.metainfo.xml.in:108
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Исправлен сбой при использовании сочетаний клавиш закрепления окон"
 
-#: data/gala.metainfo.xml.in:97
+#: data/gala.metainfo.xml.in:137
 msgid "Improved shadows performance"
 msgstr "Улучшена производительность теней"
 
-#: data/gala.metainfo.xml.in:141
+#: data/gala.metainfo.xml.in:181
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "Исправлен возможный сбой при перемещении окон между рабочими столами"
 
-#: data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:182
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Исправлена анимация уведомлений при переходе в многозадачный вид"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:197
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Улучшена навигация с клавиатуры в режиме многозадачности"
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:198
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Обновление цвета панели одновременно со сменой обоев"
 
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:238
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -177,22 +181,22 @@ msgstr ""
 "Смена обоев и переход в спящий режим теперь учитывают опцию «Уменьшить "
 "анимации»"
 
-#: data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:239
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "Соответствующие указатели перетаскивания при перемещении окон"
 
-#: data/gala.metainfo.xml.in:200
+#: data/gala.metainfo.xml.in:240
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Исправлена ошибка, из-за которой жесты в режиме многозадачности могли "
 "перестать работать"
 
-#: data/gala.metainfo.xml.in:201
+#: data/gala.metainfo.xml.in:241
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Улучшено поведение динамических рабочих столов с несколькими мониторами"
 
-#: data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:263
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Улучшено сочетание клавиш «Переместить на рабочий стол»"
 
@@ -268,37 +272,45 @@ msgid "Window has already focus"
 msgstr "Окно уже сфокусировано"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:101
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:159
-msgid "Show in Files"
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:170
+#, fuzzy, c-format
+#| msgid "Show in Files"
+msgid "Show in %s"
 msgstr "Показать в Файлах"
 
-#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:176
+#, c-format
+msgid "Open in %s"
+msgstr ""
+
+#: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
 msgstr "Снимок экрана сделан"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot is saved to clipboard"
 msgstr "Снимок сохранён в буфер обмена"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot saved to screenshots folder"
 msgstr "Снимок сохранён в папку снимков экрана"
 
-#: src/ScreenshotManager.vala:422
+#: src/ScreenshotManager.vala:451
 msgid "Screenshots"
 msgstr "Снимки экрана"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr "Переключатель окон"
 
-#: src/WindowManager.vala:1775
+#: src/WindowManager.vala:1744
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -306,15 +318,15 @@ msgstr[0] "Изменения будут отменены через %i секу
 msgstr[1] "Изменения будут отменены через %i секунды."
 msgstr[2] "Изменения будут отменены через %i секунд."
 
-#: src/WindowManager.vala:1782
+#: src/WindowManager.vala:1751
 msgid "Keep new display settings?"
 msgstr "Сохранить новые настройки экрана?"
 
-#: src/WindowManager.vala:1786
+#: src/WindowManager.vala:1755
 msgid "Keep Settings"
 msgstr "Сохранить настройки"
 
-#: src/WindowManager.vala:1787
+#: src/WindowManager.vala:1756
 msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 
