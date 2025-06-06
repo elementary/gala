@@ -74,6 +74,10 @@ public class Gala.Barrier : Object {
             barrier.release (event);
         }
 
+        if (triggered && event.time - triggered_time > 200) {
+            barrier.release (event);
+        }
+
         if (triggered && pressure.abs () > retrigger_pressure_threshold && event.time > retrigger_delay + triggered_time) {
             emit_trigger (event.time);
         }
