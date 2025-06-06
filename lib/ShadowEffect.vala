@@ -100,43 +100,10 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return shadow.texture;
         }
 
-        // fill a new texture for this size
-        var buffer = new Drawing.BufferSurface (width, height);
-        Drawing.Utilities.cairo_rounded_rectangle (
-            buffer.context,
-            shadow_size,
-            shadow_size,
-            width - shadow_size * 2,
-            height - shadow_size * 2,
-            border_radius
-        );
+        var texture = new Cogl.Texture2D.from_bitmap (get_texture_wip (context, width, height, shadow_size, border_radius));
+        shadow_cache.@set (current_key, new Shadow (texture));
 
-        buffer.context.set_source_rgba (0, 0, 0, 0.7);
-        buffer.context.fill ();
-
-        buffer.exponential_blur (shadow_size / 2);
-
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-        var cr = new Cairo.Context (surface);
-        cr.set_source_surface (buffer.surface, 0, 0);
-        cr.paint ();
-
-        cr.save ();
-        cr.set_operator (Cairo.Operator.CLEAR);
-        Drawing.Utilities.cairo_rounded_rectangle (cr, shadow_size, shadow_size, actor.width, actor.height, border_radius);
-        cr.fill ();
-        cr.restore ();
-
-        try {
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
-            shadow_cache.@set (current_key, new Shadow (texture));
-
-            return texture;
-        } catch (Error e) {
-            debug (e.message);
-            return null;
-        }
+        return texture;
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
@@ -149,11 +116,11 @@ public class Gala.ShadowEffect : Clutter.Effect {
             pipeline.set_layer_texture (0, shadow);
         }
 
-        var opacity = actor.get_paint_opacity () * shadow_opacity / 255.0f;
-        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
-        alpha.premultiply ();
+        //  var opacity = actor.get_paint_opacity () * shadow_opacity / 255.0f;
+        //  var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
+        //  alpha.premultiply ();
 
-        pipeline.set_color (alpha);
+        //  pipeline.set_color (alpha);
 
         context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
 
@@ -219,5 +186,37 @@ public class Gala.ShadowEffect : Clutter.Effect {
             shadows_marked_for_dropping.unset (key);
             return Source.REMOVE;
         });
+    }
+    
+    private Cogl.Bitmap get_texture_wip (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+        var data = new uint8[width * height];
+
+        var smallest_blur = 255.0 / shadow_size;
+
+        var total_offset = shadow_size + corner_radius;
+
+        var target_row = height - total_offset;
+        for (var row = total_offset; row < target_row; row++) {
+            var current_row = row * width;
+            var current_row_end = current_row + width - 1;
+            for (int i = 1; i < shadow_size; i++) {
+                var current_color = (uint8) (smallest_blur * i);
+                data[current_row + i] = current_color;
+                data[current_row_end - i] = current_color;
+            }
+        }
+
+        var target_col = width - total_offset;
+        for (var row = 0; row < shadow_size; row++) {
+            var current_row = row * width;
+            var end_row = (height - row) * width;
+            var current_color = (uint8) (smallest_blur * row);
+            for (var col = total_offset; col < target_col; col++) {
+                data[current_row + col] = current_color;
+                data[end_row - col] = current_color;
+            }
+        }
+
+        return new Cogl.Bitmap.for_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
     }
 }
