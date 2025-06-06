@@ -193,16 +193,21 @@ public class Gala.ShadowEffect : Clutter.Effect {
     private Cogl.Bitmap get_shadow_bitmap (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
         var data = new uint8[width * height];
 
+        // use fast Gaussian blur approximation
+        var precomputed_colors = new uint8[shadow_size + 1];
+        for (var i = 0; i <= shadow_size; i++) {
+            var normalized = (double) i / shadow_size;
+            precomputed_colors[i] = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+        }
+
         var total_offset = shadow_size + corner_radius;
 
         var target_row = height - total_offset;
         for (var row = total_offset; row < target_row; row++) {
             var current_row = row * width;
             var current_row_end = current_row + width - 1;
-            for (int i = 1; i <= shadow_size; i++) {
-                // use efficient and rough Gaussian blur approximation
-                var normalized = (double) i / shadow_size;
-                var current_color = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+            for (int i = 0; i <= shadow_size; i++) {
+                var current_color = precomputed_colors[i];
 
                 data[current_row + i] = current_color;
                 data[current_row_end - i] = current_color;
@@ -213,10 +218,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         for (var row = 0; row <= shadow_size; row++) {
             var current_row = row * width;
             var end_row = (height - row) * width - 1;
-
-            // use efficient and rough Gaussian blur approximation
-            var normalized = (double) row / shadow_size;
-            var current_color = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+            var current_color = precomputed_colors[row];
 
             for (var col = total_offset; col < target_col; col++) {
                 data[current_row + col] = current_color;
@@ -249,7 +251,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
 
                     var real_distance = Math.sqrt (real_dx * real_dx + real_dy * real_dy);
 
-                    // use efficient and rough Gaussian blur approximation
+                    // use fast Gaussian blur approximation
                     var normalized = (double) real_distance / shadow_size;
                     var current_color = (uint8) (1.0 - normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
 
