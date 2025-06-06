@@ -234,11 +234,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
             var current_row_end = current_row + width - 1;
             var end_row = (height - 1 - y) * width;
             var end_row_end = end_row + width - 1;
+
+            var dy = target_square - y;
+            var dy_squared = dy * dy;
+
             for (var x = 0; x < target_square; x++) {
                 var dx = target_square - x;
-                var dy = target_square - y;
-
-                var squared_distance = dx * dx + dy * dy;
+                var squared_distance = dx * dx + dy_squared;
 
                 if (squared_distance > target_square * target_square) {
                     continue;
@@ -251,10 +253,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
                     var real_dx = dx - corner_radius * cos;
                     var real_dy = dy - corner_radius * sin;
 
-                    var real_distance = Math.sqrt (real_dx * real_dx + real_dy * real_dy);
-
                     // use fast Gaussian blur approximation
-                    var normalized = (double) real_distance / shadow_size;
+                    var normalized = (double) Math.sqrt (real_dx * real_dx + real_dy * real_dy) / shadow_size;
                     var current_color = (uint8) (1.0 - normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
 
                     // when we're very close to the rounded corner, our real_distance can be wrong (idk why).
