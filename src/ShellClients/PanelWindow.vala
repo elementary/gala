@@ -15,28 +15,21 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
     public Pantheon.Desktop.HideMode hide_mode {
         get {
-            return hide_tracker == null ? Pantheon.Desktop.HideMode.NEVER : hide_tracker.hide_mode;
+            return hide_tracker.hide_mode;
         }
         set {
-            if (value == NEVER) {
-                hide_tracker = null;
-                show ();
-                make_exclusive ();
-                return;
-            } else if (hide_tracker == null) {
-                unmake_exclusive ();
-
-                hide_tracker = new HideTracker (wm.get_display (), this);
-                hide_tracker.hide.connect (hide);
-                hide_tracker.show.connect (show);
-            }
-
             hide_tracker.hide_mode = value;
+
+            if (value == NEVER) {
+                make_exclusive ();
+            } else {
+                unmake_exclusive ();
+            }
         }
     }
 
     private GestureController gesture_controller;
-    private HideTracker? hide_tracker;
+    private HideTracker hide_tracker;
 
     private int width = -1;
     private int height = -1;
@@ -64,15 +57,9 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         gesture_controller = new GestureController (DOCK, wm);
         add_gesture_controller (gesture_controller);
 
-        window.display.in_fullscreen_changed.connect (() => {
-            if (wm.get_display ().get_monitor_in_fullscreen (window.get_monitor ())) {
-                hide ();
-            } else if (hide_mode == NEVER) {
-                show ();
-            } else {
-                hide_tracker.update_overlap ();
-            }
-        });
+        hide_tracker = new HideTracker (wm.get_display (), this);
+        hide_tracker.hide.connect (hide);
+        hide_tracker.show.connect (show);
     }
 
     public Mtk.Rectangle get_custom_window_rect () {
@@ -106,10 +93,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     private void show () {
-        if (window.display.get_monitor_in_fullscreen (window.get_monitor ())) {
-            return;
-        }
-
         gesture_controller.goto (0);
     }
 

@@ -25,6 +25,7 @@ public class Gala.HideTracker : Object {
     private bool overlap = false;
     private bool focus_overlap = false;
     private bool focus_maximized_overlap = false;
+    private bool fullscreen_overlap = false;
 
     private Meta.Window current_focus_window;
 
@@ -137,6 +138,7 @@ public class Gala.HideTracker : Object {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
+        fullscreen_overlap = display.get_monitor_in_fullscreen (panel.window.get_monitor ());
 
         foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
             if (window == panel.window) {
@@ -187,8 +189,8 @@ public class Gala.HideTracker : Object {
                 toggle_display (true);
                 break;
 
-            default:
-                warning ("HideTracker: unsupported hide mode.");
+            case NEVER:
+                toggle_display (fullscreen_overlap);
                 break;
         }
     }
