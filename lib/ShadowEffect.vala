@@ -102,7 +102,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return shadow.texture;
         }
 
-        var texture = new Cogl.Texture2D.from_bitmap (get_shadow_bitmap (context, width, height, shadow_size, border_radius));
+        var texture = get_shadow_texture (context, width, height, shadow_size, border_radius);
         shadow_cache.@set (current_key, new Shadow (texture));
 
         return texture;
@@ -190,7 +190,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         });
     }
 
-    private Cogl.Bitmap get_shadow_bitmap (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+    private Cogl.Texture get_shadow_texture (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
         var data = new uint8[width * height];
 
         // use fast Gaussian blur approximation
@@ -269,6 +269,6 @@ public class Gala.ShadowEffect : Clutter.Effect {
             }
         }
 
-        return new Cogl.Bitmap.for_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
+        return new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
     }
 }
