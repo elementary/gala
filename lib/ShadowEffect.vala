@@ -5,6 +5,8 @@
  */
 
 public class Gala.ShadowEffect : Clutter.Effect {
+    private const float INITIAL_OPACITY = 0.7f;
+
     private class Shadow {
         public int users;
         public Cogl.Texture texture;
@@ -100,7 +102,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return shadow.texture;
         }
 
-        var texture = new Cogl.Texture2D.from_bitmap (get_texture_wip (context, width, height, shadow_size, border_radius));
+        var texture = new Cogl.Texture2D.from_bitmap (get_shadow_bitmap (context, width, height, shadow_size, border_radius));
         shadow_cache.@set (current_key, new Shadow (texture));
 
         return texture;
@@ -116,11 +118,11 @@ public class Gala.ShadowEffect : Clutter.Effect {
             pipeline.set_layer_texture (0, shadow);
         }
 
-        //  var opacity = actor.get_paint_opacity () * shadow_opacity / 255.0f;
-        //  var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
-        //  alpha.premultiply ();
+        var opacity = actor.get_paint_opacity () * shadow_opacity * INITIAL_OPACITY / 255.0f;
+        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
+        alpha.premultiply ();
 
-        //  pipeline.set_color (alpha);
+        pipeline.set_color (alpha);
 
         context.get_framebuffer ().draw_rectangle (pipeline, bounding_box.x1, bounding_box.y1, bounding_box.x2, bounding_box.y2);
 
@@ -187,11 +189,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return Source.REMOVE;
         });
     }
-    
-    private Cogl.Bitmap get_texture_wip (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
-        var data = new uint8[width * height];
 
-        var smallest_blur = 255.0 / shadow_size;
+    private Cogl.Bitmap get_shadow_bitmap (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+        var data = new uint8[width * height];
 
         var total_offset = shadow_size + corner_radius;
 
@@ -199,18 +199,25 @@ public class Gala.ShadowEffect : Clutter.Effect {
         for (var row = total_offset; row < target_row; row++) {
             var current_row = row * width;
             var current_row_end = current_row + width - 1;
-            for (int i = 1; i < shadow_size; i++) {
-                var current_color = (uint8) (smallest_blur * i);
+            for (int i = 1; i <= shadow_size; i++) {
+                // use efficient and rough Gaussian blur approximation
+                var normalized = (double) i / shadow_size;
+                var current_color = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+
                 data[current_row + i] = current_color;
                 data[current_row_end - i] = current_color;
             }
         }
 
         var target_col = width - total_offset;
-        for (var row = 0; row < shadow_size; row++) {
+        for (var row = 0; row <= shadow_size; row++) {
             var current_row = row * width;
             var end_row = (height - row) * width - 1;
-            var current_color = (uint8) (smallest_blur * row);
+
+            // use efficient and rough Gaussian blur approximation
+            var normalized = (double) row / shadow_size;
+            var current_color = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+
             for (var col = total_offset; col < target_col; col++) {
                 data[current_row + col] = current_color;
                 data[end_row - col] = current_color;
@@ -234,7 +241,24 @@ public class Gala.ShadowEffect : Clutter.Effect {
                 }
 
                 if (squared_distance >= corner_radius * corner_radius) {
-                    var current_color = (uint8) (255.0 - (Math.sqrt (squared_distance) / target_square) * 255.0);
+                    double sin, cos;
+                    Math.sincos (Math.atan2 (dy, dx), out sin, out cos);
+
+                    var real_dx = dx - corner_radius * cos;
+                    var real_dy = dy - corner_radius * sin;
+
+                    var real_distance = Math.sqrt (real_dx * real_dx + real_dy * real_dy);
+
+                    // use efficient and rough Gaussian blur approximation
+                    var normalized = (double) real_distance / shadow_size;
+                    var current_color = (uint8) (1.0 - normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+
+                    // when we're very close to the rounded corner, our real_distance can be wrong (idk why).
+                    // If we're here, we're not inside the corner yet and that means we must draw something
+                    if (current_color == 0) {
+                        current_color = 255;
+                    }
+
                     data[current_row + x] = current_color;
                     data[current_row_end - x] = current_color;
                     data[end_row + x] = current_color;
