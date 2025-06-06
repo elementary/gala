@@ -5,7 +5,7 @@
  */
 
 public class Gala.ShadowEffect : Clutter.Effect {
-    private const float INITIAL_OPACITY = 0.7f;
+    private const float INITIAL_OPACITY = 0.25f;
 
     private class Shadow {
         public int users;
@@ -40,13 +40,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
             _css_class = value;
             switch (value) {
                 case "workspace-switcher":
-                    shadow_size = 6;
+                    shadow_size = 3;
                     break;
                 case "window":
-                    shadow_size = 55;
+                    shadow_size = 26;
                     break;
                 default:
-                    shadow_size = 18;
+                    shadow_size = 9;
                     break;
             }
         }
@@ -118,8 +118,8 @@ public class Gala.ShadowEffect : Clutter.Effect {
             pipeline.set_layer_texture (0, shadow);
         }
 
-        var opacity = actor.get_paint_opacity () * shadow_opacity * INITIAL_OPACITY / 255.0f;
-        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
+        var opacity = actor.get_paint_opacity () * shadow_opacity * INITIAL_OPACITY / 255.0f / 255.0f;
+        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity);
         alpha.premultiply ();
 
         pipeline.set_color (alpha);
