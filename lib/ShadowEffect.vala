@@ -209,11 +209,37 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var target_col = width - total_offset;
         for (var row = 0; row < shadow_size; row++) {
             var current_row = row * width;
-            var end_row = (height - row) * width;
+            var end_row = (height - row) * width - 1;
             var current_color = (uint8) (smallest_blur * row);
             for (var col = total_offset; col < target_col; col++) {
                 data[current_row + col] = current_color;
                 data[end_row - col] = current_color;
+            }
+        }
+
+        var target_square = shadow_size + corner_radius;
+        for (var y = 0; y < target_square; y++) {
+            var current_row = width * y;
+            var current_row_end = current_row + width - 1;
+            var end_row = (height - 1 - y) * width;
+            var end_row_end = end_row + width - 1;
+            for (var x = 0; x < target_square; x++) {
+                var dx = target_square - x;
+                var dy = target_square - y;
+
+                var squared_distance = dx * dx + dy * dy;
+
+                if (squared_distance > target_square * target_square) {
+                    continue;
+                }
+
+                if (squared_distance >= corner_radius * corner_radius) {
+                    var current_color = (uint8) (255.0 - (Math.sqrt (squared_distance) / target_square) * 255.0);
+                    data[current_row + x] = current_color;
+                    data[current_row_end - x] = current_color;
+                    data[end_row + x] = current_color;
+                    data[end_row_end - x] = current_color;
+                }
             }
         }
 
