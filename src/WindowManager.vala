@@ -937,6 +937,19 @@ namespace Gala {
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
 
+                    unowned var workspace = window.get_workspace ();
+                    if (workspace != null) {
+                        unowned var manager = window.display.get_workspace_manager ();
+                        var workspace_index = workspace.workspace_index;
+                        if (workspace_index != 0) {
+                            flags |= WindowFlags.ALLOWS_MOVE_LEFT;
+                        }
+
+                        if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
+                            flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
+                        }
+                    }
+
                     daemon_manager.show_window_menu.begin (flags, x, y);
                     break;
                 case Meta.WindowMenuType.APP:
