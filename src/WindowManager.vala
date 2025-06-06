@@ -936,7 +936,7 @@ namespace Gala {
 
                     if (window.can_close ())
                         flags |= WindowFlags.CAN_CLOSE;
-                    
+
                     unowned var workspace = window.get_workspace ();
                     if (workspace != null) {
                         unowned var manager = window.display.get_workspace_manager ();
