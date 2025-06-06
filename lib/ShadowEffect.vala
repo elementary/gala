@@ -103,7 +103,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
 
         var texture = get_shadow_texture (context, width, height, shadow_size, border_radius);
-        shadow_cache.@set (current_key, new Shadow (texture));
+        if (texture != null) {
+            shadow_cache.@set (current_key, new Shadow (texture));
+        }
 
         return texture;
     }
@@ -190,7 +192,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         });
     }
 
-    private Cogl.Texture get_shadow_texture (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+    private Cogl.Texture? get_shadow_texture (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
         var data = new uint8[width * height];
 
         // use fast Gaussian blur approximation
@@ -269,6 +271,11 @@ public class Gala.ShadowEffect : Clutter.Effect {
             }
         }
 
-        return new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
+        try {
+            return new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
+        } catch (Error e) {
+            warning ("ShadowEffect: Couldn't create texture");
+            return null;
+        }
     }
 }
