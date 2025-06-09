@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-04-18 01:55+0000\n"
+"POT-Creation-Date: 2025-06-03 19:09+0000\n"
+"PO-Revision-Date: 2025-06-05 07:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -109,88 +109,92 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
-#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:56 data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:103 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:162
+#: data/gala.metainfo.xml.in:179 data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:261
+#: data/gala.metainfo.xml.in:277
 msgid "Improvements:"
 msgstr "改善点:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
-#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
-#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:105 data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:149 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:183 data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:242 data/gala.metainfo.xml.in:264
+#: data/gala.metainfo.xml.in:279
 msgid "Updated translations"
 msgstr "翻訳の更新"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:73
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "スリープ・シャットダウン時にウィンドウの状態を保持するように修正"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:74
 msgid "Remove scaling effect from menus"
 msgstr "メニューのスケーリング効果を削除"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:75
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "マルチタスク画面で上にスワイプするとウィンドウを閉じるように修正"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:106
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "ドックウィンドウが強制終了されると、まれにクラッシュする不具合を修正"
 
-#: data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:107
 msgid "Added interactive screenshot shortcut"
 msgstr "対話式スクリーンショットのショートカットを追加"
 
-#: data/gala.metainfo.xml.in:68
+#: data/gala.metainfo.xml.in:108
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "ウィンドウを並べるショートカット使用時のクラッシュを修正"
 
-#: data/gala.metainfo.xml.in:97
+#: data/gala.metainfo.xml.in:137
 msgid "Improved shadows performance"
 msgstr "影のパフォーマンスを改善"
 
-#: data/gala.metainfo.xml.in:141
+#: data/gala.metainfo.xml.in:181
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "ワークスペース間でウィンドウを移動した際に起こりうるクラッシュを修正"
 
-#: data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:182
 msgid "Fix notification animation when entering multitasking view"
 msgstr "マルチタスク画面に遷移した際の通知のアニメーションを修正"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:197
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "“マルチタスク画面”でのキーボード操作を改善"
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:198
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "壁紙の遷移と同時にパネルの色を変更するように修正"
 
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:238
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 "壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定に従うように修正"
 
-#: data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:239
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "ウィンドウ移動時、ドラッグ & ドロップの形をした適切なポインターを使用するよう"
 "に修正"
 
-#: data/gala.metainfo.xml.in:200
+#: data/gala.metainfo.xml.in:240
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "マルチタスク画面でジェスチャーが動作しなくなる可能性がある不具合を修正"
 
-#: data/gala.metainfo.xml.in:201
+#: data/gala.metainfo.xml.in:241
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "マルチモニター環境におけるダイナミックワークスペースの挙動を改善"
 
-#: data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:263
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "“move-to-workspace”ショートカットの処理を改善"
 
@@ -266,51 +270,58 @@ msgid "Window has already focus"
 msgstr "ウィンドウはすでにアクティブです"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:101
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr "スクリーンショット %s"
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:159
-msgid "Show in Files"
-msgstr "“ファイル”で表示"
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:170
+#, c-format
+msgid "Show in %s"
+msgstr "“%s”で表示"
 
-#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:176
+#, c-format
+msgid "Open in %s"
+msgstr "“%s”で開く"
+
+#: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
 msgstr "スクリーンショットが取得されました"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot is saved to clipboard"
 msgstr "スクリーンショットをクリップボードに保存しました"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot saved to screenshots folder"
 msgstr "スクリーンショットを“スクリーンショット”フォルダーに保存しました"
 
-#: src/ScreenshotManager.vala:422
+#: src/ScreenshotManager.vala:451
 msgid "Screenshots"
 msgstr "スクリーンショット"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr "ウィンドウスイッチャー"
 
-#: src/WindowManager.vala:1775
+#: src/WindowManager.vala:1744
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "変更は %i 秒後に自動的に元に戻ります。"
 
-#: src/WindowManager.vala:1782
+#: src/WindowManager.vala:1751
 msgid "Keep new display settings?"
 msgstr "新しいディスプレイの設定を維持しますか?"
 
-#: src/WindowManager.vala:1786
+#: src/WindowManager.vala:1755
 msgid "Keep Settings"
 msgstr "設定を維持"
 
-#: src/WindowManager.vala:1787
+#: src/WindowManager.vala:1756
 msgid "Use Previous Settings"
 msgstr "以前の設定を使う"
 
@@ -662,10 +673,10 @@ msgstr "以前の設定を使う"
 #~ "versions without breaking older versions. A special spacer tag can be "
 #~ "used to insert some space between two adjacent buttons."
 #~ msgstr ""
-#~ "タイトルバーのボタンの位置を指定します。ここで指定する値は \"menu:"
-#~ "minimize,maximize,spacer,close\" のような文字列にしてください; コロンで"
-#~ "ウィンドウの右上隅と左上隅を分割し、ボタン名はコンマで区切ります。ボタンを"
-#~ "重複させることはできません。不明なボタン名は単に無視されるだけなので、"
+#~ "タイトルバーのボタンの位置を指定します。ここで指定する値は "
+#~ "\"menu:minimize,maximize,spacer,close\" のような文字列にしてください; コロ"
+#~ "ンでウィンドウの右上隅と左上隅を分割し、ボタン名はコンマで区切ります。ボタ"
+#~ "ンを重複させることはできません。不明なボタン名は単に無視されるだけなので、"
 #~ "metacity の将来のバージョンでも利用できます。spacer というタグはボタンとボ"
 #~ "タンの間に挿入する空白を意味します。"
 
