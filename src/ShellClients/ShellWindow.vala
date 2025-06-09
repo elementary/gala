@@ -160,6 +160,8 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
             window_actor.set_clip (0, 0, window_actor.width, monitor_geom.y + monitor_geom.height - y);
         } else if (y < monitor_geom.y) {
             window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
+        } else {
+            window_actor.remove_clip ();
         }
     }
 }

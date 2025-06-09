@@ -98,7 +98,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         };
 
         shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
-            border_radius = Utils.scale_to_int (9, scaling_factor),
+            border_radius = 10,
             shadow_opacity = 100
         };
         add_effect (shadow_effect);
@@ -274,7 +274,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding
+        Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
         if (gesture_controller.recognizing) {
             return;
