@@ -540,7 +540,12 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private inline Clutter.ModifierType get_current_modifiers () {
         Clutter.ModifierType modifiers;
-        wm.get_display ().get_cursor_tracker ().get_pointer (null, out modifiers);
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.get_pointer (null, out modifiers);
 
         return modifiers & Clutter.ModifierType.MODIFIER_MASK;
     }
