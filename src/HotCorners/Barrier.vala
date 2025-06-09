@@ -74,7 +74,7 @@ public class Gala.Barrier : Object {
             barrier.release (event);
         }
 
-        if (triggered && event.time - triggered_time > 200) {
+        if (triggered && event.time - triggered_time > 150) {
             barrier.release (event);
         }
 
