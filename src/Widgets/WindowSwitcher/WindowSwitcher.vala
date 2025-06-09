@@ -167,8 +167,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        var stroke_width = scaling_factor;
-
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
 #else
@@ -183,11 +181,11 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         ctx.set_operator (Cairo.Operator.SOURCE);
 
-        // Offset by 0.5 so cairo draws a stroke on real pixels
+        var stroke_width = Utils.scale_to_int (1, scaling_factor);
         Drawing.Utilities.cairo_rounded_rectangle (
-            ctx, 0.5, 0.5,
-            width - stroke_width,
-            height - stroke_width,
+            ctx,
+            stroke_width / 2.0, stroke_width / 2.0,
+            width - stroke_width, height - stroke_width,
             Utils.scale_to_int (9, scaling_factor)
         );
 
@@ -209,11 +207,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         ctx.stroke ();
         ctx.restore ();
 
-        // Offset by 0.5 so cairo draws a stroke on real pixels
         Drawing.Utilities.cairo_rounded_rectangle (
-            ctx, stroke_width + 0.5, stroke_width + 0.5,
-            width - stroke_width * 2 - 1,
-            height - stroke_width * 2 - 1,
+            ctx, stroke_width * 1.5, stroke_width * 1.5,
+            width - stroke_width * 3,
+            height - stroke_width * 3,
             Utils.scale_to_int (8, scaling_factor)
         );
 
