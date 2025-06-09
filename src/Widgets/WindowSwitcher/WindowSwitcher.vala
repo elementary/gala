@@ -274,7 +274,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding
+        Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
         if (gesture_controller.recognizing) {
             return;
