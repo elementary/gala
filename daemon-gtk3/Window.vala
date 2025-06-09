@@ -6,13 +6,12 @@
  */
 
 public class Gala.Daemon.Window : Gtk.Window {
+    public int width { get; construct; }
+    public int height { get; construct; }
     public Gtk.Box content { get; construct; }
 
     public Window (int width, int height) {
-        Object (
-            default_width: width,
-            default_height: height
-        );
+        Object (width: width, height: height);
     }
 
     class construct {
@@ -34,7 +33,9 @@ public class Gala.Daemon.Window : Gtk.Window {
         title = "MODAL";
         child = content = new Gtk.Box (HORIZONTAL, 0) {
             hexpand = true,
-            vexpand = true
+            vexpand = true,
+            width_request = width,
+            height_request = height
         };
 
         set_visual (get_screen ().get_rgba_visual ());
