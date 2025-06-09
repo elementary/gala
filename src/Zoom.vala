@@ -31,8 +31,8 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         unowned var display = wm.get_display ();
         var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
-        display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
-        display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
+        display.add_keybinding ("zoom-in", schema, NONE, zoom_in);
+        display.add_keybinding ("zoom-out", schema, NONE, zoom_out);
 
         gesture_controller = new GestureController (ZOOM, wm) {
             snap = false
@@ -68,13 +68,13 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) {
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true);
     }
 
     [CCode (instance_pos = -1)]
     private void zoom_out (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) {
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (-SHORTCUT_DELTA, true);
     }
 
