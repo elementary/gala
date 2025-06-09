@@ -5,6 +5,8 @@
  */
 
 public class Gala.ShadowEffect : Clutter.Effect {
+    private const float INITIAL_OPACITY = 0.25f;
+
     private class Shadow {
         public int users;
         public Cogl.Texture texture;
@@ -38,13 +40,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
             _css_class = value;
             switch (value) {
                 case "workspace-switcher":
-                    shadow_size = 6;
+                    shadow_size = 3;
                     break;
                 case "window":
-                    shadow_size = 55;
+                    shadow_size = 26;
                     break;
                 default:
-                    shadow_size = 18;
+                    shadow_size = 9;
                     break;
             }
         }
@@ -83,9 +85,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
         }
     }
 
-    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size) {
+    private Cogl.Texture? get_shadow (Cogl.Context context, int width, int height, int shadow_size, int border_radius) {
         var old_key = current_key;
-        current_key = "%ix%i:%i".printf (width, height, shadow_size);
+        current_key = "%ix%i:%i:%i".printf (width, height, shadow_size, border_radius);
         if (old_key == current_key) {
             return null;
         }
@@ -100,44 +102,12 @@ public class Gala.ShadowEffect : Clutter.Effect {
             return shadow.texture;
         }
 
-        // fill a new texture for this size
-        var buffer = new Drawing.BufferSurface (width, height);
-        Drawing.Utilities.cairo_rounded_rectangle (
-            buffer.context,
-            shadow_size,
-            shadow_size,
-            width - shadow_size * 2,
-            height - shadow_size * 2,
-            border_radius
-        );
-
-        buffer.context.set_source_rgba (0, 0, 0, 0.7);
-        buffer.context.fill ();
-
-        buffer.exponential_blur (shadow_size / 2);
-
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-        var cr = new Cairo.Context (surface);
-        cr.set_source_surface (buffer.surface, 0, 0);
-        cr.paint ();
-
-        cr.save ();
-        cr.set_operator (Cairo.Operator.CLEAR);
-        var size = shadow_size * monitor_scale;
-        Drawing.Utilities.cairo_rounded_rectangle (cr, size, size, actor.width, actor.height, border_radius);
-        cr.fill ();
-        cr.restore ();
-
-        try {
-            var texture = new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.BGRA_8888_PRE,
-                surface.get_stride (), surface.get_data ());
+        var texture = get_shadow_texture (context, width, height, shadow_size, border_radius);
+        if (texture != null) {
             shadow_cache.@set (current_key, new Shadow (texture));
-
-            return texture;
-        } catch (Error e) {
-            debug (e.message);
-            return null;
         }
+
+        return texture;
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext context, Clutter.EffectPaintFlags flags) {
@@ -145,13 +115,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var width = (int) (bounding_box.x2 - bounding_box.x1);
         var height = (int) (bounding_box.y2 - bounding_box.y1);
 
-        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, shadow_size);
+        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, Utils.scale_to_int (shadow_size, monitor_scale), Utils.scale_to_int (border_radius, monitor_scale));
         if (shadow != null) {
             pipeline.set_layer_texture (0, shadow);
         }
 
-        var opacity = actor.get_paint_opacity () * shadow_opacity / 255.0f;
-        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity / 255.0f);
+        var opacity = actor.get_paint_opacity () * shadow_opacity * INITIAL_OPACITY / 255.0f / 255.0f;
+        var alpha = Cogl.Color.from_4f (1.0f, 1.0f, 1.0f, opacity);
         alpha.premultiply ();
 
         pipeline.set_color (alpha);
@@ -162,9 +132,9 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     private Clutter.ActorBox get_bounding_box () {
-        var size = shadow_size * monitor_scale;
-        var bounding_box = Clutter.ActorBox ();
+        var size = Utils.scale_to_int (shadow_size, monitor_scale);
 
+        var bounding_box = Clutter.ActorBox ();
         bounding_box.set_origin (-size, -size);
         bounding_box.set_size (actor.width + size * 2, actor.height + size * 2);
 
@@ -220,5 +190,92 @@ public class Gala.ShadowEffect : Clutter.Effect {
             shadows_marked_for_dropping.unset (key);
             return Source.REMOVE;
         });
+    }
+
+    private Cogl.Texture? get_shadow_texture (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+        var data = new uint8[width * height];
+
+        // use fast Gaussian blur approximation
+        var precomputed_colors = new uint8[shadow_size + 1];
+        for (var i = 0; i <= shadow_size; i++) {
+            var normalized = (double) i / shadow_size;
+            precomputed_colors[i] = (uint8) (normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+        }
+
+        var total_offset = shadow_size + corner_radius;
+
+        var target_row = height - total_offset;
+        for (var row = total_offset; row < target_row; row++) {
+            var current_row = row * width;
+            var current_row_end = current_row + width - 1;
+            for (int i = 0; i <= shadow_size; i++) {
+                var current_color = precomputed_colors[i];
+
+                data[current_row + i] = current_color;
+                data[current_row_end - i] = current_color;
+            }
+        }
+
+        var target_col = width - total_offset;
+        for (var row = 0; row <= shadow_size; row++) {
+            var current_row = row * width;
+            var end_row = (height - row) * width - 1;
+            var current_color = precomputed_colors[row];
+
+            for (var col = total_offset; col < target_col; col++) {
+                data[current_row + col] = current_color;
+                data[end_row - col] = current_color;
+            }
+        }
+
+        var target_square = shadow_size + corner_radius;
+        for (var y = 0; y < target_square; y++) {
+            var current_row = width * y;
+            var current_row_end = current_row + width - 1;
+            var end_row = (height - 1 - y) * width;
+            var end_row_end = end_row + width - 1;
+
+            var dy = target_square - y;
+            var dy_squared = dy * dy;
+
+            for (var x = 0; x < target_square; x++) {
+                var dx = target_square - x;
+                var squared_distance = dx * dx + dy_squared;
+
+                if (squared_distance > target_square * target_square) {
+                    continue;
+                }
+
+                if (squared_distance >= corner_radius * corner_radius) {
+                    double sin, cos;
+                    Math.sincos (Math.atan2 (dy, dx), out sin, out cos);
+
+                    var real_dx = dx - corner_radius * cos;
+                    var real_dy = dy - corner_radius * sin;
+
+                    // use fast Gaussian blur approximation
+                    var normalized = (double) Math.sqrt (real_dx * real_dx + real_dy * real_dy) / shadow_size;
+                    var current_color = (uint8) (1.0 - normalized * normalized * (3.0 - 2.0 * normalized) * 255.0);
+
+                    // when we're very close to the rounded corner, our real_distance can be wrong (idk why).
+                    // If we're here, we're not inside the corner yet and that means we must draw something
+                    if (current_color == 0) {
+                        current_color = 255;
+                    }
+
+                    data[current_row + x] = current_color;
+                    data[current_row_end - x] = current_color;
+                    data[end_row + x] = current_color;
+                    data[end_row_end - x] = current_color;
+                }
+            }
+        }
+
+        try {
+            return new Cogl.Texture2D.from_data (context, width, height, Cogl.PixelFormat.A_8, width, data);
+        } catch (Error e) {
+            warning ("ShadowEffect: Couldn't create texture");
+            return null;
+        }
     }
 }

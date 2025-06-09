@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
+public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
@@ -42,10 +42,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             _current_icon = value;
             if (_current_icon != null) {
                 _current_icon.selected = true;
-
-                // _current_icon.grab_key_focus () sometimes results in a crash
-                // https://github.com/elementary/gala/issues/2308
-                get_stage ().set_key_focus (_current_icon);
+                _current_icon.grab_key_focus ();
             }
 
             update_caption_text ();
@@ -63,13 +60,14 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, this, wm) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS, wm) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
         gesture_controller.enable_touchpad ();
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
+        add_gesture_controller (gesture_controller);
 
         container = new Clutter.Actor () {
             reactive = true,
@@ -100,7 +98,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         };
 
         shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
-            border_radius = InternalUtils.scale_to_int (9, scaling_factor),
+            border_radius = 10,
             shadow_opacity = 100
         };
         add_effect (shadow_effect);
@@ -123,7 +121,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
 
         shadow_effect.monitor_scale = scaling_factor;
 
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
         container.margin_left = margin;
         container.margin_right = margin;
@@ -149,7 +147,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         container.get_preferred_size (null, null, out container_nat_width, null);
 
         var max_width = float.min (
-            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            geom.width - Utils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
             container_nat_width //Ellipsize the label if it's longer than the icons
         );
 
@@ -190,7 +188,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             ctx, 0.5, 0.5,
             width - stroke_width,
             height - stroke_width,
-            InternalUtils.scale_to_int (9, scaling_factor)
+            Utils.scale_to_int (9, scaling_factor)
         );
 
         ctx.set_source_rgba (
@@ -216,7 +214,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
             ctx, stroke_width + 0.5, stroke_width + 0.5,
             width - stroke_width * 2 - 1,
             height - stroke_width * 2 - 1,
-            InternalUtils.scale_to_int (8, scaling_factor)
+            Utils.scale_to_int (8, scaling_factor)
         );
 
         ctx.set_line_width (stroke_width);
@@ -334,14 +332,13 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_all_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
@@ -357,6 +354,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
     }
 
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
+        container.remove_all_children ();
         select_icon (null);
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
@@ -368,8 +366,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget {
         if (current_window == null) {
             return false;
         }
-
-        container.remove_all_children ();
 
         unowned var window_tracker = ((WindowManagerGala) wm).window_tracker;
         var app = window_tracker.get_app_for_window (current_window);

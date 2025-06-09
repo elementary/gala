@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-24 21:59+0000\n"
+"POT-Creation-Date: 2025-06-03 19:09+0000\n"
 "PO-Revision-Date: 2019-12-10 17:16-0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -102,77 +102,89 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr ""
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:99
-#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:131
-#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:188
-#: data/gala.metainfo.xml.in:213 data/gala.metainfo.xml.in:229
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:56 data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:103 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:162
+#: data/gala.metainfo.xml.in:179 data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:261
+#: data/gala.metainfo.xml.in:277
 msgid "Improvements:"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:88 data/gala.metainfo.xml.in:101
-#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:135
-#: data/gala.metainfo.xml.in:151 data/gala.metainfo.xml.in:194
-#: data/gala.metainfo.xml.in:216 data/gala.metainfo.xml.in:231
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:105 data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:149 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:183 data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:242 data/gala.metainfo.xml.in:264
+#: data/gala.metainfo.xml.in:279
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:73
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:74
+msgid "Remove scaling effect from menus"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:75
+msgid "Swipe up to close windows in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:106
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:107
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:108
 msgid "Fixed crash when using tiling shortcuts"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:137
 msgid "Improved shadows performance"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:181
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:182
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:197
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:198
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:238
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:191
+#: data/gala.metainfo.xml.in:239
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:192
+#: data/gala.metainfo.xml.in:240
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:241
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:215
+#: data/gala.metainfo.xml.in:263
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -242,56 +254,63 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:194
+#: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:79
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr ""
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:137
-msgid "Show in Files"
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:170
+#, c-format
+msgid "Show in %s"
 msgstr ""
 
-#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:488
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:176
+#, c-format
+msgid "Open in %s"
+msgstr ""
+
+#: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:396
+#: src/ScreenshotManager.vala:451
 msgid "Screenshots"
 msgstr ""
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1781
+#: src/WindowManager.vala:1744
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:1788
+#: src/WindowManager.vala:1751
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:1792
+#: src/WindowManager.vala:1755
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:1793
+#: src/WindowManager.vala:1756
 msgid "Use Previous Settings"
 msgstr ""

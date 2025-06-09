@@ -128,30 +128,18 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
+    public float monitor_scale { get; construct set; }
+
     public IconGroup icon_group { get; private set; }
     public WindowCloneContainer window_container { get; private set; }
-
-    private float _scale_factor = 1.0f;
-    public float scale_factor {
-        get {
-            return _scale_factor;
-        }
-        set {
-            if (value != _scale_factor) {
-                _scale_factor = value;
-                reallocate ();
-                update_targets ();
-            }
-        }
-    }
 
     private BackgroundManager background;
     private bool opened;
 
     private uint hover_activate_timeout = 0;
 
-    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float scale) {
-        Object (wm: wm, workspace: workspace, scale_factor: scale);
+    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
+        Object (wm: wm, workspace: workspace, monitor_scale: monitor_scale);
     }
 
     construct {
@@ -166,15 +154,17 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, scale_factor) {
+        window_container = new WindowCloneContainer (wm, monitor_scale) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect ((w) => { window_selected (w); });
         window_container.requested_close.connect (() => activate (true));
+        bind_property ("monitor-scale", window_container, "monitor-scale");
 
-        icon_group = new IconGroup (display, workspace, scale_factor);
+        icon_group = new IconGroup (display, workspace, monitor_scale);
         icon_group.selected.connect (() => activate (true));
+        bind_property ("monitor-scale", icon_group, "scale-factor");
 
         var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         icon_group.add_action (icons_drop_action);
@@ -221,7 +211,7 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
-
+        notify["monitor-scale"].connect (update_targets);
         update_targets ();
     }
 
@@ -236,11 +226,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         background.destroy ();
         window_container.destroy ();
         icon_group.destroy ();
-    }
-
-    private void reallocate () {
-        icon_group.scale_factor = scale_factor;
-        window_container.monitor_scale = scale_factor;
     }
 
     /**
@@ -301,8 +286,8 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
 
-        var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, scale_factor)) / monitor.height;
-        var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor) / (monitor.height - monitor.height * scale);
+        var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
+        var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
         background.set_pivot_point (0.5f, pivot_y);
 
         var initial_width = monitor.width;
@@ -312,10 +297,10 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, scale_factor);
+        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
         window_container.padding_left =
             window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, scale_factor);
+        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
     }
 
     public override void update_progress (GestureAction action, double progress) {

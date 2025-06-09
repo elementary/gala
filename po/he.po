@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-03-24 21:59+0000\n"
+"POT-Creation-Date: 2025-06-03 19:09+0000\n"
 "PO-Revision-Date: 2025-04-15 14:03+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -103,77 +103,89 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary בע״מ"
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:55
-#: data/gala.metainfo.xml.in:86 data/gala.metainfo.xml.in:99
-#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:131
-#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:188
-#: data/gala.metainfo.xml.in:213 data/gala.metainfo.xml.in:229
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:56 data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:103 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:162
+#: data/gala.metainfo.xml.in:179 data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:261
+#: data/gala.metainfo.xml.in:277
 msgid "Improvements:"
 msgstr "שיפורים:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:57
-#: data/gala.metainfo.xml.in:88 data/gala.metainfo.xml.in:101
-#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:135
-#: data/gala.metainfo.xml.in:151 data/gala.metainfo.xml.in:194
-#: data/gala.metainfo.xml.in:216 data/gala.metainfo.xml.in:231
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:105 data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:149 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:183 data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:242 data/gala.metainfo.xml.in:264
+#: data/gala.metainfo.xml.in:279
 msgid "Updated translations"
 msgstr "התרגומים עודכנו"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:73
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "מצב החלון נשמר לפני מצב שינה וכיבוי"
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:74
+msgid "Remove scaling effect from menus"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:75
+msgid "Swipe up to close windows in Multitasking View"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:106
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "תוקנה קריסה שנגרמה כשחלון מעוגן חוסל"
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:107
 msgid "Added interactive screenshot shortcut"
 msgstr "נוסף קיצור דרך לצילום מסך אינטראקטיבי"
 
-#: data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:108
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "תוקנה קריסה עקב שימוש בקיצורי דרך של ריצוף"
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:137
 msgid "Improved shadows performance"
 msgstr "ביצועי הצלליות השתפרו"
 
-#: data/gala.metainfo.xml.in:133
+#: data/gala.metainfo.xml.in:181
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "תוקנה קריסה שיכלה לקרות בעת העברת חלונות בין סביבות עבודה"
 
-#: data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:182
 msgid "Fix notification animation when entering multitasking view"
 msgstr "תוקנה הנפשת ההתראות בכניסה לתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:197
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "שיפור ניווט המקלדת בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:198
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "החלפת צבע הלוח יחד עם מעבר תמונת הרקע"
 
-#: data/gala.metainfo.xml.in:190
+#: data/gala.metainfo.xml.in:238
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr "החלפת טפט או שינה מכבדים את האפשרות „צמצום תנועה”"
 
-#: data/gala.metainfo.xml.in:191
+#: data/gala.metainfo.xml.in:239
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
-#: data/gala.metainfo.xml.in:192
+#: data/gala.metainfo.xml.in:240
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "תוקנה תקלה שמחוות בתצוגת ריבוי משימות מפסיקות לעבוד"
 
-#: data/gala.metainfo.xml.in:193
+#: data/gala.metainfo.xml.in:241
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "שיפור התנהגות מרחבי עבודה דינמיים עם ריבוי צגים"
 
-#: data/gala.metainfo.xml.in:215
+#: data/gala.metainfo.xml.in:263
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "שיפור הטיפול בקיצור הדרך להעברה למרחב עבודה"
 
@@ -245,57 +257,65 @@ msgstr "לאפשר"
 msgid "Deny"
 msgstr "לסרב"
 
-#: src/DesktopIntegration.vala:194
+#: src/DesktopIntegration.vala:197
 msgid "Window has already focus"
 msgstr "החלון כבר ממוקד"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:79
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ־%s"
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:137
-msgid "Show in Files"
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:170
+#, fuzzy, c-format
+#| msgid "Show in Files"
+msgid "Show in %s"
 msgstr "הצגה בקבצים"
 
-#: src/ScreenshotManager.vala:143 src/ScreenshotManager.vala:488
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:176
+#, c-format
+msgid "Open in %s"
+msgstr ""
+
+#: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
 msgstr "המסך צולם"
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot is saved to clipboard"
 msgstr "צילום המסך נשמר ללוח הגזירים"
 
-#: src/ScreenshotManager.vala:144
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot saved to screenshots folder"
 msgstr "צילום המסך נשמר לתיקיית צילומי המסך"
 
-#: src/ScreenshotManager.vala:396
+#: src/ScreenshotManager.vala:451
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr "בורר חלונות"
 
-#: src/WindowManager.vala:1781
+#: src/WindowManager.vala:1744
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "השינויים יוחזרו לקדמותם אוטומטית לאחר שנייה."
 msgstr[1] "השינויים יוחזרו לקדמותם אוטומטית לאחר %i שניות."
 
-#: src/WindowManager.vala:1788
+#: src/WindowManager.vala:1751
 msgid "Keep new display settings?"
 msgstr "לשמור את הגדרות התצוגה החדשות?"
 
-#: src/WindowManager.vala:1792
+#: src/WindowManager.vala:1755
 msgid "Keep Settings"
 msgstr "לשמור את ההגדרות"
 
-#: src/WindowManager.vala:1793
+#: src/WindowManager.vala:1756
 msgid "Use Previous Settings"
 msgstr "להשתמש בהגדרות הקודמות"
 
@@ -502,11 +522,11 @@ msgstr "להשתמש בהגדרות הקודמות"
 #~ "command. ';;' is used as delimiter between command defintions."
 #~ msgstr ""
 #~ "במקרה של הוספת פקודה בודדת, הפקודה הזאת תשמש לכל פינה חמה שמוקצית לה "
-#~ "‚custom-command’. אם במקום ייעשה שימוש בתבנית ‚hotcorner-topleft:command;;"
-#~ "hotcorner-bottomright:command’ ייעשה שימוש בפקודות מסוימות לפי כל פינה "
-#~ "חמה. המזהים האפשריים הם ‚hotcorner-[topleft; topright; bottomleft; "
-#~ "bottomright]’ ולאחר מכן ‚:’ ואז הפקודה. ניתן להשתמש ב־‚;;’ כדי להפריד בין "
-#~ "הגדרות פקודות."
+#~ "‚custom-command’. אם במקום ייעשה שימוש בתבנית ‚hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command’ ייעשה שימוש בפקודות "
+#~ "מסוימות לפי כל פינה חמה. המזהים האפשריים הם ‚hotcorner-[topleft; "
+#~ "topright; bottomleft; bottomright]’ ולאחר מכן ‚:’ ואז הפקודה. ניתן להשתמש "
+#~ "ב־‚;;’ כדי להפריד בין הגדרות פקודות."
 
 #~ msgid "Enable edge tiling when dropping windows on screen edges"
 #~ msgstr "הפעלת ריצוף גבולות בעת השלכת חלונות על גבולות התצוגה"
@@ -620,12 +640,12 @@ msgstr "להשתמש בהגדרות הקודמות"
 #~ "versions without breaking older versions. A special spacer tag can be "
 #~ "used to insert some space between two adjacent buttons."
 #~ msgstr ""
-#~ "סידור הכפתורים בשורת הכותרת. הערך אמור להיות מחרוזת כגון: „menu:minimize,"
-#~ "maximize,spacer,close”, הנקודתיים מפרידים את הפינה הימנית של החלון מהפינה "
-#~ "השמאלית ושמות הכפתורים מופרדים בפסיקים. אסור כפתורים כפולים. שמות כפתורים "
-#~ "בלתי ידועים זוכים להתעלמות ללא שום הודעה כדי שתהיה אפשרות להוסיף כפתורים "
-#~ "בגרסאות עתידיות של metacity מבלי לשבש גרסאות ישנות. ניתן להשתמש בתגית "
-#~ "ריווח מיוחדת כדי להוסיף רווח בין שני כפתורים צמודים."
+#~ "סידור הכפתורים בשורת הכותרת. הערך אמור להיות מחרוזת כגון: "
+#~ "„menu:minimize,maximize,spacer,close”, הנקודתיים מפרידים את הפינה הימנית "
+#~ "של החלון מהפינה השמאלית ושמות הכפתורים מופרדים בפסיקים. אסור כפתורים "
+#~ "כפולים. שמות כפתורים בלתי ידועים זוכים להתעלמות ללא שום הודעה כדי שתהיה "
+#~ "אפשרות להוסיף כפתורים בגרסאות עתידיות של metacity מבלי לשבש גרסאות ישנות. "
+#~ "ניתן להשתמש בתגית ריווח מיוחדת כדי להוסיף רווח בין שני כפתורים צמודים."
 
 #~ msgid "Background-image used in the workspace-switcher"
 #~ msgstr "תמונת רקע בה נעשה שימוש במחליף סביבות העבודה"

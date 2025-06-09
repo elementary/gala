@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : ActorTarget {
+public class Gala.WindowClone : ActorTarget, RootTarget {
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -49,18 +49,7 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     public bool overview_mode { get; construct; }
-    private float _monitor_scale_factor = 1.0f;
-    public float monitor_scale_factor {
-        get {
-            return _monitor_scale_factor;
-        }
-        set {
-            if (value != _monitor_scale_factor) {
-                _monitor_scale_factor = value;
-                reallocate ();
-            }
-        }
-    }
+    public float monitor_scale { get; construct set; }
 
     [CCode (notify = false)]
     public uint8 shadow_opacity {
@@ -92,11 +81,11 @@ public class Gala.WindowClone : ActorTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
         Object (
             wm: wm,
             window: window,
-            monitor_scale_factor: scale,
+            monitor_scale: monitor_scale,
             overview_mode: overview_mode
         );
     }
@@ -104,8 +93,9 @@ public class Gala.WindowClone : ActorTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, this, wm);
+        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
+        add_gesture_controller (gesture_controller);
 
         window.unmanaged.connect (unmanaged);
         window.notify["fullscreen"].connect (check_shadow_requirements);
@@ -145,6 +135,7 @@ public class Gala.WindowClone : ActorTarget {
         add_child (clone_container);
         add_child (window_title);
 
+        notify["monitor-scale"].connect (reallocate);
         reallocate ();
 
         InternalUtils.wait_for_window_actor (window, load_clone);
@@ -163,13 +154,13 @@ public class Gala.WindowClone : ActorTarget {
     }
 
     private void reallocate () {
-        close_button = new Gala.CloseButton (monitor_scale_factor) {
+        close_button = new Gala.CloseButton (monitor_scale) {
             opacity = 0
         };
         close_button.triggered.connect (close_window);
         close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
 
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale_factor)) {
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
             visible = !overview_mode
         };
         window_icon.opacity = 0;
@@ -206,7 +197,7 @@ public class Gala.WindowClone : ActorTarget {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect ("window", monitor_scale_factor);
+                shadow_effect = new ShadowEffect ("window", monitor_scale);
                 shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
@@ -254,9 +245,10 @@ public class Gala.WindowClone : ActorTarget {
         }
 
         var window_rect = window.get_frame_rect ();
+        var monitor_geometry = window.display.get_monitor_geometry (window.get_monitor ());
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) window_rect.x, (float) slot.x));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) window_rect.y, (float) slot.y));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) (window_rect.x - monitor_geometry.x), (float) slot.x));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) (window_rect.y - monitor_geometry.y), (float) slot.y));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) window_rect.width, (float) slot.width));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "height", typeof (float), (float) window_rect.height, (float) slot.height));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
@@ -278,7 +270,7 @@ public class Gala.WindowClone : ActorTarget {
             return;
         }
 
-        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale_factor * progress);
+        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
         var target_opacity = (uint) (255 * (1 - progress));
 
         clone_container.translation_y = target_translation_y;
@@ -361,14 +353,14 @@ public class Gala.WindowClone : ActorTarget {
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
 
-        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
+        float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
         float window_title_height, window_title_nat_width;
         window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
 
         var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
-        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
