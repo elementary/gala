@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-04-16 17:34+0000\n"
-"PO-Revision-Date: 2025-04-19 13:20+0000\n"
+"POT-Creation-Date: 2025-06-03 19:09+0000\n"
+"PO-Revision-Date: 2025-06-05 07:55+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ca/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
 
 #: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
@@ -108,72 +108,76 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
-#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:56 data/gala.metainfo.xml.in:70
+#: data/gala.metainfo.xml.in:103 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:147 data/gala.metainfo.xml.in:162
+#: data/gala.metainfo.xml.in:179 data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:261
+#: data/gala.metainfo.xml.in:277
 msgid "Improvements:"
 msgstr "Millores:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
-#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
-#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:58 data/gala.metainfo.xml.in:72
+#: data/gala.metainfo.xml.in:105 data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:149 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:183 data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:242 data/gala.metainfo.xml.in:264
+#: data/gala.metainfo.xml.in:279
 msgid "Updated translations"
 msgstr "Traduccions actualitzades"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:73
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "L'estat de la finestra ara es desa en suspensió i aturat"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:74
 msgid "Remove scaling effect from menus"
 msgstr "Suprimeix l'efecte d'escala dels menús"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:75
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 "Feu lliscar el dit amunt per tancar les finestres a la vista de multitasca"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:106
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 "S'ha solucionat una fallada rara de quan es matava una finestra de "
 "l'acoblador."
 
-#: data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:107
 msgid "Added interactive screenshot shortcut"
 msgstr "S'ha afegit una drecera interactiva de captura de pantalla."
 
-#: data/gala.metainfo.xml.in:68
+#: data/gala.metainfo.xml.in:108
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Correcció de l'error de quan s'usaven les dreceres de mosaic"
 
-#: data/gala.metainfo.xml.in:97
+#: data/gala.metainfo.xml.in:137
 msgid "Improved shadows performance"
 msgstr "Rendiment de les ombres millorat"
 
-#: data/gala.metainfo.xml.in:141
+#: data/gala.metainfo.xml.in:181
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Solució d'un error potencial en moure finestres entre espais de treball"
 
-#: data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:182
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Correcció de l'animació de notificació quan entreu a la vista multitasca"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:197
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Millora de la navegació amb el teclat a la vista multitasca"
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:198
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Canvia el color del plafó alhora que la transició del fons de pantalla"
 
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:238
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -181,23 +185,23 @@ msgstr ""
 "Canviar el fons de pantalla o l'opció de dormir respecta l'opció \"Redueix "
 "el moviment\"."
 
-#: data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:239
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Useu els punters d'arrossegar i deixar anar adequats quan moveu finestres"
 
-#: data/gala.metainfo.xml.in:200
+#: data/gala.metainfo.xml.in:240
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Solució del problema que els gestos de la vista de multitasca poden deixar "
 "de funcionar"
 
-#: data/gala.metainfo.xml.in:201
+#: data/gala.metainfo.xml.in:241
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Millora del comportament dinàmic dels espais de treball amb diversos monitors"
 
-#: data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:263
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Millora del maneig de la drecera de desplaçament a l'espai de treball"
 
@@ -276,52 +280,59 @@ msgid "Window has already focus"
 msgstr "La finestra ja té el focus."
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:101
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de %s"
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:159
-msgid "Show in Files"
-msgstr "Mostra-ho a Fitxers"
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:170
+#, c-format
+msgid "Show in %s"
+msgstr "Mostra-ho a %s"
 
-#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:176
+#, c-format
+msgid "Open in %s"
+msgstr "Obre-ho a %s"
+
+#: src/ScreenshotManager.vala:184 src/ScreenshotManager.vala:543
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot is saved to clipboard"
 msgstr "La captura de pantalla es desa al porta-retalls"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:185
 msgid "Screenshot saved to screenshots folder"
 msgstr "Captura de pantalla desada a la carpeta de captures de pantalla"
 
-#: src/ScreenshotManager.vala:422
+#: src/ScreenshotManager.vala:451
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr "Canviador de finestres"
 
-#: src/WindowManager.vala:1775
+#: src/WindowManager.vala:1744
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:1782
+#: src/WindowManager.vala:1751
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:1786
+#: src/WindowManager.vala:1755
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:1787
+#: src/WindowManager.vala:1756
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
