@@ -71,30 +71,38 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private void on_selection_actor_captured (int x, int y, int width, int height) {
         clear_selection_area ();
 
-        if (width < MIN_SELECTION_SIZE || height < MIN_SELECTION_SIZE) {
-            select_window_at (x, y);
-        } else {
-            var active = get_active_window_actor ();
-            if (active != null) {
-                int point_x = x - (int)active.x;
-                int point_y = y - (int)active.y;
-
-                // Compensate for server-side window decorations
-                var input_rect = active.get_meta_window ().get_buffer_rect ();
-                var outer_rect = active.get_meta_window ().get_frame_rect ();
-                point_x -= outer_rect.x - input_rect.x;
-                point_y -= outer_rect.y - input_rect.y;
-
-                var rect = Graphene.Rect.alloc ();
-                rect.init (point_x, point_y, width, height);
-
-                var popup_window = new PopupWindow (wm.get_display (), active);
-                popup_window.set_container_clip (rect);
-                popup_window.show.connect (on_popup_window_show);
-                popup_window.hide.connect (on_popup_window_hide);
-                add_window (popup_window);
-            }
+        var active = get_active_window_actor ();
+        if (active == null) {
+            return;
         }
+
+        var window = active.meta_window;
+        var buffer_rect = window.get_buffer_rect ();
+        var frame_rect = window.get_frame_rect ();
+
+        Mtk.Rectangle mtk_rect = {x, y, width, height};
+        Mtk.Rectangle intersection;
+        mtk_rect.intersect (frame_rect, out intersection);
+
+        // Compensate for server-side window decorations
+        var x_offset = buffer_rect.x - frame_rect.x;
+        var y_offset = buffer_rect.y - frame_rect.y;
+
+        Graphene.Rect rect = {
+            {intersection.x - buffer_rect.x + x_offset, intersection.y - buffer_rect.y + y_offset},
+            {intersection.width, intersection.height}
+        };
+
+        if (rect.get_width () < MIN_SELECTION_SIZE || rect.get_height () < MIN_SELECTION_SIZE) {
+            select_window_at (x, y);
+            return;
+        }
+
+        var popup_window = new PopupWindow (wm.get_display (), active);
+        popup_window.set_container_clip (rect);
+        popup_window.show.connect (on_popup_window_show);
+        popup_window.hide.connect (on_popup_window_hide);
+        add_window (popup_window);
     }
 
     private void on_popup_window_show (Clutter.Actor popup_window) {
