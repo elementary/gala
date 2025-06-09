@@ -286,8 +286,8 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
 
-        var scale = (float)(monitor.height - InternalUtils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
-        var pivot_y = InternalUtils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
+        var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
+        var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
         background.set_pivot_point (0.5f, pivot_y);
 
         var initial_width = monitor.width;
@@ -297,10 +297,10 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = InternalUtils.scale_to_int (TOP_OFFSET, monitor_scale);
+        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
         window_container.padding_left =
             window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = InternalUtils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
     }
 
     public override void update_progress (GestureAction action, double progress) {

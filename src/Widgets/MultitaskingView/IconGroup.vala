@@ -92,7 +92,7 @@ public class Gala.IconGroup : CanvasActor {
     }
 
     private void resize () {
-        var size = InternalUtils.scale_to_int (SIZE, scale_factor);
+        var size = Utils.scale_to_int (SIZE, scale_factor);
 
         width = size;
         height = size;
@@ -107,10 +107,10 @@ public class Gala.IconGroup : CanvasActor {
             return;
         }
 
-        var width = InternalUtils.scale_to_int (100, scale_factor);
-        var x = (InternalUtils.scale_to_int (SIZE, scale_factor) - width) / 2;
+        var width = Utils.scale_to_int (100, scale_factor);
+        var x = (Utils.scale_to_int (SIZE, scale_factor) - width) / 2;
         var y = -10;
-        var height = InternalUtils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
+        var height = Utils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET, scale_factor);
         var backdrop_opacity_int = (uint8) (BACKDROP_ABSOLUTE_OPACITY * backdrop_opacity);
 
 #if HAS_MUTTER47
@@ -232,11 +232,11 @@ public class Gala.IconGroup : CanvasActor {
             0,
             width,
             height,
-            InternalUtils.scale_to_int (5, scale_factor)
+            Utils.scale_to_int (5, scale_factor)
         );
 
         var shadow_effect = new ShadowEffect ("", scale_factor) {
-            border_radius = InternalUtils.scale_to_int (5, scale_factor)
+            border_radius = 6
         };
 
         var style_manager = Drawing.StyleManager.get_instance ();
@@ -278,7 +278,7 @@ public class Gala.IconGroup : CanvasActor {
             }
         }
 
-        var scaled_size = InternalUtils.scale_to_int (SIZE, scale_factor);
+        var scaled_size = Utils.scale_to_int (SIZE, scale_factor);
 
         if (n_windows < 1) {
             if (workspace_index != manager.get_n_workspaces () - 1) {
@@ -286,19 +286,19 @@ public class Gala.IconGroup : CanvasActor {
             }
 
             var buffer = new Drawing.BufferSurface (scaled_size, scaled_size);
-            var offset = scaled_size / 2 - InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
+            var offset = scaled_size / 2 - Utils.scale_to_int (PLUS_WIDTH, scale_factor) / 2;
 
             buffer.context.rectangle (
-                InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
+                Utils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - Utils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
                 offset,
-                InternalUtils.scale_to_int (PLUS_SIZE, scale_factor),
-                InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor)
+                Utils.scale_to_int (PLUS_SIZE, scale_factor),
+                Utils.scale_to_int (PLUS_WIDTH, scale_factor)
             );
 
             buffer.context.rectangle (offset,
-                InternalUtils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - InternalUtils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
-                InternalUtils.scale_to_int (PLUS_WIDTH, scale_factor),
-                InternalUtils.scale_to_int (PLUS_SIZE, scale_factor)
+                Utils.scale_to_int (PLUS_WIDTH / 2, scale_factor) - Utils.scale_to_int (PLUS_SIZE / 2, scale_factor) + offset,
+                Utils.scale_to_int (PLUS_WIDTH, scale_factor),
+                Utils.scale_to_int (PLUS_SIZE, scale_factor)
             );
 
             if (style_manager.prefers_color_scheme == DARK) {
@@ -337,10 +337,10 @@ public class Gala.IconGroup : CanvasActor {
         var columns = (int) Math.ceil (Math.sqrt (n_tiled_windows));
         var rows = (int) Math.ceil (n_tiled_windows / (double) columns);
 
-        int spacing = InternalUtils.scale_to_int (6, scale_factor);
+        int spacing = Utils.scale_to_int (6, scale_factor);
 
-        var width = columns * InternalUtils.scale_to_int (size, scale_factor) + (columns - 1) * spacing;
-        var height = rows * InternalUtils.scale_to_int (size, scale_factor) + (rows - 1) * spacing;
+        var width = columns * Utils.scale_to_int (size, scale_factor) + (columns - 1) * spacing;
+        var height = rows * Utils.scale_to_int (size, scale_factor) + (rows - 1) * spacing;
         var x_offset = scaled_size / 2 - width / 2;
         var y_offset = scaled_size / 2 - height / 2;
 
@@ -359,10 +359,10 @@ public class Gala.IconGroup : CanvasActor {
 
             // draw an ellipsis at the 9th position if we need one
             if (show_ellipsis && i == 8) {
-                int top_offset = InternalUtils.scale_to_int (10, scale_factor);
-                int left_offset = InternalUtils.scale_to_int (2, scale_factor);
-                int radius = InternalUtils.scale_to_int (2, scale_factor);
-                int dot_spacing = InternalUtils.scale_to_int (3, scale_factor);
+                int top_offset = Utils.scale_to_int (10, scale_factor);
+                int left_offset = Utils.scale_to_int (2, scale_factor);
+                int radius = Utils.scale_to_int (2, scale_factor);
+                int dot_spacing = Utils.scale_to_int (3, scale_factor);
                 cr.arc (left_offset + x, y + top_offset, radius, 0, 2 * Math.PI);
                 cr.arc (left_offset + x + radius + dot_spacing, y + top_offset, radius, 0, 2 * Math.PI);
                 cr.arc (left_offset + x + radius * 2 + dot_spacing * 2, y + top_offset, radius, 0, 2 * Math.PI);
@@ -378,10 +378,10 @@ public class Gala.IconGroup : CanvasActor {
 
             window.place (x, y, size, scale_factor);
 
-            x += InternalUtils.scale_to_int (size, scale_factor) + spacing;
-            if (x + InternalUtils.scale_to_int (size, scale_factor) >= scaled_size) {
+            x += Utils.scale_to_int (size, scale_factor) + spacing;
+            if (x + Utils.scale_to_int (size, scale_factor) >= scaled_size) {
                 x = x_offset;
-                y += InternalUtils.scale_to_int (size, scale_factor) + spacing;
+                y += Utils.scale_to_int (size, scale_factor) + spacing;
             }
         }
     }

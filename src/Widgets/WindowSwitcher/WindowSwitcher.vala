@@ -98,7 +98,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         };
 
         shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
-            border_radius = InternalUtils.scale_to_int (9, scaling_factor),
+            border_radius = 10,
             shadow_opacity = 100
         };
         add_effect (shadow_effect);
@@ -121,7 +121,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         shadow_effect.monitor_scale = scaling_factor;
 
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
         container.margin_left = margin;
         container.margin_right = margin;
@@ -147,7 +147,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.get_preferred_size (null, null, out container_nat_width, null);
 
         var max_width = float.min (
-            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            geom.width - Utils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
             container_nat_width //Ellipsize the label if it's longer than the icons
         );
 
@@ -188,7 +188,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             ctx, 0.5, 0.5,
             width - stroke_width,
             height - stroke_width,
-            InternalUtils.scale_to_int (9, scaling_factor)
+            Utils.scale_to_int (9, scaling_factor)
         );
 
         ctx.set_source_rgba (
@@ -214,7 +214,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             ctx, stroke_width + 0.5, stroke_width + 0.5,
             width - stroke_width * 2 - 1,
             height - stroke_width * 2 - 1,
-            InternalUtils.scale_to_int (8, scaling_factor)
+            Utils.scale_to_int (8, scaling_factor)
         );
 
         ctx.set_line_width (stroke_width);
@@ -274,7 +274,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding
+        Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
         if (gesture_controller.recognizing) {
             return;
