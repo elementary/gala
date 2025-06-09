@@ -162,6 +162,14 @@ public class Gala.ScreenshotManager : Object {
             var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
             var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
 
+            var open_in_photos_action = GLib.Action.print_detailed_name (
+                "open-in-photos",
+                new Variant ("s", filename_used)
+            );
+
+            /// TRANSLATORS: %s represents a name of image viewer
+            var open_in_photos_label = _("Open in %s").printf (photos_appinfo.get_display_name ());
+
             actions = {
                 GLib.Action.print_detailed_name (
                     "show-in-files",
@@ -169,12 +177,9 @@ public class Gala.ScreenshotManager : Object {
                     /// TRANSLATORS: %s represents a name of file manager
                     _("Show in %s").printf (files_appinfo.get_display_name ()
                 ),
-                GLib.Action.print_detailed_name (
-                    "open-in-photos",
-                    new Variant ("s", filename_used)),
-                    /// TRANSLATORS: %s represents a name of image viewer
-                    _("Open in %s").printf (photos_appinfo.get_display_name ()
-                )
+                // TODO: uncomment when https://github.com/elementary/notifications/issues/237 is fixed
+                //  open_in_photo_action
+                // open_in_photos_label
             };
         }
 
