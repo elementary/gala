@@ -296,7 +296,7 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
 
-            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, Meta.IGNORE_AUTOREPEAT, () => {
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, () => {
                 if (multitasking_view.is_opened ()) {
                     multitasking_view.close ();
                 } else {
