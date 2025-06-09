@@ -15,8 +15,9 @@ public class Gala.HideTracker : Object {
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
-
     public Pantheon.Desktop.HideMode hide_mode { get; set; }
+
+    private static GLib.Settings behavior_settings;
 
     private Clutter.PanAction pan_action;
 
@@ -36,6 +37,10 @@ public class Gala.HideTracker : Object {
 
     public HideTracker (Meta.Display display, PanelWindow panel) {
         Object (display: display, panel: panel);
+    }
+
+    static construct {
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
     }
 
     construct {
@@ -325,7 +330,9 @@ public class Gala.HideTracker : Object {
     }
 
     private void on_barrier_triggered () {
-        trigger_show ();
-        schedule_update ();
+        if (hide_mode != NEVER || behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")) {
+            trigger_show ();
+            schedule_update ();
+        }
     }
 }
