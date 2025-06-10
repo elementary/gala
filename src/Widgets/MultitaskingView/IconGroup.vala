@@ -416,7 +416,11 @@ public class Gala.IconGroup : CanvasActor {
         // disable reactivity so that workspace thumbs can get events
         reactive = false;
 
+#if HAS_MUTTER48
+        display.set_cursor (Meta.Cursor.MOVE);
+#else
         display.set_cursor (Meta.Cursor.DND_IN_DRAG);
+#endif
 
         return this;
     }

@@ -117,8 +117,10 @@ namespace Meta {
 		public static int ulong_equal ([CCode (type = "gconstpointer")] ulong? v1, [CCode (type = "gconstpointer")] ulong? v2);
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_unsigned_long_hash")]
 		public static uint ulong_hash ([CCode (type = "gconstpointer")] ulong? v);
+#if !HAS_MUTTER46
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_warning")]
 		public static void warning (string format, ...);
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-backend.h", type_id = "meta_backend_get_type ()")]
 	public abstract class Backend : GLib.Object, GLib.Initable {
@@ -130,6 +132,9 @@ namespace Meta {
 		public Meta.BackendCapabilities get_capabilities ();
 		public unowned Meta.Context get_context ();
 		public unowned Meta.IdleMonitor get_core_idle_monitor ();
+#if HAS_MUTTER48
+		public unowned Meta.CursorTracker get_cursor_tracker ();
+#endif
 		public unowned Meta.Dnd get_dnd ();
 		public unowned Meta.MonitorManager get_monitor_manager ();
 #if HAS_MUTTER47
@@ -141,6 +146,9 @@ namespace Meta {
 		public bool is_headless ();
 		public bool is_rendering_hardware_accelerated ();
 		public void lock_layout_group (uint idx);
+#if HAS_MUTTER48
+		public void renderdoc_capture ();
+#endif
 #if HAS_MUTTER46
 		public void set_keymap (string layouts, string variants, string options, string model);
 		public void unfreeze_keyboard (uint32 timestamp);
@@ -154,7 +162,13 @@ namespace Meta {
 		public signal void keymap_layout_group_changed (uint object);
 		public signal void last_device_changed (Clutter.InputDevice object);
 		public signal void lid_is_closed_changed (bool object);
+#if HAS_MUTTER48
+		public signal void pause ();
+#endif
 		public signal void prepare_shutdown ();
+#if HAS_MUTTER48
+		public signal void resume ();
+#endif
 	}
 	[CCode (cheader_filename = "meta/meta-background.h", type_id = "meta_background_get_type ()")]
 	public sealed class Background : GLib.Object {
@@ -292,10 +306,23 @@ namespace Meta {
 	public abstract class Compositor : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Compositor ();
+#if HAS_MUTTER48
+		public void disable_unredirect ();
+		public void enable_unredirect ();
+		public unowned Meta.Backend get_backend ();
+#endif
 		public unowned Clutter.Actor get_feedback_group ();
 		public unowned Meta.Laters get_laters ();
+#if HAS_MUTTER48
+		public unowned Clutter.Stage get_stage ();
+		public unowned Clutter.Actor get_top_window_group ();
+		public unowned GLib.List<Meta.WindowActor> get_window_actors ();
+		public unowned Clutter.Actor get_window_group ();
+		public Meta.Backend backend { get; construct; }
+#else
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
+#endif
 		[NoAccessorMethod]
 		public Meta.Display display { owned get; construct; }
 	}
@@ -350,6 +377,9 @@ namespace Meta {
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
 		public signal void cursor_changed ();
+#if HAS_MUTTER48
+		public signal void cursor_prefs_changed ();
+#endif
 		public signal void position_invalidated ();
 		public signal void visibility_changed ();
 	}
@@ -372,10 +402,12 @@ namespace Meta {
 		public uint add_keybinding (string name, GLib.Settings settings, Meta.KeyBindingFlags flags, owned Meta.KeyHandlerFunc handler);
 		public void clear_mouse_mode ();
 		public void close (uint32 timestamp);
+#if !HAS_MUTTER48
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_disable_unredirect_for_display")]
 		public void disable_unredirect ();
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_enable_unredirect_for_display")]
 		public void enable_unredirect ();
+#endif
 		public void focus_default_window (uint32 timestamp);
 #if !HAS_MUTTER46
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_focus_stage_window")]
@@ -388,8 +420,10 @@ namespace Meta {
 		public int get_current_monitor ();
 		public uint32 get_current_time ();
 		public uint32 get_current_time_roundtrip ();
+#if !HAS_MUTTER48
 		[CCode (cname = "meta_cursor_tracker_get_for_display")]
 		public unowned Meta.CursorTracker get_cursor_tracker ();
+#endif
 #if !HAS_MUTTER46
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_feedback_group_for_display")]
 		public unowned Clutter.Actor get_feedback_group ();
@@ -409,18 +443,22 @@ namespace Meta {
 		public unowned Meta.Selection get_selection ();
 		public void get_size (out int width, out int height);
 		public unowned Meta.SoundPlayer get_sound_player ();
+#if !HAS_MUTTER48
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_stage_for_display")]
 		public unowned Clutter.Actor get_stage ();
+#endif
 		public unowned Meta.StartupNotification get_startup_notification ();
 		public unowned Meta.Window get_tab_current (Meta.TabList type, Meta.Workspace workspace);
 		public GLib.List<weak Meta.Window> get_tab_list (Meta.TabList type, Meta.Workspace? workspace);
 		public unowned Meta.Window get_tab_next (Meta.TabList type, Meta.Workspace workspace, Meta.Window? window, bool backward);
+#if !HAS_MUTTER48
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_top_window_group_for_display")]
 		public unowned Clutter.Actor get_top_window_group ();
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_window_actors")]
 		public unowned GLib.List<Meta.WindowActor> get_window_actors ();
 		[CCode (cheader_filename = "meta/compositor-mutter.h", cname = "meta_get_window_group_for_display")]
 		public unowned Clutter.Actor get_window_group ();
+#endif
 		public unowned Meta.WorkspaceManager get_workspace_manager ();
 		public unowned Meta.X11Display get_x11_display ();
 		public uint grab_accelerator (string accelerator, Meta.KeyBindingFlags flags);
@@ -573,8 +611,10 @@ namespace Meta {
 		public void switch_config (Meta.MonitorSwitchConfigType config_type);
 		[NoAccessorMethod]
 		public Meta.Backend backend { owned get; construct; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public string experimental_hdr { owned get; set; }
+#endif
 		[NoAccessorMethod]
 		public bool has_builtin_panel { get; }
 		[NoAccessorMethod]
@@ -625,7 +665,9 @@ namespace Meta {
 		public virtual void destroy (Meta.WindowActor actor);
 		public void destroy_completed (Meta.WindowActor actor);
 		public unowned Meta.Display get_display ();
+#if !HAS_MUTTER48
 		public unowned Meta.PluginInfo? get_info ();
+#endif
 		[NoWrapper]
 		public virtual void hide_tile_preview ();
 		[NoWrapper]
@@ -643,8 +685,10 @@ namespace Meta {
 		[NoWrapper]
 		public virtual void minimize (Meta.WindowActor actor);
 		public void minimize_completed (Meta.WindowActor actor);
+#if !HAS_MUTTER48
 		[NoWrapper]
 		public virtual unowned Meta.PluginInfo? plugin_info ();
+#endif
 		[NoWrapper]
 		public virtual void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number);
 		[NoWrapper]
@@ -667,6 +711,10 @@ namespace Meta {
 #if !HAS_MUTTER46
 		[NoWrapper]
 		public virtual bool xevent_filter ([CCode (type = "XEvent*")] ref X.Event event);
+#endif
+#if HAS_MUTTER48
+		[NoWrapper]
+		public virtual bool xevent_filter (X.Event event);
 #endif
 	}
 	[CCode (cheader_filename = "meta/meta-remote-access-controller.h", type_id = "meta_remote_access_controller_get_type ()")]
@@ -882,6 +930,9 @@ namespace Meta {
 		public void foreach_transient (Meta.WindowForeachFunc func);
 		public Mtk.Rectangle frame_rect_to_client_rect (Mtk.Rectangle frame_rect);
 		public Mtk.Rectangle get_buffer_rect ();
+#if HAS_MUTTER48
+		public Mtk.Rectangle get_client_content_rect ();
+#endif
 #if !HAS_MUTTER46
 		public unowned string? get_client_machine ();
 #endif
@@ -892,10 +943,12 @@ namespace Meta {
 #if !HAS_MUTTER46
 		public unowned Meta.Frame get_frame ();
 #endif
+#if !HAS_MUTTER48
 #if HAS_MUTTER46
 		public unowned Mtk.Region? get_frame_bounds ();
 #else
 		public unowned Cairo.Region? get_frame_bounds ();
+#endif
 #endif
 		public Mtk.Rectangle get_frame_rect ();
 		public Meta.FrameType get_frame_type ();
@@ -988,7 +1041,9 @@ namespace Meta {
 		public Mtk.Rectangle stage_to_protocol_rect (Mtk.Rectangle stage_rect);
 #endif
 		public void stick ();
+#if !HAS_MUTTER48
 		public bool titlebar_is_onscreen ();
+#endif
 		public void unmake_above ();
 		public void unmake_fullscreen ();
 		public void unmaximize (Meta.MaximizeFlags directions);
@@ -1053,7 +1108,12 @@ namespace Meta {
 		public uint user_time { get; }
 		public Meta.WindowType window_type { get; }
 		public string wm_class { get; }
+#if HAS_MUTTER48
+		public signal void configure (Meta.WindowConfig window_config);
+#endif
+#if !HAS_MUTTER48
 		public ulong xwindow { get; construct; }
+#endif
 		[CCode (cname = "focus")]
 		public signal void focused ();
 		public signal void highest_scale_monitor_changed ();
@@ -1087,6 +1147,24 @@ namespace Meta {
 		public signal void first_frame ();
 		public signal void thawed ();
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "meta/main.h", type_id = "meta_window_config_get_type ()")]
+	public sealed class WindowConfig : GLib.Object {
+		[CCode (has_construct_function = false)]
+		public WindowConfig ();
+		public bool get_is_fullscreen ();
+		public bool get_is_initial ();
+		public void get_position (int x, int y);
+		public Mtk.Rectangle? get_rect ();
+		public void get_size (int width, int height);
+		public void set_is_fullscreen (bool is_fullscreen);
+		public void set_position (int x, int y);
+		public void set_rect (Mtk.Rectangle rect);
+		public void set_size (int width, int height);
+		public bool is_fullscreen { get; set; }
+		public Mtk.Rectangle rect { owned get; set; }
+	}
+#endif
 	[CCode (cheader_filename = "meta/meta-window-group.h", type_id = "meta_window_group_get_type ()")]
 #if HAS_MUTTER46
 	public sealed class WindowGroup : Clutter.Actor, Atk.Implementor, Clutter.Animatable {
@@ -1187,7 +1265,9 @@ namespace Meta {
 #endif
 		public unowned X.Display get_xdisplay ();
 		public X.Window get_xroot ();
+#if !HAS_MUTTER48
 		public unowned Meta.Group lookup_group (X.Window group_leader);
+#endif
 #if HAS_MUTTER46
 		public X.Window lookup_xwindow (Meta.Window window);
 #endif
@@ -1250,6 +1330,7 @@ namespace Meta {
 		public Meta.FrameBorder total;
 		public void clear ();
 	}
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "meta/meta-plugin.h", has_type_id = false)]
 	public struct PluginInfo {
 		public weak string name;
@@ -1258,6 +1339,7 @@ namespace Meta {
 		public weak string license;
 		public weak string description;
 	}
+#endif
 #if !HAS_MUTTER47
 	[CCode (cheader_filename = "meta/meta-shadow-factory.h", has_type_id = false)]
 	public struct ShadowParams {
@@ -1321,16 +1403,57 @@ namespace Meta {
 	}
 	[CCode (cheader_filename = "meta/common.h", cprefix = "META_CURSOR_", type_id = "meta_cursor_get_type ()")]
 	public enum Cursor {
+#if HAS_MUTTER48
+		INVALID,
+#endif
 		NONE,
 		DEFAULT,
+#if HAS_MUTTER48
+		CONTEXT_MENU,
+		HELP,
+		POINTER,
+		PROGRESS,
+		WAIT,
+		CELL,
+		CROSSHAIR,
+		TEXT,
+		VERTICAL_TEXT,
+		ALIAS,
+		COPY,
+		MOVE,
+		NO_DROP,
+		NOT_ALLOWED,
+		GRAB,
+		GRABBING,
+		E_RESIZE,
+		N_RESIZE,
+#else
 		NORTH_RESIZE,
 		SOUTH_RESIZE,
 		WEST_RESIZE,
 		EAST_RESIZE,
 		SE_RESIZE,
 		SW_RESIZE,
+#endif
 		NE_RESIZE,
 		NW_RESIZE,
+#if HAS_MUTTER48
+		S_RESIZE,
+		SE_RESIZE,
+		SW_RESIZE,
+		W_RESIZE,
+		EW_RESIZE,
+		NS_RESIZE,
+		NESW_RESIZE,
+		NWSE_RESIZE,
+		COL_RESIZE,
+		ROW_RESIZE,
+		ALL_SCROLL,
+		ZOOM_IN,
+		ZOOM_OUT,
+		DND_ASK,
+		ALL_RESIZE
+#else
 		MOVE_OR_RESIZE_WINDOW,
 		BUSY,
 		DND_IN_DRAG,
@@ -1342,6 +1465,7 @@ namespace Meta {
 		IBEAM,
 		BLANK,
 		LAST
+#endif
 	}
 	[CCode (cheader_filename = "meta/util.h", cprefix = "META_DEBUG_PAINT_", type_id = "meta_debug_paint_flag_get_type ()")]
 	[Flags]
@@ -1366,14 +1490,20 @@ namespace Meta {
 		WINDOW_OPS,
 		GEOMETRY,
 		PLACEMENT,
+#if HAS_MUTTER48
+		DISPLAY,
+#else
 		PING,
+#endif
 		KEYBINDINGS,
 		SYNC,
 		STARTUP,
 		PREFS,
+#if !HAS_MUTTER48
 		GROUPS,
 		RESIZING,
 		SHAPES,
+#endif
 		EDGE_RESISTANCE,
 		DBUS,
 		INPUT,
@@ -1388,6 +1518,10 @@ namespace Meta {
 #if HAS_MUTTER47
 		KMS_DEADLINE,
 		SESSION_MANAGEMENT,
+#endif
+#if HAS_MUTTER48
+		X11,
+		WORKSPACES,
 #endif
 		RENDER;
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_topic_to_string")]
@@ -1837,13 +1971,21 @@ namespace Meta {
 	[CCode (cheader_filename = "meta/meta-idle-monitor.h", instance_pos = 2.9)]
 	public delegate void IdleMonitorWatchFunc (Meta.IdleMonitor monitor, uint watch_id);
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 4.9)]
+#if HAS_MUTTER48
+	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Window? window, [CCode (type = "const ClutterEvent*")] Clutter.KeyEvent? event, Meta.KeyBinding binding);
+#else
 	public delegate void KeyHandlerFunc (Meta.Display display, Meta.Window? window, [CCode (type = "const ClutterKeyEvent*")] Clutter.KeyEvent? event, Meta.KeyBinding binding);
+#endif
 	[CCode (cheader_filename = "meta/prefs.h", instance_pos = 1.9)]
 	public delegate void PrefsChangedFunc (Meta.Preference pref);
 	[CCode (cheader_filename = "meta/window.h", instance_pos = 1.9)]
 	public delegate bool WindowForeachFunc (Meta.Window window);
 	[CCode (cheader_filename = "meta/common.h", cname = "META_CURRENT_TIME")]
 	public const int CURRENT_TIME;
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "meta/main.h", cname = "META_N_ORIENTATIONS")]
+	public const int N_ORIENTATIONS;
+#endif
 	[CCode (cheader_filename = "meta/common.h", cname = "META_PRIORITY_BEFORE_REDRAW")]
 	public const int PRIORITY_BEFORE_REDRAW;
 	[CCode (cheader_filename = "meta/common.h", cname = "META_PRIORITY_PREFS_NOTIFY")]
@@ -1858,8 +2000,10 @@ namespace Meta {
 	public const int VIRTUAL_CORE_POINTER_ID;
 	[CCode (cheader_filename = "meta/main.h")]
 	public static string accelerator_name (Clutter.ModifierType accelerator_mods, uint accelerator_key);
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void add_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void add_debug_paint_flag (Meta.DebugPaintFlag flag);
 #if !HAS_MUTTER46
@@ -1868,8 +2012,10 @@ namespace Meta {
 #endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void exit (Meta.ExitCode code);
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void get_clutter_debug_flags (out Clutter.DebugFlag debug_flags, out Clutter.DrawDebugFlag draw_flags, out Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static Meta.DebugPaintFlag get_debug_paint_flags ();
 	[CCode (cheader_filename = "meta/main.h")]
@@ -1878,8 +2024,10 @@ namespace Meta {
 	public static bool is_topic_enabled (Meta.DebugTopic topic);
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void log (string format, ...);
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void remove_clutter_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "meta/main.h")]
 	public static void remove_debug_paint_flag (Meta.DebugPaintFlag flag);
 	[CCode (cheader_filename = "meta/main.h")]

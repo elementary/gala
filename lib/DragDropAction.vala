@@ -313,7 +313,11 @@ namespace Gala {
                     event.get_coords (out x, out y);
 
                     if (!dragging && clicked) {
+#if HAS_MUTTER47
+                        var drag_threshold = actor.context.get_settings ().dnd_drag_threshold;
+#else
                         var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
+#endif
                         if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
                             handle = drag_begin (last_x, last_y);
                             if (handle == null) {
