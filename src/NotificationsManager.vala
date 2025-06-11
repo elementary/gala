@@ -11,6 +11,7 @@ public class Gala.NotificationsManager : GLib.Object {
     [DBus (name = "org.freedesktop.Notifications")]
     private interface DBusNotifications : GLib.Object {
         public signal void action_invoked (uint32 id, string action_key);
+        public signal void notification_closed (uint32 id, uint32 reason);
 
         public abstract async uint32 notify (string app_name, uint32 replaces_id, string app_icon, string summary,
             string body, string[] actions, HashTable<string, Variant> hints, int32 expire_timeout) throws DBusError, IOError;
@@ -18,7 +19,8 @@ public class Gala.NotificationsManager : GLib.Object {
 
     private const int EXPIRE_TIMEOUT = 2000;
 
-    private GLib.SimpleActionGroup action_group = new GLib.SimpleActionGroup ();
+    public signal void action_invoked (uint32 id, string name, GLib.Variant? target_value);
+
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
 
@@ -57,16 +59,10 @@ public class Gala.NotificationsManager : GLib.Object {
             return;
         }
 
-        if (action_group.has_action (name)) {
-            action_group.activate_action (name, target_value);
-        }
+        action_invoked (id, name, target_value);
     }
 
-    public void add_action (GLib.Action action) {
-        action_group.add_action (action);
-    }
-
-    public async void send (
+    public async uint32? send (
         string component_name,
         string icon,
         string summary,
@@ -76,7 +72,7 @@ public class Gala.NotificationsManager : GLib.Object {
     ) {
         if (notifications == null) {
             warning ("NotificationsManager: Unable to send notification. No connection to notification server");
-            return;
+            return null;
         }
 
         uint32? replaces_id = replaces_id_table.get (component_name);
@@ -97,8 +93,11 @@ public class Gala.NotificationsManager : GLib.Object {
             );
 
             replaces_id_table.insert (component_name, notification_id);
+
+            return notification_id;
         } catch (Error e) {
             critical ("NotificationsManager: There was an error sending a notification: %s", e.message);
+            return null;
         }
     }
 }
