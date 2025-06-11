@@ -47,7 +47,7 @@ public class Gala.Drawing.StyleManager : Object {
 
     construct {
         Bus.watch_name (
-            SYSTEM, FDO_ACCOUNTS_NAME,NONE,
+            SYSTEM, FDO_ACCOUNTS_NAME, NONE,
             () => connect_to_accounts_service.begin (),
             () => {
                 pantheon_proxy = null;
