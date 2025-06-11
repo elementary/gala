@@ -15,8 +15,9 @@ public class Gala.HideTracker : Object {
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
-
     public Pantheon.Desktop.HideMode hide_mode { get; set; }
+
+    private static GLib.Settings behavior_settings;
 
     private Clutter.PanAction pan_action;
 
@@ -25,6 +26,7 @@ public class Gala.HideTracker : Object {
     private bool overlap = false;
     private bool focus_overlap = false;
     private bool focus_maximized_overlap = false;
+    private bool fullscreen_overlap = false;
 
     private Meta.Window current_focus_window;
 
@@ -35,6 +37,10 @@ public class Gala.HideTracker : Object {
 
     public HideTracker (Meta.Display display, PanelWindow panel) {
         Object (display: display, panel: panel);
+    }
+
+    static construct {
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
     }
 
     construct {
@@ -145,6 +151,7 @@ public class Gala.HideTracker : Object {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
+        fullscreen_overlap = display.get_monitor_in_fullscreen (panel.window.get_monitor ());
 
         foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
             if (window == panel.window) {
@@ -195,8 +202,8 @@ public class Gala.HideTracker : Object {
                 toggle_display (true);
                 break;
 
-            default:
-                warning ("HideTracker: unsupported hide mode.");
+            case NEVER:
+                toggle_display (fullscreen_overlap);
                 break;
         }
     }
@@ -204,7 +211,8 @@ public class Gala.HideTracker : Object {
     private void toggle_display (bool should_hide) {
         hovered = panel.window.has_pointer ();
 
-        if (should_hide && !hovered && !panel.window.has_focus ()) {
+        // Showing panels in fullscreen is broken in X11
+        if (should_hide && !hovered && !panel.window.has_focus () || InternalUtils.get_x11_in_fullscreen (display)) {
             trigger_hide ();
         } else {
             trigger_show ();
@@ -331,7 +339,14 @@ public class Gala.HideTracker : Object {
     }
 
     private void on_barrier_triggered () {
-        trigger_show ();
-        schedule_update ();
+        // Showing panels in fullscreen is broken in X11
+        if (InternalUtils.get_x11_in_fullscreen (display)) {
+            return;
+        }
+
+        if (hide_mode != NEVER || behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")) {
+            trigger_show ();
+            schedule_update ();
+        }
     }
 }
