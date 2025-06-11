@@ -151,9 +151,7 @@ public class Gala.HideTracker : Object {
         overlap = false;
         focus_overlap = false;
         focus_maximized_overlap = false;
-
-        // Showing panels in fullscreen is broken in X11
-        fullscreen_overlap = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (panel.window.get_monitor ());
+        fullscreen_overlap = display.get_monitor_in_fullscreen (panel.window.get_monitor ());
 
         foreach (var window in display.get_workspace_manager ().get_active_workspace ().list_windows ()) {
             if (window == panel.window) {
@@ -213,7 +211,10 @@ public class Gala.HideTracker : Object {
     private void toggle_display (bool should_hide) {
         hovered = panel.window.has_pointer ();
 
-        if (should_hide && !hovered && !panel.window.has_focus ()) {
+        // Showing panels in fullscreen is broken in X11
+        var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (panel.window.get_monitor ());
+
+        if (should_hide && !hovered && !panel.window.has_focus () || x11_in_fullscreen) {
             trigger_hide ();
         } else {
             trigger_show ();
@@ -340,10 +341,13 @@ public class Gala.HideTracker : Object {
     }
 
     private void on_barrier_triggered () {
-        if (hide_mode != NEVER ||
-            // Showing panels in fullscreen is broken in X11
-            Meta.Util.is_wayland_compositor () && behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
-        ) {
+        // Showing panels in fullscreen is broken in X11
+        var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (panel.window.get_monitor ());
+        if (x11_in_fullscreen) {
+            return;
+        }
+
+        if (hide_mode != NEVER || behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")) {
             trigger_show ();
             schedule_update ();
         }
