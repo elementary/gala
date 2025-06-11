@@ -19,6 +19,7 @@
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
+        private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
         /**
          * {@inheritDoc}
@@ -329,6 +330,13 @@ namespace Gala {
             });
 
             display.overlay_key.connect (() => {
+                // Showing panels in fullscreen is broken in X11
+                var primary_monitor = display.get_primary_monitor ();
+                var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (primary_monitor);
+                if (x11_in_fullscreen && behavior_settings.get_string ("overlay-action") == OPEN_APPLICATIONS_MENU) {
+                    return;
+                }
+
                 launch_action (ActionKeys.OVERLAY_ACTION);
             });
 
