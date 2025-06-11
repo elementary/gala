@@ -20,6 +20,7 @@ public class Gala.NotificationsManager : GLib.Object {
     private const int EXPIRE_TIMEOUT = 2000;
 
     public signal void action_invoked (uint32 id, string name, GLib.Variant? target_value);
+    public signal void notification_closed (uint32 id);
 
     private DBusNotifications? notifications = null;
     private GLib.HashTable<string, uint32> replaces_id_table = new GLib.HashTable<string, uint32> (str_hash, str_equal);
@@ -35,6 +36,7 @@ public class Gala.NotificationsManager : GLib.Object {
                 try {
                     notifications = ((DBusConnection) obj).get_proxy.end<DBusNotifications> (res);
                     notifications.action_invoked.connect (handle_action_invoked);
+                    notifications.notification_closed.connect (handle_notification_closed);
                 } catch (Error e) {
                     warning ("NotificationsManager: Couldn't connect to notifications server: %s", e.message);
                     notifications = null;
@@ -60,6 +62,10 @@ public class Gala.NotificationsManager : GLib.Object {
         }
 
         action_invoked (id, name, target_value);
+    }
+
+    private void handle_notification_closed (uint32 id, uint32 reason) {
+        notification_closed (id);
     }
 
     public async uint32? send (

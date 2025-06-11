@@ -64,6 +64,7 @@ public class Gala.ScreenshotManager : Object {
         display.add_keybinding ("area-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, handle_screenshot);
 
         notifications_manager.action_invoked.connect (handle_action_invoked);
+        notifications_manager.notification_closed.connect ((id) => notifications_id_to_path.remove (id));
     }
 
     [CCode (instance_pos = -1)]
