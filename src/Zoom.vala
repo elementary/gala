@@ -31,8 +31,8 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         unowned var display = wm.get_display ();
         var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
-        display.add_keybinding ("zoom-in", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_in);
-        display.add_keybinding ("zoom-out", schema, Meta.KeyBindingFlags.NONE, (Meta.KeyHandlerFunc) zoom_out);
+        display.add_keybinding ("zoom-in", schema, NONE, zoom_in);
+        display.add_keybinding ("zoom-out", schema, NONE, zoom_out);
 
         gesture_controller = new GestureController (ZOOM, wm) {
             snap = false
@@ -44,7 +44,11 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
         var scroll_action = new SuperScrollAction (display);
         scroll_action.triggered.connect (handle_super_scroll);
+#if HAS_MUTTER48
+        display.get_compositor ().get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
+#else
         display.get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
+#endif
     }
 
     ~Zoom () {
@@ -64,13 +68,13 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
     [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) {
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true);
     }
 
     [CCode (instance_pos = -1)]
     private void zoom_out (Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding) {
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (-SHORTCUT_DELTA, true);
     }
 
@@ -132,7 +136,12 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private inline Graphene.Point compute_new_pivot_point () {
         unowned var wins = wm.ui_group;
         Graphene.Point coords;
-        wm.get_display ().get_cursor_tracker ().get_pointer (out coords, null);
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.get_pointer (out coords, null);
         var new_pivot = Graphene.Point () {
             x = coords.x / wins.width,
             y = coords.y / wins.height

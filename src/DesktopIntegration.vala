@@ -210,15 +210,23 @@ public class Gala.DesktopIntegration : GLib.Object {
         transition.set_to_value (0);
         transition.set_key_frames ( { 0.5, -0.5 } );
 
-        var offset = InternalUtils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
+        var offset = Utils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
         transition.set_values ( { -offset, offset });
 
         transition.stopped.connect (() => {
             notifying = false;
+#if HAS_MUTTER48
+            wm.get_display ().get_compositor ().enable_unredirect ();
+#else
             wm.get_display ().enable_unredirect ();
+#endif
         });
 
+#if HAS_MUTTER48
+        wm.get_display ().get_compositor ().disable_unredirect ();
+#else
         wm.get_display ().disable_unredirect ();
+#endif
 
         ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }

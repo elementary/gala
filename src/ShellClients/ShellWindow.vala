@@ -24,6 +24,11 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     construct {
         window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
+        window_actor.notify["width"].connect (update_clip);
+        window_actor.notify["height"].connect (update_clip);
+        window_actor.notify["translation-y"].connect (update_clip);
+        notify["position"].connect (update_clip);
+
         window_actor.notify["height"].connect (update_target);
         notify["position"].connect (update_target);
         update_target ();
@@ -138,6 +143,25 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
                 return hidden ? window_actor.height : 0f;
             default:
                 return hidden ? 0u : 255u;
+        }
+    }
+
+    private void update_clip () {
+        if (position != TOP && position != BOTTOM) {
+            window_actor.remove_clip ();
+            return;
+        }
+
+        var monitor_geom = window.display.get_monitor_geometry (window.get_monitor ());
+
+        var y = window_actor.y + window_actor.translation_y;
+
+        if (y + window_actor.height > monitor_geom.y + monitor_geom.height) {
+            window_actor.set_clip (0, 0, window_actor.width, monitor_geom.y + monitor_geom.height - y);
+        } else if (y < monitor_geom.y) {
+            window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
+        } else {
+            window_actor.remove_clip ();
         }
     }
 }

@@ -36,7 +36,9 @@ public enum Gala.WindowFlags {
     ALWAYS_ON_TOP,
     ON_ALL_WORKSPACES,
     CAN_CLOSE,
-    IS_TILED
+    IS_TILED,
+    ALLOWS_MOVE_LEFT,
+    ALLOWS_MOVE_RIGHT
 }
 
 [DBus (name = "org.pantheon.gala")]
@@ -173,8 +175,8 @@ public class Gala.Daemon.DBus : GLib.Object {
             y /= scale_factor;
         }
 
-        window.default_width = display_width;
-        window.default_height = display_height;
+        window.child.width_request = display_width;
+        window.child.height_request = display_height;
         window.present ();
 
         Gdk.Rectangle rect = {

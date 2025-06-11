@@ -200,12 +200,12 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         SignalHandler.unblock (always_on_top, always_on_top_sid);
         SignalHandler.unblock (on_visible_workspace, on_visible_workspace_sid);
 
-        move_right.sensitive = !on_visible_workspace.active;
+        move_right.sensitive = !on_visible_workspace.active && Gala.WindowFlags.ALLOWS_MOVE_RIGHT in flags;
         if (move_right.sensitive) {
             move_right_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-right")[0];
         }
 
-        move_left.sensitive = !on_visible_workspace.active;
+        move_left.sensitive = !on_visible_workspace.active && Gala.WindowFlags.ALLOWS_MOVE_LEFT in flags;
         if (move_left.sensitive) {
             move_left_accellabel.accel_string = keybind_settings.get_strv ("move-to-workspace-left")[0];
         }

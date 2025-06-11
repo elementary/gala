@@ -98,7 +98,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         };
 
         shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
-            border_radius = InternalUtils.scale_to_int (9, scaling_factor),
+            border_radius = 10,
             shadow_opacity = 100
         };
         add_effect (shadow_effect);
@@ -121,7 +121,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         shadow_effect.monitor_scale = scaling_factor;
 
-        var margin = InternalUtils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
         container.margin_left = margin;
         container.margin_right = margin;
@@ -147,7 +147,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.get_preferred_size (null, null, out container_nat_width, null);
 
         var max_width = float.min (
-            geom.width - InternalUtils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
+            geom.width - Utils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
             container_nat_width //Ellipsize the label if it's longer than the icons
         );
 
@@ -167,8 +167,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        var stroke_width = scaling_factor;
-
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
 #else
@@ -183,12 +181,12 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         ctx.set_operator (Cairo.Operator.SOURCE);
 
-        // Offset by 0.5 so cairo draws a stroke on real pixels
+        var stroke_width = Utils.scale_to_int (1, scaling_factor);
         Drawing.Utilities.cairo_rounded_rectangle (
-            ctx, 0.5, 0.5,
-            width - stroke_width,
-            height - stroke_width,
-            InternalUtils.scale_to_int (9, scaling_factor)
+            ctx,
+            stroke_width / 2.0, stroke_width / 2.0,
+            width - stroke_width, height - stroke_width,
+            Utils.scale_to_int (9, scaling_factor)
         );
 
         ctx.set_source_rgba (
@@ -209,12 +207,11 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         ctx.stroke ();
         ctx.restore ();
 
-        // Offset by 0.5 so cairo draws a stroke on real pixels
         Drawing.Utilities.cairo_rounded_rectangle (
-            ctx, stroke_width + 0.5, stroke_width + 0.5,
-            width - stroke_width * 2 - 1,
-            height - stroke_width * 2 - 1,
-            InternalUtils.scale_to_int (8, scaling_factor)
+            ctx, stroke_width * 1.5, stroke_width * 1.5,
+            width - stroke_width * 3,
+            height - stroke_width * 3,
+            Utils.scale_to_int (8, scaling_factor)
         );
 
         ctx.set_line_width (stroke_width);
@@ -274,7 +271,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
-        Clutter.KeyEvent event, Meta.KeyBinding binding
+        Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
         if (gesture_controller.recognizing) {
             return;
@@ -543,7 +540,12 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private inline Clutter.ModifierType get_current_modifiers () {
         Clutter.ModifierType modifiers;
-        wm.get_display ().get_cursor_tracker ().get_pointer (null, out modifiers);
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.get_pointer (null, out modifiers);
 
         return modifiers & Clutter.ModifierType.MODIFIER_MASK;
     }

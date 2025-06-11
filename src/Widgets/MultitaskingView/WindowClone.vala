@@ -353,14 +353,14 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
 
-        float window_title_max_width = box.get_width () - InternalUtils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
+        float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
         float window_title_height, window_title_nat_width;
         window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
 
         var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
-        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - InternalUtils.scale_to_int (18, monitor_scale);
+        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
@@ -498,7 +498,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.opacity = 0;
         window_title.opacity = 0;
 
+#if HAS_MUTTER48
+        wm.get_display ().set_cursor (Meta.Cursor.MOVE);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
+#endif
 
         return this;
     }
@@ -551,7 +555,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             }
         }
 
+#if HAS_MUTTER48
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE: Meta.Cursor.NO_DROP);
+#else
         wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
+#endif
     }
 
     /**

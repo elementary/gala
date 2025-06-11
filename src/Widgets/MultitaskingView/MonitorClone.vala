@@ -41,7 +41,11 @@ public class Gala.MonitorClone : ActorTarget {
         display.window_entered_monitor.connect (window_entered);
         display.window_left_monitor.connect (window_left);
 
+#if HAS_MUTTER48
+        unowned GLib.List<Meta.WindowActor> window_actors = display.get_compositor ().get_window_actors ();
+#else
         unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
+#endif
         foreach (unowned Meta.WindowActor window_actor in window_actors) {
             if (window_actor.is_destroyed ())
                 continue;

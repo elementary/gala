@@ -65,7 +65,11 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
             var scale = display.get_monitor_scale (display.get_current_monitor ());
             update_cursor_size (scale);
 
+#if HAS_MUTTER48
+            unowned var tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
             unowned var tracker = display.get_cursor_tracker ();
+#endif
             Graphene.Point coords = {};
             tracker.get_pointer (out coords, null);
 
@@ -108,7 +112,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
 
         var radius = int.min (cursor_size / 2, cursor_size / 2);
         var end_angle = START_ANGLE + angle;
-        var border_width = InternalUtils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
+        var border_width = Utils.scale_to_int (BORDER_WIDTH_PX, scaling_factor);
 
         var cr = new Cairo.Context (surface);
 
