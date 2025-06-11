@@ -18,9 +18,14 @@ public class Gala.Drawing.StyleManager : Object {
     }
 
     [DBus (name="io.elementary.pantheon.AccountsService")]
-    private interface AccountsService : DBusProxy {
+    private interface PantheonAccountsService : DBusProxy {
         public abstract int prefers_color_scheme { get; set; }
         public abstract int prefers_accent_color { get; set; }
+    }
+
+    [DBus (name="io.elementary.SettingsDaemon.AccountsService")]
+    private interface SettingsDaemonAccountsService : DBusProxy {
+        public abstract int accent_color { get; set; }
     }
 
     private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
@@ -37,10 +42,18 @@ public class Gala.Drawing.StyleManager : Object {
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
     public Gdk.RGBA theme_accent_color { get; private set; default = DEFAULT_ACCENT_COLOR; }
 
-    private AccountsService? accounts_service_proxy;
+    private PantheonAccountsService? pantheon_proxy;
+    private SettingsDaemonAccountsService? settings_daemon_proxy;
 
     construct {
-        Bus.watch_name (SYSTEM, FDO_ACCOUNTS_NAME, NONE, () => connect_to_accounts_service.begin (), () => accounts_service_proxy = null);
+        Bus.watch_name (
+            SYSTEM, FDO_ACCOUNTS_NAME,NONE,
+            () => connect_to_accounts_service.begin (),
+            () => {
+                pantheon_proxy = null;
+                settings_daemon_proxy = null;
+            }
+        );
     }
 
     private async void connect_to_accounts_service () {
@@ -49,24 +62,27 @@ public class Gala.Drawing.StyleManager : Object {
 
             var path = yield accounts.find_user_by_name (Environment.get_user_name ());
 
-            accounts_service_proxy = yield Bus.get_proxy<AccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
+            pantheon_proxy = yield Bus.get_proxy<PantheonAccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
+            settings_daemon_proxy = yield Bus.get_proxy<SettingsDaemonAccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
         } catch {
             warning ("Could not connect to AccountsService. Default accent color will be used");
             return;
         }
 
-        update_color_scheme (accounts_service_proxy.prefers_color_scheme);
-        update_color (accounts_service_proxy.prefers_accent_color);
+        update_color_scheme (pantheon_proxy.prefers_color_scheme);
+        update_color (settings_daemon_proxy.accent_color);
 
-        accounts_service_proxy.g_properties_changed.connect ((changed, invalid) => {
-            var value = changed.lookup_value ("PrefersAccentColor", new VariantType ("i"));
-            if (value != null) {
-                update_color (value.get_int32 ());
-            }
-
-            value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
+        pantheon_proxy.g_properties_changed.connect ((changed, invalid) => {
+            var value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
             if (value != null) {
                 update_color_scheme (value.get_int32 ());
+            }
+        });
+
+        settings_daemon_proxy.g_properties_changed.connect ((changed, invalid) => {
+            var value = changed.lookup_value ("AccentColor", new VariantType ("i"));
+            if (value != null) {
+                update_color (value.get_int32 ());
             }
         });
     }
