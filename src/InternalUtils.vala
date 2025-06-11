@@ -354,7 +354,7 @@ namespace Gala {
         public static bool get_x11_in_fullscreen (Meta.Display display) {
             var primary_monitor = display.get_primary_monitor ();
             var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
-            return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;;
+            return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
         }
     }
 }
