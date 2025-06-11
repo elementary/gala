@@ -325,7 +325,12 @@ public class Gala.SessionLocker : Clutter.Actor {
             activation_time = GLib.get_monotonic_time ();
         }
 
-        wm.get_display ().get_cursor_tracker ().set_pointer_visible (false);
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.set_pointer_visible (false);
         visible = true;
         grab_key_focus ();
         modal_proxy = wm.push_modal (this);
@@ -388,7 +393,12 @@ public class Gala.SessionLocker : Clutter.Actor {
             modal_proxy = null;
         }
 
-        wm.get_display ().get_cursor_tracker ().set_pointer_visible (true);
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.set_pointer_visible (true);
         visible = false;
 
         activation_time = 0;

@@ -68,7 +68,11 @@ namespace Gala {
 
             new_window.change_workspace_by_index (index, false);
 
+#if HAS_MUTTER48
+            unowned List<Meta.WindowActor> actors = new_window.get_display ().get_compositor ().get_window_actors ();
+#else
             unowned List<Meta.WindowActor> actors = new_window.get_display ().get_window_actors ();
+#endif
             foreach (unowned Meta.WindowActor actor in actors) {
                 if (actor.is_destroyed ())
                     continue;
@@ -272,14 +276,6 @@ namespace Gala {
         }
 
         /**
-         * Multiplies an integer by a floating scaling factor, and then
-         * returns the result rounded to the nearest integer
-         */
-        public static int scale_to_int (int value, float scale_factor) {
-            return (int) (Math.round ((float)value * scale_factor));
-        }
-
-        /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */
         public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
@@ -346,7 +342,9 @@ namespace Gala {
         }
 
         public static void bell_notify (Meta.Display display) {
-#if HAS_MUTTER47
+#if HAS_MUTTER48
+            display.get_compositor ().get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
+#elif HAS_MUTTER47
             display.get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
 #else
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();

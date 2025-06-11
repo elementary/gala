@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-04-16 17:34+0000\n"
+"POT-Creation-Date: 2025-06-09 20:49+0000\n"
 "PO-Revision-Date: 2025-04-19 13:20+0000\n"
 "Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
 "Language-Team: Dutch <https://l10n.elementaryos.org/projects/desktop/gala/nl/"
@@ -20,23 +20,23 @@ msgstr ""
 "X-Generator: Weblate 5.10.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: daemon/DBus.vala:82 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Verander achtergrond…"
 
-#: daemon/DBus.vala:86 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Scherminstellingen…"
 
-#: daemon/DBus.vala:92 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Systeeminstellingen…"
 
-#: daemon/DBus.vala:216 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:218 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Kon systeeminstellingen niet openen"
 
-#: daemon/DBus.vala:217 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:219 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 "Een handler voor de \"settings://\" URI scheme moet worden geïnstalleerd."
@@ -109,71 +109,75 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:63
-#: data/gala.metainfo.xml.in:94 data/gala.metainfo.xml.in:107
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:139
-#: data/gala.metainfo.xml.in:155 data/gala.metainfo.xml.in:196
-#: data/gala.metainfo.xml.in:221 data/gala.metainfo.xml.in:237
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:70 data/gala.metainfo.xml.in:84
+#: data/gala.metainfo.xml.in:117 data/gala.metainfo.xml.in:148
+#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:209
+#: data/gala.metainfo.xml.in:250 data/gala.metainfo.xml.in:275
+#: data/gala.metainfo.xml.in:291
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:96 data/gala.metainfo.xml.in:109
-#: data/gala.metainfo.xml.in:124 data/gala.metainfo.xml.in:143
-#: data/gala.metainfo.xml.in:159 data/gala.metainfo.xml.in:202
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:239
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:60
+#: data/gala.metainfo.xml.in:72 data/gala.metainfo.xml.in:86
+#: data/gala.metainfo.xml.in:119 data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:178
+#: data/gala.metainfo.xml.in:197 data/gala.metainfo.xml.in:213
+#: data/gala.metainfo.xml.in:256 data/gala.metainfo.xml.in:278
+#: data/gala.metainfo.xml.in:293
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:87
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "Vensterstaat wordt nu opgeslagen bij slaapstand en afsluiten"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:88
 msgid "Remove scaling effect from menus"
 msgstr "Verwijder schaling-effect van menus"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:89
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "Veeg omhoog om vensters te sluiten in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:66
+#: data/gala.metainfo.xml.in:120
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "Verhelpt een zeldzame crash wanneer een dock venster was beëindigd"
 
-#: data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:121
 msgid "Added interactive screenshot shortcut"
 msgstr "Interactieve schermafdruk snelkoppeling toegevoegd"
 
-#: data/gala.metainfo.xml.in:68
+#: data/gala.metainfo.xml.in:122
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Een crash verholpen bij het gebruiken van tegelen-snelkoppelingen"
 
-#: data/gala.metainfo.xml.in:97
+#: data/gala.metainfo.xml.in:151
 msgid "Improved shadows performance"
 msgstr "Verbeterde schaduwen-prestaties"
 
-#: data/gala.metainfo.xml.in:141
+#: data/gala.metainfo.xml.in:195
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Een mogelijke crash verholpen wanneer vensters worden bewogen tussen "
 "werkruimtes"
 
-#: data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:196
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "De notificatie animatie verholpen wanneer multitaskingweergave wordt "
 "opgeroepen"
 
-#: data/gala.metainfo.xml.in:157
+#: data/gala.metainfo.xml.in:211
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Verbeter toetsenbordnavigatie in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:158
+#: data/gala.metainfo.xml.in:212
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Verander paneelkleur tegelijk met achtergrondovergang"
 
-#: data/gala.metainfo.xml.in:198
+#: data/gala.metainfo.xml.in:252
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -181,22 +185,22 @@ msgstr ""
 "De bureaubladachtergrond veranderen of schakelen naar de slaapstand "
 "respecteert de \"Beperk bewegende elementen\" optie"
 
-#: data/gala.metainfo.xml.in:199
+#: data/gala.metainfo.xml.in:253
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Gebruik passende klikken-en-slepen aanwijzers wanneer vensters versleept "
 "worden"
 
-#: data/gala.metainfo.xml.in:200
+#: data/gala.metainfo.xml.in:254
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Verbeter de fout wanneer gebaren in de multitasking weergave niet meer werken"
 
-#: data/gala.metainfo.xml.in:201
+#: data/gala.metainfo.xml.in:255
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Verbeter dynamische werkruimtes gedrag met meerdere schermen"
 
-#: data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:277
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Verbeter omgaan met verplaats-naar-werkruimte sneltoets"
 
@@ -274,52 +278,60 @@ msgid "Window has already focus"
 msgstr "Window heeft al de focus"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:101
+#: src/ScreenshotManager.vala:105
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Schermafbeelding van %s"
 
-#. / TRANSLATORS: 'Files' is the name of file manager used by elementary OS
-#: src/ScreenshotManager.vala:159
-msgid "Show in Files"
+#. / TRANSLATORS: %s represents a name of image viewer
+#: src/ScreenshotManager.vala:171
+#, c-format
+msgid "Open in %s"
+msgstr ""
+
+#. / TRANSLATORS: %s represents a name of file manager
+#: src/ScreenshotManager.vala:178
+#, fuzzy, c-format
+#| msgid "Show in Files"
+msgid "Show in %s"
 msgstr "Laat zien in Bestanden"
 
-#: src/ScreenshotManager.vala:165 src/ScreenshotManager.vala:514
+#: src/ScreenshotManager.vala:189 src/ScreenshotManager.vala:548
 msgid "Screenshot taken"
 msgstr "Schermafbeelding genomen"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:190
 msgid "Screenshot is saved to clipboard"
 msgstr "Schermafdruk is opgeslagen op het klembord"
 
-#: src/ScreenshotManager.vala:166
+#: src/ScreenshotManager.vala:190
 msgid "Screenshot saved to screenshots folder"
 msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
 
-#: src/ScreenshotManager.vala:422
+#: src/ScreenshotManager.vala:456
 msgid "Screenshots"
 msgstr "Schermafbeeldingen"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:83
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
 msgstr "Vensterwisselaar"
 
-#: src/WindowManager.vala:1775
+#: src/WindowManager.vala:1766
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Wijzigingen worden na %i seconde automatisch teruggedraaid."
 msgstr[1] "Wijzigingen worden na %i seconden automatisch teruggedraaid."
 
-#: src/WindowManager.vala:1782
+#: src/WindowManager.vala:1773
 msgid "Keep new display settings?"
 msgstr "Nieuwe weergave-instellingen bewaren?"
 
-#: src/WindowManager.vala:1786
+#: src/WindowManager.vala:1777
 msgid "Keep Settings"
 msgstr "Instellingen behouden"
 
-#: src/WindowManager.vala:1787
+#: src/WindowManager.vala:1778
 msgid "Use Previous Settings"
 msgstr "Vorige instellingen gebruiken"
 
@@ -520,8 +532,8 @@ msgstr "Vorige instellingen gebruiken"
 #~ "The command that will be executed for the hot corner action 'custom-"
 #~ "command' or multiple"
 #~ msgstr ""
-#~ "Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-"
-#~ "command' (meerdere mogelijk)"
+#~ "Deze opdracht wordt uitgevoerd als actieve hoeken actie 'custom-command' "
+#~ "(meerdere mogelijk)"
 
 #~ msgid ""
 #~ "If you just put a single command, it will be used for every hot corner "
@@ -533,11 +545,11 @@ msgstr "Vorige instellingen gebruiken"
 #~ msgstr ""
 #~ "Als u een enkele opdracht ingeeft, is deze van toepassing op elke actieve "
 #~ "hoek met 'custom-command'. U kunt per actieve hoek een andere opdracht "
-#~ "ingeven, door de opdrachten in te geven in de vorm 'hotcorner-topleft:"
-#~ "command;;hotcorner-bottomright:command'. Dat is: een reeks ingaven "
-#~ "(gescheiden door ';;') met elke ingave van de vorm 'hotcorner-[topleft; "
-#~ "topright; bottomleft; bottomright]', een dubbele punt (':') en de "
-#~ "daadwerkelijke opdracht."
+#~ "ingeven, door de opdrachten in te geven in de vorm 'hotcorner-"
+#~ "topleft:command;;hotcorner-bottomright:command'. Dat is: een reeks "
+#~ "ingaven (gescheiden door ';;') met elke ingave van de vorm 'hotcorner-"
+#~ "[topleft; topright; bottomleft; bottomright]', een dubbele punt (':') en "
+#~ "de daadwerkelijke opdracht."
 
 #~ msgid "Enable edge tiling when dropping windows on screen edges"
 #~ msgstr ""

@@ -260,7 +260,7 @@ namespace Gala {
          * Multiplies an integer by a floating scaling factor, and then
          * returns the result rounded to the nearest integer
          */
-         public static int scale_to_int (int value, float scale_factor) {
+        public static int scale_to_int (int value, float scale_factor) {
             return (int) (Math.round ((float)value * scale_factor));
         }
 
@@ -385,13 +385,9 @@ namespace Gala {
             texture.reactive = true;
 
             if (pixbuf != null) {
-                try {
-                    var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
-                    texture.set_content (image);
-                    texture.set_size (pixbuf.width, pixbuf.height);
-                } catch (Error e) {}
+                var image = new Gala.Image.from_pixbuf (pixbuf);
+                texture.set_content (image);
+                texture.set_size (pixbuf.width, pixbuf.height);
             } else {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this
@@ -404,7 +400,7 @@ namespace Gala {
             return texture;
         }
 
-        private static HashTable<Meta.Window, X.XserverRegion?> regions = new HashTable<Meta.Window, X.XserverRegion?> (null, null);
+        private static HashTable<Meta.Window, X.Rectangle?> regions = new HashTable<Meta.Window, X.Rectangle?> (null, null);
 
         public static void x11_set_window_pass_through (Meta.Window window) {
             unowned var x11_display = window.display.get_x11_display ();
@@ -416,10 +412,10 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            regions[window] = X.Fixes.create_region_from_window (xdisplay, x_window, 0);
+            int count, ordering;
+            regions[window] = X.Shape.get_rectangles (xdisplay, x_window, 2, out count, out ordering)[0];
 
             X.Xrectangle rect = {};
-
             var region = X.Fixes.create_region (xdisplay, {rect});
 
             X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
@@ -427,7 +423,7 @@ namespace Gala {
             X.Fixes.destroy_region (xdisplay, region);
         }
 
-        public static void x11_unset_window_pass_through (Meta.Window window) {
+        public static void x11_unset_window_pass_through (Meta.Window window, bool restore_previous_region) {
             unowned var x11_display = window.display.get_x11_display ();
 
 #if HAS_MUTTER46
@@ -437,16 +433,19 @@ namespace Gala {
 #endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
-            var region = regions[window];
+            if (restore_previous_region) {
+                var region = regions[window];
+                if (region == null) {
+                    debug ("Cannot unset pass through: window not found.");
+                    return;
+                }
 
-            if (region == null) {
-                return;
+                X.Shape.combine_rectangles (xdisplay, x_window, 2, 0, 0, { region }, 0, 3);
+            } else {
+                X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, (X.XserverRegion) 0);
             }
 
-            X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
-
             regions.remove (window);
-            X.Fixes.destroy_region (xdisplay, region);
         }
 
         /**

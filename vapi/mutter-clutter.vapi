@@ -15,6 +15,12 @@ namespace Clutter {
 		public const uint @0;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_1")]
 		public const uint @1;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_10ChannelsDown")]
+		public const uint @10ChannelsDown;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_10ChannelsUp")]
+		public const uint @10ChannelsUp;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_2")]
 		public const uint @2;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_3")]
@@ -79,6 +85,10 @@ namespace Clutter {
 		public const uint @3270_Setup;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_3270_Test")]
 		public const uint @3270_Test;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_3DMode")]
+		public const uint @3DMode;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_4")]
 		public const uint @4;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_5")]
@@ -95,6 +105,10 @@ namespace Clutter {
 		public const uint A;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AE")]
 		public const uint AE;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ALSToggle")]
+		public const uint ALSToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Aacute")]
 		public const uint Aacute;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Abelowdot")]
@@ -115,6 +129,10 @@ namespace Clutter {
 		public const uint AccessX_Enable;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AccessX_Feedback_Enable")]
 		public const uint AccessX_Feedback_Enable;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Accessibility")]
+		public const uint Accessibility;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Acircumflex")]
 		public const uint Acircumflex;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Acircumflexacute")]
@@ -129,6 +147,10 @@ namespace Clutter {
 		public const uint Acircumflextilde;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AddFavorite")]
 		public const uint AddFavorite;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Addressbook")]
+		public const uint Addressbook;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Adiaeresis")]
 		public const uint Adiaeresis;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Agrave")]
@@ -143,6 +165,10 @@ namespace Clutter {
 		public const uint Amacron;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Aogonek")]
 		public const uint Aogonek;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AppSelect")]
+		public const uint AppSelect;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ApplicationLeft")]
 		public const uint ApplicationLeft;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ApplicationRight")]
@@ -489,12 +515,34 @@ namespace Clutter {
 		public const uint Armenian_za;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Armenian_zhe")]
 		public const uint Armenian_zhe;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AspectRatio")]
+		public const uint AspectRatio;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Assistant")]
+		public const uint Assistant;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Atilde")]
 		public const uint Atilde;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AttendantOff")]
+		public const uint AttendantOff;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AttendantOn")]
+		public const uint AttendantOn;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AttendantToggle")]
+		public const uint AttendantToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudibleBell_Enable")]
 		public const uint AudibleBell_Enable;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Audio")]
+		public const uint Audio;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioCycleTrack")]
 		public const uint AudioCycleTrack;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioDesc")]
+		public const uint AudioDesc;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioForward")]
 		public const uint AudioForward;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioLowerVolume")]
@@ -511,6 +559,10 @@ namespace Clutter {
 		public const uint AudioPause;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioPlay")]
 		public const uint AudioPlay;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioPreset")]
+		public const uint AudioPreset;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioPrev")]
 		public const uint AudioPrev;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioRaiseVolume")]
@@ -525,6 +577,10 @@ namespace Clutter {
 		public const uint AudioRewind;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AudioStop")]
 		public const uint AudioStop;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_AutopilotEngageToggle")]
+		public const uint AutopilotEngageToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Away")]
 		public const uint Away;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_B")]
@@ -553,6 +609,16 @@ namespace Clutter {
 		public const uint Break;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_BrightnessAdjust")]
 		public const uint BrightnessAdjust;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_BrightnessAuto")]
+		public const uint BrightnessAuto;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_BrightnessMax")]
+		public const uint BrightnessMax;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_BrightnessMin")]
+		public const uint BrightnessMin;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Buttonconfig")]
+		public const uint Buttonconfig;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Byelorussian_SHORTU")]
 		public const uint Byelorussian_SHORTU;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Byelorussian_shortu")]
@@ -575,6 +641,28 @@ namespace Clutter {
 		public const uint Calculator;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Calendar")]
 		public const uint Calendar;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraAccessDisable")]
+		public const uint CameraAccessDisable;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraAccessEnable")]
+		public const uint CameraAccessEnable;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraAccessToggle")]
+		public const uint CameraAccessToggle;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraDown")]
+		public const uint CameraDown;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraFocus")]
+		public const uint CameraFocus;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraLeft")]
+		public const uint CameraLeft;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraRight")]
+		public const uint CameraRight;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraUp")]
+		public const uint CameraUp;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraZoomIn")]
+		public const uint CameraZoomIn;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_CameraZoomOut")]
+		public const uint CameraZoomOut;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Cancel")]
 		public const uint Cancel;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Caps_Lock")]
@@ -587,10 +675,20 @@ namespace Clutter {
 		public const uint Ccircumflex;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ch")]
 		public const uint Ch;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ChannelDown")]
+		public const uint ChannelDown;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ChannelUp")]
+		public const uint ChannelUp;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Clear")]
 		public const uint Clear;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ClearGrab")]
 		public const uint ClearGrab;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ClearvuSonar")]
+		public const uint ClearvuSonar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Close")]
 		public const uint Close;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Codeinput")]
@@ -599,8 +697,16 @@ namespace Clutter {
 		public const uint ColonSign;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Community")]
 		public const uint Community;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ContextMenu")]
+		public const uint ContextMenu;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ContrastAdjust")]
 		public const uint ContrastAdjust;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ControlPanel")]
+		public const uint ControlPanel;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Control_L")]
 		public const uint Control_L;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Control_R")]
@@ -825,14 +931,36 @@ namespace Clutter {
 		public const uint D;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DOS")]
 		public const uint DOS;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DVD")]
+		public const uint DVD;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Dabovedot")]
 		public const uint Dabovedot;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Data")]
+		public const uint Data;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Database")]
+		public const uint Database;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Dcaron")]
 		public const uint Dcaron;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Delete")]
 		public const uint Delete;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Dictate")]
+		public const uint Dictate;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Display")]
 		public const uint Display;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DisplayOff")]
+		public const uint DisplayOff;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DisplayToggle")]
+		public const uint DisplayToggle;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DoNotDisturb")]
+		public const uint DoNotDisturb;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Documents")]
 		public const uint Documents;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DongSign")]
@@ -841,6 +969,10 @@ namespace Clutter {
 		public const uint Down;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Dstroke")]
 		public const uint Dstroke;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_DualRangeRadar")]
+		public const uint DualRangeRadar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_E")]
 		public const uint E;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ENG")]
@@ -873,6 +1005,10 @@ namespace Clutter {
 		public const uint EcuSign;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ediaeresis")]
 		public const uint Ediaeresis;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Editor")]
+		public const uint Editor;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Egrave")]
 		public const uint Egrave;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ehook")]
@@ -885,6 +1021,10 @@ namespace Clutter {
 		public const uint Eject;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Emacron")]
 		public const uint Emacron;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_EmojiPicker")]
+		public const uint EmojiPicker;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_End")]
 		public const uint End;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Eogonek")]
@@ -1001,6 +1141,10 @@ namespace Clutter {
 		public const uint Farsi_9;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Farsi_yeh")]
 		public const uint Farsi_yeh;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FastReverse")]
+		public const uint FastReverse;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Favorites")]
 		public const uint Favorites;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Finance")]
@@ -1009,12 +1153,26 @@ namespace Clutter {
 		public const uint Find;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_First_Virtual_Screen")]
 		public const uint First_Virtual_Screen;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FishingChart")]
+		public const uint FishingChart;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Fn")]
+		public const uint Fn;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FnRightShift")]
+		public const uint FnRightShift;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Fn_Esc")]
+		public const uint Fn_Esc;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Forward")]
 		public const uint Forward;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FrameBack")]
 		public const uint FrameBack;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FrameForward")]
 		public const uint FrameForward;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_FullScreen")]
+		public const uint FullScreen;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_G")]
 		public const uint G;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Gabovedot")]
@@ -1109,6 +1267,10 @@ namespace Clutter {
 		public const uint Georgian_zhar;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Go")]
 		public const uint Go;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_GraphicsEditor")]
+		public const uint GraphicsEditor;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Greek_ALPHA")]
 		public const uint Greek_ALPHA;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Greek_ALPHAaccent")]
@@ -1475,6 +1637,10 @@ namespace Clutter {
 		public const uint Hangul_YeorinHieuh;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Hangul_switch")]
 		public const uint Hangul_switch;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_HangupPhone")]
+		public const uint HangupPhone;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Hankaku")]
 		public const uint Hankaku;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Hcircumflex")]
@@ -1607,6 +1773,12 @@ namespace Clutter {
 		public const uint Ihook;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Imacron")]
 		public const uint Imacron;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Images")]
+		public const uint Images;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Info")]
+		public const uint Info;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Insert")]
 		public const uint Insert;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Iogonek")]
@@ -1617,6 +1789,10 @@ namespace Clutter {
 		public const uint J;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Jcircumflex")]
 		public const uint Jcircumflex;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Journal")]
+		public const uint Journal;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_K")]
 		public const uint K;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KP_0")]
@@ -1707,10 +1883,38 @@ namespace Clutter {
 		public const uint KbdBrightnessDown;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdBrightnessUp")]
 		public const uint KbdBrightnessUp;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistAccept")]
+		public const uint KbdInputAssistAccept;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistCancel")]
+		public const uint KbdInputAssistCancel;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistNext")]
+		public const uint KbdInputAssistNext;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistNextgroup")]
+		public const uint KbdInputAssistNextgroup;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistPrev")]
+		public const uint KbdInputAssistPrev;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdInputAssistPrevgroup")]
+		public const uint KbdInputAssistPrevgroup;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLcdMenu1")]
+		public const uint KbdLcdMenu1;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLcdMenu2")]
+		public const uint KbdLcdMenu2;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLcdMenu3")]
+		public const uint KbdLcdMenu3;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLcdMenu4")]
+		public const uint KbdLcdMenu4;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLcdMenu5")]
+		public const uint KbdLcdMenu5;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_KbdLightOnOff")]
 		public const uint KbdLightOnOff;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Kcedilla")]
 		public const uint Kcedilla;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Keyboard")]
+		public const uint Keyboard;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Korean_Won")]
 		public const uint Korean_Won;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_L")]
@@ -1779,8 +1983,18 @@ namespace Clutter {
 		public const uint Lcedilla;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Left")]
 		public const uint Left;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_LeftDown")]
+		public const uint LeftDown;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_LeftUp")]
+		public const uint LeftUp;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_LightBulb")]
 		public const uint LightBulb;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_LightsToggle")]
+		public const uint LightsToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Linefeed")]
 		public const uint Linefeed;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_LiraSign")]
@@ -1809,16 +2023,100 @@ namespace Clutter {
 		public const uint Macedonia_gje;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macedonia_kje")]
 		public const uint Macedonia_kje;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro1")]
+		public const uint Macro1;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro10")]
+		public const uint Macro10;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro11")]
+		public const uint Macro11;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro12")]
+		public const uint Macro12;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro13")]
+		public const uint Macro13;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro14")]
+		public const uint Macro14;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro15")]
+		public const uint Macro15;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro16")]
+		public const uint Macro16;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro17")]
+		public const uint Macro17;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro18")]
+		public const uint Macro18;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro19")]
+		public const uint Macro19;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro2")]
+		public const uint Macro2;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro20")]
+		public const uint Macro20;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro21")]
+		public const uint Macro21;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro22")]
+		public const uint Macro22;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro23")]
+		public const uint Macro23;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro24")]
+		public const uint Macro24;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro25")]
+		public const uint Macro25;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro26")]
+		public const uint Macro26;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro27")]
+		public const uint Macro27;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro28")]
+		public const uint Macro28;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro29")]
+		public const uint Macro29;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro3")]
+		public const uint Macro3;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro30")]
+		public const uint Macro30;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro4")]
+		public const uint Macro4;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro5")]
+		public const uint Macro5;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro6")]
+		public const uint Macro6;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro7")]
+		public const uint Macro7;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro8")]
+		public const uint Macro8;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Macro9")]
+		public const uint Macro9;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroPreset1")]
+		public const uint MacroPreset1;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroPreset2")]
+		public const uint MacroPreset2;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroPreset3")]
+		public const uint MacroPreset3;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroPresetCycle")]
+		public const uint MacroPresetCycle;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroRecordStart")]
+		public const uint MacroRecordStart;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MacroRecordStop")]
+		public const uint MacroRecordStop;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Mae_Koho")]
 		public const uint Mae_Koho;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Mail")]
 		public const uint Mail;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MailForward")]
 		public const uint MailForward;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MarkWaypoint")]
+		public const uint MarkWaypoint;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Market")]
 		public const uint Market;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Massyo")]
 		public const uint Massyo;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MediaRepeat")]
+		public const uint MediaRepeat;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MediaTopMenu")]
+		public const uint MediaTopMenu;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Meeting")]
 		public const uint Meeting;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Memo")]
@@ -1841,6 +2139,10 @@ namespace Clutter {
 		public const uint ModeLock;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Mode_switch")]
 		public const uint Mode_switch;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MonBrightnessCycle")]
+		public const uint MonBrightnessCycle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MonBrightnessDown")]
 		public const uint MonBrightnessDown;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_MonBrightnessUp")]
@@ -1867,6 +2169,12 @@ namespace Clutter {
 		public const uint Nacute;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NairaSign")]
 		public const uint NairaSign;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NavChart")]
+		public const uint NavChart;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NavInfo")]
+		public const uint NavInfo;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ncaron")]
 		public const uint Ncaron;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ncedilla")]
@@ -1879,14 +2187,62 @@ namespace Clutter {
 		public const uint News;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Next")]
 		public const uint Next;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NextElement")]
+		public const uint NextElement;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NextFavorite")]
+		public const uint NextFavorite;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Next_VMode")]
 		public const uint Next_VMode;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Next_Virtual_Screen")]
 		public const uint Next_Virtual_Screen;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NotificationCenter")]
+		public const uint NotificationCenter;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ntilde")]
 		public const uint Ntilde;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Num_Lock")]
 		public const uint Num_Lock;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric0")]
+		public const uint Numeric0;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric1")]
+		public const uint Numeric1;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric11")]
+		public const uint Numeric11;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric12")]
+		public const uint Numeric12;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric2")]
+		public const uint Numeric2;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric3")]
+		public const uint Numeric3;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric4")]
+		public const uint Numeric4;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric5")]
+		public const uint Numeric5;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric6")]
+		public const uint Numeric6;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric7")]
+		public const uint Numeric7;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric8")]
+		public const uint Numeric8;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Numeric9")]
+		public const uint Numeric9;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericA")]
+		public const uint NumericA;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericB")]
+		public const uint NumericB;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericC")]
+		public const uint NumericC;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericD")]
+		public const uint NumericD;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericPound")]
+		public const uint NumericPound;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_NumericStar")]
+		public const uint NumericStar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_O")]
 		public const uint O;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_OE")]
@@ -1935,6 +2291,10 @@ namespace Clutter {
 		public const uint Ohorntilde;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Omacron")]
 		public const uint Omacron;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_OnScreenKeyboard")]
+		public const uint OnScreenKeyboard;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ooblique")]
 		public const uint Ooblique;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Open")]
@@ -1963,10 +2323,18 @@ namespace Clutter {
 		public const uint Paste;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Pause")]
 		public const uint Pause;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PauseRecord")]
+		public const uint PauseRecord;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PesetaSign")]
 		public const uint PesetaSign;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Phone")]
 		public const uint Phone;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PickupPhone")]
+		public const uint PickupPhone;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Pictures")]
 		public const uint Pictures;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Pointer_Accelerate")]
@@ -2033,16 +2401,28 @@ namespace Clutter {
 		public const uint PowerDown;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PowerOff")]
 		public const uint PowerOff;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Presentation")]
+		public const uint Presentation;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Prev_VMode")]
 		public const uint Prev_VMode;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Prev_Virtual_Screen")]
 		public const uint Prev_Virtual_Screen;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PreviousCandidate")]
 		public const uint PreviousCandidate;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PreviousElement")]
+		public const uint PreviousElement;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Print")]
 		public const uint Print;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Prior")]
 		public const uint Prior;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_PrivacyScreenToggle")]
+		public const uint PrivacyScreenToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Q")]
 		public const uint Q;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_R")]
@@ -2077,8 +2457,16 @@ namespace Clutter {
 		public const uint R8;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_R9")]
 		public const uint R9;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RFKill")]
+		public const uint RFKill;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Racute")]
 		public const uint Racute;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RadarOverlay")]
+		public const uint RadarOverlay;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Rcaron")]
 		public const uint Rcaron;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Rcedilla")]
@@ -2089,6 +2477,10 @@ namespace Clutter {
 		public const uint Redo;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Refresh")]
 		public const uint Refresh;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RefreshRateToggle")]
+		public const uint RefreshRateToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Reload")]
 		public const uint Reload;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RepeatKeys_Enable")]
@@ -2099,6 +2491,12 @@ namespace Clutter {
 		public const uint Return;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Right")]
 		public const uint Right;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RightDown")]
+		public const uint RightDown;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RightUp")]
+		public const uint RightUp;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RockerDown")]
 		public const uint RockerDown;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RockerEnter")]
@@ -2107,10 +2505,18 @@ namespace Clutter {
 		public const uint RockerUp;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Romaji")]
 		public const uint Romaji;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RootMenu")]
+		public const uint RootMenu;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RotateWindows")]
 		public const uint RotateWindows;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RotationKB")]
 		public const uint RotationKB;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RotationLockToggle")]
+		public const uint RotationLockToggle;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RotationPB")]
 		public const uint RotationPB;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_RupeeSign")]
@@ -2133,6 +2539,10 @@ namespace Clutter {
 		public const uint Scircumflex;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ScreenSaver")]
 		public const uint ScreenSaver;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Screensaver")]
+		public const uint Screensaver;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ScrollClick")]
 		public const uint ScrollClick;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ScrollDown")]
@@ -2147,6 +2557,10 @@ namespace Clutter {
 		public const uint Select;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SelectButton")]
 		public const uint SelectButton;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SelectiveScreenshot")]
+		public const uint SelectiveScreenshot;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Send")]
 		public const uint Send;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Serbian_DJE")]
@@ -2181,8 +2595,16 @@ namespace Clutter {
 		public const uint Shift_R;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Shop")]
 		public const uint Shop;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SidevuSonar")]
+		public const uint SidevuSonar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SingleCandidate")]
 		public const uint SingleCandidate;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SingleRangeRadar")]
+		public const uint SingleRangeRadar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Sinh_a")]
 		public const uint Sinh_a;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Sinh_aa")]
@@ -2347,8 +2769,18 @@ namespace Clutter {
 		public const uint Sleep;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SlowKeys_Enable")]
 		public const uint SlowKeys_Enable;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SlowReverse")]
+		public const uint SlowReverse;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Sos")]
+		public const uint Sos;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Spell")]
 		public const uint Spell;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SpellCheck")]
+		public const uint SpellCheck;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_SplitScreen")]
 		public const uint SplitScreen;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Standby")]
@@ -2359,6 +2791,10 @@ namespace Clutter {
 		public const uint StickyKeys_Enable;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Stop")]
 		public const uint Stop;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_StopRecord")]
+		public const uint StopRecord;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Subtitle")]
 		public const uint Subtitle;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Super_L")]
@@ -2405,6 +2841,10 @@ namespace Clutter {
 		public const uint Tabovedot;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_TaskPane")]
 		public const uint TaskPane;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Taskmanager")]
+		public const uint Taskmanager;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Tcaron")]
 		public const uint Tcaron;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Tcedilla")]
@@ -2599,6 +3039,10 @@ namespace Clutter {
 		public const uint TouchpadToggle;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Touroku")]
 		public const uint Touroku;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_TraditionalSonar")]
+		public const uint TraditionalSonar;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Travel")]
 		public const uint Travel;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Tslash")]
@@ -2669,6 +3113,10 @@ namespace Clutter {
 		public const uint Undo;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Ungrab")]
 		public const uint Ungrab;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Unmute")]
+		public const uint Unmute;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Uogonek")]
 		public const uint Uogonek;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Up")]
@@ -2685,18 +3133,38 @@ namespace Clutter {
 		public const uint Utilde;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_V")]
 		public const uint V;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_VOD")]
+		public const uint VOD;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_VendorHome")]
 		public const uint VendorHome;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Video")]
 		public const uint Video;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_VideoPhone")]
+		public const uint VideoPhone;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_View")]
 		public const uint View;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_VoiceCommand")]
+		public const uint VoiceCommand;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Voicemail")]
+		public const uint Voicemail;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_VoidSymbol")]
 		public const uint VoidSymbol;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_W")]
 		public const uint W;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_WLAN")]
 		public const uint WLAN;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_WPSButton")]
+		public const uint WPSButton;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_WWAN")]
+		public const uint WWAN;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_WWW")]
 		public const uint WWW;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Wacute")]
@@ -2761,6 +3229,10 @@ namespace Clutter {
 		public const uint ZoomIn;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ZoomOut")]
 		public const uint ZoomOut;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ZoomReset")]
+		public const uint ZoomReset;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_Zstroke")]
 		public const uint Zstroke;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_a")]
@@ -3441,6 +3913,18 @@ namespace Clutter {
 		public const uint club;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_colon")]
 		public const uint colon;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_combining_acute")]
+		public const uint combining_acute;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_combining_belowdot")]
+		public const uint combining_belowdot;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_combining_grave")]
+		public const uint combining_grave;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_combining_hook")]
+		public const uint combining_hook;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_combining_tilde")]
+		public const uint combining_tilde;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_comma")]
 		public const uint comma;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_containsas")]
@@ -3473,6 +3957,10 @@ namespace Clutter {
 		public const uint dead_I;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_O")]
 		public const uint dead_O;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_SCHWA")]
+		public const uint dead_SCHWA;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_U")]
 		public const uint dead_U;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_a")]
@@ -3533,6 +4021,10 @@ namespace Clutter {
 		public const uint dead_grave;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_greek")]
 		public const uint dead_greek;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_hamza")]
+		public const uint dead_hamza;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_hook")]
 		public const uint dead_hook;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_horn")]
@@ -3557,6 +4049,10 @@ namespace Clutter {
 		public const uint dead_perispomeni;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_psili")]
 		public const uint dead_psili;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_schwa")]
+		public const uint dead_schwa;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_semivoiced_sound")]
 		public const uint dead_semivoiced_sound;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_dead_small_schwa")]
@@ -3745,6 +4241,12 @@ namespace Clutter {
 		public const uint greater;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_greaterthanequal")]
 		public const uint greaterthanequal;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_guillemetleft")]
+		public const uint guillemetleft;
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_guillemetright")]
+		public const uint guillemetright;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_guillemotleft")]
 		public const uint guillemotleft;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_guillemotright")]
@@ -4231,6 +4733,10 @@ namespace Clutter {
 		public const uint opentribulletup;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ordfeminine")]
 		public const uint ordfeminine;
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_ordmasculine")]
+		public const uint ordmasculine;
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_oslash")]
 		public const uint oslash;
 		[CCode (cheader_filename = "clutter/clutter.h", cname = "CLUTTER_KEY_otilde")]
@@ -4561,6 +5067,7 @@ namespace Clutter {
 		public const uint zstroke;
 	}
 	namespace Threads {
+#if !HAS_MUTTER48
 		namespace Idle {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_idle")]
 			public static uint add (GLib.SourceFunc func);
@@ -4573,10 +5080,15 @@ namespace Clutter {
 			[CCode (cheader_filename = "clutter/clutter.h", cname = "clutter_threads_add_timeout_full")]
 			public static uint add_full (int priority, uint interval, owned GLib.SourceFunc func);
 		}
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h")]
+#if HAS_MUTTER48
+		public static uint add_repaint_func (Clutter.RepaintFlags flags, owned GLib.SourceFunc func);
+#else
 		public static uint add_repaint_func (owned GLib.SourceFunc func);
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		public static uint add_repaint_func_full (Clutter.RepaintFlags flags, owned GLib.SourceFunc func);
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		public static void remove_repaint_func (uint handle_id);
 	}
@@ -4611,8 +5123,10 @@ namespace Clutter {
 		public static void set_shader_int (GLib.Value value, [CCode (array_length_cname = "size", array_length_pos = 1.5)] int[] ints);
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		public static void set_shader_matrix (GLib.Value value, [CCode (array_length_cname = "size", array_length_pos = 1.5)] float[] matrix);
+#if !HAS_MUTTER48
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		public static void set_units (GLib.Value value, Clutter.Units units);
+#endif
 		[CCode (cheader_filename = "clutter/clutter.h")]
 		public static void take_paint_node (GLib.Value value, Clutter.PaintNode? node);
 	}
@@ -4622,7 +5136,7 @@ namespace Clutter {
 		protected Action ();
 		public Clutter.EventPhase get_phase ();
 		[NoWrapper]
-		public virtual bool handle_event (Clutter.Event event);
+		public virtual bool handle_event ([CCode (type = "const ClutterEvent *")] Clutter.Event event);
 #if HAS_MUTTER47
 		[NoWrapper]
 		public virtual bool register_sequence (Clutter.Event event);
@@ -4652,7 +5166,7 @@ namespace Clutter {
 		public void add_effect (Clutter.Effect effect);
 		public void add_effect_with_name (string name, Clutter.Effect effect);
 		public void add_transition (string name, Clutter.Transition transition);
-		public virtual void allocate (Clutter.ActorBox box);
+		public virtual void allocate ([CCode (type = "const ClutterActorBox *")] Clutter.ActorBox box);
 		public void allocate_align_fill (Clutter.ActorBox box, double x_align, double y_align, bool x_fill, bool y_fill);
 		public void allocate_available_size (float x, float y, float available_width, float available_height);
 		public void allocate_preferred_size (float x, float y);
@@ -4669,7 +5183,13 @@ namespace Clutter {
 		public bool contains (Clutter.Actor descendant);
 		public void continue_paint (Clutter.PaintContext paint_context);
 		public void continue_pick (Clutter.PickContext pick_context);
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter-pango.h")]
+#endif
 		public Pango.Context create_pango_context ();
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter-pango.h")]
+#endif
 		public Pango.Layout create_pango_layout (string? text);
 #if HAS_MUTTER46
 		public Clutter.PaintNode create_texture_paint_node (Cogl.Texture texture);
@@ -4745,6 +5265,9 @@ namespace Clutter {
 		[CCode (vfunc_name = "get_paint_volume")]
 		[NoWrapper]
 		public virtual bool get_paint_volume_vfunc (out Clutter.PaintVolume volume);
+#if HAS_MUTTER48
+		[CCode (cheader_filename = "clutter/clutter-pango.h")]
+#endif
 		public unowned Pango.Context get_pango_context ();
 		public unowned Clutter.Actor? get_parent ();
 		public void get_pivot_point (out float pivot_x, out float pivot_y);
@@ -4755,13 +5278,16 @@ namespace Clutter {
 		public virtual void get_preferred_width (float for_height, out float min_width_p, out float natural_width_p);
 		public unowned Clutter.Actor? get_previous_sibling ();
 		public bool get_reactive ();
+#if !HAS_MUTTER48
 		public Graphene.Matrix get_relative_transformation_matrix (Clutter.Actor? ancestor);
+#endif
 		public Clutter.RequestMode get_request_mode ();
 		public float get_resource_scale ();
 		public double get_rotation_angle (Clutter.RotateAxis axis);
 		public void get_scale (out double scale_x, out double scale_y);
 		public double get_scale_z ();
 		public void get_size (out float width, out float height);
+		[CCode (type = "ClutterActor *")]
 		public unowned Clutter.Stage get_stage ();
 		public Clutter.TextDirection get_text_direction ();
 		public Graphene.Matrix get_transform ();
@@ -4786,7 +5312,9 @@ namespace Clutter {
 		public bool has_actions ();
 		public bool has_allocation ();
 		public bool has_constraints ();
+#if !HAS_MUTTER48
 		public bool has_damage ();
+#endif
 		public bool has_effects ();
 		public bool has_key_focus ();
 		public bool has_mapped_clones ();
@@ -4799,7 +5327,9 @@ namespace Clutter {
 		public void insert_child_below (Clutter.Actor child, Clutter.Actor? sibling);
 		public void invalidate_paint_volume ();
 		public void invalidate_transform ();
+#if !HAS_MUTTER48
 		public bool is_effectively_on_stage_view (Clutter.StageView view);
+#endif
 		public bool is_in_clone_paint ();
 		public bool is_mapped ();
 #if HAS_MUTTER47
@@ -4812,7 +5342,9 @@ namespace Clutter {
 		public virtual void map ();
 		public void move_by (float dx, float dy);
 		public bool needs_expand (Clutter.Orientation orientation);
+#if !HAS_MUTTER48
 		public void notify_transform_invalid ();
+#endif
 		public virtual void paint (Clutter.PaintContext paint_context);
 		[NoWrapper]
 #if HAS_MUTTER47
@@ -4824,6 +5356,9 @@ namespace Clutter {
 		public void pick_box (Clutter.PickContext pick_context, Clutter.ActorBox box);
 		public void queue_redraw ();
 		public void queue_redraw_with_clip (Mtk.Rectangle? clip);
+#if HAS_MUTTER48
+		public void remove_accessible_state (Atk.StateType state);
+#endif
 		public void remove_action (Clutter.Action action);
 		public void remove_action_by_name (string name);
 		public void remove_all_children ();
@@ -4855,7 +5390,7 @@ namespace Clutter {
 		public void set_child_transform (Graphene.Matrix? transform);
 		public void set_clip (float xoff, float yoff, float width, float height);
 		public void set_clip_to_allocation (bool clip_set);
-		public void set_color_state (Clutter.ColorState? color_state);
+		public void set_color_state (Clutter.ColorState color_state);
 		public void set_content (Clutter.Content? content);
 		public void set_content_gravity (Clutter.ContentGravity gravity);
 		public void set_content_repeat (Clutter.ContentRepeat repeat);
@@ -4879,6 +5414,9 @@ namespace Clutter {
 		public void set_margin_right (float margin);
 		public void set_margin_top (float margin);
 		public void set_name (string? name);
+#if HAS_MUTTER48
+		public void set_no_layout (bool no_layout);
+#endif
 		public void set_offscreen_redirect (Clutter.OffscreenRedirect redirect);
 		public void set_opacity (uint8 opacity);
 		public void set_opacity_override (int opacity);
@@ -5123,18 +5661,22 @@ namespace Clutter {
 		protected Backend ();
 		public unowned Cogl.Context get_cogl_context ();
 		public unowned Clutter.Seat get_default_seat ();
+#if !HAS_MUTTER48
 		public unowned Cairo.FontOptions get_font_options ();
+#endif
 		public unowned Clutter.InputMethod get_input_method ();
 		public double get_resolution ();
+#if !HAS_MUTTER48
 		public void set_font_options (Cairo.FontOptions options);
+#endif
 		public void set_input_method (Clutter.InputMethod? method);
-		public signal void font_changed ();
-		public signal void resolution_changed ();
-		public signal void settings_changed ();
 #if HAS_MUTTER47
 		[NoAccessorMethod]
 		public Clutter.Context context { owned get; construct; }
 #endif
+		public signal void font_changed ();
+		public signal void resolution_changed ();
+		public signal void settings_changed ();
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_bin_layout_get_type ()")]
 	public class BinLayout : Clutter.LayoutManager {
@@ -5327,28 +5869,51 @@ namespace Clutter {
 	public sealed class ColorState : GLib.Object {
 		[CCode (has_construct_function = false)]
 #if HAS_MUTTER47
+#if HAS_MUTTER48
+		protected ColorState ();
+#else
 		public ColorState (Clutter.Context context, Clutter.Colorspace colorspace, Clutter.TransferFunction transfer_function);
+#endif
 		public void add_pipeline_transform (Clutter.ColorState target_color_state, Cogl.Pipeline pipeline);
+#if HAS_MUTTER48
+		public virtual void do_transform (Clutter.ColorState target_color_state, float input, float output, int n_samples);
+		public virtual bool equals (Clutter.ColorState other_color_state);
+		public virtual Clutter.ColorState get_blending (bool force);
+#else
 		public bool equals (Clutter.ColorState other_color_state);
 		[CCode (has_construct_function = false)]
 		public ColorState.full (Clutter.Context context, Clutter.Colorspace colorspace, Clutter.TransferFunction transfer_function, float min_lum, float max_lum, float ref_lum);
 		public Clutter.ColorState get_blending (bool force);
+#endif
 #else
 		public ColorState (Clutter.Colorspace colorspace);
 #endif
+#if !HAS_MUTTER48
 		public Clutter.Colorspace get_colorspace ();
+#endif
 #if HAS_MUTTER47
 		public uint get_id ();
+#if HAS_MUTTER48
+		[NoWrapper]
+		public virtual void init_color_transform_key (Clutter.ColorState target_color_state, Clutter.ColorTransformKey key);
+		public virtual Clutter.EncodingRequiredFormat required_format ();
+		public virtual string to_string ();
+		public virtual void update_uniforms (Clutter.ColorState target_color_state, Cogl.Pipeline pipeline);
+#else
 		public void get_luminances (float min_lum_out, float max_lum_out, float ref_lum_out);
 		public Clutter.TransferFunction get_transfer_function ();
 		public Clutter.EncodingRequiredFormat required_format ();
 		public string to_string ();
 		public void update_uniforms (Clutter.ColorState target_color_state, Cogl.Pipeline pipeline);
 #endif
+#endif
+#if !HAS_MUTTER48
 		public Clutter.Colorspace colorspace { get; construct; }
+#endif
 #if HAS_MUTTER47
 		[NoAccessorMethod]
 		public Clutter.Context context { owned get; construct; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public float max_luminance { get; construct; }
 		[NoAccessorMethod]
@@ -5357,7 +5922,26 @@ namespace Clutter {
 		public float ref_luminance { get; construct; }
 		public Clutter.TransferFunction transfer_function { get; construct; }
 #endif
+#endif
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_color_state_params_get_type ()")]
+	public class ColorStateParams : Clutter.ColorState {
+		[CCode (has_construct_function = false, type = "ClutterColorState*")]
+		public ColorStateParams (Clutter.Context context, Clutter.Colorspace colorspace, Clutter.TransferFunction transfer_function);
+		[CCode (has_construct_function = false, type = "ClutterColorState*")]
+		public ColorStateParams.from_primitives (Clutter.Context context, Clutter.Colorimetry colorimetry, Clutter.EOTF eotf, Clutter.Luminance luminance);
+		[CCode (has_construct_function = false, type = "ClutterColorState*")]
+		public ColorStateParams.full (Clutter.Context context, Clutter.Colorspace colorspace, Clutter.TransferFunction transfer_function, Clutter.Primaries primaries, float gamma_exp, float min_lum, float max_lum, float ref_lum);
+		public unowned Clutter.Colorimetry? get_colorimetry ();
+		public unowned Clutter.EOTF? get_eotf ();
+		public unowned Clutter.Luminance? get_luminance ();
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	[Compact]
+	public class ColorTransformKey {
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_colorize_effect_get_type ()")]
 	public class ColorizeEffect : Clutter.OffscreenEffect {
 		[CCode (has_construct_function = false, type = "ClutterEffect*")]
@@ -5610,6 +6194,9 @@ namespace Clutter {
 	public sealed class FrameClock : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected FrameClock ();
+#if HAS_MUTTER48
+		public void add_future_time (int64 when_us);
+#endif
 		public void add_timeline (Clutter.Timeline timeline);
 		public GLib.StringBuilder get_max_render_time_debug_info ();
 		public float get_refresh_rate ();
@@ -5741,6 +6328,7 @@ namespace Clutter {
 	[Compact]
 	public class IMEvent : Clutter.Event {
 	}
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_image_get_type ()")]
 	public class Image : GLib.Object, Clutter.Content {
 		[CCode (has_construct_function = false, type = "ClutterContent*")]
@@ -5750,6 +6338,7 @@ namespace Clutter {
 		public bool set_bytes (GLib.Bytes data, Cogl.PixelFormat pixel_format, uint width, uint height, uint row_stride) throws GLib.Error;
 		public bool set_data ([CCode (array_length = false)] uint8[] data, Cogl.PixelFormat pixel_format, uint width, uint height, uint row_stride) throws GLib.Error;
 	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_input_device_get_type ()")]
 	public class InputDevice : GLib.Object {
 		[CCode (has_construct_function = false)]
@@ -6029,7 +6618,6 @@ namespace Clutter {
 		public virtual Cogl.Handle create_texture (float width, float height);
 #endif
 		public unowned Cogl.Pipeline? get_pipeline ();
-		[Version (deprecated = true, deprecated_since = "1.14")]
 		public bool get_target_size (out float width, out float height);
 #if HAS_MUTTER46
 		public unowned Cogl.Texture get_texture ();
@@ -6078,10 +6666,10 @@ namespace Clutter {
 		public void pop_color_state ();
 #endif
 		public void pop_framebuffer ();
-		public void push_framebuffer (Cogl.Framebuffer framebuffer);
 #if HAS_MUTTER47
 		public void push_color_state (Clutter.ColorState color_state);
 #endif
+		public void push_framebuffer (Cogl.Framebuffer framebuffer);
 		public unowned Clutter.PaintContext @ref ();
 		public void unref ();
 	}
@@ -6099,6 +6687,9 @@ namespace Clutter {
 		public void paint (Clutter.PaintContext paint_context);
 		public unowned Clutter.PaintNode @ref ();
 		public void set_name (string name);
+#if HAS_MUTTER48
+		public void set_static_name (string name);
+#endif
 		public void unref ();
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_pan_action_get_type ()")]
@@ -6223,7 +6814,9 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_root_node_get_type ()")]
 	public class RootNode : Clutter.PaintNode {
 		[CCode (has_construct_function = false, type = "ClutterPaintNode*")]
-#if HAS_MUTTER47
+#if HAS_MUTTER48
+		public RootNode (Cogl.Framebuffer framebuffer, Clutter.ColorState color_state, Cogl.Color clear_color, Cogl.BufferBit clear_flags);
+#elif HAS_MUTTER47
 		public RootNode (Cogl.Framebuffer framebuffer, Cogl.Color clear_color, Cogl.BufferBit clear_flags);
 #else
 		public RootNode (Cogl.Framebuffer framebuffer, Clutter.Color clear_color, Cogl.BufferBit clear_flags);
@@ -6260,6 +6853,12 @@ namespace Clutter {
 		[NoAccessorMethod]
 		public bool filename_set { get; }
 		public string translation_domain { get; set; }
+	}
+#endif
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	[Compact]
+	public class ScrollActor {
 	}
 #endif
 #if !HAS_MUTTER47
@@ -6300,6 +6899,9 @@ namespace Clutter {
 		public bool get_touch_mode ();
 		[NoWrapper]
 		public virtual Clutter.GrabState grab (uint32 time);
+#if HAS_MUTTER48
+		[NoWrapper]
+#endif
 		public virtual bool handle_event_post (Clutter.Event event);
 		public void inhibit_unfocus ();
 		[NoWrapper]
@@ -6338,18 +6940,24 @@ namespace Clutter {
 		public int double_click_distance { get; set; }
 		[NoAccessorMethod]
 		public int double_click_time { get; set; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public int font_antialias { get; set; }
+#endif
 		[NoAccessorMethod]
 		public int font_dpi { get; set; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public string font_hint_style { owned get; set; }
 		[NoAccessorMethod]
 		public int font_hinting { get; set; }
+#endif
 		[NoAccessorMethod]
 		public string font_name { owned get; set; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public string font_subpixel_order { owned get; set; }
+#endif
 #if !HAS_MUTTER47
 		[NoAccessorMethod]
 		public uint fontconfig_timestamp { set; }
@@ -6358,8 +6966,10 @@ namespace Clutter {
 		public int long_press_duration { get; set; }
 		[NoAccessorMethod]
 		public uint password_hint_time { get; set; }
+#if !HAS_MUTTER48
 		[NoAccessorMethod]
 		public int unscaled_font_dpi { set; }
+#endif
 	}
 #if !HAS_MUTTER46
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
@@ -6370,7 +6980,11 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_shader_effect_get_type ()")]
 	public class ShaderEffect : Clutter.OffscreenEffect {
 		[CCode (has_construct_function = false, type = "ClutterEffect*")]
+#if HAS_MUTTER48
+		public ShaderEffect (Cogl.ShaderType shader_type);
+#else
 		public ShaderEffect (Clutter.ShaderType shader_type);
+#endif
 #if HAS_MUTTER46
 		public unowned Cogl.Program get_program ();
 		public unowned Cogl.Shader get_shader ();
@@ -6383,7 +6997,11 @@ namespace Clutter {
 		public bool set_shader_source (string source);
 		public void set_uniform_value (string name, GLib.Value value);
 		[NoAccessorMethod]
+#if HAS_MUTTER48
+		public Cogl.ShaderType shader_type { construct; }
+#else
 		public Clutter.ShaderType shader_type { construct; }
+#endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_shader_float_get_type ()")]
 	public class ShaderFloat {
@@ -6425,18 +7043,24 @@ namespace Clutter {
 #endif
 		[CCode (has_construct_function = false)]
 		protected Stage ();
+#if !HAS_MUTTER48
 		public void capture_view_into (Clutter.StageView view, Mtk.Rectangle rect, uint8 data, int stride);
 		public void clear_stage_views ();
+#endif
 		public void ensure_viewport ();
 		public unowned Clutter.Actor get_actor_at_pos (Clutter.PickMode pick_mode, float x, float y);
 		public bool get_capture_final_size (Mtk.Rectangle rect, out int out_width, out int out_height, out float out_scale);
 		public unowned Clutter.Actor? get_device_actor (Clutter.InputDevice device, Clutter.EventSequence? sequence);
 		public unowned Clutter.Actor? get_event_actor (Clutter.Event event);
+#if !HAS_MUTTER48
 		public int64 get_frame_counter ();
+#endif
 		public unowned Clutter.Actor? get_grab_actor ();
-		public unowned Clutter.Actor get_key_focus ();
+		public unowned Clutter.Actor? get_key_focus ();
 		public Clutter.Perspective get_perspective ();
+#if !HAS_MUTTER48
 		public unowned string get_title ();
+#endif
 		public Clutter.Grab grab (Clutter.Actor actor);
 #if HAS_MUTTER47
 		public Clutter.Grab grab_inactive (Clutter.Actor actor);
@@ -6451,25 +7075,31 @@ namespace Clutter {
 		public bool pointing_input_foreach (Clutter.StageInputForeachFunc func);
 		[CCode (array_length = false)]
 		public uint8[] read_pixels (int x, int y, int width = -1, int height = -1);
+#if !HAS_MUTTER48
 		public void repick_device (Clutter.InputDevice device);
+#endif
 		public void schedule_update ();
 #if HAS_MUTTER47
 		public void set_active (bool is_active);
 #endif
 		public void set_key_focus (Clutter.Actor? actor);
 		public void set_minimum_size (uint width, uint height);
+#if !HAS_MUTTER48
 		public void set_title (string title);
 #if HAS_MUTTER46
 		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Clutter.InputDevice source_device, Graphene.Point point, uint32 time, Clutter.Actor new_actor, Mtk.Region region, bool emit_crossing);
 #else
 		public void update_device (Clutter.InputDevice device, Clutter.EventSequence sequence, Clutter.InputDevice source_device, Graphene.Point point, uint32 time, Clutter.Actor new_actor, Cairo.Region region, bool emit_crossing);
 #endif
+#endif
 		[NoAccessorMethod]
 		public bool is_grabbed { get; }
 		public Clutter.Actor key_focus { get; set; }
 		public Clutter.Perspective perspective { get; }
+#if !HAS_MUTTER48
 		public string title { get; set; }
 		public virtual signal void activate ();
+#endif
 		public signal void after_paint (Clutter.StageView view, Clutter.Frame frame);
 		public signal void after_update (Clutter.StageView view, Clutter.Frame frame);
 		public virtual signal void before_paint (Clutter.StageView view, Clutter.Frame frame);
@@ -6477,6 +7107,9 @@ namespace Clutter {
 		public virtual signal void deactivate ();
 		public virtual signal void paint_view (Clutter.StageView view, Cairo.Region redraw_clip, Clutter.Frame frame);
 		public signal void prepare_frame (Clutter.StageView view, Clutter.Frame frame);
+#if HAS_MUTTER48
+		public virtual signal void skipped_paint (Clutter.StageView view, Clutter.Frame frame);
+#endif
 	}
 #if !HAS_MUTTER47
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_stage_manager_get_type ()")]
@@ -6496,7 +7129,9 @@ namespace Clutter {
 	public class StageView : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected StageView ();
+#if !HAS_MUTTER48
 		public void assign_next_scanout (Cogl.Scanout scanout);
+#endif
 		public virtual Clutter.PaintFlag get_default_paint_flags ();
 		public unowned Cogl.Framebuffer get_framebuffer ();
 		public void get_layout (Mtk.Rectangle rect);
@@ -6512,7 +7147,9 @@ namespace Clutter {
 		public Mtk.MonitorTransform get_transform ();
 #endif
 		public bool has_shadowfb ();
+#if !HAS_MUTTER48
 		public void invalidate_offscreen_blit_pipeline ();
+#endif
 		[NoWrapper]
 		public virtual Clutter.Frame new_frame ();
 #if HAS_MUTTER47
@@ -6581,7 +7218,11 @@ namespace Clutter {
 		public TapAction ();
 		public virtual signal void tap (Clutter.Actor actor);
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter-pango.h", type_id = "clutter_text_get_type ()")]
+#else
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_text_get_type ()")]
+#endif
 #if HAS_MUTTER46
 	public class Text : Clutter.Actor, Atk.Implementor, Clutter.Animatable {
 #else
@@ -6757,7 +7398,11 @@ namespace Clutter {
 		public signal void delete_text (int start_pos, int end_pos);
 		public virtual signal void text_changed ();
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter-pango.h", type_id = "clutter_text_buffer_get_type ()")]
+#else
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_text_buffer_get_type ()")]
+#endif
 	public class TextBuffer : GLib.Object {
 		[CCode (has_construct_function = false)]
 		public TextBuffer ();
@@ -6782,7 +7427,11 @@ namespace Clutter {
 		public virtual signal void deleted_text (uint position, uint n_chars);
 		public virtual signal void inserted_text (uint position, string chars, uint n_chars);
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter-pango.h", type_id = "clutter_text_node_get_type ()")]
+#else
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_text_node_get_type ()")]
+#endif
 	public class TextNode : Clutter.PaintNode {
 		[CCode (has_construct_function = false, type = "ClutterPaintNode*")]
 #if HAS_MUTTER47
@@ -6973,6 +7622,7 @@ namespace Clutter {
 		public abstract bool interpolate_value (string property_name, Clutter.Interval interval, double progress, out GLib.Value value);
 		public abstract void set_final_state (string property_name, GLib.Value value);
 	}
+#if !HAS_MUTTER48
 #if HAS_MUTTER46
 	[CCode (cheader_filename = "clutter/clutter.h")]
 #else
@@ -7011,6 +7661,7 @@ namespace Clutter {
 		public virtual signal void child_notify (Clutter.Actor child, GLib.ParamSpec pspec);
 #endif
 	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", type_cname = "ClutterContentInterface", type_id = "clutter_content_get_type ()")]
 	public interface Content : GLib.Object {
 		public abstract bool get_preferred_size (out float width, out float height);
@@ -7067,6 +7718,7 @@ namespace Clutter {
 		public bool prev (out unowned Clutter.Actor? child);
 		public void remove ();
 	}
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", has_copy_function = false, has_destroy_function = false, has_type_id = false)]
 	public struct Capture {
 #if !HAS_MUTTER46
@@ -7074,6 +7726,29 @@ namespace Clutter {
 		public Mtk.Rectangle rect;
 #endif
 	}
+#endif
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct Colorimetry {
+		public Clutter.ColorimetryType type;
+		public Clutter.Colorspace colorspace;
+		public Clutter.Primaries primaries;
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct EOTF {
+		public Clutter.EOTFType type;
+		public Clutter.TransferFunction tf_name;
+		public float gamma_exp;
+		public unowned Clutter.Luminance? get_default_luminance ();
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct Luminance {
+		public Clutter.LuminanceType type;
+		public float min;
+		public float max;
+		public float @ref;
+	}
+#endif
 #if !HAS_MUTTER47
 	[CCode (cheader_filename = "clutter/clutter.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "clutter_color_get_type ()")]
 	public struct Color {
@@ -7209,6 +7884,20 @@ namespace Clutter {
 		public int dwell_delay;
 		public int dwell_threshold;
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct Primaries {
+		public float r_x;
+		public float r_y;
+		public float g_x;
+		public float g_y;
+		public float b_x;
+		public float b_y;
+		public float w_x;
+		public float w_y;
+		public void ensure_normalized_range ();
+	}
+#endif
 #if HAS_MUTTER47
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	public struct TextureVertex {
@@ -7220,6 +7909,7 @@ namespace Clutter {
 		public Cogl.Color color;
 	}
 #endif
+#if !HAS_MUTTER48
 #if HAS_MUTTER46
 	[CCode (cheader_filename = "clutter/clutter.h")]
 #else
@@ -7251,6 +7941,7 @@ namespace Clutter {
 		public string to_string ();
 #endif
 	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_ACTOR_ALIGN_", type_id = "clutter_actor_align_get_type ()")]
 	public enum ActorAlign {
 		FILL,
@@ -7356,6 +8047,13 @@ namespace Clutter {
 		RELEASED,
 		PRESSED
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_COLORIMETRY_TYPE_", type_id = "clutter_colorimetry_type_get_type ()")]
+	public enum ColorimetryType {
+		COLORSPACE,
+		PRIMARIES
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_COLORSPACE_", type_id = "clutter_colorspace_get_type ()")]
 	public enum Colorspace {
 #if HAS_MUTTER47
@@ -7364,7 +8062,13 @@ namespace Clutter {
 		UNKNOWN,
 #endif
 		SRGB,
+#if HAS_MUTTER48
+		BT2020,
+		NTSC;
+		public unowned Clutter.Primaries? to_primaries ();
+#else
 		BT2020
+#endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_CONTENT_GRAVITY_", type_id = "clutter_content_gravity_get_type ()")]
 	public enum ContentGravity {
@@ -7388,6 +8092,7 @@ namespace Clutter {
 		Y_AXIS,
 		BOTH
 	}
+#if !HAS_MUTTER48
 #if HAS_MUTTER46
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_CONTEXT_FLAG_", type_id = "clutter_context_flags_get_type ()")]
 	[Flags]
@@ -7395,6 +8100,7 @@ namespace Clutter {
 		NONE,
 		NO_A11Y
 	}
+#endif
 #endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_DEBUG_", type_id = "clutter_debug_flag_get_type ()")]
 	[Flags]
@@ -7445,8 +8151,18 @@ namespace Clutter {
 		PAINT_DEFORM_TILES,
 		PAINT_DAMAGE_REGION,
 		DISABLE_DYNAMIC_MAX_RENDER_TIME,
+#if HAS_MUTTER48
+		DISABLE_TRIPLE_BUFFERING,
+#endif
 		PAINT_MAX_RENDER_TIME
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EOTF_TYPE_", type_id = "clutter_eotf_type_get_type ()")]
+	public enum EOTFType {
+		NAMED,
+		GAMMA
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_EFFECT_PAINT_", type_id = "clutter_effect_paint_flags_get_type ()")]
 	[Flags]
 	public enum EffectPaintFlags {
@@ -7470,6 +8186,9 @@ namespace Clutter {
 		FLAG_REPEATED,
 		FLAG_RELATIVE_MOTION,
 		FLAG_POINTER_EMULATED,
+#if HAS_MUTTER48
+		FLAG_A11Y_MODIFIER_FIRST_CLICK,
+#endif
 		FLAG_GRAB_NOTIFY
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_PHASE_", type_id = "clutter_event_phase_get_type ()")]
@@ -7704,6 +8423,13 @@ namespace Clutter {
 		ACTIVATE,
 		CANCEL
 	}
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_LUMINANCE_TYPE_", type_id = "clutter_luminance_type_get_type ()")]
+	public enum LuminanceType {
+		DERIVED,
+		EXPLICIT
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_", type_id = "clutter_modifier_type_get_type ()")]
 	[Flags]
 	public enum ModifierType {
@@ -7892,11 +8618,13 @@ namespace Clutter {
 		FINGER,
 		CONTINUOUS
 	}
+#if !HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_", type_id = "clutter_shader_type_get_type ()")]
 	public enum ShaderType {
 		VERTEX_SHADER,
 		FRAGMENT_SHADER
 	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_SNAP_EDGE_", type_id = "clutter_snap_edge_get_type ()")]
 	public enum SnapEdge {
 		TOP,
@@ -7991,8 +8719,13 @@ namespace Clutter {
 		DEFAULT,
 		SRGB,
 		PQ,
+#if HAS_MUTTER48
+		BT709,
+		LINEAR
+#else
 		LINEAR;
 		public void get_default_luminances (out float min_lum_out, out float max_lum_out, out float ref_lum_out);
+#endif
 	}
 #endif
 #if !HAS_MUTTER46
@@ -8064,6 +8797,10 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static void cairo_set_source_color (Cairo.Context cr, Clutter.Color color);
 #endif
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static void add_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static void debug_set_max_render_time_constant (int max_render_time_constant_us);
 #if !HAS_MUTTER47
@@ -8079,7 +8816,7 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static uint32 get_current_event_time ();
 	[CCode (cheader_filename = "clutter/clutter.h")]
-	public static void get_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+	public static void get_debug_flags (out Clutter.DebugFlag debug_flags, out Clutter.DrawDebugFlag draw_flags, out Clutter.PickDebugFlag pick_flags);
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static unowned Clutter.Backend get_default_backend ();
 	[CCode (cheader_filename = "clutter/clutter.h")]
@@ -8100,6 +8837,10 @@ namespace Clutter {
 	public static void keyval_convert_case (uint symbol, out uint lower, out uint upper);
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static unowned string? keyval_name (uint keyval);
+#if HAS_MUTTER48
+	[CCode (cheader_filename = "clutter/clutter.h")]
+	public static void remove_debug_flags (Clutter.DebugFlag debug_flags, Clutter.DrawDebugFlag draw_flags, Clutter.PickDebugFlag pick_flags);
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h")]
 	public static uint unicode_to_keysym (uint32 wc);
 }

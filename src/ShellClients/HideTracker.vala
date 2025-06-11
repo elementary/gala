@@ -61,7 +61,11 @@ public class Gala.HideTracker : Object {
             window.unmanaged.connect (schedule_update);
         });
 
-        var cursor_tracker = display.get_cursor_tracker ();
+#if HAS_MUTTER48
+        unowned var cursor_tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var cursor_tracker = display.get_cursor_tracker ();
+#endif
         cursor_tracker.position_invalidated.connect (() => {
             var has_pointer = panel.window.has_pointer ();
 
@@ -80,7 +84,11 @@ public class Gala.HideTracker : Object {
         pan_action.gesture_begin.connect (check_valid_gesture);
         pan_action.pan.connect (on_pan);
 
+#if HAS_MUTTER48
+        display.get_compositor ().get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
+#else
         display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
+#endif
 
         panel.notify["anchor"].connect (setup_barrier);
 
@@ -271,7 +279,7 @@ public class Gala.HideTracker : Object {
     private void setup_barrier () {
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
-        var offset = InternalUtils.scale_to_int (BARRIER_OFFSET, scale);
+        var offset = Utils.scale_to_int (BARRIER_OFFSET, scale);
 
         switch (panel.anchor) {
             case TOP:
