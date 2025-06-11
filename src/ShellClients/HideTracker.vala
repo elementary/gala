@@ -212,9 +212,7 @@ public class Gala.HideTracker : Object {
         hovered = panel.window.has_pointer ();
 
         // Showing panels in fullscreen is broken in X11
-        var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (panel.window.get_monitor ());
-
-        if (should_hide && !hovered && !panel.window.has_focus () || x11_in_fullscreen) {
+        if (should_hide && !hovered && !panel.window.has_focus () || InternalUtils.get_x11_in_fullscreen (display)) {
             trigger_hide ();
         } else {
             trigger_show ();
@@ -342,8 +340,7 @@ public class Gala.HideTracker : Object {
 
     private void on_barrier_triggered () {
         // Showing panels in fullscreen is broken in X11
-        var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (panel.window.get_monitor ());
-        if (x11_in_fullscreen) {
+        if (InternalUtils.get_x11_in_fullscreen (display)) {
             return;
         }
 

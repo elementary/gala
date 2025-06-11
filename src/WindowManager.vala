@@ -331,9 +331,9 @@ namespace Gala {
 
             display.overlay_key.connect (() => {
                 // Showing panels in fullscreen is broken in X11
-                var primary_monitor = display.get_primary_monitor ();
-                var x11_in_fullscreen = !Meta.Util.is_wayland_compositor () && display.get_monitor_in_fullscreen (primary_monitor);
-                if (x11_in_fullscreen && behavior_settings.get_string ("overlay-action") == OPEN_APPLICATIONS_MENU) {
+                if (InternalUtils.get_x11_in_fullscreen (display) &&
+                    behavior_settings.get_string ("overlay-action") == OPEN_APPLICATIONS_MENU
+                ) {
                     return;
                 }
 
