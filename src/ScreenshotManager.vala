@@ -177,7 +177,7 @@ public class Gala.ScreenshotManager : Object {
             new GLib.HashTable<string, Variant> (null, null)
         );
 
-        if (!clipboard) {
+        if (notification_id != null && !clipboard) {
             notifications_id_to_path[notification_id] = filename_used;
         }
     }
