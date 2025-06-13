@@ -27,6 +27,18 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.2.4" date="2025-06-12" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2438">Gala randomly segfaults while closing Libreoffice windows</issue>
+      </issues>
+    </release>
+
     <release version="8.2.3" date="2025-05-20" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -35,7 +47,21 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/dock/issues/68">Cannot move window to display below dock.</issue>
+        <issue url="https://github.com/elementary/dock/issues/425">Improper dock behaviour when it hides on vertically stacked monitors</issue>
+        <issue url="https://github.com/elementary/gala/issues/76">PIP: Grabbing an area too close to a Gtk3 window only grabs it's shadow</issue>
+        <issue url="https://github.com/elementary/gala/issues/132">Closing last window in the window overview doesn't close it</issue>
+        <issue url="https://github.com/elementary/gala/issues/340">"Move to left workspace" is a no-op on left-most workspace</issue>
+        <issue url="https://github.com/elementary/gala/issues/2060">Gala.ShadowEffect has performance issues</issue>
+        <issue url="https://github.com/elementary/gala/issues/2424">Mouse pointer often stuck between displays when external display is the primary display and is arranged above built-in display</issue>
+        <issue url="https://github.com/elementary/gala/issues/2230">Multitasking view background clipped when using multiple monitors above each other</issue>
+        <issue url="https://github.com/elementary/gala/issues/2263">Prevent windows from breaking workflow</issue>
         <issue url="https://github.com/elementary/gala/issues/2400">Switching workspaces makes the windows move down with multiple monitors</issue>
+        <issue url="https://github.com/elementary/gala/issues/2401">Context menus appear at the top left corner of the secondary monitor</issue>
+        <issue url="https://github.com/elementary/gala/issues/2409">Windows sometimes get stuck in an un-interactive state after using gestures to switch workspaces</issue>
+        <issue url="https://github.com/elementary/gala/issues/2410">Window position not restored correctly when going back from fullscreen</issue>
+        <issue url="https://github.com/elementary/gala/issues/2414">During workspace switch, windows on secondary display aren't shown</issue>
+        <issue url="https://github.com/elementary/gala/issues/2415">Wrong animation origin for windows on display 2 on workspace overview</issue>
       </issues>
     </release>
   

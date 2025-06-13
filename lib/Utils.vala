@@ -385,13 +385,9 @@ namespace Gala {
             texture.reactive = true;
 
             if (pixbuf != null) {
-                try {
-                    var image = new Clutter.Image ();
-                    Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
-                    image.set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
-                    texture.set_content (image);
-                    texture.set_size (pixbuf.width, pixbuf.height);
-                } catch (Error e) {}
+                var image = new Gala.Image.from_pixbuf (pixbuf);
+                texture.set_content (image);
+                texture.set_size (pixbuf.width, pixbuf.height);
             } else {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this

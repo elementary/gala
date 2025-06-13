@@ -56,7 +56,9 @@ namespace Gala {
         ALWAYS_ON_TOP,
         ON_ALL_WORKSPACES,
         CAN_CLOSE,
-        IS_TILED
+        IS_TILED,
+        ALLOWS_MOVE_LEFT,
+        ALLOWS_MOVE_RIGHT
     }
 
     /**

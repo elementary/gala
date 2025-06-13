@@ -1,0 +1,42 @@
+* cheader_filename="cogl/cogl.h"
+
+Color struct
+
+Color.equal.v1 type="Cogl.Color"
+Color.equal.v2 type="Cogl.Color"
+Color.from_string name="init_from_string"
+
+Context.free_timestamp_query.query owned
+
+Bitmap.* skip=false
+Bitmap.new_for_data.data type="owned uint8[]"
+Bitmap.get_buffer type="unowned Cogl.Buffer?"
+
+Primitive.new skip=false
+
+Texture
+  .get_data.data type="uint8[]"
+  .set_data.data type="uint8[]"
+  .set_region.data type="uint8[]"
+
+Texture2D
+  .new_from_data skip=false
+
+Texture.error_quark parent="Cogl.TextureError" name="quark"
+
+RendererError errordomain
+SystemError errordomain
+TextureError errordomain
+FramebufferError errordomain
+ScanoutError errordomain
+
+Onscreen
+  .add_frame_callback unowned
+
+A_BIT parent="Cogl.Bits" name="A"
+BGR_BIT parent="Cogl.Bits" name="BGR"
+AFIRST_BIT parent="Cogl.Bits" name="AFIRST"
+PREMULT_BIT parent="Cogl.Bits" name="PREMULT"
+DEPTH_BIT parent="Cogl.Bits" name="DEPTH"
+STENCIL_BIT parent="Cogl.Bits" name="STENCIL"
+PIXEL_FORMAT_MAX_PLANES parent = "Cogl.PixelFormat" name="MAX_PLANES"

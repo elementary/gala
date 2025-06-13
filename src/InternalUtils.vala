@@ -68,7 +68,11 @@ namespace Gala {
 
             new_window.change_workspace_by_index (index, false);
 
+#if HAS_MUTTER48
+            unowned List<Meta.WindowActor> actors = new_window.get_display ().get_compositor ().get_window_actors ();
+#else
             unowned List<Meta.WindowActor> actors = new_window.get_display ().get_window_actors ();
+#endif
             foreach (unowned Meta.WindowActor actor in actors) {
                 if (actor.is_destroyed ())
                     continue;
@@ -338,11 +342,19 @@ namespace Gala {
         }
 
         public static void bell_notify (Meta.Display display) {
-#if HAS_MUTTER47
+#if HAS_MUTTER48
+            display.get_compositor ().get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
+#elif HAS_MUTTER47
             display.get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
 #else
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
+        }
+
+        public static bool get_x11_in_fullscreen (Meta.Display display) {
+            var primary_monitor = display.get_primary_monitor ();
+            var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
+            return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
         }
     }
 }

@@ -236,7 +236,7 @@ public class Gala.IconGroup : CanvasActor {
         );
 
         var shadow_effect = new ShadowEffect ("", scale_factor) {
-            border_radius = Utils.scale_to_int (5, scale_factor)
+            border_radius = 6
         };
 
         var style_manager = Drawing.StyleManager.get_instance ();
@@ -416,7 +416,11 @@ public class Gala.IconGroup : CanvasActor {
         // disable reactivity so that workspace thumbs can get events
         reactive = false;
 
+#if HAS_MUTTER48
+        display.set_cursor (Meta.Cursor.MOVE);
+#else
         display.set_cursor (Meta.Cursor.DND_IN_DRAG);
+#endif
 
         return this;
     }

@@ -210,10 +210,18 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         transition.stopped.connect (() => {
             notifying = false;
+#if HAS_MUTTER48
+            wm.get_display ().get_compositor ().enable_unredirect ();
+#else
             wm.get_display ().enable_unredirect ();
+#endif
         });
 
+#if HAS_MUTTER48
+        wm.get_display ().get_compositor ().disable_unredirect ();
+#else
         wm.get_display ().disable_unredirect ();
+#endif
 
         ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }

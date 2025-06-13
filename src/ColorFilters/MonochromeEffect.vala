@@ -24,7 +24,11 @@ public class Gala.MonochromeEffect : Clutter.ShaderEffect {
 
     public MonochromeEffect (double strength) {
         Object (
+#if HAS_MUTTER48
+            shader_type: Cogl.ShaderType.FRAGMENT,
+#else
             shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
+#endif
             strength: strength
         );
 
