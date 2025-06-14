@@ -14,12 +14,64 @@ public class Gala.AppSystem : GLib.Object {
     private GLib.HashTable<unowned string, Gala.App> id_to_app;
     private GLib.HashTable<string, string> startup_wm_class_to_id;
     private Gala.AppCache app_cache;
+    private string[] all_desktop_files = {};
+    private GLib.FileMonitor[]? directory_monitors;
 
     construct {
         id_to_app = new GLib.HashTable<unowned string, Gala.App> (str_hash, str_equal);
         startup_wm_class_to_id = new GLib.HashTable<string, string> (str_hash, str_equal);
         running_apps = new GLib.HashTable<Gala.App, unowned Gala.App> (null, null);
         app_cache = new AppCache ();
+
+        update_desktop_files ();
+    }
+
+    private void update_desktop_files () {
+        var data_dirs = Environment.get_system_data_dirs ();
+        data_dirs += Environment.get_user_data_dir ();
+
+        var create_monitors = directory_monitors == null;
+        if (create_monitors) {
+            directory_monitors = {};
+        }
+
+        foreach (unowned string data_dir in data_dirs) {
+            var app_dir = Path.build_filename (data_dir, "applications");
+            if (FileUtils.test (app_dir, FileTest.EXISTS)) {
+                try {
+                    foreach (var name in enumerate_children (app_dir)) {
+                        if (!name.contains ("~") && name.has_suffix (".desktop")) {
+                            all_desktop_files += name;
+                        }
+                    }
+
+                    if (!create_monitors) {
+                        continue;
+                    }
+
+                    var monitor = File.new_for_path (app_dir).monitor (GLib.FileMonitorFlags.NONE, null);
+                    monitor.changed.connect ((file, other_file, event_type) => {
+                        if (event_type == GLib.FileMonitorEvent.CHANGES_DONE_HINT) {
+                            update_desktop_files ();
+                        }
+                    });
+                    directory_monitors += monitor;
+                } catch (Error e) {
+                    debug ("Error inside %s: %s", app_dir, e.message);
+                }
+            }
+        }
+    }
+
+    private string[] enumerate_children (string dir) throws Error {
+        string[] result = {};
+        FileInfo? file_info;
+        var enumerator = File.new_for_path (dir).enumerate_children (FileAttribute.STANDARD_NAME, 0);
+        while ((file_info = enumerator.next_file ()) != null) {
+            result += file_info.get_name ();
+        }
+
+        return result;
     }
 
     public unowned Gala.App? lookup_app (string id) {
@@ -103,6 +155,20 @@ public class Gala.AppSystem : GLib.Object {
         desktop_file = desktop_file.ascii_down ().concat (".desktop");
 
         return lookup_heuristic_basename (desktop_file);
+    }
+
+    public unowned Gala.App? guess_app_by_id (string _id) {
+        var id = _id.ascii_down ();
+        unowned Gala.App? result = null;
+
+        foreach (var name in all_desktop_files) {
+            // Try to find desktop file based on the application name
+            if (name.contains (id) && (result = lookup_app (name)) != null) {
+                return result;
+            }
+        }
+
+        return null;
     }
 
     public void notify_app_state_changed (Gala.App app) {
