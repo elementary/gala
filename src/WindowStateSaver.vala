@@ -147,7 +147,10 @@ public class Gala.WindowStateSaver : GLib.Object {
         var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
 
         var window_index = find_window_index (window, app_id);
-        app_windows[app_id].remove_index (window_index);
+        if (window_index < app_windows[app_id].length) {
+            app_windows[app_id].remove_index (window_index);
+        }
+
         var value = null; // insert_val requires lvalue
         app_windows[app_id].insert_val (window_index, value);
 
