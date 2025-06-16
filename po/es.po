@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-09 20:49+0000\n"
-"PO-Revision-Date: 2025-05-18 04:55+0000\n"
+"PO-Revision-Date: 2025-06-15 15:55+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <italo@gp-mail.com>\n"
 "Language-Team: Spanish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "es/>\n"
@@ -295,14 +295,13 @@ msgstr "Captura de pantalla de %s"
 #: src/ScreenshotManager.vala:171
 #, c-format
 msgid "Open in %s"
-msgstr ""
+msgstr "Abrir en %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:178
-#, fuzzy, c-format
-#| msgid "Show in Files"
+#, c-format
 msgid "Show in %s"
-msgstr "Mostar en Archivos"
+msgstr "Mostrar en %s"
 
 #: src/ScreenshotManager.vala:189 src/ScreenshotManager.vala:548
 msgid "Screenshot taken"
