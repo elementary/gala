@@ -76,7 +76,7 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     public static void on_map (Meta.Window window) {
-        var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
+        var app_id = window_tracker.get_app_for_window (window).id;
 
         if (app_id.has_prefix ("window:")) {
             // if window failed to be identified, don't remember it
@@ -98,41 +98,65 @@ public class Gala.WindowStateSaver : GLib.Object {
         var window_index = find_window_index (window, app_id);
         app_windows[app_id].insert_val (window_index, window);
 
-        var tracking_window = false;
-        db.exec (
-            "SELECT last_x, last_y, last_width, last_height FROM apps WHERE app_id = '%s' AND window_index = '%d';".printf (app_id, window_index),
-            (n_columns, values, column_names) => {
-                window.move_resize_frame (false, int.parse (values[0]), int.parse (values[1]), int.parse (values[2]), int.parse (values[3]));
-                track_window (window, app_id);
-                tracking_window = true;
+        Sqlite.Statement stmt;
+        const string SELECT_QUERY = "SELECT last_x, last_y, last_width, last_height FROM apps WHERE app_id = $app_id AND window_index = $window_index;";
+        var rc = db.prepare_v2 (SELECT_QUERY, SELECT_QUERY.length, out stmt);
+        stmt.bind_text (stmt.bind_parameter_index ("$app_id"), app_id);
+        stmt.bind_int (stmt.bind_parameter_index ("$window_index"), window_index);
+        if (rc != Sqlite.OK) {
+            critical ("Cannot query app information from database: %d, %s", rc, db.errmsg ());
+            return;
+        }
 
-                return 0;
+        int cols = stmt.column_count ();
+        if (stmt.step () == Sqlite.ROW) {
+            int last_x = 0, last_y = 0, last_width = 0, last_height = 0;
+            for (int i = 0; i < cols; i++) {
+                if (stmt.column_name (i) == "last_x") {
+                    last_x = stmt.column_int (i);
+                }
+
+                if (stmt.column_name (i) == "last_y") {
+                    last_y = stmt.column_int (i);
+                }
+
+                if (stmt.column_name (i) == "last_width") {
+                    last_width = stmt.column_int (i);
+                }
+
+                if (stmt.column_name (i) == "last_height") {
+                    last_height = stmt.column_int (i);
+                }
             }
-        );
 
-        if (tracking_window) {
-            // App was added in callback
+            window.move_resize_frame (false, last_x, last_y, last_width, last_height);
+            track_window (window, app_id);
             return;
         }
 
         var frame_rect = window.get_frame_rect ();
 
-        Sqlite.Statement stmt;
-        var rc = db.prepare_v2 (
-            "INSERT INTO apps (app_id, window_index, last_x, last_y, last_width, last_height) VALUES ('%s', '%d', '%d', '%d', '%d', '%d');"
-            .printf (app_id, window_index, frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height),
-            -1, out stmt
-        );
-
-        if (rc == Sqlite.OK) {
-            rc = stmt.step ();
-            if (rc == Sqlite.DONE) {
-                track_window (window, app_id);
-                return;
-            }
+        const string INSERT_QUERY = "INSERT INTO apps (app_id, window_index, last_x, last_y, last_width, last_height) VALUES ($app_id, $window_index, $last_x, $last_y, $last_width, $last_height);";
+        rc = db.prepare_v2 (INSERT_QUERY, INSERT_QUERY.length, out stmt);
+        if (rc != Sqlite.OK) {
+            critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
+            return;
         }
 
-        critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
+        stmt.bind_text (stmt.bind_parameter_index ("$app_id"), app_id);
+        stmt.bind_int (stmt.bind_parameter_index ("$window_index"), window_index);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_x"), frame_rect.x);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_y"), frame_rect.y);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_width"), frame_rect.width);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_height"), frame_rect.height);
+
+        rc = stmt.step ();
+        if (rc != Sqlite.DONE) {
+            critical ("Cannot insert app information into database: %d, %s", rc, db.errmsg ());
+            return;
+        }
+
+        track_window (window, app_id);
     }
 
     public static void on_shutdown () {
@@ -144,7 +168,12 @@ public class Gala.WindowStateSaver : GLib.Object {
     }
 
     private static void save_window_state (Meta.Window window) {
-        var app_id = GLib.Markup.escape_text (window_tracker.get_app_for_window (window).id);
+        var app_id = window_tracker.get_app_for_window (window).id;
+
+        if (!(app_id in app_windows)) {
+            critical ("Could not save window that is not mapped %s", app_id);
+            return;
+        }
 
         var window_index = find_window_index (window, app_id);
         if (window_index < app_windows[app_id].length) {
@@ -157,20 +186,25 @@ public class Gala.WindowStateSaver : GLib.Object {
         var frame_rect = window.get_frame_rect ();
 
         Sqlite.Statement stmt;
-        var rc = db.prepare_v2 (
-            "UPDATE apps SET last_x = '%d', last_y = '%d', last_width = '%d', last_height = '%d' WHERE app_id = '%s' AND window_index = '%d';"
-            .printf (frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height, app_id, window_index),
-            -1, out stmt
-        );
-
-        if (rc == Sqlite.OK) {
-            rc = stmt.step ();
-            if (rc == Sqlite.DONE) {
-                return;
-            }
+        const string UPDATE_QUERY = "UPDATE apps SET last_x = $last_x, last_y = $last_y, last_width = $last_width, last_height = $last_height WHERE app_id = $app_id AND window_index = $window_index;";
+        var rc = db.prepare_v2 (UPDATE_QUERY, UPDATE_QUERY.length, out stmt);
+        if (rc != Sqlite.OK) {
+            critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+            return;
         }
 
-        critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+        stmt.bind_text (stmt.bind_parameter_index ("$app_id"), app_id);
+        stmt.bind_int (stmt.bind_parameter_index ("$window_index"), window_index);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_x"), frame_rect.x);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_y"), frame_rect.y);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_width"), frame_rect.width);
+        stmt.bind_int (stmt.bind_parameter_index ("$last_height"), frame_rect.height);
+
+        rc = stmt.step ();
+        if (rc != Sqlite.DONE) {
+            critical ("Cannot update app position in database: %d, %s", rc, db.errmsg ());
+            return;
+        }
     }
 
     private static void save_all_windows_state () {
