@@ -15,6 +15,7 @@ gala_lib_sources = files(
     'Drawing/Utilities.vala',
     'Image.vala',
     'Plugin.vala',
+    'RoundedCornersEffect.vala',
     'ShadowEffect.vala',
     'Utils.vala',
     'WindowIcon.vala',
