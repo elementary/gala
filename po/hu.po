@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-09 20:49+0000\n"
-"PO-Revision-Date: 2025-06-19 11:55+0000\n"
+"PO-Revision-Date: 2025-06-26 09:55+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/hu/>\n"
@@ -288,7 +288,7 @@ msgstr "Képernyőkép %s"
 #: src/ScreenshotManager.vala:171
 #, c-format
 msgid "Open in %s"
-msgstr ""
+msgstr "Megnyitás ebben: %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:178
