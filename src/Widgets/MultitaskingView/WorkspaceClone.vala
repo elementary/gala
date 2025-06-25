@@ -120,12 +120,6 @@ public class Gala.WorkspaceClone : ActorTarget {
      */
     private const int HOVER_ACTIVATE_DELAY = 400;
 
-    /**
-     * A window has been selected, the MultitaskingView should consider activating
-     * and closing the view.
-     */
-    public signal void window_selected (Meta.Window window);
-
     public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
     public float monitor_scale { get; construct set; }
@@ -144,21 +138,17 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     construct {
         opened = false;
+        reactive = true;
 
         unowned Meta.Display display = workspace.get_display ();
-        var primary_monitor = display.get_primary_monitor ();
-        var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, monitor_scale) {
-            width = monitor_geometry.width,
-            height = monitor_geometry.height,
-        };
-        window_container.window_selected.connect ((w) => { window_selected (w); });
+        window_container = new WindowCloneContainer (wm, monitor_scale);
+        window_container.window_selected.connect ((win) => activate (true, win));
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
@@ -272,19 +262,15 @@ public class Gala.WorkspaceClone : ActorTarget {
         }
     }
 
-    public void update_size (Mtk.Rectangle monitor_geometry) {
-        if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            background.set_size (window_container.width, window_container.height);
-        }
-    }
-
     private void update_targets () {
         remove_all_targets ();
 
         unowned var display = workspace.get_display ();
 
         var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
+
+        window_container.set_size (monitor.width, monitor.height);
+        background.set_size (monitor.width, monitor.height);
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
@@ -309,11 +295,27 @@ public class Gala.WorkspaceClone : ActorTarget {
         }
     }
 
-    private void activate (bool close_view) {
+    public override void commit_progress (GestureAction action, double progress) {
+        if (get_current_commit (MULTITASKING_VIEW) > 0 &&
+            (get_current_commit (SWITCH_WORKSPACE) + workspace.index ()).abs () < 0.5
+        ) {
+            grab_key_focus ();
+        }
+    }
+
+    private void activate (bool close_view, Meta.Window? window = null) {
         if (close_view && workspace.active) {
+            if (window != null) {
+                window.activate (Meta.CURRENT_TIME);
+            }
             wm.perform_action (SHOW_MULTITASKING_VIEW);
         } else {
             workspace.activate (Meta.CURRENT_TIME);
         }
+    }
+    public override bool key_press_event (Clutter.Event event) {
+        // We take key focus and redirect to the container because we cant make it reactive
+        // because it has to be above the background which would mean it cant be clicked
+        return window_container.key_press_event (event);
     }
 }
