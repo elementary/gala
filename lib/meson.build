@@ -16,6 +16,7 @@ gala_lib_sources = files(
     'Image.vala',
     'Plugin.vala',
     'ShadowEffect.vala',
+    'Text.vala',
     'Utils.vala',
     'WindowIcon.vala',
     'WindowManager.vala',
