@@ -38,6 +38,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     private Settings desktop_settings;
+    private GLib.HashTable<uint32, string?> notifications_id_to_path;
 
     private string prev_font_regular;
     private string prev_font_document;
@@ -50,6 +51,7 @@ public class Gala.ScreenshotManager : Object {
 
     construct {
         desktop_settings = new Settings ("org.gnome.desktop.interface");
+        notifications_id_to_path = new GLib.HashTable<uint32, string> (GLib.direct_hash, GLib.direct_equal);
 
         var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
         unowned var display = wm.get_display ();
@@ -61,13 +63,8 @@ public class Gala.ScreenshotManager : Object {
         display.add_keybinding ("window-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, handle_screenshot);
         display.add_keybinding ("area-screenshot-clip", keybinding_settings, IGNORE_AUTOREPEAT, handle_screenshot);
 
-        var show_in_files_action = new GLib.SimpleAction ("show-in-files", GLib.VariantType.STRING);
-        show_in_files_action.activate.connect (show_in_files);
-        notifications_manager.add_action (show_in_files_action);
-
-        var open_in_photos_action = new GLib.SimpleAction ("open-in-photos", GLib.VariantType.STRING);
-        open_in_photos_action.activate.connect (open_in_photos);
-        notifications_manager.add_action (open_in_photos_action);
+        notifications_manager.action_invoked.connect (handle_action_invoked);
+        notifications_manager.notification_closed.connect ((id) => notifications_id_to_path.remove (id));
     }
 
     [CCode (instance_pos = -1)]
@@ -113,7 +110,7 @@ public class Gala.ScreenshotManager : Object {
             yield screenshot (false, true, filename, out success, out filename_used);
 
             if (success) {
-                send_screenshot_notification (filename_used);
+                send_screenshot_notification.begin (filename_used);
             }
         } catch (Error e) {
             warning (e.message);
@@ -131,7 +128,7 @@ public class Gala.ScreenshotManager : Object {
             yield screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
 
             if (success) {
-                send_screenshot_notification (filename_used);
+                send_screenshot_notification.begin (filename_used);
             }
         } catch (Error e) {
             warning (e.message);
@@ -147,43 +144,31 @@ public class Gala.ScreenshotManager : Object {
             yield screenshot_window (true, false, true, filename, out success, out filename_used);
 
             if (success) {
-                send_screenshot_notification (filename_used);
+                send_screenshot_notification.begin (filename_used);
             }
         } catch (Error e) {
             warning (e.message);
         }
     }
 
-    private void send_screenshot_notification (string filename_used) {
+    private async void send_screenshot_notification (string filename_used) {
         var clipboard = filename_used == "";
 
         string[] actions = {};
         if (!clipboard) {
             var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
-            var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
-
-            var open_in_photos_action = GLib.Action.print_detailed_name (
-                "open-in-photos",
-                new Variant ("s", filename_used)
-            );
-
-            /// TRANSLATORS: %s represents a name of image viewer
-            var open_in_photos_label = _("Open in %s").printf (photos_appinfo.get_display_name ());
 
             actions = {
-                GLib.Action.print_detailed_name (
-                    "show-in-files",
-                    new Variant ("s", filename_used)),
-                    /// TRANSLATORS: %s represents a name of file manager
-                    _("Show in %s").printf (files_appinfo.get_display_name ()
-                ),
-                // TODO: uncomment when https://github.com/elementary/notifications/issues/237 is fixed
-                //  open_in_photo_action
-                // open_in_photos_label
+                "default",
+                "",
+
+                "show-in-files",
+                /// TRANSLATORS: %s represents a name of file manager
+                _("Show in %s").printf (files_appinfo.get_display_name ())
             };
         }
 
-        notifications_manager.send.begin (
+        var notification_id = yield notifications_manager.send (
             "ScreenshotManager",
             "image-x-generic",
             _("Screenshot taken"),
@@ -191,29 +176,49 @@ public class Gala.ScreenshotManager : Object {
             actions,
             new GLib.HashTable<string, Variant> (null, null)
         );
-    }
 
-    private void show_in_files (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
-        var files_list = new GLib.List<GLib.File> ();
-        files_list.append (GLib.File.new_for_path (variant.get_string ()));
-
-        var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
-
-        try {
-            files_appinfo.launch (files_list, null);
-        } catch (Error e) {
-            warning (e.message);
+        if (notification_id != null && !clipboard) {
+            notifications_id_to_path[notification_id] = filename_used;
         }
     }
 
-    private void open_in_photos (GLib.Variant? variant) requires (variant != null && variant.is_of_type (GLib.VariantType.STRING)) {
+    private void handle_action_invoked (uint32 id, string name, GLib.Variant? target_value) {
+        var path = notifications_id_to_path[id];
+        if (path == null) {
+            return;
+        }
+
+        switch (name) {
+            case "default":
+                open_in_photo_viewer (path);
+                break;
+            case "show-in-files":
+                show_in_files (path);
+                break;
+        }
+    }
+
+    private void open_in_photo_viewer (string path) {
         var files_list = new GLib.List<GLib.File> ();
-        files_list.append (GLib.File.new_for_path (variant.get_string ()));
+        files_list.append (GLib.File.new_for_path (path));
 
         var photos_appinfo = AppInfo.get_default_for_type ("image/png", true);
 
         try {
             photos_appinfo.launch (files_list, null);
+        } catch (Error e) {
+            warning (e.message);
+        }
+    }
+
+    private void show_in_files (string path) {
+        var files_list = new GLib.List<GLib.File> ();
+        files_list.append (GLib.File.new_for_path (path));
+
+        var files_appinfo = AppInfo.get_default_for_type ("inode/directory", true);
+
+        try {
+            files_appinfo.launch (files_list, null);
         } catch (Error e) {
             warning (e.message);
         }
