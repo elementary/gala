@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-06-09 20:49+0000\n"
+"POT-Creation-Date: 2025-06-30 17:54+0000\n"
 "PO-Revision-Date: 2024-08-07 18:17+0000\n"
 "Last-Translator: anonymous <noreply@weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
@@ -109,99 +109,99 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:58
-#: data/gala.metainfo.xml.in:70 data/gala.metainfo.xml.in:84
-#: data/gala.metainfo.xml.in:117 data/gala.metainfo.xml.in:148
-#: data/gala.metainfo.xml.in:161 data/gala.metainfo.xml.in:176
-#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:209
-#: data/gala.metainfo.xml.in:250 data/gala.metainfo.xml.in:275
-#: data/gala.metainfo.xml.in:291
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
+#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:85
+#: data/gala.metainfo.xml.in:99 data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:191 data/gala.metainfo.xml.in:208
+#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:265
+#: data/gala.metainfo.xml.in:290 data/gala.metainfo.xml.in:306
 msgid "Improvements:"
 msgstr "改进："
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:60
-#: data/gala.metainfo.xml.in:72 data/gala.metainfo.xml.in:86
-#: data/gala.metainfo.xml.in:119 data/gala.metainfo.xml.in:150
-#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:178
-#: data/gala.metainfo.xml.in:197 data/gala.metainfo.xml.in:213
-#: data/gala.metainfo.xml.in:256 data/gala.metainfo.xml.in:278
-#: data/gala.metainfo.xml.in:293
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
+#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:87
+#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:178
+#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:212
+#: data/gala.metainfo.xml.in:228 data/gala.metainfo.xml.in:271
+#: data/gala.metainfo.xml.in:293 data/gala.metainfo.xml.in:308
 msgid "Updated translations"
 msgstr "翻译更新"
 
-#: data/gala.metainfo.xml.in:87
+#: data/gala.metainfo.xml.in:102
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:103
 msgid "Remove scaling effect from menus"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:89
+#: data/gala.metainfo.xml.in:104
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:120
+#: data/gala.metainfo.xml.in:135
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:121
+#: data/gala.metainfo.xml.in:136
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:122
+#: data/gala.metainfo.xml.in:137
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "修复截屏时潜在的崩溃问题"
 
-#: data/gala.metainfo.xml.in:151
+#: data/gala.metainfo.xml.in:166
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "优化传统应用窗口阴影"
 
-#: data/gala.metainfo.xml.in:195
+#: data/gala.metainfo.xml.in:210
 #, fuzzy
 #| msgid "Fix a potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "修复截屏时潜在的崩溃问题"
 
-#: data/gala.metainfo.xml.in:196
+#: data/gala.metainfo.xml.in:211
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
 msgstr "修复更改 DPI 后通知的显示位置"
 
-#: data/gala.metainfo.xml.in:211
+#: data/gala.metainfo.xml.in:226
 #, fuzzy
 #| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "修复多任务视图中截图快捷键失效的问题"
 
-#: data/gala.metainfo.xml.in:212
+#: data/gala.metainfo.xml.in:227
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:252
+#: data/gala.metainfo.xml.in:267
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:253
+#: data/gala.metainfo.xml.in:268
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:254
+#: data/gala.metainfo.xml.in:269
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:255
+#: data/gala.metainfo.xml.in:270
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:277
+#: data/gala.metainfo.xml.in:292
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -271,41 +271,35 @@ msgstr "允许"
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:197
+#: src/DesktopIntegration.vala:192
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:105
+#: src/ScreenshotManager.vala:102
 #, c-format
 msgid "Screenshot from %s"
 msgstr "屏幕截图 %s"
 
-#. / TRANSLATORS: %s represents a name of image viewer
-#: src/ScreenshotManager.vala:171
-#, c-format
-msgid "Open in %s"
-msgstr ""
-
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:178
+#: src/ScreenshotManager.vala:167
 #, c-format
 msgid "Show in %s"
 msgstr ""
 
-#: src/ScreenshotManager.vala:189 src/ScreenshotManager.vala:548
+#: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr "已截屏"
 
-#: src/ScreenshotManager.vala:190
+#: src/ScreenshotManager.vala:175
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:190
+#: src/ScreenshotManager.vala:175
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:456
+#: src/ScreenshotManager.vala:461
 msgid "Screenshots"
 msgstr "屏幕截图"
 
@@ -313,21 +307,21 @@ msgstr "屏幕截图"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1766
+#: src/WindowManager.vala:1799
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "变更将在 %i 秒后撤销。"
 
-#: src/WindowManager.vala:1773
+#: src/WindowManager.vala:1806
 msgid "Keep new display settings?"
 msgstr "要保留新的显示设置吗？"
 
-#: src/WindowManager.vala:1777
+#: src/WindowManager.vala:1810
 msgid "Keep Settings"
 msgstr "保留设置"
 
-#: src/WindowManager.vala:1778
+#: src/WindowManager.vala:1811
 msgid "Use Previous Settings"
 msgstr "恢复原有设置"
 

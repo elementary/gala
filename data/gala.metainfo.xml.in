@@ -27,7 +27,7 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-    <release version="8.2.4" date="2025-06-12" urgency="medium">
+    <release version="8.2.4" date="2025-06-30" urgency="medium">
       <description>
         <p>Improvements:</p>
           <ul>
@@ -35,7 +35,10 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/1264">Applications menu opened but hidden in full screen mode</issue>
         <issue url="https://github.com/elementary/gala/issues/2438">Gala randomly segfaults while closing Libreoffice windows</issue>
+        <issue url="https://github.com/elementary/gala/issues/2450">Apps not being brought to front</issue>
+        <issue url="https://github.com/elementary/dock/issues/310">Some apps are not showing up in the dock</issue>
       </issues>
     </release>
 
