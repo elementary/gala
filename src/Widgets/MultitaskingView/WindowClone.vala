@@ -117,6 +117,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
+            drag_action.destination_crossed.connect (destination_crossed);
+            drag_action.destination_motion.connect (destination_motion);
             drag_action.drag_end.connect (drag_end);
             drag_action.drag_canceled.connect (drag_canceled);
             drag_action.actor_clicked.connect (actor_clicked);
@@ -511,6 +513,22 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         return this;
     }
 
+    private void destination_crossed (Clutter.Actor destination, bool hovered) {
+        if (!(destination is Meta.WindowActor)) {
+            return;
+        }
+
+        if (hovered) {
+            WindowDragProvider.get_instance ().notify_enter (window.get_id ());
+        } else {
+            WindowDragProvider.get_instance ().notify_leave ();
+        }
+    }
+
+    private void destination_motion (Clutter.Actor destination, float x, float y) {
+        WindowDragProvider.get_instance ().notify_motion (x, y);
+    }
+
     /**
      * Depending on the destination we have different ways to find the correct destination.
      * After we found one we destroy ourselves so the dragged clone immediately disappears,
@@ -538,6 +556,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             }
 
             return;
+        } else if (destination is Meta.WindowActor) {
+            WindowDragProvider.get_instance ().notify_dropped ();
         }
 
         bool did_move = false;
