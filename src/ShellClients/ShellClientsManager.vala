@@ -191,7 +191,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             return;
         }
 
-        panel_windows[window].visible_in_multitasking_view = true;
+        panel_windows[window].request_visible_in_multitasking_view ();
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {

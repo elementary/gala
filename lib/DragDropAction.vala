@@ -69,6 +69,15 @@ namespace Gala {
         public signal void destination_crossed (Actor destination, bool hovered);
 
         /**
+         * Emitted on the source when we are hovering over a destination.
+         *
+         * @param destination The destination actor that we are hovering over
+         * @param x           The x coordinate relative to the destination actor
+         * @param y           The y coordinate relative to the destination actor
+         */
+        public signal void destination_motion (Actor destination, float x, float y);
+
+        /**
          * The source has been clicked, but the movement was not larger than
          * the drag threshold. Useful if the source is also activable.
          *
@@ -354,7 +363,7 @@ namespace Gala {
                         last_y = y;
 
                         var stage = actor.get_stage ();
-                        var actor = stage.get_actor_at_pos (PickMode.REACTIVE, (int) x, (int) y);
+                        var actor = stage.get_actor_at_pos (PickMode.NONE, (int) x, (int) y);
                         DragDropAction action = null;
                         // if we're allowed to bubble and this actor is not a destination, check its parents
                         if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
@@ -365,8 +374,12 @@ namespace Gala {
                         }
 
                         // didn't change, no need to do anything
-                        if (actor == hovered)
+                        if (actor == hovered) {
+                            if (hovered != null) {
+                                destination_motion (hovered, x - hovered.x, y - hovered.y);
+                            }
                             return Clutter.EVENT_STOP;
+                        }
 
                         if (action == null) {
                             // apparently we left ours if we had one before
@@ -449,12 +462,12 @@ namespace Gala {
         }
 
         private void finish () {
+            drag_end (hovered);
+
             // make sure they reset the style or whatever they changed when hovered
             emit_crossed (hovered, false);
 
             cleanup ();
-
-            drag_end (hovered);
         }
 
         private void cleanup () {
