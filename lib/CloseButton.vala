@@ -8,14 +8,14 @@ public class Gala.CloseButton : Clutter.Actor {
     private static Gee.HashMap<int, Gdk.Pixbuf?> close_pixbufs;
 
     public signal void triggered (uint32 timestamp);
-    public float scale { get; construct set; }
+    public float monitor_scale { set { load_pixbuf (value); } }
 
     // used to avoid changing hitbox of the button
     private Clutter.Actor pixbuf_actor;
     private bool is_pressed = false;
 
-    public CloseButton (float scale) {
-        Object (scale: scale);
+    public CloseButton (float monitor_scale) {
+        Object (monitor_scale: monitor_scale);
     }
 
     static construct {
@@ -29,7 +29,9 @@ public class Gala.CloseButton : Clutter.Actor {
             pivot_point = { 0.5f, 0.5f }
         };
         add_child (pixbuf_actor);
+    }
 
+    private void load_pixbuf (float scale) {
         var pixbuf = get_close_button_pixbuf (scale);
         if (pixbuf != null) {
             try {
@@ -38,10 +40,10 @@ public class Gala.CloseButton : Clutter.Actor {
                 pixbuf_actor.set_size (pixbuf.width, pixbuf.height);
                 set_size (pixbuf.width, pixbuf.height);
             } catch (Error e) {
-                create_error_texture ();
+                create_error_texture (scale);
             }
         } else {
-            create_error_texture ();
+            create_error_texture (scale);
         }
     }
 
@@ -65,7 +67,7 @@ public class Gala.CloseButton : Clutter.Actor {
         return close_pixbufs[height];
     }
 
-    private void create_error_texture () {
+    private void create_error_texture (float scale) {
         // we'll just make this red so there's at least something as an
         // indicator that loading failed. Should never happen and this
         // works as good as some weird fallback-image-failed-to-load pixbuf
