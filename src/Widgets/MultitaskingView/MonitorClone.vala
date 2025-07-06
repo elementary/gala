@@ -12,8 +12,6 @@
  * workspaces-only-on-primary is set to true.
  */
 public class Gala.MonitorClone : ActorTarget {
-    public signal void window_selected (Meta.Window window);
-
     public WindowManager wm { get; construct; }
     public int monitor { get; construct; }
     public float monitor_scale { get; construct set; }
@@ -35,7 +33,7 @@ public class Gala.MonitorClone : ActorTarget {
 
         window_container = new WindowCloneContainer (wm, monitor_scale);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));
-        window_container.window_selected.connect ((w) => { window_selected (w); });
+        window_container.window_selected.connect (window_selected);
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
         display.window_entered_monitor.connect (window_entered);
@@ -95,5 +93,10 @@ public class Gala.MonitorClone : ActorTarget {
             return;
 
         window_container.add_window (window);
+    }
+
+    private void window_selected (Meta.Window window) {
+        window.activate (Meta.CURRENT_TIME);
+        wm.perform_action (SHOW_MULTITASKING_VIEW);
     }
 }
