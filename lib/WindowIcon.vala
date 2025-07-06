@@ -14,17 +14,16 @@ public class Gala.WindowIcon : Clutter.Actor {
     public Meta.Window window { get; construct; }
     public int icon_size { get; construct; }
     public float monitor_scale { get; construct set; }
-    public int scale { get; construct; }
 
     /**
      * Creates a new WindowIcon
      *
      * @param window               The window for which to create the icon
      * @param icon_size            The size of the icon in pixels
-     * @param scale                The desired scale of the icon
+     * @param monitor_scale        The desired scale of the icon
      */
-    public WindowIcon (Meta.Window window, int icon_size, float monitor_scale, int scale = 1) {
-        Object (window: window, icon_size: icon_size, monitor_scale: monitor_scale, scale: scale);
+    public WindowIcon (Meta.Window window, int icon_size, float monitor_scale) {
+        Object (window: window, icon_size: icon_size, monitor_scale: monitor_scale);
     }
 
     construct {
@@ -45,10 +44,10 @@ public class Gala.WindowIcon : Clutter.Actor {
     private void reload_icon () {
         var actual_size = Utils.scale_to_int (icon_size, monitor_scale);
 
-        width = actual_size * scale;
-        height = actual_size * scale;
+        width = actual_size;
+        height = actual_size;
 
-        var pixbuf = Gala.Utils.get_icon_for_window (window, actual_size, scale);
+        var pixbuf = Gala.Utils.get_icon_for_window (window, actual_size, 1);
         var image = new Gala.Image.from_pixbuf (pixbuf);
         set_content (image);
     }

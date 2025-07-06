@@ -134,7 +134,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             opacity = 0,
             pivot_point = { 0.5f, 0.5f }
         };
-        bind_property ("monitor-scale-factor", window_icon, "monitor-scale");
+        bind_property ("monitor-scale", window_icon, "monitor-scale");
 
         window_title = new Tooltip ();
 
