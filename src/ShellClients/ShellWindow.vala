@@ -93,6 +93,12 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
         window_actor.visible = animating || visible;
 
+        if (window_actor.visible) {
+            window.display.disable_unredirect ();
+        } else {
+            window.display.enable_unredirect ();
+        }
+
         if (!Meta.Util.is_wayland_compositor ()) {
             if (window_actor.visible) {
                 Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
