@@ -29,6 +29,9 @@ public class Gala.PositionedWindow : Object {
     public Position position { get; construct set; }
     public Variant? position_data { get; construct set; }
 
+    private int width = -1;
+    private int height = -1;
+
     private ulong position_changed_id;
 
     public PositionedWindow (Meta.Window window, Position position, Variant? position_data = null) {
@@ -48,6 +51,30 @@ public class Gala.PositionedWindow : Object {
 
         notify["position"].connect (position_window);
         notify["position-data"].connect (position_window);
+    }
+
+    public Mtk.Rectangle get_custom_window_rect () {
+        var window_rect = window.get_frame_rect ();
+
+        if (width > 0) {
+            window_rect.width = width;
+        }
+
+        if (height > 0) {
+            window_rect.height = height;
+
+            if (position == BOTTOM) {
+                var geom = window.display.get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
+        }
+
+        return window_rect;
+    }
+
+    public void set_size (int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     private void position_window () {
