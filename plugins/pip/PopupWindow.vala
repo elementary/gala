@@ -21,6 +21,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private Clutter.Clone clone; // clone itself
     private Clutter.Actor clone_container; // clips the clone
+    private Clutter.Actor rounded_container; // draws rounded corners
     private Clutter.Actor container; // draws the shadow
     private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
@@ -74,10 +75,14 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         };
         clone_container.add_child (clone);
 
+        rounded_container = new Clutter.Actor ();
+        rounded_container.add_child (clone_container);
+        rounded_container.add_effect (new RoundedCornersEffect (9, scale));
+
         container = new Clutter.Actor () {
             reactive = true
         };
-        container.add_child (clone_container);
+        container.add_child (rounded_container);
         container.add_effect (new ShadowEffect ("window", scale));
 
         move_action = new DragDropAction (DragDropActionType.SOURCE, "pip");
@@ -351,6 +356,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
             clone_container_width = (int) (clone_container.width * clone_container.scale_x);
             clone_container_height = (int) (clone_container.height * clone_container.scale_y);
         }
+
+        rounded_container.width = clone_container_width;
+        rounded_container.height = clone_container_height;
 
         container.width = clone_container_width;
         container.height = clone_container_height;
