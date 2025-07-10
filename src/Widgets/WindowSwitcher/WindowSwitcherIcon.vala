@@ -3,33 +3,48 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowSwitcherIcon : CanvasActor {
+public class Gala.WindowSwitcherIcon : Clutter.Actor {
     private const int WRAPPER_BORDER_RADIUS = 3;
 
     public Meta.Window window { get; construct; }
 
     private WindowIcon icon;
+    private RoundedCornersEffect rounded_corners_effect;
 
-    private bool _selected = false;
     public bool selected {
-        get {
-            return _selected;
-        }
         set {
-            _selected = value;
-            content.invalidate ();
+            if (value) {
+                var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
+                background_color = {
+                    (uint8) (accent_color.red * uint8.MAX),
+                    (uint8) (accent_color.green * uint8.MAX),
+                    (uint8) (accent_color.blue * uint8.MAX),
+                    (uint8) (accent_color.alpha * uint8.MAX)
+                };
+            } else {
+#if HAS_MUTTER47
+                background_color = Cogl.Color.from_4f (0, 0, 0, 0);
+#else
+                background_color = Clutter.Color.alloc ();
+#endif
+            }
+
+            get_accessible ().notify_state_change (Atk.StateType.SELECTED, value);
+            get_accessible ().notify_state_change (Atk.StateType.FOCUSED, value);
+
+            queue_redraw ();
         }
     }
 
-    private float _scale_factor = 1.0f;
     public float scale_factor {
-        get {
-            return _scale_factor;
-        }
         set {
-            _scale_factor = value;
+            var indicator_size = Utils.scale_to_int (
+                (WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2),
+                value
+            );
+            set_size (indicator_size, indicator_size);
 
-            update_size ();
+            rounded_corners_effect.monitor_scale = value;
         }
     }
 
@@ -40,48 +55,14 @@ public class Gala.WindowSwitcherIcon : CanvasActor {
         icon.add_constraint (new Clutter.AlignConstraint (this, Clutter.AlignAxis.BOTH, 0.5f));
         add_child (icon);
 
+        rounded_corners_effect = new RoundedCornersEffect (WRAPPER_BORDER_RADIUS, scale_factor);
+        add_effect (rounded_corners_effect);
+
         get_accessible ().accessible_name = window.title;
         get_accessible ().accessible_role = LIST_ITEM;
         get_accessible ().notify_state_change (Atk.StateType.FOCUSABLE, true);
 
         reactive = true;
-
         this.scale_factor = scale_factor;
-    }
-
-    private void update_size () {
-        var indicator_size = Utils.scale_to_int (
-            (WindowSwitcher.ICON_SIZE + WindowSwitcher.WRAPPER_PADDING * 2),
-            scale_factor
-        );
-        set_size (indicator_size, indicator_size);
-    }
-
-    protected override void draw (Cairo.Context ctx, int width, int height) {
-        ctx.save ();
-        ctx.set_operator (Cairo.Operator.CLEAR);
-        ctx.paint ();
-        ctx.clip ();
-        ctx.reset_clip ();
-
-        if (selected) {
-            // draw rect
-            var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
-            ctx.set_source_rgba (
-                rgba.red,
-                rgba.green,
-                rgba.blue,
-                rgba.alpha
-            );
-            var rect_radius = Utils.scale_to_int (WRAPPER_BORDER_RADIUS, scale_factor);
-            Drawing.Utilities.cairo_rounded_rectangle (ctx, 0, 0, width, height, rect_radius);
-            ctx.set_operator (Cairo.Operator.SOURCE);
-            ctx.fill ();
-
-            ctx.restore ();
-        }
-
-        get_accessible ().notify_state_change (Atk.StateType.SELECTED, selected);
-        get_accessible ().notify_state_change (Atk.StateType.FOCUSED, selected);
     }
 }

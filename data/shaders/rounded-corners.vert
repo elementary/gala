@@ -50,6 +50,5 @@ void main () {
   vec2 texture_coord = cogl_tex_coord0_in.xy * actor_size;
   float res = rounded_rect_coverage (texture_coord);
 
-  cogl_color_out = sample * cogl_color_in;
-  cogl_color_out.a *= res;
+  cogl_color_out = sample * cogl_color_in * res;
 }
