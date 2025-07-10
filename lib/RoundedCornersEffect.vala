@@ -4,9 +4,11 @@
  */
 
 public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
+    private const int CLIP_RADIUS_OFFSET = 5;
+
     public float clip_radius {
         construct set {
-            set_uniform_value ("clip_radius",  value);
+            set_uniform_value ("clip_radius",  value + CLIP_RADIUS_OFFSET);
         }
     }
 
@@ -19,7 +21,7 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
             _monitor_scale = value;
 
             if (actor != null) {
-                update_pixel_step ();
+                update_actor_size ();
             }
         }
     }
@@ -39,44 +41,29 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         } catch (Error e) {
             critical ("Unable to load rounded-corners.vert: %s", e.message);
         }
-
-        notify["actor"].connect (() => {
-            if (actor == null) {
-                return;
-            }
-
-            actor.notify["width"].connect (update_bounds);
-            actor.notify["height"].connect (update_bounds);
-
-            update_bounds ();
-        });
     }
 
-    private void update_bounds () requires (actor != null) {
-        float[] bounds = {
-            0.0f,
-            0.0f,
-            actor.width,
-            actor.height
-        };
+    public override void set_actor (Clutter.Actor? actor) {
+        base.set_actor (actor);
 
-        warning ("%f", actor.height);
+        if (actor == null) {
+            return;
+        }
 
-        var bounds_value = GLib.Value (typeof (Clutter.ShaderFloat));
-        Clutter.Value.set_shader_float (bounds_value, bounds);
-        set_uniform_value ("bounds", bounds_value);
+        actor.notify["width"].connect (update_actor_size);
+        actor.notify["height"].connect (update_actor_size);
 
-        update_pixel_step ();
+        update_actor_size ();
     }
 
-    private void update_pixel_step () requires (actor != null) {
-        float[] pixel_step = {
-            1.0f / (actor.width * monitor_scale),
-            1.0f / (actor.height * monitor_scale)
+    private void update_actor_size () requires (actor != null) {
+        float[] actor_size = {
+            actor.width * monitor_scale,
+            actor.height * monitor_scale
         };
 
-        var pixel_step_value = GLib.Value (typeof (Clutter.ShaderFloat));
-        Clutter.Value.set_shader_float (pixel_step_value, pixel_step);
-        set_uniform_value ("pixel_step", pixel_step_value);
+        var actor_size_value = GLib.Value (typeof (Clutter.ShaderFloat));
+        Clutter.Value.set_shader_float (actor_size_value, actor_size);
+        set_uniform_value ("actor_size", actor_size_value);
     }
 }

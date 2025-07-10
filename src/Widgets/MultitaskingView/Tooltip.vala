@@ -46,9 +46,7 @@ public class Gala.Tooltip : Clutter.Actor {
             (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.alpha * uint8.MAX)
         };
 
-        height = BASE_HEIGHT * 1.0f;
-
-        add_effect (new RoundedCornersEffect (16, 1.0f));
+        add_effect (new RoundedCornersEffect (4, 1.0f));
     }
 
     public void set_text (string new_text) {
