@@ -4,7 +4,7 @@
  */
 
 public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
-    private const int CLIP_RADIUS_OFFSET = 5;
+    private const int CLIP_RADIUS_OFFSET = 3;
 
     public float clip_radius {
         construct set {

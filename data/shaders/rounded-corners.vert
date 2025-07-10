@@ -1,4 +1,4 @@
-// copied from mutter
+// based on shader from mutter
 
 uniform sampler2D tex;
 uniform float clip_radius;
@@ -6,7 +6,7 @@ uniform vec2 actor_size;
 
 float rounded_rect_coverage (vec2 p) {
   float center_left = clip_radius + 1.5;
-  float center_right = actor_size.x - clip_radius - 0.5;
+  float center_right = actor_size.x - clip_radius - 0.55;
   float center_x;
 
   if (p.x < center_left)
@@ -14,10 +14,10 @@ float rounded_rect_coverage (vec2 p) {
   else if (p.x >= center_right)
     center_x = center_right;
   else
-    return 1.0; // The vast majority of pixels exit early here
+    return 1.0;
 
   float center_top = clip_radius + 1.5;
-  float center_bottom = actor_size.y - clip_radius - 0.5;
+  float center_bottom = actor_size.y - clip_radius - 0.55;
   float center_y;
 
   if (p.y < center_top)
@@ -41,7 +41,7 @@ float rounded_rect_coverage (vec2 p) {
     return 1.0;
 
   // Only pixels on the edge of the curve need expensive antialiasing
-  return outer_radius - sqrt (dist_squared);
+  return smoothstep (outer_radius, inner_radius, length (delta));
 }
 
 void main () {
