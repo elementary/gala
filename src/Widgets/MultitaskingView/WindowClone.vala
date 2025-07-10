@@ -356,7 +356,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
         float window_title_height, window_title_nat_width;
         window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
-        warning ("Got nat height %f", window_title_height);
 
         var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
 

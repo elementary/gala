@@ -8,8 +8,6 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : Clutter.Actor {
-    private const int BASE_HEIGHT = 32;
-
     /**
      * Actor to display the Tooltip text.
      */
