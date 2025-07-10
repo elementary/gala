@@ -28,7 +28,11 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
 
     public RoundedCornersEffect (float clip_radius, float monitor_scale) {
         Object (
+#if HAS_MUTTER48
+            shader_type: Cogl.ShaderType.FRAGMENT,
+#else
             shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
+#endif
             clip_radius: clip_radius,
             monitor_scale: monitor_scale
         );
