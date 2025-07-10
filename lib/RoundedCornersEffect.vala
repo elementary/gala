@@ -60,6 +60,8 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
             actor.height
         };
 
+        warning ("%f", actor.height);
+
         var bounds_value = GLib.Value (typeof (Clutter.ShaderFloat));
         Clutter.Value.set_shader_float (bounds_value, bounds);
         set_uniform_value ("bounds", bounds_value);
