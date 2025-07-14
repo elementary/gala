@@ -29,7 +29,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         window_actor.notify["translation-y"].connect (update_clip);
         notify["position"].connect (update_clip);
 
-        window_actor.notify["height"].connect (update_target);
+        window.size_changed.connect (update_target);
         notify["position"].connect (update_target);
         update_target ();
     }
@@ -93,6 +93,20 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
         window_actor.visible = animating || visible;
 
+        if (window_actor.visible) {
+#if HAS_MUTTER48
+            window.display.get_compositor ().disable_unredirect ();
+#else
+            window.display.disable_unredirect ();
+#endif
+        } else {
+#if HAS_MUTTER48
+            window.display.get_compositor ().enable_unredirect ();
+#else
+            window.display.enable_unredirect ();
+#endif
+        }
+
         if (!Meta.Util.is_wayland_compositor ()) {
             if (window_actor.visible) {
                 Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
@@ -136,11 +150,13 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     private Value calculate_value (bool hidden) {
+        var custom_rect = get_custom_window_rect ();
+
         switch (position) {
             case TOP:
-                return hidden ? -window_actor.height : 0f;
+                return hidden ? -custom_rect.height : 0f;
             case BOTTOM:
-                return hidden ? window_actor.height : 0f;
+                return hidden ? custom_rect.height : 0f;
             default:
                 return hidden ? 0u : 255u;
         }
