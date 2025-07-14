@@ -31,9 +31,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     private GestureController gesture_controller;
     private HideTracker hide_tracker;
 
-    private int width = -1;
-    private int height = -1;
-
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
@@ -53,6 +50,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
+        notify["width"].connect (update_strut);
+        notify["height"].connect (update_strut);
 
         gesture_controller = new GestureController (DOCK, wm);
         add_gesture_controller (gesture_controller);
@@ -60,32 +59,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         hide_tracker = new HideTracker (wm.get_display (), this);
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
-    }
-
-    public Mtk.Rectangle get_custom_window_rect () {
-        var window_rect = window.get_frame_rect ();
-
-        if (width > 0) {
-            window_rect.width = width;
-        }
-
-        if (height > 0) {
-            window_rect.height = height;
-
-            if (anchor == BOTTOM) {
-                var geom = wm.get_display ().get_monitor_geometry (window.get_monitor ());
-                window_rect.y = geom.y + geom.height - height;
-            }
-        }
-
-        return window_rect;
-    }
-
-    public void set_size (int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        update_strut ();
     }
 
     private void hide () {

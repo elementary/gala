@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-06-05 07:55+0000\n"
+"PO-Revision-Date: 2025-07-14 01:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -224,17 +224,18 @@ msgstr "不明なプログラム"
 #: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
-msgstr "“%s”は応答していません"
+msgstr "“%s”の応答がありません"
 
 #: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
-msgstr "アプリケーションは応答していません"
+msgstr "アプリケーションの応答がありません"
 
 #: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
-msgstr "アプリケーションの再開を待つか、強制終了させるかを選択できます。"
+msgstr "もうしばらくアプリケーションの再開を待つか、完全に強制終了させるかを選択でき"
+"ます。"
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
@@ -242,7 +243,7 @@ msgstr "強制終了"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
-msgstr "待機"
+msgstr "再開を待つ"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
