@@ -264,17 +264,6 @@ namespace Gala {
             return sorted_windows;
         }
 
-        public static inline bool get_window_is_normal (Meta.Window window) {
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                case Meta.WindowType.DIALOG:
-                case Meta.WindowType.MODAL_DIALOG:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         /**
          * Returns the workspaces geometry following the only_on_primary settings.
          */

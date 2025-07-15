@@ -613,7 +613,7 @@ namespace Gala {
                 var xwin = window.get_xwindow ();
 #endif
                 if (xwin == bottom_xwin
-                    || !InternalUtils.get_window_is_normal (window)
+                    || !Utils.get_window_is_normal (window)
                     || window.minimized) {
                     return;
                 }
@@ -1339,7 +1339,7 @@ namespace Gala {
             if (!Meta.Prefs.get_gnome_animations ()) {
                 map_completed (actor);
 
-                if (InternalUtils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
+                if (Utils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
                     show_bottom_stack_window (window);
                 }
 
