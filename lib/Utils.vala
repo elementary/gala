@@ -284,9 +284,7 @@ namespace Gala {
                 }
 
                 if (
-                    (window.window_type == Meta.WindowType.NORMAL
-                    || window.window_type == Meta.WindowType.DIALOG
-                    || window.window_type == Meta.WindowType.MODAL_DIALOG)
+                    get_window_is_normal (window)
                     && (!on_primary || (on_primary && window.is_on_primary_monitor ()))) {
                     n ++;
                 }
@@ -453,6 +451,17 @@ namespace Gala {
          */
         public static uint get_animation_duration (uint duration) {
             return Meta.Prefs.get_gnome_animations () ? duration : 0;
+        }
+
+        public static inline bool get_window_is_normal (Meta.Window window) {
+            switch (window.window_type) {
+                case Meta.WindowType.NORMAL:
+                case Meta.WindowType.DIALOG:
+                case Meta.WindowType.MODAL_DIALOG:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }
