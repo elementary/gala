@@ -1,12 +1,9 @@
 /*
- * Copyright 2019 elementary, Inc. (https://elementary.io)
+ * Copyright 2019-2025 elementary, Inc. (https://elementary.io)
  * Copyright 2011-2013 Robert Dyer
  * Copyright 2011-2013 Rico Tzschichholz <ricotz@ubuntu.com>
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
-
-using Cairo;
-using Posix;
 
 namespace Gala.Drawing {
     /**
@@ -14,15 +11,15 @@ namespace Gala.Drawing {
     * for usage with large, rarely updated draw operations.
     */
     public class BufferSurface : GLib.Object {
-        private Surface _surface;
+        private Cairo.Surface _surface;
         /**
         * The {@link Cairo.Surface} which will store the results of all drawing operations
         * made with {@link Gala.Drawing.BufferSurface.context}.
         */
-        public Surface surface {
+        public Cairo.Surface surface {
             get {
                 if (_surface == null) {
-                    _surface = new ImageSurface (Format.ARGB32, width, height);
+                    _surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
                 }
 
                 return _surface;
@@ -39,7 +36,7 @@ namespace Gala.Drawing {
         */
         public int height { get; private set; }
 
-        private Context _context;
+        private Cairo.Context _context;
         /**
         * The {@link Cairo.Context} for the internal surface. All drawing operations done on this
         * {@link Gala.Drawing.BufferSurface} should use this context.
@@ -73,9 +70,9 @@ namespace Gala.Drawing {
         * @param height the height of the new {@link Gala.Drawing.BufferSurface}, in pixels
         * @param model the {@link Cairo.Surface} to use as a model for the internal {@link Cairo.Surface}
         */
-        public BufferSurface.with_surface (int width, int height, Surface model) requires (model != null) {
+        public BufferSurface.with_surface (int width, int height, Cairo.Surface model) requires (model != null) {
             this (width, height);
-            surface = new Surface.similar (model, Content.COLOR_ALPHA, width, height);
+            surface = new Cairo.Surface.similar (model, Cairo.Content.COLOR_ALPHA, width, height);
         }
 
         /**
@@ -88,7 +85,7 @@ namespace Gala.Drawing {
         */
         public BufferSurface.with_buffer_surface (int width, int height, BufferSurface model) requires (model != null) {
             this (width, height);
-            surface = new Surface.similar (model.surface, Content.COLOR_ALPHA, width, height);
+            surface = new Cairo.Surface.similar (model.surface, Cairo.Content.COLOR_ALPHA, width, height);
         }
 
         /**
@@ -98,7 +95,7 @@ namespace Gala.Drawing {
             context.save ();
 
             _context.set_source_rgba (0, 0, 0, 0);
-            _context.set_operator (Operator.SOURCE);
+            _context.set_operator (Cairo.Operator.SOURCE);
             _context.paint ();
 
             _context.restore ();
@@ -110,10 +107,10 @@ namespace Gala.Drawing {
         * @return the {@link Gdk.Pixbuf}
         */
         public Gdk.Pixbuf load_to_pixbuf () {
-            var image_surface = new ImageSurface (Format.ARGB32, width, height);
+            var image_surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
             var cr = new Cairo.Context (image_surface);
 
-            cr.set_operator (Operator.SOURCE);
+            cr.set_operator (Cairo.Operator.SOURCE);
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
@@ -127,7 +124,7 @@ namespace Gala.Drawing {
             uint8 *pixels = pb.get_pixels ();
             var length = width * height;
 
-            if (image_surface.get_format () == Format.ARGB32) {
+            if (image_surface.get_format () == Cairo.Format.ARGB32) {
                 for (var i = 0; i < length; i++) {
                     // if alpha is 0 set nothing
                     if (data[3] > 0) {
@@ -140,7 +137,7 @@ namespace Gala.Drawing {
                     pixels += 4;
                     data += 4;
                 }
-            } else if (image_surface.get_format () == Format.RGB24) {
+            } else if (image_surface.get_format () == Cairo.Format.RGB24) {
                 for (var i = 0; i < length; i++) {
                     pixels[0] = data[2];
                     pixels[1] = data[1];
@@ -168,10 +165,10 @@ namespace Gala.Drawing {
             var w = width;
             var h = height;
 
-            var original = new ImageSurface (Format.ARGB32, w, h);
+            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, w, h);
             var cr = new Cairo.Context (original);
 
-            cr.set_operator (Operator.SOURCE);
+            cr.set_operator (Cairo.Operator.SOURCE);
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
@@ -225,10 +222,10 @@ namespace Gala.Drawing {
                 return;
             }
 
-            var original = new ImageSurface (Format.ARGB32, w, h);
+            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, w, h);
             var cr = new Cairo.Context (original);
 
-            cr.set_operator (Operator.SOURCE);
+            cr.set_operator (Cairo.Operator.SOURCE);
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
@@ -337,10 +334,10 @@ namespace Gala.Drawing {
 
             original.mark_dirty ();
 
-            context.set_operator (Operator.SOURCE);
+            context.set_operator (Cairo.Operator.SOURCE);
             context.set_source_surface (original, 0, 0);
             context.paint ();
-            context.set_operator (Operator.OVER);
+            context.set_operator (Cairo.Operator.OVER);
         }
 
         private const int ALPHA_PRECISION = 16;
@@ -362,10 +359,10 @@ namespace Gala.Drawing {
             var height = this.height;
             var width = this.width;
 
-            var original = new ImageSurface (Format.ARGB32, width, height);
+            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
             var cr = new Cairo.Context (original);
 
-            cr.set_operator (Operator.SOURCE);
+            cr.set_operator (Cairo.Operator.SOURCE);
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
@@ -395,10 +392,10 @@ namespace Gala.Drawing {
 
             original.mark_dirty ();
 
-            context.set_operator (Operator.SOURCE);
+            context.set_operator (Cairo.Operator.SOURCE);
             context.set_source_surface (original, 0, 0);
             context.paint ();
-            context.set_operator (Operator.OVER);
+            context.set_operator (Cairo.Operator.OVER);
         }
 
         private void exponential_blur_columns (
@@ -495,10 +492,10 @@ namespace Gala.Drawing {
             var width = this.width;
             var height = this.height;
 
-            var original = new ImageSurface (Format.ARGB32, width, height);
+            var original = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
             var cr = new Cairo.Context (original);
 
-            cr.set_operator (Operator.SOURCE);
+            cr.set_operator (Cairo.Operator.SOURCE);
             cr.set_source_surface (surface, 0, 0);
             cr.paint ();
 
@@ -556,7 +553,7 @@ namespace Gala.Drawing {
                 th.join ();
 
                 // Clear buffer
-                memset (buffer_a, 0, sizeof (double) * size);
+                Posix.memset (buffer_a, 0, sizeof (double) * size);
 
                 // Precompute vertical shifts
                 shiftar = new int[int.max (width, height), gauss_width];
@@ -608,10 +605,10 @@ namespace Gala.Drawing {
 
             original.mark_dirty ();
 
-            context.set_operator (Operator.SOURCE);
+            context.set_operator (Cairo.Operator.SOURCE);
             context.set_source_surface (original, 0, 0);
             context.paint ();
-            context.set_operator (Operator.OVER);
+            context.set_operator (Cairo.Operator.OVER);
         }
 
         private void gaussian_blur_horizontal (

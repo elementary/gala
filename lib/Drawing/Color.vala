@@ -1,10 +1,8 @@
 /*
- * Copyright 2019-2021 elementary, Inc. (https://elementary.io)
+ * Copyright 2019-2025 elementary, Inc. (https://elementary.io)
  * Copyright 2011–2013 Robert Dyer
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
-
-using Gdk;
 
 namespace Gala.Drawing {
     /**
@@ -136,7 +134,7 @@ namespace Gala.Drawing {
         * creating a new instance of {@link Gala.Drawing.Color}, you can use the available
         * //*_from_int// static method collection such as {@link Gala.Drawing.Color.alpha_from_int}.
         *
-        * @param color the integer specyfying the color
+        * @param color the integer specifying the color
         */
         public Color.from_int (int color) {
             R = (double)red_from_int (color) / (double)uint8.MAX;
@@ -529,14 +527,14 @@ namespace Gala.Drawing {
         * that define the {@link Gala.Drawing.Color} class: alpha, red, green and blue.
         *
         * Each channel is represented by 8 bits.
-        * The first 8 bits of the integer conatin the alpha channel while all other 24 bits represent
+        * The first 8 bits of the integer contain the alpha channel while all other 24 bits represent
         * red, green and blue channels respectively.
         *
         * The format written as a string would look like this:
         *
         * //AAAAAAAA RRRRRRRR GGGGGGGG BBBBBBBB//
         *
-        * where //A// is one bit of alpha chnnel, //R// of red channel, //G// of green channel and //B// of blue channel.
+        * where //A// is one bit of alpha channel, //R// of red channel, //G// of green channel and //B// of blue channel.
         *
         * @return a 32 bit integer representing this
         */
