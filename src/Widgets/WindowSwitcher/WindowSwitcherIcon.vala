@@ -31,8 +31,6 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
 
             get_accessible ().notify_state_change (Atk.StateType.SELECTED, value);
             get_accessible ().notify_state_change (Atk.StateType.FOCUSED, value);
-
-            queue_redraw ();
         }
     }
 
@@ -63,6 +61,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         get_accessible ().notify_state_change (Atk.StateType.FOCUSABLE, true);
 
         reactive = true;
+
         this.scale_factor = scale_factor;
     }
 }

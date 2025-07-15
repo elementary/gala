@@ -124,9 +124,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape () {
-            opacity = 0
-        };
+        active_shape = new ActiveShape ();
+        active_shape.opacity = 0;
 
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }

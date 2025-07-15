@@ -1,3 +1,8 @@
+/*
+ * Copyright 2025 elementary, Inc. <https://elementary.io>
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ */
+
 // based on shader from mutter
 
 uniform sampler2D tex;
@@ -41,7 +46,7 @@ float rounded_rect_coverage (vec2 p) {
     return 1.0;
 
   // Only pixels on the edge of the curve need expensive antialiasing
-  return smoothstep (outer_radius, inner_radius, length (delta));
+  return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
 }
 
 void main () {
