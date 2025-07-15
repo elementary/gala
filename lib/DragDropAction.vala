@@ -1,21 +1,8 @@
-//
-//  Copyright (C) 2013 Tom Beckmann
-//
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-
-using Clutter;
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2025 elementary, Inc. (https://elementary.io)
+ *                         2013 Tom Beckmann
+ */
 
 namespace Gala {
     [Flags]
@@ -26,8 +13,8 @@ namespace Gala {
 
     public class DragDropAction : Clutter.Action {
         // DO NOT keep a reference otherwise we get a ref cycle
-        private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? sources = null;
-        private static Gee.HashMap<string,Gee.LinkedList<unowned Actor>>? destinations = null;
+        private static Gee.HashMap<string,Gee.LinkedList<unowned Clutter.Actor>>? sources = null;
+        private static Gee.HashMap<string,Gee.LinkedList<unowned Clutter.Actor>>? destinations = null;
 
         /**
          * A drag has been started. You have to connect to this signal and
@@ -37,7 +24,7 @@ namespace Gala {
          * @param y The global y coordinate where the action was activated
          * @return  A ClutterActor that serves as handle
          */
-        public signal Actor? drag_begin (float x, float y);
+        public signal Clutter.Actor? drag_begin (float x, float y);
 
         /**
          * A drag has been canceled. You may want to consider cleaning up
@@ -50,7 +37,7 @@ namespace Gala {
          *
          * @param actor The actor on which the drag finished
          */
-        public signal void drag_end (Actor actor);
+        public signal void drag_end (Clutter.Actor actor);
 
         /**
          * The destination has been crossed
@@ -58,7 +45,7 @@ namespace Gala {
          * @param target the target actor that is crossing the destination
          * @param hovered indicates whether the actor is now hovered or not
          */
-        public signal void crossed (Actor? target, bool hovered);
+        public signal void crossed (Clutter.Actor? target, bool hovered);
 
         /**
          * Emitted on the source when a destination is crossed.
@@ -66,11 +53,11 @@ namespace Gala {
          * @param destination The destination actor that has been crossed
          * @param hovered     Whether the actor is now hovered or has just been left
          */
-        public signal void destination_crossed (Actor destination, bool hovered);
+        public signal void destination_crossed (Clutter.Actor destination, bool hovered);
 
         /**
          * The source has been clicked, but the movement was not larger than
-         * the drag threshold. Useful if the source is also activable.
+         * the drag threshold. Useful if the source is also activatable.
          *
          * @param button The button which was pressed
          */
@@ -86,7 +73,7 @@ namespace Gala {
          */
         public string drag_id { get; construct; }
 
-        public Actor? handle { get; private set; }
+        public Clutter.Actor? handle { get; private set; }
         /**
          * Indicates whether a drag action is currently active
          */
@@ -98,20 +85,20 @@ namespace Gala {
          */
         public bool allow_bubbling { get; set; default = true; }
 
-        public Actor? hovered { private get; set; default = null; }
+        public Clutter.Actor? hovered { private get; set; default = null; }
 
         private bool clicked = false;
         private float last_x;
         private float last_y;
 
-        private Grab? grab = null;
-        private static unowned Actor? grabbed_actor = null;
-        private InputDevice? grabbed_device = null;
+        private Clutter.Grab? grab = null;
+        private static unowned Clutter.Actor? grabbed_actor = null;
+        private Clutter.InputDevice? grabbed_device = null;
         private ulong on_event_id = 0;
 
         static construct {
-            sources = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
-            destinations = new Gee.HashMap<string,Gee.LinkedList<unowned Actor>> ();
+            sources = new Gee.HashMap<string,Gee.LinkedList<unowned Clutter.Actor>> ();
+            destinations = new Gee.HashMap<string,Gee.LinkedList<unowned Clutter.Actor>> ();
         }
 
         /**
@@ -132,7 +119,7 @@ namespace Gala {
             }
         }
 
-        public override void set_actor (Actor? new_actor) {
+        public override void set_actor (Clutter.Actor? new_actor) {
             if (actor != null) {
                 release_actor (actor);
             }
@@ -144,7 +131,7 @@ namespace Gala {
             base.set_actor (new_actor);
         }
 
-        private void release_actor (Actor actor) {
+        private void release_actor (Clutter.Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
 
                 var source_list = sources.@get (drag_id);
@@ -159,12 +146,12 @@ namespace Gala {
             actor.destroy.disconnect (release_actor);
         }
 
-        private void connect_actor (Actor actor) {
+        private void connect_actor (Clutter.Actor actor) {
             if (DragDropActionType.SOURCE in drag_type) {
 
                 var source_list = sources.@get (drag_id);
                 if (source_list == null) {
-                    source_list = new Gee.LinkedList<unowned Actor> ();
+                    source_list = new Gee.LinkedList<unowned Clutter.Actor> ();
                     sources.@set (drag_id, source_list);
                 }
 
@@ -174,7 +161,7 @@ namespace Gala {
             if (DragDropActionType.DESTINATION in drag_type) {
                 var dest_list = destinations[drag_id];
                 if (dest_list == null) {
-                    dest_list = new Gee.LinkedList<unowned Actor> ();
+                    dest_list = new Gee.LinkedList<unowned Clutter.Actor> ();
                     destinations[drag_id] = dest_list;
                 }
 
@@ -184,19 +171,19 @@ namespace Gala {
             actor.destroy.connect (release_actor);
         }
 
-        private void emit_crossed (Actor destination, bool is_hovered) {
+        private void emit_crossed (Clutter.Actor destination, bool is_hovered) {
             get_drag_drop_action (destination).crossed (actor, is_hovered);
             destination_crossed (destination, is_hovered);
         }
 
-        public override bool handle_event (Event event) {
+        public override bool handle_event (Clutter.Event event) {
             if (!(DragDropActionType.SOURCE in drag_type)) {
                 return Clutter.EVENT_PROPAGATE;
             }
 
             switch (event.get_type ()) {
-                case EventType.BUTTON_PRESS:
-                case EventType.TOUCH_BEGIN:
+                case Clutter.EventType.BUTTON_PRESS:
+                case Clutter.EventType.TOUCH_BEGIN:
                     if (!is_valid_touch_event (event)) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -223,7 +210,7 @@ namespace Gala {
             return base.handle_event (event);
         }
 
-        private void grab_actor (Actor actor, InputDevice device) {
+        private void grab_actor (Clutter.Actor actor, Clutter.InputDevice device) {
             if (grabbed_actor != null) {
                 critical ("Tried to grab an actor with a grab already in progress");
             }
@@ -255,20 +242,20 @@ namespace Gala {
 
             if (grabbed_device != null &&
                 device != grabbed_device &&
-                device.get_device_type () != InputDeviceType.KEYBOARD_DEVICE) {
+                device.get_device_type () != Clutter.InputDeviceType.KEYBOARD_DEVICE) {
                     return Clutter.EVENT_PROPAGATE;
                 }
 
             switch (event.get_type ()) {
-                case EventType.KEY_PRESS:
-                    if (event.get_key_symbol () == Key.Escape) {
+                case Clutter.EventType.KEY_PRESS:
+                    if (event.get_key_symbol () == Clutter.Key.Escape) {
                         cancel ();
                     }
 
                     return Clutter.EVENT_STOP;
 
-                case EventType.BUTTON_RELEASE:
-                case EventType.TOUCH_END:
+                case Clutter.EventType.BUTTON_RELEASE:
+                case Clutter.EventType.TOUCH_END:
                     if (!is_valid_touch_event (event)) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -303,8 +290,8 @@ namespace Gala {
 
                     return Clutter.EVENT_STOP;
 
-                case EventType.MOTION:
-                case EventType.TOUCH_UPDATE:
+                case Clutter.EventType.MOTION:
+                case Clutter.EventType.TOUCH_UPDATE:
                     if (!is_valid_touch_event (event)) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -354,7 +341,7 @@ namespace Gala {
                         last_y = y;
 
                         var stage = actor.get_stage ();
-                        var actor = stage.get_actor_at_pos (PickMode.REACTIVE, (int) x, (int) y);
+                        var actor = stage.get_actor_at_pos (Clutter.PickMode.REACTIVE, (int) x, (int) y);
                         DragDropAction action = null;
                         // if we're allowed to bubble and this actor is not a destination, check its parents
                         if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
@@ -404,7 +391,7 @@ namespace Gala {
          *
          * @return the DragDropAction instance on this actor or NULL
          */
-        private DragDropAction? get_drag_drop_action (Actor actor) {
+        private DragDropAction? get_drag_drop_action (Clutter.Actor actor) {
             DragDropAction? drop_action = null;
 
             foreach (var action in actor.get_actions ()) {
