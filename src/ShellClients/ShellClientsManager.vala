@@ -185,6 +185,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         panel_windows[window].hide_mode = hide_mode;
     }
 
+    public void request_visible_in_multitasking_view (Meta.Window window) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before visible in mutltiasking view.");
+            return;
+        }
+
+        panel_windows[window].request_visible_in_multitasking_view ();
+    }
+
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
         positioned_windows[window] = new ShellWindow (window, CENTER);
 
