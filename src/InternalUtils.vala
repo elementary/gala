@@ -275,19 +275,6 @@ namespace Gala {
             }
         }
 
-        /**
-         * Returns the workspaces geometry following the only_on_primary settings.
-         */
-        public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
-            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
-                return display.get_monitor_geometry (display.get_primary_monitor ());
-            } else {
-                float screen_width, screen_height;
-                display.get_size (out screen_width, out screen_height);
-                return { 0, 0, (int) screen_width, (int) screen_height };
-            }
-        }
-
         public static Clutter.ActorBox actor_box_from_rect (float x, float y, float width, float height) {
             var actor_box = Clutter.ActorBox ();
             actor_box.init_rect (x, y, width, height);
