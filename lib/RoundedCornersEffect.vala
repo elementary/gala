@@ -47,13 +47,13 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         }
     }
 
-    public override void set_actor (Clutter.Actor? actor) {
+    public override void set_actor (Clutter.Actor? new_actor) {
         if (actor != null) {
             actor.notify["width"].disconnect (update_actor_size);
             actor.notify["height"].disconnect (update_actor_size);
         }
 
-        base.set_actor (actor);
+        base.set_actor (new_actor);
 
         if (actor != null) {
             actor.notify["width"].connect (update_actor_size);
