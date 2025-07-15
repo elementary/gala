@@ -41,6 +41,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public bool active {
         set {
+            active_shape.update_color ();
+
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
@@ -687,33 +689,22 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     /**
      * Border to show around the selected window when using keyboard navigation.
      */
-    private class ActiveShape : CanvasActor {
+    private class ActiveShape : Clutter.Actor {
         private const int BORDER_RADIUS = 16;
         private const double COLOR_OPACITY = 0.8;
 
         construct {
-            notify["opacity"].connect (invalidate);
+            add_effect (new RoundedCornersEffect (BORDER_RADIUS, 1.0f));
         }
 
-        public void invalidate () {
-            content.invalidate ();
-        }
-
-        protected override void draw (Cairo.Context cr, int width, int height) {
-            if (!visible || opacity == 0) {
-                return;
-            }
-
-            var color = Drawing.StyleManager.get_instance ().theme_accent_color;
-
-            cr.save ();
-            cr.set_operator (Cairo.Operator.CLEAR);
-            cr.paint ();
-            cr.restore ();
-
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, BORDER_RADIUS);
-            cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
-            cr.fill ();
+        public void update_color () {
+            var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
+            background_color = {
+                (uint8) (accent_color.red * uint8.MAX),
+                (uint8) (accent_color.green * uint8.MAX),
+                (uint8) (accent_color.blue * uint8.MAX),
+                (uint8) (COLOR_OPACITY * uint8.MAX)
+            };
         }
     }
 }
