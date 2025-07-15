@@ -1,7 +1,7 @@
 /*
  * Copyright 2012 Tom Beckmann
  * Copyright 2012 Rico Tzschichholz
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -264,16 +264,14 @@ namespace Gala {
             return sorted_windows;
         }
 
-        /**
-         * Returns the workspaces geometry following the only_on_primary settings.
-         */
-        public static Mtk.Rectangle get_workspaces_geometry (Meta.Display display) {
-            if (Meta.Prefs.get_workspaces_only_on_primary ()) {
-                return display.get_monitor_geometry (display.get_primary_monitor ());
-            } else {
-                float screen_width, screen_height;
-                display.get_size (out screen_width, out screen_height);
-                return { 0, 0, (int) screen_width, (int) screen_height };
+        public static inline bool get_window_is_normal (Meta.Window window) {
+            switch (window.window_type) {
+                case Meta.WindowType.NORMAL:
+                case Meta.WindowType.DIALOG:
+                case Meta.WindowType.MODAL_DIALOG:
+                    return true;
+                default:
+                    return false;
             }
         }
 
