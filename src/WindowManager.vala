@@ -451,7 +451,6 @@ namespace Gala {
             return Clutter.EVENT_STOP;
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
             Meta.KeyBinding binding) {
             var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
@@ -473,7 +472,6 @@ namespace Gala {
             }
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_move_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             if (window == null) {
@@ -501,7 +499,6 @@ namespace Gala {
             }
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_move_to_workspace_end (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             if (window == null) {
@@ -516,7 +513,6 @@ namespace Gala {
             workspace.activate_with_focus (window, timestamp);
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
@@ -540,7 +536,6 @@ namespace Gala {
             }
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_switch_to_workspace_end (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
@@ -548,7 +543,6 @@ namespace Gala {
             manager.get_workspace_by_index (index).activate (event != null ? event.get_time () : Meta.CURRENT_TIME);
         }
 
-        [CCode (instance_pos = -1)]
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);

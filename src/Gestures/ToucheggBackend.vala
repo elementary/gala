@@ -162,7 +162,6 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
         }
     }
 
-    [CCode (instance_pos = -1)]
     private void on_new_message (DBusConnection connection, string? sender_name, string object_path,
         string interface_name, string signal_name, Variant parameters) {
         last_signal_received = signal_name;

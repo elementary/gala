@@ -66,13 +66,11 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         }
     }
 
-    [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true);
     }
 
-    [CCode (instance_pos = -1)]
     private void zoom_out (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (-SHORTCUT_DELTA, true);
