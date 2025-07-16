@@ -584,88 +584,6 @@ namespace Gala {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
         }
 
-        private void show_bottom_stack_window (Meta.Window bottom_window) {
-            unowned var workspace = bottom_window.get_workspace ();
-            if (Utils.get_n_windows (workspace) == 0) {
-                return;
-            }
-
-            unowned var bottom_actor = (Meta.WindowActor) bottom_window.get_compositor_private ();
-            if (Meta.Prefs.get_gnome_animations ()) {
-                animate_bottom_window_scale (bottom_actor);
-            }
-
-            uint fade_out_duration = 900U;
-            double[] op_keyframes = { 0.1, 0.9 };
-            GLib.Value[] opacity = { 20U, 20U };
-#if HAS_MUTTER46
-            unowned Meta.Display display = get_display ();
-            unowned Meta.X11Display x11display = display.get_x11_display ();
-            var bottom_xwin = x11display.lookup_xwindow (bottom_window);
-#else
-            var bottom_xwin = bottom_window.get_xwindow ();
-#endif
-
-            workspace.list_windows ().@foreach ((window) => {
-#if HAS_MUTTER46
-                var xwin = x11display.lookup_xwindow (window);
-#else
-                var xwin = window.get_xwindow ();
-#endif
-                if (xwin == bottom_xwin
-                    || !Utils.get_window_is_normal (window)
-                    || window.minimized) {
-                    return;
-                }
-
-                unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    var op_trans = new Clutter.KeyframeTransition ("opacity") {
-                        duration = fade_out_duration,
-                        remove_on_complete = true,
-                        progress_mode = Clutter.AnimationMode.EASE_IN_OUT_QUAD
-                    };
-                    op_trans.set_from_value (255.0f);
-                    op_trans.set_to_value (255.0f);
-                    op_trans.set_key_frames (op_keyframes);
-                    op_trans.set_values (opacity);
-
-                    actor.add_transition ("opacity-hide", op_trans);
-                } else {
-                    Timeout.add ((uint)(fade_out_duration * op_keyframes[0]), () => {
-                        actor.opacity = (uint)opacity[0];
-                        return GLib.Source.REMOVE;
-                    });
-
-                    Timeout.add ((uint)(fade_out_duration * op_keyframes[1]), () => {
-                        actor.opacity = 255U;
-                        return GLib.Source.REMOVE;
-                    });
-                }
-            });
-        }
-
-        private void animate_bottom_window_scale (Meta.WindowActor actor) {
-            const string[] PROPS = { "scale-x", "scale-y" };
-
-            foreach (string prop in PROPS) {
-                double[] scale_keyframes = { 0.2, 0.3, 0.8 };
-                GLib.Value[] scale = { 1.0f, 1.07f, 1.07f };
-
-                var scale_trans = new Clutter.KeyframeTransition (prop) {
-                    duration = 500,
-                    remove_on_complete = true,
-                    progress_mode = Clutter.AnimationMode.EASE_IN_QUAD
-                };
-                scale_trans.set_from_value (1.0f);
-                scale_trans.set_to_value (1.0f);
-                scale_trans.set_key_frames (scale_keyframes);
-                scale_trans.set_values (scale);
-
-                actor.add_transition ("magnify-%s".printf (prop), scale_trans);
-            }
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -1331,18 +1249,8 @@ namespace Gala {
             actor.show ();
 
             // Notifications initial animation is handled by the notification stack
-            if (NotificationStack.is_notification (window)) {
+            if (NotificationStack.is_notification (window) || !Meta.Prefs.get_gnome_animations ()) {
                 map_completed (actor);
-                return;
-            }
-
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                map_completed (actor);
-
-                if (Utils.get_window_is_normal (window) && window.get_layer () == Meta.StackLayer.BOTTOM) {
-                    show_bottom_stack_window (window);
-                }
-
                 return;
             }
 
@@ -1377,10 +1285,6 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-
-                        if (window.get_layer () == Meta.StackLayer.BOTTOM) {
-                            show_bottom_stack_window (window);
-                        }
                     });
                     break;
                 case Meta.WindowType.MENU:
@@ -1430,10 +1334,6 @@ namespace Gala {
                         actor.disconnect (map_handler_id);
                         mapping.remove (actor);
                         map_completed (actor);
-
-                        if (window.get_layer () == Meta.StackLayer.BOTTOM) {
-                            show_bottom_stack_window (window);
-                        }
                     });
 
                     dim_parent_window (window);
