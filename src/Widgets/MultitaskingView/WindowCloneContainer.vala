@@ -47,7 +47,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
         var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
         new_window.selected.connect ((_new_window) => window_selected (_new_window.window));
-        new_window.request_reposition.connect (() => reflow (false));
+        new_window.drag_changed.connect (() => reflow (false));
         new_window.destroy.connect ((_new_window) => {
             // make sure to release reference if the window is selected
             if (_new_window == current_window) {
@@ -178,20 +178,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return;
         }
 
-        var windows = new GLib.List<TilableWindow?> ();
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            windows.prepend ({ clone, clone.window.get_frame_rect () });
-        }
-
-        // make sure the windows are always in the same order so the algorithm
-        // doesn't give us different slots based on stacking order, which can lead
-        // to windows flying around weirdly
-        windows.sort ((a, b) => {
-            var seq_a = ((WindowClone) a.clone).window.get_stable_sequence ();
-            var seq_b = ((WindowClone) b.clone).window.get_stable_sequence ();
-            return (int) (seq_b - seq_a);
-        });
-
         Mtk.Rectangle area = {
             padding_left,
             padding_top,
@@ -199,7 +185,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             (int) height - padding_top - padding_bottom
         };
 
-        foreach (var tilable in calculate_grid_placement (area, windows)) {
+        foreach (var tilable in calculate_grid_placement (area)) {
             tilable.clone.take_slot (tilable.rect, !view_toggle);
         }
     }
@@ -378,120 +364,44 @@ public class Gala.WindowCloneContainer : ActorTarget {
         return sorted_windows;
     }
 
-
-    // Code ported from KWin present windows effect
-    // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
-
-    // some math utilities
-    private static int squared_distance (Gdk.Point a, Gdk.Point b) {
-        var k1 = b.x - a.x;
-        var k2 = b.y - a.y;
-
-        return k1 * k1 + k2 * k2;
-    }
-
-    private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-        return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
-    }
-
-    private static Gdk.Point rect_center (Mtk.Rectangle rect) {
-        return {rect.x + rect.width / 2, rect.y + rect.height / 2};
-    }
-
     private struct TilableWindow {
         unowned WindowClone clone;
         Mtk.Rectangle rect;
     }
 
-    /**
-     * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
-     */
-    private static GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
-        uint window_count = windows.length ();
-        int columns = (int) Math.ceil (Math.sqrt (window_count));
-        int rows = (int) Math.ceil (window_count / (double) columns);
+    private GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area) {
+        var clones = (GLib.List<weak WindowClone>) get_children ().copy ();
+        clones.sort ((a, b) => {
+            var seq_a = a.window.get_stable_sequence ();
+            var seq_b = b.window.get_stable_sequence ();
+            return (int) (seq_a - seq_b);
+        });
+
+        var window_count = get_n_children ();
+
+        var columns = (int) Math.ceil (Math.sqrt (window_count));
+        var rows = (int) Math.ceil (window_count / (double) columns);
 
         // Assign slots
-        int slot_width = area.width / columns;
-        int slot_height = area.height / rows;
-
-        TilableWindow?[] taken_slots = {};
-        taken_slots.resize (rows * columns);
-
-        // precalculate all slot centers
-        Gdk.Point[] slot_centers = {};
-        slot_centers.resize (rows * columns);
-        for (int x = 0; x < columns; x++) {
-            for (int y = 0; y < rows; y++) {
-                slot_centers[x + y * columns] = {
-                    area.x + slot_width * x + slot_width / 2,
-                    area.y + slot_height * y + slot_height / 2
-                };
-            }
-        }
-
-        // Assign each window to the closest available slot
-        while (windows.length () > 0) {
-            unowned var link = windows.nth (0);
-            var window = link.data;
-            var rect = window.rect;
-
-            var slot_candidate = -1;
-            var slot_candidate_distance = int.MAX;
-            var pos = rect_center (rect);
-
-            // all slots
-            for (int i = 0; i < columns * rows; i++) {
-                if (i > window_count - 1)
-                    break;
-
-                var dist = squared_distance (pos, slot_centers[i]);
-
-                if (dist < slot_candidate_distance) {
-                    // window is interested in this slot
-                    var occupier = taken_slots[i];
-                    if (occupier == window)
-                        continue;
-
-                    if (occupier == null || dist < squared_distance (rect_center (occupier.rect), slot_centers[i])) {
-                        // either nobody lives here, or we're better - takeover the slot if it's our best
-                        slot_candidate = i;
-                        slot_candidate_distance = dist;
-                    }
-                }
-            }
-
-            if (slot_candidate == -1)
-                continue;
-
-            if (taken_slots[slot_candidate] != null)
-                windows.prepend (taken_slots[slot_candidate]);
-
-            windows.remove_link (link);
-            taken_slots[slot_candidate] = window;
-        }
+        var slot_width = area.width / columns;
+        var slot_height = area.height / rows;
 
         var result = new GLib.List<TilableWindow?> ();
 
         // see how many windows we have on the last row
-        int left_over = (int) window_count - columns * (rows - 1);
+        var left_over = window_count - columns * (rows - 1);
 
-        for (int slot = 0; slot < columns * rows; slot++) {
-            var window = taken_slots[slot];
-            // some slots might be empty
-            if (window == null)
-                continue;
-
-            var rect = window.rect;
+        for (int slot = 0; slot < window_count; slot++) {
+            unowned var clone = clones.nth_data (slot);
+            var rect = clone.window.get_frame_rect ();
 
             // Work out where the slot is
             Mtk.Rectangle target = {
-                area.x + (slot % columns) * slot_width,
-                area.y + (slot / columns) * slot_height,
-                slot_width,
-                slot_height
+                area.x + (slot % columns) * slot_width + 10,
+                area.y + (slot / columns) * slot_height + 10,
+                slot_width - 20,
+                slot_height - 20
             };
-            target = rect_adjusted (target, 10, 10, -10, -10);
 
             float scale;
             if (target.width / (double) rect.width < target.height / (double) rect.height) {
@@ -510,21 +420,21 @@ public class Gala.WindowCloneContainer : ActorTarget {
             if (scale > 1.0) {
                 scale = 1.0f;
                 target = {
-                    rect_center (target).x - (int) Math.floorf (rect.width * scale) / 2,
-                    rect_center (target).y - (int) Math.floorf (rect.height * scale) / 2,
-                    (int) Math.floorf (scale * rect.width),
-                    (int) Math.floorf (scale * rect.height)
+                    target.x + target.width / 2 - rect.width / 2,
+                    target.y + target.height / 2 - rect.height / 2,
+                    rect.width,
+                    rect.height
                 };
             }
 
             // put the last row in the center, if necessary
-            if (left_over != columns && slot >= columns * (rows - 1))
+            if (left_over != columns && slot >= columns * (rows - 1)) {
                 target.x += (columns - left_over) * slot_width / 2;
+            }
 
-            result.prepend ({ window.clone, target });
+            result.prepend ({ clone, target });
         }
 
-        result.reverse ();
         return result;
     }
 }

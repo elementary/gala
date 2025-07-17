@@ -22,10 +22,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public signal void selected ();
 
     /**
-     * The window was moved or resized and a relayout of the tiling layout may
-     * be sensible right now.
+     * The window was started or ended the drag and drop operation.
      */
-    public signal void request_reposition ();
+    public signal void drag_changed ();
 
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
@@ -103,8 +102,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
-        window.size_changed.connect (() => request_reposition ());
-        window.position_changed.connect (update_targets);
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -479,7 +476,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 0;
         clone.restore_easing_state ();
 
-        request_reposition ();
+        drag_changed ();
 
         get_transformed_position (out abs_x, out abs_y);
 
@@ -660,7 +657,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 255;
         clone.restore_easing_state ();
 
-        request_reposition ();
+        drag_changed ();
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
