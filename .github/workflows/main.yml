@@ -58,8 +58,25 @@ jobs:
           meson build
           ninja -C build install
 
-  lint:
+  open-suse-leap:
+    runs-on: ubuntu-latest
 
+    container:
+      image: opensuse/leap:latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: |
+          dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel libcanberra-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel xml2 sqlite-devel meson valac valadoc
+      - name: Build
+        env:
+          DESTDIR: out
+        run: |
+          meson build
+          ninja -C build install
+
+  lint:
     runs-on: ubuntu-latest
 
     container:
