@@ -3,17 +3,15 @@
  * Copyright 2020 Mark Story <mark@mark-story.com>
  * Copyright 2017 Popye <sailor3101@gmail.com>
  * Copyright 2014 Tom Beckmann
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
-    public const int ICON_SIZE = 64;
     public const int WRAPPER_PADDING = 12;
 
     private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
-    private const int ANIMATION_DURATION = 200;
     private const double GESTURE_STEP = 0.1;
 
     public WindowManager wm { get; construct; }
@@ -45,7 +43,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
                 _current_icon.grab_key_focus ();
             }
 
-            update_caption_text ();
+            var current_window = _current_icon != null ? _current_icon.window : null;
+            caption.text = current_window != null ? current_window.title : "n/a";
         }
     }
 
@@ -117,7 +116,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     }
 
     private void scale () {
-        scaling_factor = wm.get_display ().get_monitor_scale (wm.get_display ().get_current_monitor ());
+        unowned var display = wm.get_display ();
+        scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
         shadow_effect.monitor_scale = scaling_factor;
 
@@ -140,15 +140,14 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         base.get_preferred_width (for_height, null, out preferred_nat_width);
 
         unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
+        var geom = display.get_monitor_geometry (display.get_current_monitor ());
 
         float container_nat_width;
         container.get_preferred_size (null, null, out container_nat_width, null);
 
         var max_width = float.min (
-            geom.width - Utils.scale_to_int (MIN_OFFSET, scaling_factor) * 2, //Don't overflow the monitor
-            container_nat_width //Ellipsize the label if it's longer than the icons
+            geom.width - Utils.scale_to_int (MIN_OFFSET * 2, scaling_factor), // Don't overflow the monitor
+            container_nat_width // Ellipsize the label if it's longer than the icons
         );
 
         natural_width = float.min (max_width, preferred_nat_width);
@@ -268,7 +267,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         }
     }
 
-    [CCode (instance_pos = -1)]
     public void handle_switch_windows (
         Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent? event, Meta.KeyBinding binding
@@ -339,7 +337,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
-            var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
+            var icon = new WindowSwitcherIcon (window, scaling_factor);
             add_icon (icon);
 
             if (window == current_window) {
@@ -368,7 +366,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         var app = window_tracker.get_app_for_window (current_window);
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
-                var icon = new WindowSwitcherIcon (window, ICON_SIZE, scaling_factor);
+                var icon = new WindowSwitcherIcon (window, scaling_factor);
                 add_icon (icon);
 
                 if (window == current_window) {
@@ -394,8 +392,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     }
 
     private void open_switcher () {
+        unowned var display = wm.get_display ();
+
         if (container.get_n_children () == 0) {
-            InternalUtils.bell_notify (wm.get_display ());
+            InternalUtils.bell_notify (display);
             return;
         }
 
@@ -410,9 +410,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         float width, height;
         get_preferred_size (null, null, out width, out height);
 
-        unowned var display = wm.get_display ();
-        var monitor = display.get_current_monitor ();
-        var geom = display.get_monitor_geometry (monitor);
+        var geom = display.get_monitor_geometry (display.get_current_monitor ());
 
         set_position (
             (int) (geom.x + (geom.width - width) / 2),
@@ -436,7 +434,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         }
 
         save_easing_state ();
-        set_easing_duration (Utils.get_animation_duration (ANIMATION_DURATION));
+        set_easing_duration (Utils.get_animation_duration (AnimationDuration.HIDE));
         opacity = show ? 255 : 0;
         restore_easing_state ();
     }
@@ -484,12 +482,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private void next_window (bool backward) {
         gesture_controller.progress += backward ? -GESTURE_STEP : GESTURE_STEP;
-    }
-
-    private void update_caption_text () {
-        var current_window = current_icon != null ? current_icon.window : null;
-        var current_caption = current_window != null ? current_window.title : "n/a";
-        caption.set_text (current_caption);
     }
 
     public override void key_focus_out () {
