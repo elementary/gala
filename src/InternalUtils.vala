@@ -91,17 +91,6 @@ namespace Gala {
             workspace_manager.thaw_remove ();
         }
 
-        public static inline bool get_window_is_normal (Meta.Window window) {
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                case Meta.WindowType.DIALOG:
-                case Meta.WindowType.MODAL_DIALOG:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
         public static Clutter.ActorBox actor_box_from_rect (float x, float y, float width, float height) {
             var actor_box = Clutter.ActorBox ();
             actor_box.init_rect (x, y, width, height);
