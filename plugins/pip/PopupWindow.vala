@@ -70,7 +70,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         rounded_container = new Clutter.Actor ();
         rounded_container.add_child (clone_container);
-        rounded_container.add_effect (new RoundedCornersEffect (9, scale));
+        rounded_container.add_effect (new RoundedCornersEffect (6, scale));
 
         container = new Clutter.Actor () {
             reactive = true
