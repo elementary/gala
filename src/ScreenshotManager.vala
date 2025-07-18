@@ -67,7 +67,6 @@ public class Gala.ScreenshotManager : Object {
         notifications_manager.notification_closed.connect ((id) => notifications_id_to_path.remove (id));
     }
 
-    [CCode (instance_pos = -1)]
     private void handle_screenshot (
         Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {

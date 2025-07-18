@@ -46,13 +46,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         height = src_height * ratio;
     }
 
-    private static bool get_window_is_normal (Meta.Window window) {
-        var window_type = window.get_window_type ();
-        return window_type == Meta.WindowType.NORMAL
-            || window_type == Meta.WindowType.DIALOG
-            || window_type == Meta.WindowType.MODAL_DIALOG;
-    }
-
     public PopupWindow (Meta.Display display, Meta.WindowActor window_actor) {
         Object (display: display, window_actor: window_actor);
     }
@@ -325,8 +318,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private void update_window_focus () {
         unowned Meta.Window focus_window = display.get_focus_window ();
-        if ((focus_window != null && !get_window_is_normal (focus_window))
-            || (previous_focus != null && !get_window_is_normal (previous_focus))) {
+        if ((focus_window != null && !Utils.get_window_is_normal (focus_window))
+            || (previous_focus != null && !Utils.get_window_is_normal (previous_focus))) {
             previous_focus = focus_window;
             return;
         }

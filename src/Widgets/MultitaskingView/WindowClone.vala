@@ -103,8 +103,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
-        window.size_changed.connect (() => request_reposition ());
+        window.notify["minimized"].connect (update_targets);
         window.position_changed.connect (update_targets);
+        window.size_changed.connect (() => request_reposition ());
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -153,6 +154,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
+        window.notify["minimized"].disconnect (update_targets);
+        window.position_changed.disconnect (update_targets);
     }
 
     private void reallocate () {
