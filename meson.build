@@ -169,6 +169,7 @@ endif
 
 subdir('data')
 subdir('protocol')
+subdir('blur-protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')
