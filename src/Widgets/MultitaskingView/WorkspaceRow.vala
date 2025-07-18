@@ -8,15 +8,25 @@
 public class Gala.WorkspaceRow : ActorTarget {
     public const int WORKSPACE_GAP = 24;
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
+    public float monitor_scale { get; construct set; }
+    public IconGroupContainer icon_groups { get; construct; }
 
-    public WorkspaceRow (Meta.Display display) {
-        Object (display: display);
+    public WorkspaceRow (WindowManager wm, float monitor_scale) {
+        Object (wm: wm, monitor_scale: monitor_scale);
     }
 
     construct {
-        unowned var manager = display.get_workspace_manager ();
+        icon_groups = new IconGroupContainer (monitor_scale);
+
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+        manager.workspace_added.connect (add_workspace);
+        manager.workspace_removed.connect (remove_workspace);
         manager.workspaces_reordered.connect (update_order);
+
+        for (int i = 0; i < manager.get_n_workspaces (); i++) {
+            add_workspace (i);
+        }
     }
 
     public override void allocate (Clutter.ActorBox allocation) {
@@ -40,6 +50,25 @@ public class Gala.WorkspaceRow : ActorTarget {
         if (action == SWITCH_WORKSPACE) {
             queue_relayout ();
         }
+    }
+
+    private void add_workspace (int index) {
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+        unowned var workspace = manager.get_workspace_by_index (index);
+
+        var workspace_clone = new WorkspaceClone (wm, workspace, monitor_scale);
+        bind_property ("monitor-scale", workspace_clone, "monitor-scale");
+
+        insert_child_at_index (workspace_clone, index);
+
+        icon_groups.add_group (workspace_clone.icon_group);
+    }
+
+    private void remove_workspace (int index) {
+        var workspace_clone = (WorkspaceClone) get_child_at_index (index);
+        remove_child (workspace_clone);
+
+        icon_groups.remove_group (workspace_clone.icon_group);
     }
 
     private void update_order () {
