@@ -170,6 +170,19 @@ public class Gala.PluginManager : Object {
         return plugins.lookup (id);
     }
 
+    public WindowMenuItem[] get_plugin_items (Meta.Window window) {
+        WindowMenuItem[] result = {};
+
+        plugins.@foreach ((name, plugin) => {
+            var plugin_items = plugin.get_window_menu_items (window);
+            for (var i = 0; i < plugin_items.length; i++) {
+                result += plugin_items[i];
+            }
+        });
+
+        return result;
+    }
+
     /**
      * Iterate over all plugins and grab their regions, update the regions
      * array accordingly and emit the regions_changed signal.
