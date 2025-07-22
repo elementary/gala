@@ -16,7 +16,6 @@ You'll need the following dependencies:
 * libgranite-dev (>= 5.4.0)
 * libgtk-3-dev (>= 3.10.0)
 * libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
-* libxml2-utils
 * meson (>= 0.59.0)
 * valac (>= 0.46.0)
 
