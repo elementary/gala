@@ -11,14 +11,7 @@ gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
 cc = meson.get_compiler('c')
-
-gala_version = meson.project_version()
-
-vala_version_required = '0.46.0'
 vala = meson.get_compiler('vala')
-if not vala.version().version_compare('>= @0@'.format(vala_version_required))
-    error('Valac >= @0@ required!'.format(vala_version_required))
-endif
 
 vapi_dir = meson.current_source_dir() / 'vapi'
 
@@ -35,7 +28,7 @@ conf.set_quoted('DATADIR', data_dir)
 conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
 conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
-conf.set_quoted('VERSION', gala_version)
+conf.set_quoted('VERSION', meson.project_version())
 config_h = configure_file(
     output: 'config.h',
     configuration: conf
@@ -156,6 +149,10 @@ mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
 
 if get_option('systemd')
     vala_flags += ['--define', 'WITH_SYSTEMD']
+endif
+
+if vala.version().version_compare('>= 0.56.17')
+    vala_flags += ['--define', 'VALA_0_56_17']
 endif
 
 add_project_arguments(vala_flags, language: 'vala')
