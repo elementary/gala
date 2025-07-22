@@ -968,7 +968,11 @@ namespace Meta {
 		public Meta.MaximizeFlags get_maximized ();
 		public int get_monitor ();
 		public unowned string? get_mutter_hints ();
+#if VALA_0_56_17
 		public pid_t get_pid ();
+#else
+		public int get_pid ();
+#endif
 		public unowned string get_role ();
 		public unowned string? get_sandboxed_app_id ();
 		public uint get_stable_sequence ();

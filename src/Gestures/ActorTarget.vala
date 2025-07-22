@@ -30,7 +30,11 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
         current_commit = new double[GestureAction.N_ACTIONS];
         targets = new Gee.ArrayList<GestureTarget> ();
 
+#if HAS_MUTTER46
         child_added.connect (on_child_added);
+#else
+        actor_added.connect (on_child_added);
+#endif
     }
 
     private void sync_target (GestureTarget target) {
