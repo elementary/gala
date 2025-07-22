@@ -89,6 +89,7 @@ jobs:
     - name: Lint
       run: |
         io.elementary.vala-lint -d daemon
+        io.elementary.vala-lint -d daemon-gtk3
         io.elementary.vala-lint -d lib
         io.elementary.vala-lint -d plugins
         io.elementary.vala-lint -d src
