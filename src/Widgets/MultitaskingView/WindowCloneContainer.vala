@@ -463,7 +463,16 @@ public class Gala.WindowCloneContainer : ActorTarget {
             var result = new GLib.List<TilableWindow?> ();
             foreach (var tilable in windows) {
                 Mtk.Rectangle rect;
+#if HAS_MUTTER46
                 tilable.rect.scale_double (scale, Mtk.RoundingStrategy.ROUND, out rect);
+#else
+                rect = {
+                    0,
+                    0,
+                    Utils.scale_to_int (tilable.rect.width, scale),
+                    Utils.scale_to_int (tilable.rect.height, scale)
+                };
+#endif
 
                 var x_ratio = (float) tilable.rect.x / monitor_geometry.width;
                 rect.x = area.x + Utils.scale_to_int (area.width, x_ratio);
