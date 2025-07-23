@@ -136,7 +136,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, monitor_scale) {
+        window_container = new WindowCloneContainer (wm, primary_monitor, monitor_scale) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };

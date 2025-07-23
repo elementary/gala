@@ -18,6 +18,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public int padding_bottom { get; set; default = 12; }
 
     public WindowManager wm { get; construct; }
+    public int monitor { get; construct; }
     public float monitor_scale { get; construct set; }
     public bool overview_mode { get; construct; }
 
@@ -29,8 +30,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, int monitor, float monitor_scale, bool overview_mode = false) {
+        Object (wm: wm, monitor: monitor, monitor_scale: monitor_scale, overview_mode: overview_mode);
     }
 
     /**
@@ -48,6 +49,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
         var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
         new_window.selected.connect ((_new_window) => window_selected (_new_window.window));
         new_window.request_reposition.connect (() => reflow (false));
+        new_window.enter_event.connect ((_new_window, event) => {
+            set_child_above_sibling (_new_window, null);
+            return Clutter.EVENT_PROPAGATE;
+        });
         new_window.destroy.connect ((_new_window) => {
             // make sure to release reference if the window is selected
             if (_new_window == current_window) {
@@ -192,14 +197,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return (int) (seq_b - seq_a);
         });
 
-        Mtk.Rectangle area = {
-            padding_left,
-            padding_top,
-            (int) width - padding_left - padding_right,
-            (int) height - padding_top - padding_bottom
-        };
-
-        foreach (var tilable in calculate_grid_placement (area, windows)) {
+        foreach (var tilable in calculate_window_clones_placement (windows)) {
             tilable.clone.take_slot (tilable.rect, !view_toggle);
         }
     }
@@ -335,6 +333,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             if (current_window != null && user_action) {
                 InternalUtils.bell_notify (wm.get_display ());
                 current_window.active = true;
+                set_child_above_sibling (current_window, null);
             }
             return;
         }
@@ -345,6 +344,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
         if (user_action) {
             closest.active = true;
+            set_child_above_sibling (closest, null);
         }
 
         current_window = closest;
@@ -403,10 +403,87 @@ public class Gala.WindowCloneContainer : ActorTarget {
         Mtk.Rectangle rect;
     }
 
+    private bool windows_overlap (GLib.List<TilableWindow?> windows) {
+        var checked_rects = new GLib.List<Mtk.Rectangle?> ();
+        foreach (var tilable in windows) {
+            var window_rect = tilable.clone.window.get_frame_rect ();
+            foreach (var checked_rect in checked_rects) {
+                if (window_rect.overlap (checked_rect)) {
+                    return true;
+                }
+            }
+
+            checked_rects.append (window_rect);
+        }
+
+        return false;
+    }
+
+    private bool window_out_of_screen (GLib.List<TilableWindow?> windows) {
+        foreach (var tilable in windows) {
+            unowned var window = tilable.clone.window;
+            var window_rect = window.get_frame_rect ();
+            var monitor_geometry = window.display.get_monitor_geometry (window.get_monitor ());
+            if (
+                window_rect.x < monitor_geometry.x ||
+                window_rect.y < monitor_geometry.y ||
+                window_rect.x + window_rect.width > monitor_geometry.width ||
+                window_rect.y + window_rect.height > monitor_geometry.height
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Mtk.Rectangle get_rectangle_with_padding () {
+        return {
+            padding_left,
+            padding_top,
+            (int) width - padding_left - padding_right,
+            (int) height - padding_top - padding_bottom
+        };
+    }
+
+    private GLib.List<TilableWindow?> calculate_window_clones_placement (GLib.List<TilableWindow?> windows) {
+        if (windows_overlap (windows) || window_out_of_screen (windows)) {
+            return calculate_grid_placement (windows);
+        } else {
+            Mtk.Rectangle area;
+            if (overview_mode) {
+                area = { 0, 0, (int) width, (int) height };
+            } else {
+                area = get_rectangle_with_padding ();
+            }
+
+            var monitor_geometry = wm.get_display ().get_monitor_geometry (monitor);
+            var scale = (float) area.width / monitor_geometry.width;
+
+            var result = new GLib.List<TilableWindow?> ();
+            foreach (var tilable in windows) {
+                Mtk.Rectangle rect;
+                tilable.rect.scale_double (scale, Mtk.RoundingStrategy.ROUND, out rect);
+
+                var x_ratio = (float) tilable.rect.x / monitor_geometry.width;
+                rect.x = area.x + Utils.scale_to_int (area.width, x_ratio);
+
+                var y_ratio = (float) tilable.rect.y / monitor_geometry.height;
+                rect.y = area.y + Utils.scale_to_int (area.height, y_ratio);
+
+                result.append ({ tilable.clone, rect });
+            }
+
+            return result;
+        }
+    }
+
     /**
      * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
      */
-    private static GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
+    private GLib.List<TilableWindow?> calculate_grid_placement (GLib.List<TilableWindow?> windows) {
+        var area = get_rectangle_with_padding ();
+
         uint window_count = windows.length ();
         int columns = (int) Math.ceil (Math.sqrt (window_count));
         int rows = (int) Math.ceil (window_count / (double) columns);
