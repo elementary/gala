@@ -8,8 +8,15 @@
 uniform sampler2D tex;
 uniform int COLORBLIND_MODE;
 uniform float STRENGTH;
+uniform bool PAUSE_FOR_SCREENSHOT;
+
 void main() {
     vec4 c = texture2D(tex, cogl_tex_coord0_in.xy);
+
+    if (PAUSE_FOR_SCREENSHOT) {
+        cogl_color_out = c;
+        return;
+    }
 
     // RGB to LMS matrix
     float L = (17.8824f * c.r) + (43.5161f * c.g) + (4.11935f * c.b);
