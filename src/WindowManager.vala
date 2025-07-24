@@ -79,6 +79,8 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
+        private FilterManager filter_manager;
+
         private NotificationsManager notifications_manager;
 
         private ScreenshotManager screenshot_manager;
@@ -133,6 +135,12 @@ namespace Gala {
 
             AccessDialog.watch_portal ();
 
+
+            filter_manager = new FilterManager (this);
+            notifications_manager = new NotificationsManager ();
+            screenshot_manager = new ScreenshotManager (this, notifications_manager, filter_manager);
+            DBus.init (this, notifications_manager, screenshot_manager);
+
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
@@ -172,10 +180,6 @@ namespace Gala {
 
         private void show_stage () {
             unowned Meta.Display display = get_display ();
-
-            notifications_manager = new NotificationsManager ();
-            screenshot_manager = new ScreenshotManager (this, notifications_manager);
-            DBus.init (this, notifications_manager, screenshot_manager);
 
             WindowListener.init (display);
             keyboard_manager = new KeyboardManager (display);
@@ -300,8 +304,6 @@ namespace Gala {
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
-
-            FilterManager.init (this);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
