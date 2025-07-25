@@ -78,7 +78,7 @@ public class Gala.DesktopIntegration : GLib.Object {
             return false;
         }
 
-        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+        if (ShellClientsManager.get_instance ().is_shell_window (window)) {
             return false;
         }
 

@@ -203,10 +203,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
+        return (
+            (window in positioned_windows) ||
+            (window in panel_windows) ||
+            NotificationStack.is_notification (window) ||
+            ManagedClient.is_wayland_client (window)
+        );
     }
 
-    public bool is_positioned_window (Meta.Window window) {
+    public bool is_shell_window (Meta.Window window) {
         bool positioned = is_itself_positioned (window);
         window.foreach_ancestor ((ancestor) => {
             if (is_itself_positioned (ancestor)) {

@@ -341,6 +341,10 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void track_window (Meta.Window window) {
+        if (ShellClientsManager.get_instance ().is_shell_window (window)) {
+            return;
+        }
+
         var app = get_app_for_window (window);
         if (app == null) {
             return;

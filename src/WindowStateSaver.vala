@@ -87,7 +87,7 @@ public class Gala.WindowStateSaver : GLib.Object {
             return;
         }
 
-        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+        if (ShellClientsManager.get_instance ().is_shell_window (window)) {
             return;
         }
 
