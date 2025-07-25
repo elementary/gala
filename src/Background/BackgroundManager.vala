@@ -51,13 +51,12 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     private void swap_background_actor (bool animate) requires (new_background_actor != null) {
-        var old_background_actor = background_actor;
-        background_actor = new_background_actor;
-        new_background_actor = null;
 
         changed ();
 
-        if (old_background_actor == null) {
+        if (background_actor == null) {
+            background_actor = new_background_actor;
+            new_background_actor = null;
             return;
         }
 
@@ -67,16 +66,17 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             transition.set_to_value (0);
             transition.duration = FADE_ANIMATION_TIME;
             transition.progress_mode = Clutter.AnimationMode.EASE_OUT_QUAD;
-            transition.remove_on_complete = true;
-            transition.completed.connect (() => {
-                old_background_actor.destroy ();
+            transition.completed.connect ((_transition) => {
+                _transition.actor.destroy ();
             });
 
-            old_background_actor.add_transition ("fade-out", transition);
+            background_actor.add_transition ("fade-out", transition);
         } else {
-            old_background_actor.destroy ();
+            background_actor.destroy ();
         }
 
+        background_actor = new_background_actor;
+        new_background_actor = null;
     }
 
     private void update_background_actor (bool animate = true) {
@@ -93,6 +93,13 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         if (background.is_loaded) {
             if (rounded_corners) {
+                var monitor_geometry = display.get_monitor_geometry (monitor_index);
+                var clip_bounds = Graphene.Rect () {
+                    origin = {0, 0},
+                    size = {monitor_geometry.width, monitor_geometry.height},
+                };
+
+                new_content.set_rounded_clip_bounds (clip_bounds);
                 new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
             }
 
@@ -106,6 +113,13 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             background.set_data<ulong> ("background-loaded-handler", 0);
 
             if (rounded_corners) {
+                var monitor_geometry = display.get_monitor_geometry (monitor_index);
+                var clip_bounds = Graphene.Rect () {
+                    origin = {0, 0},
+                    size = {monitor_geometry.width, monitor_geometry.height},
+                };
+
+                new_content.set_rounded_clip_bounds (clip_bounds);
                 new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
             }
 
