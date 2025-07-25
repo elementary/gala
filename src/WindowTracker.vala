@@ -341,6 +341,10 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void track_window (Meta.Window window) {
+        if (ManagedClient.is_wayland_client (window)) {
+            return;
+        }
+
         var app = get_app_for_window (window);
         if (app == null) {
             return;

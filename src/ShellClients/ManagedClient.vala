@@ -18,10 +18,16 @@ public class Gala.ManagedClient : Object {
 
     public Meta.WaylandClient? wayland_client { get; private set; }
 
+    private static GLib.List<unowned ManagedClient> instances = new GLib.List<unowned ManagedClient> ();
     private Subprocess? subprocess;
 
     public ManagedClient (Meta.Display display, string[] args) {
         Object (display: display, args: args);
+        instances.append (this);
+    }
+
+    ~ManagedClient () {
+        instances.remove (this);
     }
 
     construct {
@@ -45,6 +51,20 @@ public class Gala.ManagedClient : Object {
         } else {
             start_x.begin ();
         }
+    }
+
+    public static bool is_wayland_client (Meta.Window window) {
+        if (!Meta.Util.is_wayland_compositor ()) {
+            return false;
+        }
+
+        foreach (unowned var instance in instances) {
+            if (instance.wayland_client.owns_window (window)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private async void start_wayland () {

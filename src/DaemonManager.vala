@@ -18,7 +18,7 @@ public class Gala.DaemonManager : GLib.Object {
 
     public Meta.Display display { get; construct; }
 
-    private Meta.WaylandClient daemon_client;
+    private ManagedClient client;
     private Daemon? daemon_proxy = null;
 
     public DaemonManager (Meta.Display display) {
@@ -28,55 +28,19 @@ public class Gala.DaemonManager : GLib.Object {
     construct {
         Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
-        if (Meta.Util.is_wayland_compositor ()) {
-            start_wayland.begin ();
+        string[] args = { Meta.Util.is_wayland_compositor () ? "gala-daemon" : "gala-daemon-gtk3" };
+        client = new ManagedClient (display, args);
 
-            display.window_created.connect ((window) => {
-                if (daemon_client.owns_window (window)) {
-                    window.shown.connect (handle_daemon_window);
-                }
-            });
-        } else {
-            start_x.begin ();
-        }
-    }
-
-    private async void start_wayland () {
-        var subprocess_launcher = new GLib.SubprocessLauncher (NONE);
-        try {
-            daemon_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
-            string[] args = {"gala-daemon"};
-            var subprocess = daemon_client.spawnv (display, args);
-
-            yield subprocess.wait_async ();
-
-            //Restart the daemon if it crashes
-            Timeout.add_seconds (1, () => {
-                start_wayland.begin ();
-                return Source.REMOVE;
-            });
-        } catch (Error e) {
-            warning ("Failed to create dock client: %s", e.message);
-            return;
-        }
-    }
-
-    private async void start_x () {
-        try {
-            var subprocess = new Subprocess (NONE, "gala-daemon-gtk3");
-            yield subprocess.wait_async ();
-
-            //Restart the daemon if it crashes
-            Timeout.add_seconds (1, () => {
-                start_x.begin ();
-                return Source.REMOVE;
-            });
-        } catch (Error e) {
-            warning ("Failed to create daemon subprocess with x: %s", e.message);
-        }
+        client.window_created.connect ((window) => {
+            window.shown.connect (handle_daemon_window);
+        });
     }
 
     private void handle_daemon_window (Meta.Window window) {
+        if (window.title == null) {
+            return;
+        }
+
         var info = window.title.split ("-");
 
         if (info.length == 0) {
@@ -99,7 +63,7 @@ public class Gala.DaemonManager : GLib.Object {
 
             case "MODAL":
 #if HAS_MUTTER46
-                daemon_client.make_dock (window);
+                client.wayland_client.make_dock (window);
 #endif
                 window.move_frame (false, 0, 0);
                 window.make_above ();
