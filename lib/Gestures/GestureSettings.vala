@@ -19,7 +19,7 @@
 /**
  * Utility class to access the gesture settings. Easily accessible through GestureTracker.settings.
  */
-public class Gala.GestureSettings : Object {
+private class Gala.GestureSettings : Object {
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 

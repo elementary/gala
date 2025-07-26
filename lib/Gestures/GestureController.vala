@@ -13,7 +13,7 @@
  * You shouldn't connect a notify to the progress directly though, but rather use a
  * {@link GestureTarget} implementation.
  * The {@link progress} can be seen as representing the state that the UI the gesture affects
- * is currently in (e.g. 0 for multitasking view closed, 1 for it opend, or 0 for first workspace,
+ * is currently in (e.g. 0 for multitasking view closed, 1 for it opened, or 0 for first workspace,
  * -1 for second, -2 for third, etc.). Therefore the progress often needs boundaries which can be
  * set with {@link overshoot_lower_clamp} and {@link overshoot_upper_clamp}. If the values are integers
  * it will be a hard boundary, if they are fractional it will slow the gesture progress when over the

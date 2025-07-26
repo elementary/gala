@@ -90,8 +90,8 @@ public class Gala.Daemon.DBus : GLib.Object {
         menu.attach_to_widget (window.content, null);
 
         Gdk.Rectangle rect = {
-            x,
-            y,
+            x / window.scale_factor,
+            y / window.scale_factor,
             0,
             0
         };

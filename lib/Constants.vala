@@ -35,17 +35,6 @@ namespace Gala {
         NUDGE = 360,
     }
 
-    public enum GestureAction {
-        NONE,
-        SWITCH_WORKSPACE,
-        SWITCH_WINDOWS,
-        MULTITASKING_VIEW,
-        DOCK,
-        ZOOM,
-        CLOSE_WINDOW,
-        N_ACTIONS
-    }
-
     /**
      * Used as a key for Object.set_data<bool> on Meta.Windows that should be
      * treated as notifications. Has to be set before the window is mapped.

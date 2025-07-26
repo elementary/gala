@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-05-14 17:55+0000\n"
-"Last-Translator: Leonardo Lemos <leonardolemos@live.com>\n"
+"PO-Revision-Date: 2025-07-26 17:55+0000\n"
+"Last-Translator: Guilherme Faura <guilhermefaura@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://l10n.elementaryos.org/projects/"
 "desktop/gala/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
@@ -281,10 +281,9 @@ msgstr "Captura de tela de %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:167
-#, fuzzy, c-format
-#| msgid "Show in Files"
+#, c-format
 msgid "Show in %s"
-msgstr "Mostrar em Arquivos"
+msgstr "Mostrar em %s"
 
 #: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
 msgid "Screenshot taken"

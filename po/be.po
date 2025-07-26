@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-07-19 10:55+0000\n"
+"PO-Revision-Date: 2025-07-26 17:55+0000\n"
 "Last-Translator: lenify <lenify@tutanota.com>\n"
 "Language-Team: Belarusian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/be/>\n"
@@ -75,7 +75,7 @@ msgstr ""
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
-msgstr "Зачыніць"
+msgstr "Закрыць"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
@@ -115,7 +115,7 @@ msgstr "elementary, Inc."
 #: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:265
 #: data/gala.metainfo.xml.in:290 data/gala.metainfo.xml.in:306
 msgid "Improvements:"
-msgstr ""
+msgstr "Паляпшэнні:"
 
 #: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
 #: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:87
