@@ -277,16 +277,16 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
             }
 
+            // Add the remaining components that should be on top
+            shell_group = new Clutter.Actor ();
+            ui_group.add_child (shell_group);
+
             if (plugin_manager.window_overview_provider == null
                 || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
             ) {
                 window_overview = new WindowOverview (this);
                 ui_group.add_child ((Clutter.Actor) window_overview);
             }
-
-            // Add the remaining components that should be on top
-            shell_group = new Clutter.Actor ();
-            ui_group.add_child (shell_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1367,7 +1367,7 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
+            if (!Meta.Prefs.get_gnome_animations () || !actor.visible) {
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {
