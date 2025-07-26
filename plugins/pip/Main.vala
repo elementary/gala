@@ -49,6 +49,22 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         windows.clear ();
     }
 
+    public override Gala.WindowMenuItem[] get_window_menu_items (Meta.Window window) {
+        var keybindings = new GLib.Settings ("io.elementary.desktop.wm.keybindings").get_strv ("pip");
+        var keybinding = keybindings.length > 0 ? keybindings[0] : "";
+
+        WindowMenuItem pip_item = {
+            BUTTON,
+            true,
+            false,
+            _("Picture-in-Picture"),
+            keybinding,
+            (window) => create_popup_window ((Meta.WindowActor) window.get_compositor_private ())
+        };
+
+        return { pip_item };
+    }
+
     private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
         Meta.KeyBinding binding) {
         selection_area = new SelectionArea (wm);
@@ -97,11 +113,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
             return;
         }
 
-        var popup_window = new PopupWindow (wm.get_display (), active);
-        popup_window.set_container_clip (rect);
-        popup_window.show.connect (on_popup_window_show);
-        popup_window.hide.connect (on_popup_window_hide);
-        add_window (popup_window);
+        create_popup_window (active, rect);
     }
 
     private void on_popup_window_show (Clutter.Actor popup_window) {
@@ -117,11 +129,18 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
-            var popup_window = new PopupWindow (wm.get_display (), selected);
-            popup_window.show.connect (on_popup_window_show);
-            popup_window.hide.connect (on_popup_window_hide);
-            add_window (popup_window);
+            create_popup_window (selected);
         }
+    }
+
+    private void create_popup_window (Meta.WindowActor window_actor, Graphene.Rect? clip = null) {
+        var popup_window = new PopupWindow (wm.get_display (), window_actor);
+        if (clip != null) {
+            popup_window.set_container_clip (clip);
+        }
+        popup_window.show.connect (on_popup_window_show);
+        popup_window.hide.connect (on_popup_window_hide);
+        add_window (popup_window);
     }
 
     private void clear_selection_area () {
