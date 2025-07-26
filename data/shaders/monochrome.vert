@@ -5,9 +5,16 @@
 
 uniform sampler2D tex;
 uniform float STRENGTH;
+uniform bool PAUSE_FOR_SCREENSHOT;
+
 void main() {
-    vec2 uv = cogl_tex_coord0_in.xy;
-    vec4 sample = texture2D (tex, uv);
+    vec4 sample = texture2D (tex, cogl_tex_coord0_in.xy);
+
+    if (PAUSE_FOR_SCREENSHOT) {
+        cogl_color_out = sample;
+        return;
+    }
+
     vec3 luminance = vec3 (0.2126, 0.7512, 0.0722);
     float gray = luminance.r * sample.r + luminance.g * sample.g + luminance.b * sample.b;
     cogl_color_out = vec4 (
