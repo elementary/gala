@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public interface Gala.GestureBackend : Object {
+private interface Gala.GestureBackend : Object {
     public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
     public signal void on_begin (double delta, uint64 time);
     public signal void on_update (double delta, uint64 time);
