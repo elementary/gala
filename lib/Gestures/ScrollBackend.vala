@@ -19,7 +19,7 @@
 /**
  * This gesture backend transforms the touchpad scroll events received by an actor into gestures.
  */
-public class Gala.ScrollBackend : Object, GestureBackend {
+private class Gala.ScrollBackend : Object, GestureBackend {
     // Mutter does not expose the size of the touchpad, so we use the same values as GTK apps.
     // From GNOME Shell, TOUCHPAD_BASE_[WIDTH|HEIGHT] / SCROLL_MULTIPLIER
     // https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/swipeTracker.js
