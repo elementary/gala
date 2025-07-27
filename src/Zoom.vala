@@ -37,7 +37,7 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         gesture_controller = new GestureController (ZOOM, wm) {
             snap = false
         };
-        gesture_controller.enable_touchpad ();
+        gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (gesture_controller);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");

@@ -23,6 +23,8 @@
 public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
+    private const string GESTURE_CONTROLLER_ID = "multitaskingview";
+
     private GestureController workspaces_gesture_controller;
     private GestureController multitasking_gesture_controller;
 
@@ -58,18 +60,18 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm);
-        multitasking_gesture_controller.enable_touchpad ();
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, GESTURE_CONTROLLER_ID);
+        multitasking_gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
         workspaces = new WorkspaceRow (display);
 
-        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm) {
+        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm, GESTURE_CONTROLLER_ID) {
             overshoot_upper_clamp = 0.1
         };
-        workspaces_gesture_controller.enable_touchpad ();
+        workspaces_gesture_controller.enable_touchpad (wm.stage);
         workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
         add_gesture_controller (workspaces_gesture_controller);
 
@@ -252,7 +254,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             show ();
             grab_key_focus ();
 
-            modal_proxy = wm.push_modal (this);
+            modal_proxy = wm.push_modal (get_stage ());
             modal_proxy.set_keybinding_filter (keybinding_filter);
             modal_proxy.allow_actions ({ MULTITASKING_VIEW, SWITCH_WORKSPACE, ZOOM });
 
