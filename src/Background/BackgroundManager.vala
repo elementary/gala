@@ -51,7 +51,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     private void swap_background_actor (bool animate) requires (new_background_actor != null) {
-
         changed ();
 
         if (background_actor == null) {
