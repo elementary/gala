@@ -4,10 +4,6 @@
  */
 
 public class Gala.BackgroundBlurEffect : Clutter.Effect {
-    /**
-     * Our rounded corners effect is antialiased, so we need to add a small offset to have proper corners
-     */
-    private const int CLIP_RADIUS_OFFSET = 2;
     private const float MIN_DOWNSCALE_SIZE = 256.0f;
     private const float MAX_RADIUS = 12.0f;
     private const int FORCE_REFRESH_FRAMES = 2;
@@ -72,8 +68,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                 uniform float clip_radius;
 
                 float rounded_rect_coverage (vec2 p) {
-                    float center_left = clip_radius + 1.5;
-                    float center_right = actor_size.x - clip_radius - 0.55;
+                    float center_left = clip_radius;
+                    float center_right = actor_size.x - clip_radius;
 
                     float center_x;
                     if (p.x < center_left) {
@@ -84,8 +80,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                         return 1.0;
                     }
 
-                    float center_top = clip_radius + 1.5;
-                    float center_bottom = actor_size.y - clip_radius - 0.55;
+                    float center_top = clip_radius;
+                    float center_bottom = actor_size.y - clip_radius;
 
                     float center_y;
                     if (p.y < center_top) {
@@ -111,7 +107,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                         return 1.0;
                     }
                     // Only pixels on the edge of the curve need expensive antialiasing
-                    return outer_radius - sqrt (dist_squared);
+                    return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
                 }
                 """,
 
@@ -149,7 +145,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private void update_clip_radius () {
-        float[] _clip_radius = { clip_radius * monitor_scale + CLIP_RADIUS_OFFSET };
+        float[] _clip_radius = { clip_radius * monitor_scale };
         round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, _clip_radius);
     }
 
