@@ -43,9 +43,6 @@ public class Gala.BlurManager : Object {
             window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
             parse_mutter_hints (window);
         });
-
-        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (update_monitors);
     }
 
     /**
@@ -58,11 +55,9 @@ public class Gala.BlurManager : Object {
             return;
         }
 
-        var monitor_scaling_factor = wm.get_display ().get_monitor_scale (window.get_monitor ());
-
         var blur_data = blurred_windows[window];
         if (blur_data == null) {
-            var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, clip_radius, monitor_scaling_factor);
+            var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, (int) clip_radius, 1.0f);
 
             var blurred_actor = new Clutter.Actor ();
             blurred_actor.add_effect (blur_effect);
@@ -76,12 +71,11 @@ public class Gala.BlurManager : Object {
 
         var buffer_rect = window.get_buffer_rect ();
         var frame_rect = window.get_frame_rect ();
-        var x_shadow_size = (frame_rect.x - buffer_rect.x) / monitor_scaling_factor;
-        var y_shadow_size = (frame_rect.y - buffer_rect.y) / monitor_scaling_factor;
+        var x_shadow_size = frame_rect.x - buffer_rect.x;
+        var y_shadow_size = frame_rect.y - buffer_rect.y;
 
         blur_data.actor.set_position (x_shadow_size + left, y_shadow_size + top);
         blur_data.actor.set_size (frame_rect.width - left - right, frame_rect.height - top - bottom);
-        blur_data.blur_effect.monitor_scale = monitor_scaling_factor;
     }
 
     public void remove_blur (Meta.Window window) {
@@ -108,15 +102,6 @@ public class Gala.BlurManager : Object {
         }
 
         add_blur (window, blur_data.left, blur_data.right, blur_data.top, blur_data.bottom, blur_data.clip_radius);
-    }
-
-    private void update_monitors () {
-        foreach (unowned var window in blurred_windows.get_keys ()) {
-            var blur_data = blurred_windows[window];
-
-            var monitor_scaling_factor = window.display.get_monitor_scale (window.get_monitor ());
-            blur_data.blur_effect.monitor_scale = monitor_scaling_factor;
-        }
     }
 
     //X11 only
