@@ -19,8 +19,13 @@ public class Gala.ColorblindnessCorrectionEffect : Clutter.ShaderEffect {
         get { return _strength; }
         construct set {
             _strength = value;
-
             set_uniform_value ("STRENGTH", value);
+            queue_repaint ();
+        }
+    }
+    public bool pause_for_screenshot {
+        set {
+            set_uniform_value ("PAUSE_FOR_SCREENSHOT", (int) value);
             queue_repaint ();
         }
     }
@@ -47,5 +52,7 @@ public class Gala.ColorblindnessCorrectionEffect : Clutter.ShaderEffect {
         } catch (Error e) {
             critical ("Unable to load colorblindness-correction.vert: %s", e.message);
         }
+
+        pause_for_screenshot = false;
     }
 }

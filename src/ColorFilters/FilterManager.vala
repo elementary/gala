@@ -7,19 +7,25 @@ public class Gala.FilterManager : Object {
     private const string TRANSITION_NAME = "strength-transition";
     private const int TRANSITION_DURATION = 500;
 
-    private static FilterManager instance;
-    private static GLib.Settings settings;
     public WindowManager wm { get; construct; }
 
-    public static void init (WindowManager wm) {
-        if (instance != null) {
-            return;
+    public bool pause_for_screenshot {
+        set {
+            foreach (unowned var _effect in wm.stage.get_effects ()) {
+                if (_effect is ColorblindnessCorrectionEffect) {
+                    unowned var effect = (ColorblindnessCorrectionEffect) _effect;
+                    effect.pause_for_screenshot = value;
+                } else if (_effect is MonochromeEffect) {
+                    unowned var effect = (MonochromeEffect) _effect;
+                    effect.pause_for_screenshot = value;
+                }
+            }
         }
-
-        instance = new FilterManager (wm);
     }
 
-    private FilterManager (WindowManager wm) {
+    private static GLib.Settings settings;
+
+    public FilterManager (WindowManager wm) {
         Object (wm: wm);
     }
 
