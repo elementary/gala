@@ -42,6 +42,8 @@ namespace Pantheon.Desktop {
         public SetSize set_size;
         public SetHideMode set_hide_mode;
         public RequestVisibleInMultitaskingView request_visible_in_multitasking_view;
+        public AddBlur add_blur;
+        public RemoveBlur remove_blur;
     }
 
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_widget_v1_interface")]
@@ -77,6 +79,10 @@ namespace Pantheon.Desktop {
     public delegate void SetHideMode (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] HideMode hide_mode);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void RequestVisibleInMultitaskingView (Wl.Client client, Wl.Resource resource);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void AddBlur (Wl.Client client, Wl.Resource resource, uint left, uint right, uint top, uint bottom, uint clip_radius);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void RemoveBlur (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
