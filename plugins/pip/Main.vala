@@ -28,6 +28,10 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
     private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         unowned var target_window = display.focus_window;
+        if (target_window == null || !Utils.get_window_is_normal (target_window) || target_window.skip_taskbar) {
+            return;
+        }
+
         var target_frame = target_window.get_frame_rect ();
         if (target_frame.width < SelectionArea.MIN_SELECTION || target_frame.height < SelectionArea.MIN_SELECTION) {
             return;
@@ -70,8 +74,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
 
         // Don't clip if the entire window was selected
         if (frame.x != x || frame.y != y || frame.width != width || frame.height != height) {
-            var point_x = x - (int) frame.x;
-            var point_y = y - (int) frame.y;
+            var point_x = x - frame.x;
+            var point_y = y - frame.y;
 
             popup_window.set_container_clip ({ { point_x, point_y }, { width, height } });
         }
