@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2017 Santiago León O.
  *                         2017 Adam Bieńkowski
- *                         2024 elementary, Inc. (https://elementary.io)
+ *                         2025 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
@@ -103,7 +103,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     private static Gdk.Pixbuf? get_confirm_button_pixbuf (float scale) {
         try {
             return new Gdk.Pixbuf.from_resource_at_scale (
-                Config.RESOURCEPATH + "/buttons/resize.svg",
+                Config.RESOURCEPATH + "/buttons/confirm.svg",
                 -1,
                 Utils.scale_to_int (CONFIRM_BUTTON_SIZE, scale),
                 true

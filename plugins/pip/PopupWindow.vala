@@ -1,6 +1,6 @@
 /*
  * Copyright 2017 Adam Bieńkowski
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
