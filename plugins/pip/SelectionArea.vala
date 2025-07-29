@@ -6,14 +6,12 @@
  */
 
 public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
-    public const int MIN_SELECTION = 100;
-
     private const int HANDLER_RADIUS = 6;
     private const int BORDER_WIDTH = 2;
     private const int RESIZE_THRESHOLD = 10;
     private const int CONFIRM_BUTTON_SIZE = 60;
 
-    public signal void captured (int x, int y, int width, int height);
+    public signal void captured (Mtk.Rectangle selection);
     public signal void closed ();
 
     public Gala.WindowManager wm { get; construct; }
@@ -34,11 +32,11 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     /**
      * If the user is resizing the selection area and the resize handler used.
      */
-     private bool resizing = false;
-     private bool resizing_top = false;
-     private bool resizing_bottom = false;
-     private bool resizing_left = false;
-     private bool resizing_right = false;
+    private bool resizing = false;
+    private bool resizing_top = false;
+    private bool resizing_bottom = false;
+    private bool resizing_left = false;
+    private bool resizing_right = false;
 
     /**
      * If the user is dragging the selection area and the starting point.
@@ -133,7 +131,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
 
     private void capture_selected_area () {
         close ();
-        captured (selection.x, selection.y, selection.width, selection.height);
+        captured (selection);
     }
 
     public override bool button_press_event (Clutter.Event event) {
@@ -158,7 +156,11 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
             return Clutter.EVENT_STOP;
         }
 
-        dragging = selection.contains_rect ({ (int) event_x, (int) event_y, 1, 1 });
+#if HAS_MUTTER48
+        dragging = selection.contains_pointf (event_x, event_y);
+#else
+        dragging = selection.contains_rect ({ (int) event_x, (int) event_y, 0, 0 });
+#endif
         if (dragging) {
             drag_x = event_x - selection.x;
             drag_y = event_y - selection.y;
@@ -171,9 +173,6 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
 
             return Clutter.EVENT_STOP;
         }
-
-        selection.x = (int) event_x;
-        selection.y = (int) event_y;
 
         return Clutter.EVENT_STOP;
     }
@@ -191,7 +190,11 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         float event_x, event_y;
         event.get_coords (out event_x, out event_y);
 
+#if HAS_MUTTER48
+        if (!resizing && !dragging && !selection.contains_pointf (event_x, event_y)) {
+#else
         if (!resizing && !dragging && !selection.contains_rect ({ (int) event_x, (int) event_y, 0, 0 })) {
+#endif
             close ();
             closed ();
             return true;
@@ -232,15 +235,15 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         var end_y = selection.y + selection.height;
 
         if (resizing_top) {
-            start_y = (int) event_y.clamp (max_size.y, end_y - MIN_SELECTION);
+            start_y = (int) event_y.clamp (max_size.y, end_y - Plugin.MIN_SELECTION_SIZE);
         } else if (resizing_bottom) {
-            end_y = (int) event_y.clamp (start_y + MIN_SELECTION, max_size.y + max_size.height);
+            end_y = (int) event_y.clamp (start_y + Plugin.MIN_SELECTION_SIZE, max_size.y + max_size.height);
         }
 
         if (resizing_left) {
-            start_x = (int) event_x.clamp (max_size.x, end_x - MIN_SELECTION);
+            start_x = (int) event_x.clamp (max_size.x, end_x - Plugin.MIN_SELECTION_SIZE);
         } else if (resizing_right) {
-            end_x = (int) event_x.clamp (start_x + MIN_SELECTION, max_size.x + max_size.width);
+            end_x = (int) event_x.clamp (start_x + Plugin.MIN_SELECTION_SIZE, max_size.x + max_size.width);
         }
 
         selection = { start_x, start_y, end_x - start_x, end_y - start_y };
@@ -248,9 +251,9 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         update_confirm_button_position ();
     }
 
-    private void drag_selection_area (Clutter.Event e) {
+    private void drag_selection_area (Clutter.Event event) {
         float event_x, event_y;
-        e.get_coords (out event_x, out event_y);
+        event.get_coords (out event_x, out event_y);
 
         selection.x = (int) (event_x - drag_x).clamp (max_size.x, max_size.x + max_size.width - selection.width);
         selection.y = (int) (event_y - drag_y).clamp (max_size.y, max_size.y + max_size.height - selection.height);
@@ -265,13 +268,13 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         );
     }
 
-    private void set_mouse_cursor_on_motion (Clutter.Event e) {
+    private void set_mouse_cursor_on_motion (Clutter.Event event) {
         if (resizing || dragging) {
             return;
         }
 
         float event_x, event_y;
-        e.get_coords (out event_x, out event_y);
+        event.get_coords (out event_x, out event_y);
 
         var top = is_close_to_coord (event_y, selection.y, RESIZE_THRESHOLD);
         var bottom = is_close_to_coord (event_y, selection.y + selection.height, RESIZE_THRESHOLD);

@@ -5,6 +5,8 @@
  */
 
 public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
+    public const int MIN_SELECTION_SIZE = 100;
+
     private Gee.ArrayList<PopupWindow> windows = new Gee.ArrayList<PopupWindow> ();
     private WindowManager wm;
     private SelectionArea? selection_area;
@@ -33,7 +35,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         }
 
         var target_frame = target_window.get_frame_rect ();
-        if (target_frame.width < SelectionArea.MIN_SELECTION || target_frame.height < SelectionArea.MIN_SELECTION) {
+        if (target_frame.width < MIN_SELECTION_SIZE || target_frame.height < MIN_SELECTION_SIZE) {
             return;
         }
 
@@ -52,7 +54,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         selection_area.start_selection ();
     }
 
-    private void on_selection_actor_captured (int x, int y, int width, int height) {
+    private void on_selection_actor_captured (Mtk.Rectangle selection) {
         var popup_window = new PopupWindow (wm.get_display (), selection_area.target_actor);
         windows.add (popup_window);
         wm.ui_group.add_child (popup_window);
@@ -73,11 +75,12 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         var frame = selection_area.target_actor.meta_window.get_frame_rect ();
 
         // Don't clip if the entire window was selected
-        if (frame.x != x || frame.y != y || frame.width != width || frame.height != height) {
-            var point_x = x - frame.x;
-            var point_y = y - frame.y;
+        if (!frame.equal (selection)) {
+            selection.x -= frame.x;
+            selection.x -= frame.y;
 
-            popup_window.set_container_clip ({ { point_x, point_y }, { width, height } });
+            // FIXME: Mtk.Rectangle.to_graphene_rect is broken in Vala
+            popup_window.set_container_clip ({ { selection.x, selection.y }, { selection.width, selection.height } });
         }
 
         clear_selection_area ();
