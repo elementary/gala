@@ -130,10 +130,7 @@ public class Gala.Plugins.PIP.PopupWindow : ActorTarget, RootTarget {
         unowned var workspace_manager = display.get_workspace_manager ();
         workspace_manager.active_workspace_changed.connect (update_window_focus);
 
-        var gesture_controller = new GestureController (MULTITASKING_VIEW, wm);
-        gesture_controller.enable_touchpad ();
-        add_gesture_controller (gesture_controller);
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint), 255u, 0u));
+        wm.add_multitasking_view_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint), 255u, 0u));
     }
 
     public override void start_progress (GestureAction action) {
