@@ -104,6 +104,7 @@ src/Widgets/WindowSwitcher/WindowSwitcherIcon.vala
 src/Widgets/WindowSwitcher/WindowSwitcher.vala
 src/WindowListener.vala
 src/WindowManager.vala
+src/WindowMenuManager.vala
 src/WindowStateSaver.vala
 src/WindowTracker.vala
 src/WorkspaceManager.vala
