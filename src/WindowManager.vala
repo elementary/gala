@@ -1690,7 +1690,7 @@ namespace Gala {
 
         public void add_multitasking_view_target (GestureTarget target) {
             multitasking_view.add_target (target);
-            
+
             if (window_overview is WindowOverview) {
                 ((WindowOverview) window_overview).add_target (target);
             }
