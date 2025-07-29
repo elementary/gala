@@ -373,36 +373,6 @@ namespace Gala {
         }
 
         /**
-         * Returns the pixbuf that is used for confirm buttons throughout gala at a
-         * size of 36px
-         *
-         * @return the confirm button pixbuf or null if it failed to load
-         */
-        public static Gdk.Pixbuf? get_confirm_button_pixbuf (float scale) {
-            var height = scale_to_int (36, scale);
-
-            if (confirm_pixbufs == null) {
-                confirm_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-            }
-
-            if (confirm_pixbufs[height] == null) {
-                try {
-                    confirm_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        Config.RESOURCEPATH + "/buttons/resize.svg",
-                        -1,
-                        height,
-                        true
-                    );
-                } catch (Error e) {
-                    warning (e.message);
-                    return null;
-                }
-            }
-
-            return confirm_pixbufs[height];
-        }
-
-        /**
          * Creates a new reactive ClutterActor at 36px with the resize pixbuf
          *
          * @return The resize button actor

@@ -1,26 +1,19 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2017 Adam Bieńkowski
- *                         2024 elementary, Inc. (https://elementary.io)
+ *                         2024-2025 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
-    private const int MIN_SELECTION_SIZE = 30;
-
-    private Gee.ArrayList<PopupWindow> windows;
-    private Gala.WindowManager? wm = null;
+    private Gee.ArrayList<PopupWindow> windows = new Gee.ArrayList<PopupWindow> ();
+    private WindowManager wm;
     private SelectionArea? selection_area;
 
-    construct {
-        windows = new Gee.ArrayList<PopupWindow> ();
-    }
+    public override void initialize (Gala.WindowManager _wm) {
+        wm = _wm;
 
-    public override void initialize (Gala.WindowManager wm) {
-        this.wm = wm;
-        var display = wm.get_display ();
         var settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
-
-        display.add_keybinding ("pip", settings, IGNORE_AUTOREPEAT, on_initiate);
+        wm.get_display ().add_keybinding ("pip", settings, IGNORE_AUTOREPEAT, on_initiate);
     }
 
     public override void destroy () {
@@ -34,7 +27,13 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding) {
-        var target_actor = (Meta.WindowActor) display.focus_window.get_compositor_private ();
+        unowned var target_window = display.focus_window;
+        var target_frame = target_window.get_frame_rect ();
+        if (target_frame.width < SelectionArea.MIN_SELECTION || target_frame.height < SelectionArea.MIN_SELECTION) {
+            return;
+        }
+
+        unowned var target_actor = (Meta.WindowActor) target_window.get_compositor_private ();
         if (target_actor == null) {
             return;
         }
@@ -81,13 +80,15 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     private void clear_selection_area () {
-        if (selection_area != null) {
-            untrack_actor (selection_area);
-            update_region ();
-
-            selection_area.destroy ();
-            selection_area = null;
+        if (selection_area == null) {
+            return;
         }
+
+        untrack_actor (selection_area);
+        update_region ();
+
+        selection_area.destroy ();
+        selection_area = null;
     }
 
     private void untrack_window (PopupWindow popup_window) {
