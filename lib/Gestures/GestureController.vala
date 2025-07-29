@@ -19,12 +19,17 @@
  * it will be a hard boundary, if they are fractional it will slow the gesture progress when over the
  * limit simulating a kind of spring that pushes against it.
  * Note that the progress snaps to full integer values after a gesture ends.
- * Events are always shared between all GestureControllers with the same id.
+ * Events are always shared between all GestureControllers in the same group (except for the group NONE).
  * This means that two gestures that can be done in one motion (e.g. horizontal and vertical swipe)
- * can be done simultaneously if each of two GestureControllers with the same id handle one of
+ * can be done simultaneously if each of two GestureControllers in the same group handle one of
  * the gestures.
  */
 public class Gala.GestureController : Object {
+    public enum Group {
+        NONE,
+        MULTITASKING_VIEW,
+    }
+
     /**
      * When a gesture ends with a velocity greater than this constant, the action is not cancelled,
      * even if the animation threshold has not been reached.
@@ -38,7 +43,7 @@ public class Gala.GestureController : Object {
 
     public GestureAction action { get; construct; }
     public WindowManager wm { get; construct; }
-    public string? id { get; construct; }
+    public Group group { get; construct; }
 
     private unowned RootTarget? _target;
     public RootTarget target {
@@ -96,8 +101,8 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, WindowManager wm, string? id = null) {
-        Object (action: action, wm: wm, id: id);
+    public GestureController (GestureAction action, WindowManager wm, Group group = NONE) {
+        Object (action: action, wm: wm, group: group);
     }
 
     /**
@@ -115,7 +120,7 @@ public class Gala.GestureController : Object {
 
     public void enable_touchpad (Clutter.Actor actor) {
         if (Meta.Util.is_wayland_compositor ()) {
-            touchpad_backend = new TouchpadBackend (actor, id);
+            touchpad_backend = new TouchpadBackend (actor, group);
             touchpad_backend.on_gesture_detected.connect (gesture_detected);
             touchpad_backend.on_begin.connect (gesture_begin);
             touchpad_backend.on_update.connect (gesture_update);

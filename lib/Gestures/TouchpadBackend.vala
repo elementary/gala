@@ -19,17 +19,18 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     }
 
     public Clutter.Actor actor { get; construct; }
-    public string? id { get; construct; }
+    public GestureController.Group group { get; construct; }
 
     private static List<TouchpadBackend> instances = new List<TouchpadBackend> ();
+
     private State state = NONE;
     private GestureDirection direction = UNKNOWN;
     private double distance_x = 0;
     private double distance_y = 0;
     private double distance = 0;
 
-    public TouchpadBackend (Clutter.Actor actor, string? id) {
-        Object (actor: actor, id: id);
+    public TouchpadBackend (Clutter.Actor actor, GestureController.Group group) {
+        Object (actor: actor, group: group);
     }
 
     ~TouchpadBackend () {
@@ -102,9 +103,9 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
 
             state = ONGOING;
             on_begin (0, event.get_time ());
-        } else if (main_handler && id != null) {
+        } else if (main_handler && group != NONE) {
             foreach (var instance in instances) {
-                if (instance != this && instance.id == id) {
+                if (instance != this && instance.group == group) {
                     instance.handle_event (event, false);
                 }
             }

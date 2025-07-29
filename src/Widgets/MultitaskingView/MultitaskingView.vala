@@ -23,8 +23,6 @@
 public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
-    private const string GESTURE_CONTROLLER_ID = "multitaskingview";
-
     private GestureController workspaces_gesture_controller;
     private GestureController multitasking_gesture_controller;
 
@@ -60,7 +58,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, GESTURE_CONTROLLER_ID);
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, MULTITASKING_VIEW);
         multitasking_gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (multitasking_gesture_controller);
 
@@ -68,7 +66,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         workspaces = new WorkspaceRow (display);
 
-        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm, GESTURE_CONTROLLER_ID) {
+        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm, MULTITASKING_VIEW) {
             overshoot_upper_clamp = 0.1
         };
         workspaces_gesture_controller.enable_touchpad (wm.stage);
