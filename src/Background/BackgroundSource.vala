@@ -119,16 +119,16 @@ public class Gala.BackgroundSource : Object {
     private string? get_background_path () {
         if (Drawing.StyleManager.get_instance ().prefers_color_scheme == DARK) {
             var uri = gnome_background_settings.get_string ("picture-uri-dark");
-            var path = File.new_for_uri (uri).get_path ();
-            if (path != null && FileUtils.test (path, EXISTS)) {
-                return path;
+            var file = File.new_for_uri (uri);
+            if (file.query_exists (null)) {
+                return file.get_path ();
             }
         }
 
         var uri = gnome_background_settings.get_string ("picture-uri");
-        var path = File.new_for_uri (uri).get_path ();
-        if (path != null && FileUtils.test (path, EXISTS)) {
-            return path;
+        var file = File.new_for_uri (uri);
+        if (file.query_exists (null)) {
+            return file.get_path ();
         }
 
         return null;
