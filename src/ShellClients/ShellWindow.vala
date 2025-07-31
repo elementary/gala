@@ -8,6 +8,7 @@
 public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public Clutter.Actor? actor { get { return window_actor; } }
     public bool restore_previous_x11_region { private get; set; default = false; }
+    public bool visible_in_multitasking_view { get; set; default = false; }
 
     private Meta.WindowActor window_actor;
     private double custom_progress = 0;
@@ -44,9 +45,16 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         );
     }
 
+    private double get_hidden_progress () {
+        if (visible_in_multitasking_view) {
+            return double.min (custom_progress, 1 - multitasking_view_progress);
+        } else {
+            return double.max (custom_progress, multitasking_view_progress);
+        }
+    }
+
     private void update_property () {
-        var hidden_progress = double.max (custom_progress, multitasking_view_progress);
-        property_target.propagate (UPDATE, DOCK, hidden_progress);
+        property_target.propagate (UPDATE, DOCK, get_hidden_progress ());
     }
 
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -88,7 +96,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     private void update_visibility () {
-        var visible = double.max (multitasking_view_progress, custom_progress) < 0.1;
+        var visible = get_hidden_progress () < 0.1;
         var animating = animations_ongoing > 0;
 
         window_actor.visible = animating || visible;
