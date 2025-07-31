@@ -9,6 +9,7 @@ namespace Gala {
     public enum InputArea {
         NONE,
         FULLSCREEN,
+        MULTITASKING_VIEW,
         DEFAULT
     }
 
@@ -30,6 +31,36 @@ namespace Gala {
 
                     X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
                     rects = {rect};
+                    break;
+
+                case InputArea.MULTITASKING_VIEW:
+                    var shell_client_rect = ShellClientsManager.get_instance ().get_shell_client_rect ();
+
+                    int width, height;
+                    display.get_size (out width, out height);
+
+                    if (shell_client_rect != null) {
+                        X.Xrectangle left_rect = {0, 0, (ushort) shell_client_rect.x, (ushort) height};
+                        X.Xrectangle right_rect = {
+                            (short) (shell_client_rect.x + shell_client_rect.width), 0,
+                            (ushort) (width - shell_client_rect.x - shell_client_rect.width), (ushort) height
+                        };
+                        X.Xrectangle top_rect = {
+                            (short) shell_client_rect.x, 0,
+                            (ushort) shell_client_rect.width, (ushort) shell_client_rect.y
+                        };
+                        X.Xrectangle bottom_rect = {
+                            (short) shell_client_rect.x,
+                            (short) (shell_client_rect.y + shell_client_rect.height),
+                            (ushort) shell_client_rect.width,
+                            (ushort) (height - shell_client_rect.y - shell_client_rect.height)
+                        };
+                        rects = {left_rect, right_rect, top_rect, bottom_rect};
+                    } else {
+                        X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
+                        rects = {rect};
+                    }
+
                     break;
 
                 case InputArea.DEFAULT:

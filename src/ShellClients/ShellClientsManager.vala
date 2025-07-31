@@ -299,6 +299,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                     }
                     break;
 
+                case "visible-in-multitasking-view":
+                    request_visible_in_multitasking_view (window);
+                    break;
+
                 case "centered":
                     make_centered (window);
                     break;
@@ -317,5 +321,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     requires (!Meta.Util.is_wayland_compositor ())
     requires (window in panel_windows) {
         panel_windows[window].restore_previous_x11_region = true;
+    }
+
+    public Mtk.Rectangle? get_shell_client_rect () {
+        foreach (var client in panel_windows.get_values ()) {
+            if (client.visible_in_multitasking_view) {
+                return client.get_custom_window_rect ();
+            }
+        }
+        return null;
     }
 }

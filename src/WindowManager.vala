@@ -576,10 +576,12 @@ namespace Gala {
                 }
             }
 
-            if (is_modal ())
-                InternalUtils.set_input_area (display, InputArea.FULLSCREEN);
-            else
+            if (is_modal ()) {
+                var area = multitasking_view.is_opened () ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
+                InternalUtils.set_input_area (display, area);
+            } else {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
+            }
         }
 
         /**
