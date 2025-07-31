@@ -519,14 +519,14 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
 
         if (hovered) {
-            WindowDragProvider.get_instance ().notify_enter (window.get_id ());
+            WindowDragProvider.get_instance (wm.get_display ()).notify_enter (window.get_id ());
         } else {
-            WindowDragProvider.get_instance ().notify_leave ();
+            WindowDragProvider.get_instance (wm.get_display ()).notify_leave ();
         }
     }
 
     private void destination_motion (Clutter.Actor destination, float x, float y) {
-        WindowDragProvider.get_instance ().notify_motion (x, y);
+        WindowDragProvider.get_instance (wm.get_display ()).notify_motion (x, y);
     }
 
     /**
@@ -557,7 +557,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
             return;
         } else if (destination is Meta.WindowActor) {
-            WindowDragProvider.get_instance ().notify_dropped ();
+            WindowDragProvider.get_instance (display).notify_dropped ();
         }
 
         bool did_move = false;

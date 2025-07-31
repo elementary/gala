@@ -18,7 +18,7 @@ public class Gala.DBus {
             SESSION, "io.elementary.gala", NONE,
             (connection) => {
                 try {
-                    connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
+                    connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance (wm.get_display ()));
                 } catch (Error e) {
                     warning (e.message);
                 }
