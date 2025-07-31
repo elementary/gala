@@ -168,6 +168,8 @@ public class Gala.DesktopIntegration : GLib.Object {
     public void move_window_to_workspace (uint64 uid, int index) throws DBusError, IOError {
         var window = find_window_by_uid (uid);
         window.change_workspace_by_index (index, false);
+
+        WindowDragProvider.get_instance (wm.get_display ()).handle_move (uid);
     }
 
     public void activate_workspace (int index) throws GLib.DBusError, GLib.IOError {

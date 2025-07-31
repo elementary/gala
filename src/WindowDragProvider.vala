@@ -21,7 +21,8 @@ public class Gala.WindowDragProvider : Object {
     public Meta.Display display { private get; construct; }
 
     private ulong position_invalidated_id = 0;
-    private Meta.Window? previous_window = null;
+    private Meta.Window? previous_dock_window = null;
+    private Meta.Window? window_waiting_to_move = null;
 
     public WindowDragProvider (Meta.Display display) {
         Object (display: display);
@@ -43,9 +44,9 @@ public class Gala.WindowDragProvider : Object {
     #else
                             if (buffer_rect.contains_rect ({ (int) pointer.x, (int) pointer.y, 0, 0})) {
     #endif
-                                if (previous_window != window) {
+                                if (previous_dock_window != window) {
                                     notify_enter (grabbed_window.get_id ());
-                                    previous_window = window;
+                                    previous_dock_window = window;
                                 } else {
                                     notify_motion ((int) pointer.x - buffer_rect.x, (int) pointer.y - buffer_rect.y);
                                 }
@@ -55,23 +56,29 @@ public class Gala.WindowDragProvider : Object {
                         }
                     }
 
-                    if (previous_window != null) {
+                    if (previous_dock_window != null) {
                         notify_leave ();
-                        previous_window = null;
+                        previous_dock_window = null;
                     }
                 });
             }
         });
 
-        display.grab_op_end.connect ((window, grab_op) => {
+        display.grab_op_end.connect ((grabbed_window, grab_op) => {
+            if (grab_op != MOVING) {
+                return;
+            }
+
             if (position_invalidated_id > 0) {
                 unowned var cursor_tracker = display.get_cursor_tracker ();
                 cursor_tracker.disconnect (position_invalidated_id);
                 position_invalidated_id = 0;
 
-                if (previous_window != null) {
+                if (previous_dock_window != null) {
                     notify_dropped ();
-                    previous_window = null;
+                    notify_leave ();
+                    previous_dock_window = null;
+                    window_waiting_to_move = grabbed_window;
                 }
             }
         });
@@ -91,5 +98,30 @@ public class Gala.WindowDragProvider : Object {
 
     internal void notify_dropped () {
         dropped ();
+    }
+
+    /**
+     * Handles centering the window on the workspace in case it was dragged directly to the dock.
+     * If we don't do that, the dragged window will sit awkwardly at the bottom of the monitor.
+     */
+    internal void handle_move (uint64 uid) {
+        if (uid != window_waiting_to_move.get_id ()) {
+            warning ("WindowDragProvider: Windows id don't match");
+            window_waiting_to_move = null;
+            return;
+        }
+
+        var frame = window_waiting_to_move.get_frame_rect ();
+        var monitor_geometry = display.get_monitor_geometry (window_waiting_to_move.get_monitor ());
+
+        window_waiting_to_move.move_resize_frame (
+            true,
+            monitor_geometry.x + (monitor_geometry.width - frame.width) / 2,
+            monitor_geometry.y + (monitor_geometry.height - frame.height) / 2,
+            frame.width,
+            frame.height
+        );
+
+        window_waiting_to_move = null;
     }
 }
