@@ -62,7 +62,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             overshoot_upper_clamp = 1.1,
             overshoot_lower_clamp = -0.1
         };
-        multitasking_gesture_controller.enable_touchpad ();
+        multitasking_gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
