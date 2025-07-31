@@ -30,38 +30,43 @@ public class Gala.WindowDragProvider : Object {
 
     construct {
         display.grab_op_begin.connect ((grabbed_window, grab_op) => {
-            if (grab_op == MOVING) {
-                unowned var cursor_tracker = display.get_cursor_tracker ();
-                position_invalidated_id = cursor_tracker.position_invalidated.connect (() => {
-                    Graphene.Point pointer;
-                    cursor_tracker.get_pointer (out pointer, null);
+            if (grab_op != MOVING) {
+                return;
+            }
+#if HAS_MUTTER48
+            unowned var cursor_tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+            unowned var cursor_tracker = display.get_cursor_tracker ();
+#endif
+            position_invalidated_id = cursor_tracker.position_invalidated.connect ((cursor_tracker) => {
+                Graphene.Point pointer;
+                cursor_tracker.get_pointer (out pointer, null);
 
-                    foreach (unowned var window in display.list_all_windows ()) {
-                        if (window.window_type == DOCK) {
-                            var buffer_rect = window.get_buffer_rect ();
-    #if HAS_MUTTER48
-                            if (buffer_rect.contains_pointf (pointer.x, pointer.y)) {
-    #else
-                            if (buffer_rect.contains_rect ({ (int) pointer.x, (int) pointer.y, 0, 0})) {
-    #endif
-                                if (previous_dock_window != window) {
-                                    notify_enter (grabbed_window.get_id ());
-                                    previous_dock_window = window;
-                                } else {
-                                    notify_motion ((int) pointer.x - buffer_rect.x, (int) pointer.y - buffer_rect.y);
-                                }
-
-                                return;
+                foreach (unowned var window in display.list_all_windows ()) {
+                    if (window.window_type == DOCK) {
+                        var buffer_rect = window.get_buffer_rect ();
+#if HAS_MUTTER48
+                        if (buffer_rect.contains_pointf (pointer.x, pointer.y)) {
+#else
+                        if (buffer_rect.contains_rect ({ (int) pointer.x, (int) pointer.y, 0, 0})) {
+#endif
+                            if (previous_dock_window != window) {
+                                notify_enter (grabbed_window.get_id ());
+                                previous_dock_window = window;
+                            } else {
+                                notify_motion ((int) pointer.x - buffer_rect.x, (int) pointer.y - buffer_rect.y);
                             }
+
+                            return;
                         }
                     }
+                }
 
-                    if (previous_dock_window != null) {
-                        notify_leave ();
-                        previous_dock_window = null;
-                    }
-                });
-            }
+                if (previous_dock_window != null) {
+                    notify_leave ();
+                    previous_dock_window = null;
+                }
+            });
         });
 
         display.grab_op_end.connect ((grabbed_window, grab_op) => {
@@ -70,7 +75,11 @@ public class Gala.WindowDragProvider : Object {
             }
 
             if (position_invalidated_id > 0) {
+#if HAS_MUTTER48
+                unowned var cursor_tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
+#else
                 unowned var cursor_tracker = display.get_cursor_tracker ();
+#endif
                 cursor_tracker.disconnect (position_invalidated_id);
                 position_invalidated_id = 0;
 
