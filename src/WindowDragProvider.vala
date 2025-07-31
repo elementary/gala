@@ -33,6 +33,7 @@ public class Gala.WindowDragProvider : Object {
             if (grab_op != MOVING) {
                 return;
             }
+
 #if HAS_MUTTER48
             unowned var cursor_tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
 #else
@@ -43,22 +44,23 @@ public class Gala.WindowDragProvider : Object {
                 cursor_tracker.get_pointer (out pointer, null);
 
                 foreach (unowned var window in display.list_all_windows ()) {
-                    if (window.window_type == DOCK) {
+                    if (window.window_type != DOCK) {
+                        continue;
+                    }
                         var buffer_rect = window.get_buffer_rect ();
 #if HAS_MUTTER48
-                        if (buffer_rect.contains_pointf (pointer.x, pointer.y)) {
+                    if (buffer_rect.contains_pointf (pointer.x, pointer.y)) {
 #else
-                        if (buffer_rect.contains_rect ({ (int) pointer.x, (int) pointer.y, 0, 0})) {
+                    if (buffer_rect.contains_rect ({ (int) pointer.x, (int) pointer.y, 0, 0})) {
 #endif
-                            if (previous_dock_window != window) {
-                                notify_enter (grabbed_window.get_id ());
-                                previous_dock_window = window;
-                            } else {
-                                notify_motion ((int) pointer.x - buffer_rect.x, (int) pointer.y - buffer_rect.y);
-                            }
-
-                            return;
+                        if (previous_dock_window != window) {
+                            notify_enter (grabbed_window.get_id ());
+                            previous_dock_window = window;
+                        } else {
+                            notify_motion ((int) pointer.x - buffer_rect.x, (int) pointer.y - buffer_rect.y);
                         }
+
+                        return;
                     }
                 }
 
