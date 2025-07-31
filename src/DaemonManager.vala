@@ -67,6 +67,7 @@ public class Gala.DaemonManager : GLib.Object {
 #endif
                 window.move_frame (false, 0, 0);
                 window.make_above ();
+                window.stick ();
                 break;
         }
     }
