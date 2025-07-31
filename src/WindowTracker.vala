@@ -28,7 +28,11 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void init_window_tracking (Meta.Display display) {
-        display.window_created.connect (track_window);
+        display.window_created.connect ((window) => {
+            InternalUtils.wait_for_window_actor_visible (window, (window_actor) => {
+                track_window (window_actor.meta_window);
+            });
+        });
     }
 
     private void on_startup_sequence_changed (Meta.StartupSequence sequence) {
