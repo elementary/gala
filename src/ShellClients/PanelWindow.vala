@@ -61,6 +61,11 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         hide_tracker.show.connect (show);
     }
 
+    public void request_visible_in_multitasking_view () {
+        visible_in_multitasking_view = true;
+        actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
+    }
+
     private void hide () {
         gesture_controller.goto (1);
     }
