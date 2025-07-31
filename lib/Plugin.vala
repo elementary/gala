@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2014 Tom Beckmann
+//                2025 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -203,6 +204,13 @@ namespace Gala {
         private void on_actor_allocation_changed (GLib.Object actor_object, GLib.ParamSpec pspec) {
             if (!freeze_track)
                 update_region ();
+        }
+
+        /**
+         * TODO: Add doc
+         */
+        public virtual WindowMenuItem[] get_window_menu_items (Meta.Window window) {
+            return {};
         }
     }
 }
