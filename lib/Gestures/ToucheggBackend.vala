@@ -192,6 +192,10 @@ private class Gala.ToucheggBackend : Object, GestureBackend {
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
 
+        if (Meta.Util.is_wayland_compositor () && performed_on_device_type != DeviceType.TOUCHSCREEN && type != PINCH) {
+            return;
+        }
+
         var delta = percentage * DELTA_MULTIPLIER;
 
         switch (signal_name) {

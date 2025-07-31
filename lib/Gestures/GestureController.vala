@@ -19,8 +19,17 @@
  * it will be a hard boundary, if they are fractional it will slow the gesture progress when over the
  * limit simulating a kind of spring that pushes against it.
  * Note that the progress snaps to full integer values after a gesture ends.
+ * Events are always shared between all GestureControllers in the same group (except for the group NONE).
+ * This means that two gestures that can be done in one motion (e.g. horizontal and vertical swipe)
+ * can be done simultaneously if each of two GestureControllers in the same group handle one of
+ * the gestures.
  */
 public class Gala.GestureController : Object {
+    public enum Group {
+        NONE,
+        MULTITASKING_VIEW,
+    }
+
     /**
      * When a gesture ends with a velocity greater than this constant, the action is not cancelled,
      * even if the animation threshold has not been reached.
@@ -34,6 +43,7 @@ public class Gala.GestureController : Object {
 
     public GestureAction action { get; construct; }
     public WindowManager wm { get; construct; }
+    public Group group { get; construct; }
 
     private unowned RootTarget? _target;
     public RootTarget target {
@@ -77,7 +87,8 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
-    private ToucheggBackend? touchpad_backend;
+    private ToucheggBackend? touchegg_backend;
+    private TouchpadBackend? touchpad_backend;
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
@@ -90,8 +101,8 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, WindowManager wm) {
-        Object (action: action, wm: wm);
+    public GestureController (GestureAction action, WindowManager wm, Group group = NONE) {
+        Object (action: action, wm: wm, group: group);
     }
 
     /**
@@ -107,12 +118,20 @@ public class Gala.GestureController : Object {
         unref ();
     }
 
-    public void enable_touchpad () {
-        touchpad_backend = ToucheggBackend.get_default ();
-        touchpad_backend.on_gesture_detected.connect (gesture_detected);
-        touchpad_backend.on_begin.connect (gesture_begin);
-        touchpad_backend.on_update.connect (gesture_update);
-        touchpad_backend.on_end.connect (gesture_end);
+    public void enable_touchpad (Clutter.Actor actor) {
+        if (Meta.Util.is_wayland_compositor ()) {
+            touchpad_backend = new TouchpadBackend (actor, group);
+            touchpad_backend.on_gesture_detected.connect (gesture_detected);
+            touchpad_backend.on_begin.connect (gesture_begin);
+            touchpad_backend.on_update.connect (gesture_update);
+            touchpad_backend.on_end.connect (gesture_end);
+        }
+
+        touchegg_backend = ToucheggBackend.get_default (); // Will automatically filter events on wayland
+        touchegg_backend.on_gesture_detected.connect (gesture_detected);
+        touchegg_backend.on_begin.connect (gesture_begin);
+        touchegg_backend.on_update.connect (gesture_update);
+        touchegg_backend.on_end.connect (gesture_end);
     }
 
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
