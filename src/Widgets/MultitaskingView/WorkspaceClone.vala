@@ -140,7 +140,7 @@ public class Gala.WorkspaceClone : ActorTarget {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
-        window_container.window_selected.connect ((w) => window_selected (w));
+        window_container.window_selected.connect ((window) => window_selected (window));
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
@@ -263,7 +263,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
         window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
-        window_container.padding_left = window_container.padding_right = (int)(monitor.width - monitor.width * scale) / 2;
+        window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
         window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
     }
 
