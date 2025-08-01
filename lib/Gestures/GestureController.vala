@@ -60,6 +60,7 @@ public class Gala.GestureController : Object {
     public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
     public double overshoot_upper_clamp { get; construct set; default = 1d; }
+    public bool follow_natural_scroll { get; set; default = false; }
 
     /**
      * When disabled gesture progress will stay where the gesture ended and not snap to full integers values.
@@ -164,6 +165,12 @@ public class Gala.GestureController : Object {
                 direction_multiplier = 1;
             } else {
                 direction_multiplier = -1;
+            }
+
+            if (follow_natural_scroll &&
+                !GestureSettings.is_natural_scroll_enabled (gesture.performed_on_device_type)
+            ) {
+                direction_multiplier *= -1;
             }
 
             if (snap && !Meta.Prefs.get_gnome_animations ()) {
