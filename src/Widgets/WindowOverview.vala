@@ -122,7 +122,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            window_clone_container = new WindowCloneContainer (wm, scale, true) {
+            window_clone_container = new WindowCloneContainer (wm, i, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
