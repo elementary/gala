@@ -26,8 +26,6 @@ private class Gala.ScrollBackend : Object, GestureBackend {
     private const double FINISH_DELTA_HORIZONTAL = 40;
     private const double FINISH_DELTA_VERTICAL = 30;
 
-    public GestureBackend.DeviceType device_type { get { return TOUCHPAD; }}
-
     public Clutter.Orientation orientation { get; construct; }
     public GestureSettings settings { get; construct; }
 
