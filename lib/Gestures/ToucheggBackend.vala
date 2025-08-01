@@ -76,6 +76,8 @@ private class Gala.ToucheggBackend : Object, GestureBackend {
      */
     private const double DELTA_MULTIPLIER = 0.01;
 
+    public GestureBackend.DeviceType device_type { get { return TOUCHPAD; }}
+
     /**
      * Single instance of the class.
      */
