@@ -18,6 +18,8 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
         ONGOING
     }
 
+    public GestureBackend.DeviceType device_type { get { return TOUCHPAD; }}
+
     public Clutter.Actor actor { get; construct; }
     public GestureController.Group group { get; construct; }
 
