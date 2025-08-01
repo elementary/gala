@@ -65,7 +65,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
-        gesture_controller.enable_touchpad ();
+        gesture_controller.enable_touchpad (wm.stage);
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
         add_gesture_controller (gesture_controller);
 
@@ -448,7 +448,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     }
 
     private void push_modal () {
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (get_stage (), true);
         modal_proxy.allow_actions ({ SWITCH_WINDOWS });
         modal_proxy.set_keybinding_filter ((binding) => {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
