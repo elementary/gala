@@ -44,7 +44,6 @@ public class Gala.GestureController : Object {
     public GestureAction action { get; construct; }
     public WindowManager wm { get; construct; }
     public Group group { get; construct; }
-    public bool follow_natural_scroll_settings { get; construct; }
 
     private unowned RootTarget? _target;
     public RootTarget target {
@@ -88,8 +87,6 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
-    private static GLib.Settings touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
-
     private ToucheggBackend? touchegg_backend;
     private TouchpadBackend? touchpad_backend;
     private ScrollBackend? scroll_backend;
@@ -104,8 +101,8 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, WindowManager wm, Group group = NONE, bool follow_natural_scroll_settings = false) {
-        Object (action: action, wm: wm, group: group, follow_natural_scroll_settings: follow_natural_scroll_settings);
+    public GestureController (GestureAction action, WindowManager wm, Group group = NONE) {
+        Object (action: action, wm: wm, group: group);
     }
 
     /**
@@ -188,8 +185,6 @@ public class Gala.GestureController : Object {
 
         prepare ();
 
-        handle_natural_scroll_settings (ref percentage);
-
         gesture_progress = progress;
         previous_percentage = percentage;
         previous_time = elapsed_time;
@@ -199,8 +194,6 @@ public class Gala.GestureController : Object {
         if (!recognizing) {
             return;
         }
-
-        handle_natural_scroll_settings (ref percentage);
 
         var updated_delta = previous_delta;
         if (elapsed_time != previous_time) {
@@ -229,7 +222,6 @@ public class Gala.GestureController : Object {
 
         recognizing = false;
 
-        handle_natural_scroll_settings (ref percentage);
         update_gesture_progress (percentage, previous_delta);
 
         var to = progress;
@@ -297,25 +289,6 @@ public class Gala.GestureController : Object {
         target.propagate (END, action, progress);
         timeline = null;
         _action_info = null;
-    }
-
-    private void handle_natural_scroll_settings (ref double percentage) requires (recognizing_backend != null) {
-        if (!follow_natural_scroll_settings) {
-            return;
-        }
-
-        var multiplier = 1.0;
-
-        switch (recognizing_backend.device_type) {
-            case TOUCHPAD:
-                multiplier = touchpad_settings.get_boolean ("natural-scroll") ? 1.0 : -1.0;
-                break;
-            case TOUCHSCREEN:
-                multiplier = 1.0;
-                break;
-        }
-
-        percentage *= multiplier;
     }
 
     /**

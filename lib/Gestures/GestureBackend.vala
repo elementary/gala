@@ -6,17 +6,10 @@
  */
 
 private interface Gala.GestureBackend : Object {
-    public enum DeviceType {
-        TOUCHPAD,
-        TOUCHSCREEN
-    }
-
     public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
     public signal void on_begin (double percentage, uint64 time);
     public signal void on_update (double percentage, uint64 time);
     public signal void on_end (double percentage, uint64 time);
-
-    public abstract DeviceType device_type { get; }
 
     public virtual void prepare_gesture_handling () { }
 
