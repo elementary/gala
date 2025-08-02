@@ -6,8 +6,6 @@
  */
 
 public class Gala.PanelWindow : ShellWindow, RootTarget {
-    private const int ANIMATION_DURATION = 250;
-
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public WindowManager wm { get; construct; }
@@ -53,7 +51,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         notify["width"].connect (update_strut);
         notify["height"].connect (update_strut);
 
-        gesture_controller = new GestureController (DOCK, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         add_gesture_controller (gesture_controller);
 
         hide_tracker = new HideTracker (wm.get_display (), this);
