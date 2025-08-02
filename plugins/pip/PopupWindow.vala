@@ -26,7 +26,11 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
     private Gala.CloseButton close_button;
     private Clutter.Actor resize_button;
     private DragDropAction move_action;
+
     private GestureController gesture_controller;
+    private PropertyTarget opacity_target;
+    private double custom_progress = 0.0;
+    private double multitasking_view_progress = 0.0;
 
     private float begin_resize_width = 0.0f;
     private float begin_resize_height = 0.0f;
@@ -75,9 +79,7 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
         rounded_container.add_child (clone_container);
         rounded_container.add_effect (new RoundedCornersEffect (6, scale));
 
-        container = new Clutter.Actor () {
-            reactive = true
-        };
+        container = new Clutter.Actor ();
         container.add_child (rounded_container);
         container.add_effect (new ShadowEffect ("window", scale));
 
@@ -122,7 +124,7 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
 
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
-        update_clone_clip ();
+        on_allocation_changed ();
 
         unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
@@ -133,25 +135,51 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
 
         gesture_controller = new GestureController (CUSTOM, wm);
         add_gesture_controller (gesture_controller);
-        add_target (new PropertyTarget (CUSTOM, this, "opacity", typeof (uint), 255u, 0u));
+
+        opacity_target = new PropertyTarget (CUSTOM, this, "opacity", typeof (uint), 255u, 0u);
+        add_target (opacity_target);
+
+        wm.add_multitasking_view_target (this);
+    }
+
+    private double get_opacity_progress () {
+        return double.max (custom_progress, multitasking_view_progress);
     }
 
     public override void start_progress (GestureAction action) {
-        if (action != CUSTOM) {
+        if (action != CUSTOM && action != MULTITASKING_VIEW) {
             return;
         }
 
+        move_action.cancel ();
+        stop_resizing ();
+        hide_buttons ();
         reactive = false;
-        visible = true;
     }
 
     public override void end_progress (GestureAction action) {
-        if (action != CUSTOM) {
+        if (action != CUSTOM && action != MULTITASKING_VIEW) {
             return;
         }
 
-        reactive = true;
-        visible = get_current_progress (CUSTOM) < 0.5;
+        reactive = get_current_progress (CUSTOM) == 0.0 && get_current_progress (MULTITASKING_VIEW) == 0.0;
+    }
+
+    public override void update_progress (GestureAction action, double progress) {
+        switch (action) {
+            case MULTITASKING_VIEW:
+                multitasking_view_progress = progress;
+                break;
+
+            case CUSTOM:
+                custom_progress = progress;
+                break;
+
+            default:
+                break;
+        }
+
+        opacity_target.propagate (UPDATE, CUSTOM, get_opacity_progress ());
     }
 
     public override bool enter_event (Clutter.Event event) {
@@ -171,6 +199,11 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
     }
 
     public override bool leave_event (Clutter.Event event) {
+        hide_buttons ();
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    private void hide_buttons () {
         var duration = Utils.get_animation_duration (300);
 
         close_button.save_easing_state ();
@@ -182,8 +215,6 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
         resize_button.set_easing_duration (duration);
         resize_button.opacity = 0;
         resize_button.restore_easing_state ();
-
-        return Clutter.EVENT_PROPAGATE;
     }
 
     public void set_container_clip (Graphene.Rect? container_clip) {
@@ -203,7 +234,6 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
     }
 
     private void on_move_end () {
-        reactive = true;
         update_screen_position ();
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
@@ -533,6 +563,8 @@ public class Gala.Plugins.PIP.PopupWindow : RootTarget, ActorTarget {
     }
 
     private void activate () {
+        warning ("Activate");
+
         if (off_screen) {
             place_window_in_screen ();
         } else {

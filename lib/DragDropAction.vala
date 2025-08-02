@@ -186,6 +186,10 @@ namespace Gala {
         }
 
         public override bool handle_event (Clutter.Event event) {
+            if (!actor.reactive){
+                return Clutter.EVENT_PROPAGATE;
+            }
+
             if (!(DragDropActionType.SOURCE in drag_type)) {
                 return Clutter.EVENT_PROPAGATE;
             }
