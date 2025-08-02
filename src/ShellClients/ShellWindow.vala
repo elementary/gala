@@ -37,7 +37,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     private void update_target () {
         property_target = new PropertyTarget (
-            DOCK, window_actor,
+            CUSTOM, window_actor,
             get_animation_property (),
             get_property_type (),
             calculate_value (false),
@@ -54,7 +54,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     private void update_property () {
-        property_target.propagate (UPDATE, DOCK, get_hidden_progress ());
+        property_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
     }
 
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -84,7 +84,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
                 multitasking_view_progress = progress;
                 break;
 
-            case DOCK:
+            case CUSTOM:
                 custom_progress = progress;
                 break;
 
