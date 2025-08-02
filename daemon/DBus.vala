@@ -1,49 +1,20 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public enum Gala.ActionType {
-    NONE = 0,
-    SHOW_MULTITASKING_VIEW,
-    MAXIMIZE_CURRENT,
-    HIDE_CURRENT,
-    OPEN_LAUNCHER,
-    CUSTOM_COMMAND,
-    WINDOW_OVERVIEW,
-    WINDOW_OVERVIEW_ALL,
-    SWITCH_TO_WORKSPACE_PREVIOUS,
-    SWITCH_TO_WORKSPACE_NEXT,
-    SWITCH_TO_WORKSPACE_LAST,
-    START_MOVE_CURRENT,
-    START_RESIZE_CURRENT,
-    TOGGLE_ALWAYS_ON_TOP_CURRENT,
-    TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT,
-    MOVE_CURRENT_WORKSPACE_LEFT,
-    MOVE_CURRENT_WORKSPACE_RIGHT,
-    CLOSE_CURRENT,
-    SCREENSHOT_CURRENT
+public enum Gala.WindowMenuItemType {
+    BUTTON,
+    TOGGLE,
+    SEPARATOR
 }
 
-[Flags]
-public enum Gala.WindowFlags {
-    NONE = 0,
-    CAN_HIDE,
-    CAN_MAXIMIZE,
-    IS_MAXIMIZED,
-    ALLOWS_MOVE,
-    ALLOWS_RESIZE,
-    ALWAYS_ON_TOP,
-    ON_ALL_WORKSPACES,
-    CAN_CLOSE,
-    IS_TILED,
-    ALLOWS_MOVE_LEFT,
-    ALLOWS_MOVE_RIGHT
-}
-
-[DBus (name = "org.pantheon.gala")]
-public interface Gala.WMDBus : GLib.Object {
-    public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
+public struct Gala.DaemonWindowMenuItem {
+    WindowMenuItemType type;
+    bool sensitive;
+    bool toggle_state;
+    string display_name;
+    string keybinding;
 }
 
 public struct Gala.Daemon.MonitorLabelInfo {
@@ -66,17 +37,15 @@ public class Gala.Daemon.DBus : GLib.Object {
     private const string BG_MENU_ACTION_GROUP_PREFIX = "background-menu";
     private const string BG_MENU_ACTION_PREFIX = BG_MENU_ACTION_GROUP_PREFIX + ".";
 
-    private WMDBus? wm_proxy = null;
+public signal void window_menu_action_invoked (int action);
 
     private Window window;
-    private WindowMenu? window_menu;
+    private WindowMenu window_menu;
     private Gtk.PopoverMenu background_menu;
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
     construct {
-        Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
-
         window = new Window ();
 
         var background_menu_top_section = new Menu ();
@@ -119,44 +88,17 @@ public class Gala.Daemon.DBus : GLib.Object {
         window_menu = new WindowMenu ();
         window_menu.set_parent (window.child);
         window_menu.closed.connect (window.close);
-        window_menu.perform_action.connect ((type) => {
+        window_menu.action_invoked.connect ((action) => {
+            // Using Idle here because we need to wait until focus changes from the daemon window
             Idle.add (() => {
-                perform_action (type);
+                window_menu_action_invoked (action);
                 return Source.REMOVE;
             });
         });
     }
 
-    private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
-        try {
-            wm_proxy = Bus.get_proxy.end (res);
-        } catch (Error e) {
-            warning ("Failed to get Gala proxy: %s", e.message);
-        }
-    }
-
-    private void lost_gala () {
-        wm_proxy = null;
-    }
-
-    private void gala_appeared () {
-        if (wm_proxy == null) {
-            Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
-        }
-    }
-
-    private void perform_action (Gala.ActionType type) {
-        if (wm_proxy != null) {
-            try {
-                wm_proxy.perform_action (type);
-            } catch (Error e) {
-                warning ("Failed to perform Gala action over DBus: %s", e.message);
-            }
-        }
-    }
-
-    public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        window_menu.update (flags);
+    public void show_window_menu (int display_width, int display_height, int x, int y, DaemonWindowMenuItem[] items) throws DBusError, IOError {
+        window_menu.update (items);
 
         show_menu (window_menu, display_width, display_height, x, y);
     }

@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2014 Tom Beckmann
+//                2025 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -59,6 +60,23 @@ namespace Gala {
         IS_TILED,
         ALLOWS_MOVE_LEFT,
         ALLOWS_MOVE_RIGHT
+    }
+
+    public delegate void WindowMenuItemCallback (Meta.Window window);
+
+    public enum WindowMenuItemType {
+        BUTTON,
+        TOGGLE,
+        SEPARATOR
+    }
+
+    public struct WindowMenuItem {
+        WindowMenuItemType type;
+        bool sensitive;
+        bool toggle_state;
+        string display_name;
+        string keybinding;
+        WindowMenuItemCallback callback;
     }
 
     /**
