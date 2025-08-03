@@ -95,7 +95,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
         add_gesture_controller (gesture_controller);
 
@@ -272,7 +272,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -295,7 +295,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public override void end_progress (GestureAction action) {
         update_hover_widgets (false);
 
-        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
     }
