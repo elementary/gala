@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2024-08-07 18:17+0000\n"
-"Last-Translator: anonymous <noreply@weblate.org>\n"
-"Language-Team: Chinese (Simplified) <https://l10n.elementary.io/projects/"
-"desktop/gala/zh_Hans/>\n"
+"PO-Revision-Date: 2025-08-02 18:55+0000\n"
+"Last-Translator: JieXu <xujie0739@qq.com>\n"
+"Language-Team: Chinese (Simplified Han script) <https://"
+"l10n.elementaryos.org/projects/desktop/gala/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-03-14 07:02+0000\n"
 
 #: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
@@ -244,7 +244,7 @@ msgstr "您可以选择继续等待应用响应，或强制关闭应用。"
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr "强制关闭"
+msgstr "强制退出"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
