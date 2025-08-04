@@ -56,7 +56,7 @@ public class Gala.SessionLocker : Clutter.Actor {
     // is about to turn off
     public const uint LONG_ANIMATION_TIME = 3000;
     // Animation length used for manual lock action (i.e. Super+L or GUI action)
-    public const uint SHORT_ANIMATION_TIME = 300;
+    private const uint SHORT_ANIMATION_TIME = 300;
 
     private const string LOCK_ENABLED_KEY = "lock-enabled";
     private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
