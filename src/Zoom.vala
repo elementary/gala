@@ -9,7 +9,6 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private const float MIN_ZOOM = 1.0f;
     private const float MAX_ZOOM = 10.0f;
     private const float SHORTCUT_DELTA = 0.5f;
-    private const int ANIMATION_DURATION = 300;
     private const uint MOUSE_POLL_TIME = 50;
 
     public WindowManager wm { get; construct; }

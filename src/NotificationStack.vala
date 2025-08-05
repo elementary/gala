@@ -18,7 +18,6 @@
 
 public class Gala.NotificationStack : Object {
     private const string TRANSITION_ENTRY_NAME = "entry";
-    private const string TRANSITION_MOVE_STACK_ID = "move-stack";
 
     // we need to keep a small offset to the top, because we clip the container to
     // its allocations and the close button would be off for the first notification
