@@ -45,7 +45,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     private void _add_child (Meta.WindowActor window_actor) {
         unowned var window = window_actor.meta_window;
 
-        if (window.window_type != NORMAL) {
+        if (window.window_type != NORMAL || window.skip_taskbar || window.find_root_ancestor () != window) {
             return;
         }
 
