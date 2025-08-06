@@ -82,7 +82,8 @@ public class Gala.WindowStateSaver : GLib.Object {
             ShellClientsManager.get_instance ().is_positioned_window (window) ||
             window.window_type != Meta.WindowType.NORMAL ||
             window.skip_taskbar ||
-            !window.resizeable
+            !window.resizeable ||
+            !window.allows_move ()
         ) {
             return;
         }
