@@ -78,16 +78,12 @@ public class Gala.WindowStateSaver : GLib.Object {
     public static void on_map (Meta.Window window) {
         var app_id = window_tracker.get_app_for_window (window).id;
 
-        if (app_id.has_prefix ("window:")) {
-            // if window failed to be identified, don't remember it
-            return;
-        }
-
-        if (window.window_type != Meta.WindowType.NORMAL) {
-            return;
-        }
-
-        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+        if (app_id.has_prefix ("window:") || // if window failed to be identified, don't remember it
+            ShellClientsManager.get_instance ().is_positioned_window (window) ||
+            window.window_type != Meta.WindowType.NORMAL ||
+            window.skip_taskbar ||
+            !window.resizeable
+        ) {
             return;
         }
 
