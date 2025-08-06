@@ -28,7 +28,11 @@ public class Gala.WindowTracker : GLib.Object {
     }
 
     private void init_window_tracking (Meta.Display display) {
-        display.window_created.connect (track_window);
+        display.window_created.connect ((window) => {
+            InternalUtils.wait_for_window_actor_visible (window, (window_actor) => {
+                track_window (window_actor.meta_window);
+            });
+        });
     }
 
     private void on_startup_sequence_changed (Meta.StartupSequence sequence) {
@@ -52,7 +56,11 @@ public class Gala.WindowTracker : GLib.Object {
         return get_app_from_id (id);
     }
 
+#if VALA_0_56_17
     private static unowned Gala.App? get_app_from_pid (pid_t pid) {
+#else
+    private static unowned Gala.App? get_app_from_pid (int pid) {
+#endif
         var running_apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned Gala.App app in running_apps) {
             var app_pids = app.get_pids ();
@@ -331,7 +339,7 @@ public class Gala.WindowTracker : GLib.Object {
     private void on_unmanaged (Meta.Window window) {
         disassociate_window (window);
 
-        if (InternalUtils.get_window_is_normal (window)) {
+        if (Utils.get_window_is_normal (window)) {
             windows_changed ();
         }
     }
@@ -350,7 +358,7 @@ public class Gala.WindowTracker : GLib.Object {
         app.add_window (window);
         window_to_app.insert (window, app);
 
-        if (InternalUtils.get_window_is_normal (window)) {
+        if (Utils.get_window_is_normal (window)) {
             windows_changed ();
         }
     }

@@ -26,6 +26,17 @@ lib/Drawing/Canvas.vala
 lib/Drawing/Color.vala
 lib/Drawing/StyleManager.vala
 lib/Drawing/Utilities.vala
+lib/Gestures/ActorTarget.vala
+lib/Gestures/Gesture.vala
+lib/Gestures/GestureBackend.vala
+lib/Gestures/GestureController.vala
+lib/Gestures/GestureSettings.vala
+lib/Gestures/GestureTarget.vala
+lib/Gestures/PropertyTarget.vala
+lib/Gestures/RootTarget.vala
+lib/Gestures/ScrollBackend.vala
+lib/Gestures/SpringTimeline.vala
+lib/Gestures/ToucheggBackend.vala
 lib/Plugin.vala
 lib/ShadowEffect.vala
 lib/Utils.vala
@@ -52,10 +63,6 @@ src/DaemonManager.vala
 src/DBusAccelerator.vala
 src/DBus.vala
 src/DesktopIntegration.vala
-src/Gestures/GestureSettings.vala
-src/Gestures/Gesture.vala
-src/Gestures/ScrollBackend.vala
-src/Gestures/ToucheggBackend.vala
 src/HotCorners/Barrier.vala
 src/HotCorners/HotCornerManager.vala
 src/HotCorners/HotCorner.vala
@@ -75,8 +82,6 @@ src/ShellClients/NotificationsClient.vala
 src/ShellClients/PanelWindow.vala
 src/ShellClients/ShellClientsManager.vala
 src/Widgets/DwellClickTimer.vala
-src/Widgets/MultitaskingView/IconGroup.vala
-src/Widgets/MultitaskingView/IconGroupContainer.vala
 src/Widgets/MultitaskingView/MonitorClone.vala
 src/Widgets/MultitaskingView/MultitaskingView.vala
 src/Widgets/MultitaskingView/StaticWindowClone.vala
@@ -84,9 +89,7 @@ src/Widgets/MultitaskingView/StaticWindowContainer.vala
 src/Widgets/MultitaskingView/Tooltip.vala
 src/Widgets/MultitaskingView/WindowClone.vala
 src/Widgets/MultitaskingView/WindowCloneContainer.vala
-src/Widgets/MultitaskingView/WindowIconActor.vala
 src/Widgets/MultitaskingView/WorkspaceClone.vala
-src/Widgets/MultitaskingView/WorkspaceInsertThumb.vala
 src/Widgets/MultitaskingView/WorkspaceRow.vala
 src/Widgets/PixelPicker.vala
 src/Widgets/PointerLocator.vala

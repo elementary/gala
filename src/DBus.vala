@@ -14,6 +14,19 @@ public class Gala.DBus {
     public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
+        Bus.own_name (
+            SESSION, "io.elementary.gala", NONE,
+            (connection) => {
+                try {
+                    connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
+                } catch (Error e) {
+                    warning (e.message);
+                }
+            },
+            () => {},
+            () => critical ("Could not acquire name")
+        );
+
         Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
             (connection) => {
                 if (instance == null)

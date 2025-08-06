@@ -9,7 +9,6 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private const float MIN_ZOOM = 1.0f;
     private const float MAX_ZOOM = 10.0f;
     private const float SHORTCUT_DELTA = 0.5f;
-    private const int ANIMATION_DURATION = 300;
     private const uint MOUSE_POLL_TIME = 50;
 
     public WindowManager wm { get; construct; }
@@ -37,7 +36,7 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         gesture_controller = new GestureController (ZOOM, wm) {
             snap = false
         };
-        gesture_controller.enable_touchpad ();
+        gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (gesture_controller);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
@@ -66,13 +65,11 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         }
     }
 
-    [CCode (instance_pos = -1)]
     private void zoom_in (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (SHORTCUT_DELTA, true);
     }
 
-    [CCode (instance_pos = -1)]
     private void zoom_out (Meta.Display display, Meta.Window? window,
         Clutter.KeyEvent? event, Meta.KeyBinding binding) {
         zoom (-SHORTCUT_DELTA, true);

@@ -49,7 +49,6 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         windows.clear ();
     }
 
-    [CCode (instance_pos = -1)]
     private void on_initiate (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
         Meta.KeyBinding binding) {
         selection_area = new SelectionArea (wm);

@@ -41,6 +41,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public bool active {
         set {
+            active_shape.update_color ();
+
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
@@ -93,7 +95,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
         add_gesture_controller (gesture_controller);
 
@@ -101,8 +103,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
-        window.size_changed.connect (() => request_reposition ());
+        window.notify["minimized"].connect (update_targets);
         window.position_changed.connect (update_targets);
+        window.size_changed.connect (() => request_reposition ());
 
         if (overview_mode) {
             var click_action = new Clutter.ClickAction ();
@@ -114,7 +117,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
-            drag_action.destination_crossed.connect (drag_destination_crossed);
+            drag_action.destination_crossed.connect (destination_crossed);
+            drag_action.destination_motion.connect (destination_motion);
             drag_action.drag_end.connect (drag_end);
             drag_action.drag_canceled.connect (drag_canceled);
             drag_action.actor_clicked.connect (actor_clicked);
@@ -151,6 +155,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
+        window.notify["minimized"].disconnect (update_targets);
+        window.position_changed.disconnect (update_targets);
     }
 
     private void reallocate () {
@@ -266,7 +272,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -289,7 +295,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public override void end_progress (GestureAction action) {
         update_hover_widgets (false);
 
-        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -507,59 +513,20 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         return this;
     }
 
-    /**
-     * When we cross an IconGroup, we animate to an even smaller size and slightly
-     * less opacity and add ourselves as temporary window to the group. When left,
-     * we reverse those steps.
-     */
-    private void drag_destination_crossed (Clutter.Actor destination, bool hovered) {
-        var icon_group = destination as IconGroup;
-        var insert_thumb = destination as WorkspaceInsertThumb;
-
-        // if we have don't dynamic workspace, we don't allow inserting
-        if (icon_group == null && insert_thumb == null
-            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
-                return;
+    private void destination_crossed (Clutter.Actor destination, bool hovered) {
+        if (!(destination is Meta.WindowActor)) {
+            return;
         }
 
-        // for an icon group, we only do animations if there is an actual movement possible
-        if (icon_group != null
-            && icon_group.workspace == window.get_workspace ()
-            && window.is_on_primary_monitor ()) {
-                return;
+        if (hovered) {
+            WindowDragProvider.get_instance ().notify_enter (window.get_id ());
+        } else {
+            WindowDragProvider.get_instance ().notify_leave ();
         }
+    }
 
-        var scale = hovered ? 0.4 : 1.0;
-        var opacity = hovered ? 0 : 255;
-        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = Utils.get_animation_duration (duration);
-
-        window_icon.save_easing_state ();
-
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
-        window_icon.set_scale (scale, scale);
-        window_icon.set_opacity (opacity);
-
-        window_icon.restore_easing_state ();
-
-        if (insert_thumb != null) {
-            insert_thumb.set_window_thumb (window);
-        }
-
-        if (icon_group != null) {
-            if (hovered) {
-                icon_group.add_window (window, false, true);
-            } else {
-                icon_group.remove_window (window, false);
-            }
-        }
-
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE: Meta.Cursor.NO_DROP);
-#else
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
-#endif
+    private void destination_motion (Clutter.Actor destination, float x, float y) {
+        WindowDragProvider.get_instance ().notify_motion (x, y);
     }
 
     /**
@@ -577,31 +544,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         display.set_cursor (Meta.Cursor.DEFAULT);
 
-        if (destination is IconGroup) {
-            workspace = ((IconGroup) destination).workspace;
-        } else if (destination is FramedBackground) {
+        if (destination is FramedBackground) {
             workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
-        } else if (destination is WorkspaceInsertThumb) {
-            unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
-
-            var will_move = window.get_workspace ().index () != inserter.workspace_index;
-
-            if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
-                window.move_to_monitor (primary);
-                will_move = true;
-            }
-
-            InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
-
-            // if we don't actually change workspaces, the window-added/removed signals won't
-            // be emitted so we can just keep our window here
-            if (will_move) {
-                unmanaged ();
-            } else {
-                drag_canceled ();
-            }
-
-            return;
         } else if (destination is MonitorClone) {
             var monitor = ((MonitorClone) destination).monitor;
             if (window.get_monitor () != monitor) {
@@ -612,6 +556,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             }
 
             return;
+        } else if (destination is Meta.WindowActor) {
+            WindowDragProvider.get_instance ().notify_dropped ();
         }
 
         bool did_move = false;
@@ -687,33 +633,22 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     /**
      * Border to show around the selected window when using keyboard navigation.
      */
-    private class ActiveShape : CanvasActor {
+    private class ActiveShape : Clutter.Actor {
         private const int BORDER_RADIUS = 16;
         private const double COLOR_OPACITY = 0.8;
 
         construct {
-            notify["opacity"].connect (invalidate);
+            add_effect (new RoundedCornersEffect (BORDER_RADIUS, 1.0f));
         }
 
-        public void invalidate () {
-            content.invalidate ();
-        }
-
-        protected override void draw (Cairo.Context cr, int width, int height) {
-            if (!visible || opacity == 0) {
-                return;
-            }
-
-            var color = Drawing.StyleManager.get_instance ().theme_accent_color;
-
-            cr.save ();
-            cr.set_operator (Cairo.Operator.CLEAR);
-            cr.paint ();
-            cr.restore ();
-
-            Drawing.Utilities.cairo_rounded_rectangle (cr, 0, 0, width, height, BORDER_RADIUS);
-            cr.set_source_rgba (color.red, color.green, color.blue, COLOR_OPACITY);
-            cr.fill ();
+        public void update_color () {
+            var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
+            background_color = {
+                (uint8) (accent_color.red * uint8.MAX),
+                (uint8) (accent_color.green * uint8.MAX),
+                (uint8) (accent_color.blue * uint8.MAX),
+                (uint8) (COLOR_OPACITY * uint8.MAX)
+            };
         }
     }
 }

@@ -56,7 +56,7 @@ public class Gala.SessionLocker : Clutter.Actor {
     // is about to turn off
     public const uint LONG_ANIMATION_TIME = 3000;
     // Animation length used for manual lock action (i.e. Super+L or GUI action)
-    public const uint SHORT_ANIMATION_TIME = 300;
+    private const uint SHORT_ANIMATION_TIME = 300;
 
     private const string LOCK_ENABLED_KEY = "lock-enabled";
     private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
@@ -333,7 +333,7 @@ public class Gala.SessionLocker : Clutter.Actor {
         tracker.set_pointer_visible (false);
         visible = true;
         grab_key_focus ();
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
 
         if (Meta.Prefs.get_gnome_animations () && animate) {
             animate_and_lock (animation_time);

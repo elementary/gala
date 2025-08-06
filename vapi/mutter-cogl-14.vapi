@@ -514,7 +514,7 @@ namespace Cogl {
 #endif
 		public void set_uniform_1f (int uniform_location, float value);
 		public void set_uniform_1i (int uniform_location, int value);
-		public void set_uniform_float (int uniform_location, int n_components, int count, float value);
+		public void set_uniform_float (int uniform_location, int n_components, int count, [CCode (array_length = false, array_null_terminated = false)] float[] value);
 		public void set_uniform_int (int uniform_location, int n_components, int count, int value);
 		public void set_uniform_matrix (int uniform_location, int dimensions, int count, bool transpose, float value);
 		public void set_user_program (Cogl.Program program);

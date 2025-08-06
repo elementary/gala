@@ -14,6 +14,8 @@ public class Gala.ScreenshotManager : Object {
     public WindowManager wm { get; construct; }
     [DBus (visible = false)]
     public NotificationsManager notifications_manager { get; construct; }
+    [DBus (visible = false)]
+    public FilterManager filter_manager { get; construct; }
 
     private bool? _is_redacted_font_available = null;
     private bool is_redacted_font_available {
@@ -45,8 +47,8 @@ public class Gala.ScreenshotManager : Object {
     private string prev_font_mono;
     private uint conceal_timeout;
 
-    public ScreenshotManager (WindowManager wm, NotificationsManager notifications_manager) {
-        Object (wm: wm, notifications_manager: notifications_manager);
+    public ScreenshotManager (WindowManager wm, NotificationsManager notifications_manager, FilterManager filter_manager) {
+        Object (wm: wm, notifications_manager: notifications_manager, filter_manager: filter_manager);
     }
 
     construct {
@@ -67,7 +69,6 @@ public class Gala.ScreenshotManager : Object {
         notifications_manager.notification_closed.connect ((id) => notifications_id_to_path.remove (id));
     }
 
-    [CCode (instance_pos = -1)]
     private void handle_screenshot (
         Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
@@ -267,8 +268,13 @@ public class Gala.ScreenshotManager : Object {
         int width, height;
         display.get_size (out width, out height);
 
+        filter_manager.pause_for_screenshot = true;
+
+        yield wait_stage_repaint ();
+
         var image = take_screenshot (0, 0, width, height, include_cursor);
         unconceal_text ();
+        filter_manager.pause_for_screenshot = false;
 
         if (flash) {
             flash_area (0, 0, width, height);
@@ -289,10 +295,13 @@ public class Gala.ScreenshotManager : Object {
     public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
         debug ("Taking area screenshot");
 
+        filter_manager.pause_for_screenshot = true;
+
         yield wait_stage_repaint ();
 
         var image = take_screenshot (x, y, width, height, include_cursor);
         unconceal_text ();
+        filter_manager.pause_for_screenshot = false;
 
         if (flash) {
             flash_area (x, y, width, height);
