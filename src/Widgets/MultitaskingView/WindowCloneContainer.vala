@@ -39,9 +39,23 @@ public class Gala.WindowCloneContainer : ActorTarget {
      * @param window The window for which to create the WindowClone for
      */
     public void add_window (Meta.Window window) {
+        InternalUtils.wait_for_window_actor_visible (window, _add_child);
+    }
+
+    private void _add_child (Meta.WindowActor window_actor) {
+        unowned var window = window_actor.meta_window;
+
+        if (window.window_type != NORMAL) {
+            return;
+        }
+
         var windows = new List<Meta.Window> ();
         windows.append (window);
         foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
+            if (clone.window == window) {
+                return;
+            }
+
             windows.append (clone.window);
         }
 

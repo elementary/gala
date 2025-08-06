@@ -67,7 +67,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private DragDropAction? drag_action = null;
-    private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
 
     private Clutter.Actor prev_parent = null;
@@ -75,7 +74,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
-    private Clutter.Actor clone_container;
+    private Clutter.Clone clone;
     private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
@@ -83,7 +82,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false)
+    requires (window.get_compositor_private () != null) {
         Object (
             wm: wm,
             window: window,
@@ -126,23 +126,22 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
-
-        clone_container = new Clutter.Actor () {
-            pivot_point = { 0.5f, 0.5f }
+        active_shape = new ActiveShape () {
+            opacity = 0
         };
+
+        clone = new Clutter.Clone ((Meta.WindowActor) window.get_compositor_private ());
 
         window_title = new Tooltip ();
 
         add_child (active_shape);
-        add_child (clone_container);
+        add_child (clone);
         add_child (window_title);
 
         notify["monitor-scale"].connect (reallocate);
         reallocate ();
 
-        InternalUtils.wait_for_window_actor (window, load_clone);
+        check_shadow_requirements ();
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
@@ -178,29 +177,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         set_child_below_sibling (window_icon, window_title);
     }
 
-    /**
-     * Waits for the texture of a new Meta.WindowActor to be available
-     * and makes a close of it. If it was already was assigned a slot
-     * at this point it will animate to it. Otherwise it will just place
-     * itself at the location of the original window. Also adds the shadow
-     * effect and makes sure the shadow is updated on size changes.
-     */
-    private void load_clone (Meta.WindowActor actor) {
-        if (overview_mode) {
-            actor.hide ();
-        }
-
-        clone = new Clutter.Clone (actor);
-        clone_container.add_child (clone);
-
-        check_shadow_requirements ();
-    }
-
     private void check_shadow_requirements () {
-        if (clone == null) {
-            return;
-        }
-
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
                 shadow_effect = new ShadowEffect ("window", monitor_scale);
@@ -279,8 +256,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
         var target_opacity = (uint) (255 * (1 - progress));
 
-        clone_container.translation_y = target_translation_y;
-        clone_container.opacity = target_opacity;
+        clone.translation_y = target_translation_y;
+        clone.opacity = target_opacity;
 
         window_icon.translation_y = target_translation_y;
         window_icon.opacity = target_opacity;
@@ -303,29 +280,24 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public override void allocate (Clutter.ActorBox box) {
         base.allocate (box);
 
-        var input_rect = window.get_buffer_rect ();
-        var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
-
-        // Compensate for invisible borders of the texture
-        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
-        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
-
-        var clone_container_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, input_rect.width * clone_scale_factor, input_rect.height * clone_scale_factor);
-        clone_container.allocate (clone_container_alloc);
-
-        if (clone == null || (drag_action != null && drag_action.dragging)) {
+        if (drag_action != null && drag_action.dragging) {
             return;
         }
 
-        unowned var display = wm.get_display ();
+        var input_rect = window.get_buffer_rect ();
+        var outer_rect = window.get_frame_rect ();
+        var clone_scale_factor = width / outer_rect.width;
 
         clone.set_scale (clone_scale_factor, clone_scale_factor);
 
         float clone_width, clone_height;
         clone.get_preferred_size (null, null, out clone_width, out clone_height);
 
-        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
+        // Compensate for invisible borders of the texture
+        float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
+        float clone_y = (input_rect.y - outer_rect.y) * clone_scale_factor;
+
+        var clone_alloc = InternalUtils.actor_box_from_rect (clone_x, clone_y, clone_width, clone_height);
         clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
@@ -355,6 +327,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_width, window_icon_height);
         window_icon.allocate (window_icon_alloc);
 
+        unowned var display = wm.get_display ();
         var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
@@ -429,9 +402,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             drag_action.cancel ();
         }
 
-        if (clone != null) {
-            clone.destroy ();
-        }
+        clone.destroy ();
 
         if (check_confirm_dialog_cb != 0) {
             SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
