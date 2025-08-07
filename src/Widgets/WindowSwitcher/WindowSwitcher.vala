@@ -10,7 +10,6 @@
 public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int WRAPPER_PADDING = 12;
 
-    private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const double GESTURE_STEP = 0.1;
 
@@ -24,7 +23,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private Gala.ModalProxy modal_proxy = null;
     private Drawing.StyleManager style_manager;
     private Clutter.Actor container;
-    private Clutter.Text caption;
+    private Gala.Text caption;
     private ShadowEffect shadow_effect;
     private BackgroundBlurEffect blur_effect;
 
@@ -81,8 +80,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         get_accessible ().accessible_name = _("Window switcher");
         container.get_accessible ().accessible_role = LIST;
 
-        caption = new Clutter.Text () {
-            font_name = CAPTION_FONT_NAME,
+        caption = new Gala.Text () {
             ellipsize = END,
             line_alignment = CENTER
         };
