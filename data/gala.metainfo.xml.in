@@ -118,6 +118,7 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/137">Send a persistent notification after taking a screenshot</issue>
+        <issue url="https://github.com/elementary/gala/issues/180">Different keyboard layouts for individual windows</issue>
         <issue url="https://github.com/elementary/gala/issues/321">Use org.gnome.desktop.interface enable-animations</issue>
         <issue url="https://github.com/elementary/gala/issues/544">Multitasking View. Wingpanel shows for brief moment if a fullscreen wokspace is selected after coming from a wokspace that shows the wingpanel.</issue>
         <issue url="https://github.com/elementary/gala/issues/823">Check for redacted font</issue>
