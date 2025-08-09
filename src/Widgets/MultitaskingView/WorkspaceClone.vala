@@ -202,18 +202,11 @@ public class Gala.WorkspaceClone : ActorTarget {
      * Add a window to the WindowCloneContainer if it belongs to this workspace and this monitor.
      */
     private void add_window (Meta.Window window) {
-        if (window.window_type != NORMAL ||
-            window.get_workspace () != workspace ||
+        if (window.get_workspace () != workspace ||
             StaticWindowContainer.get_instance (workspace.get_display ()).is_static (window) ||
             !window.is_on_primary_monitor ()
         ) {
             return;
-        }
-
-        foreach (var child in (GLib.List<weak WindowClone>) window_container.get_children ()) {
-            if (child.window == window) {
-                return;
-            }
         }
 
         window_container.add_window (window);

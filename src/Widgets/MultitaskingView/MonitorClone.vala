@@ -84,15 +84,17 @@ public class Gala.MonitorClone : ActorTarget {
     }
 
     private void window_left (int window_monitor, Meta.Window window) {
-        if (window_monitor != monitor)
+        if (window_monitor != monitor) {
             return;
+        }
 
         window_container.remove_window (window);
     }
 
     private void window_entered (int window_monitor, Meta.Window window) {
-        if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
+        if (window_monitor != monitor) {
             return;
+        }
 
         window_container.add_window (window);
     }
