@@ -108,13 +108,18 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_dock (Meta.Window window) {
+#if HAS_MUTTER49
+        window.set_type (Meta.WindowType.DOCK);
+#else
         if (Meta.Util.is_wayland_compositor ()) {
             make_dock_wayland (window);
         } else {
             make_dock_x11 (window);
         }
+#endif
     }
 
+#if !HAS_MUTTER49
     private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
@@ -144,6 +149,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         // 0 means replace
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
+#endif
 
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {

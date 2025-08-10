@@ -1,0 +1,6 @@
+Rectangle struct
+RECTANGLE_MAX_STACK_RECTS parent="Mtk.Rectangle" name="MAX_STACK_RECTS"
+REGION_BUILDER_MAX_LEVELS parent="Mtk.RegionBuilder" name="MAX_LEVELS"
+
+MONITOR_ALL_TRANSFORMS parent="Mtk.MonitorTransform" name="ALL"
+MONITOR_N_TRANSFORMS skip
