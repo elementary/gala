@@ -14,6 +14,8 @@ public class Gala.KeyboardManager : Object {
     public Meta.Display display { construct; private get; }
 
     private GLib.Settings settings;
+    private GLib.HashTable<Meta.Window, uint?> windows_table;
+    private Meta.Window? previous_focus_window = null;
 
     public KeyboardManager (Meta.Display display) {
         Object (display: display);
@@ -21,6 +23,7 @@ public class Gala.KeyboardManager : Object {
 
     construct {
         settings = new GLib.Settings ("org.gnome.desktop.input-sources");
+        windows_table = new GLib.HashTable<Meta.Window, uint> (GLib.direct_hash, GLib.direct_equal);
 
         on_settings_changed ("sources"); // Update the list of layouts
         on_settings_changed ("current"); // Set current layout
@@ -28,6 +31,7 @@ public class Gala.KeyboardManager : Object {
         settings.changed.connect (on_settings_changed);
 
         display.modifiers_accelerator_activated.connect (() => switch_input_source (false));
+        display.notify["focus-window"].connect (check_focus_window);
 
         var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
         display.add_keybinding ("switch-input-source", keybinding_settings, IGNORE_AUTOREPEAT, handle_keybinding);
@@ -38,6 +42,31 @@ public class Gala.KeyboardManager : Object {
         Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event, Meta.KeyBinding binding
     ) {
         switch_input_source (binding.get_name ().has_suffix ("-backward"));
+    }
+
+    private void check_focus_window () {
+        if (!settings.get_boolean ("per-window")) {
+            return;
+        }
+
+        var focus_window = display.focus_window;
+        if (focus_window == null) {
+            previous_focus_window = null;
+            return;
+        }
+
+        if (!InternalUtils.get_window_is_normal (focus_window)) {
+            return;
+        }
+
+        var target_layout_id = windows_table[focus_window];
+        if (target_layout_id != null) {
+            settings.set_uint ("current", target_layout_id);
+        } else {
+            windows_table[focus_window] = settings.get_uint ("current");
+        }
+
+        previous_focus_window = focus_window;
     }
 
     private bool switch_input_source (bool backward) {
@@ -110,7 +139,25 @@ public class Gala.KeyboardManager : Object {
             backend.set_keymap (layout, variant, options);
 #endif
         } else if (key == "current") {
-            backend.lock_layout_group (settings.get_uint ("current"));
+            var current = settings.get_uint ("current");
+            backend.lock_layout_group (current);
+
+            if (!settings.get_boolean ("per-window")) {
+                return;
+            }
+
+            var focus_window = display.focus_window;
+            if (
+                focus_window != null &&
+                !InternalUtils.get_window_is_normal (focus_window) &&
+                previous_focus_window != null
+            ) {
+                windows_table[previous_focus_window] = current;
+            } else {
+                windows_table[focus_window] = current;
+            }
+        } else if (key == "per-window" && !settings.get_boolean ("per-window")) {
+            windows_table = new GLib.HashTable<Meta.Window, uint> (GLib.direct_hash, GLib.direct_equal);
         }
     }
 }
