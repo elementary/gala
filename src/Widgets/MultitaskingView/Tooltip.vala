@@ -11,7 +11,7 @@ public class Gala.Tooltip : Clutter.Actor {
     /**
      * Actor to display the Tooltip text.
      */
-    private Clutter.Text text_actor;
+    private Gala.Text text_actor;
 
     construct {
 #if HAS_MUTTER47
@@ -25,7 +25,7 @@ public class Gala.Tooltip : Clutter.Actor {
             (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.alpha * uint8.MAX,
         };
 
-        text_actor = new Clutter.Text () {
+        text_actor = new Gala.Text () {
             margin_left = 6,
             margin_top = 6,
             margin_bottom = 6,
