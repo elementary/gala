@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2014 Tom Beckmann
+//                2025 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -45,20 +46,23 @@ namespace Gala {
         SCREENSHOT_CURRENT
     }
 
-    [Flags]
-    public enum WindowFlags {
-        NONE = 0,
-        CAN_HIDE,
-        CAN_MAXIMIZE,
-        IS_MAXIMIZED,
-        ALLOWS_MOVE,
-        ALLOWS_RESIZE,
-        ALWAYS_ON_TOP,
-        ON_ALL_WORKSPACES,
-        CAN_CLOSE,
-        IS_TILED,
-        ALLOWS_MOVE_LEFT,
-        ALLOWS_MOVE_RIGHT
+    // TODO: move these somewhere else?
+
+    public delegate void WindowMenuItemCallback (Meta.Window window);
+
+    public enum WindowMenuItemType {
+        BUTTON,
+        TOGGLE,
+        SEPARATOR
+    }
+
+    public struct WindowMenuItem {
+        WindowMenuItemType type;
+        bool sensitive;
+        bool toggle_state;
+        string display_name;
+        string keybinding;
+        WindowMenuItemCallback callback;
     }
 
     /**
