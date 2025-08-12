@@ -1,6 +1,6 @@
 /*
  * Copyright 2017 Adam Bieńkowski
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -62,8 +62,8 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         clone = new Clutter.Clone (window_actor);
 
         clone_container = new Clutter.Actor () {
-            scale_x = 0.35f,
-            scale_y = 0.35f
+            scale_x = 0.35,
+            scale_y = 0.35
         };
         clone_container.add_child (clone);
 
@@ -118,7 +118,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
-        update_clone_clip ();
+        on_allocation_changed ();
 
         unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
@@ -305,11 +305,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
         restore_easing_state ();
 
-#if HAS_MUTTER48
-        GLib.Timeout.add (duration, () => {
-#else
-        Clutter.Threads.Timeout.add (duration, () => {
-#endif
+        Timeout.add (duration, () => {
             closed ();
             return Source.REMOVE;
         });
