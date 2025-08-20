@@ -14,6 +14,9 @@ public class Gala.KeyboardManager : Object {
     public Meta.Display display { construct; private get; }
 
     private GLib.Settings settings;
+#if HAS_MUTTER49
+    private GLib.Cancellable? cancellable = null;
+#endif
 
     public KeyboardManager (Meta.Display display) {
         Object (display: display);
@@ -104,13 +107,49 @@ public class Gala.KeyboardManager : Object {
             var variant = string.joinv (",", variants);
             var options = string.joinv (",", xkb_options);
 
-#if HAS_MUTTER46
+#if HAS_MUTTER49
+            if (cancellable != null) {
+                cancellable.cancel ();
+                cancellable = new GLib.Cancellable ();
+            }
+
+            backend.set_keymap_async.begin (layout, variant, options, settings.get_string ("xkb-model"), cancellable, (obj, res) => {
+                try {
+                    ((Meta.Backend) obj).set_keymap_async.end (res);
+                } catch (Error e) {
+                    if (e is GLib.IOError.CANCELLED) {
+                        // ignore
+                    } else {
+                        cancellable = null;
+                    }
+                }
+            });
+#elif HAS_MUTTER46
             backend.set_keymap (layout, variant, options, settings.get_string ("xkb-model"));
 #else
             backend.set_keymap (layout, variant, options);
 #endif
         } else if (key == "current") {
+#if HAS_MUTTER49
+            if (cancellable != null) {
+                cancellable.cancel ();
+                cancellable = new GLib.Cancellable ();
+            }
+
+            backend.set_keymap_layout_group_async.begin (settings.get_uint ("current"), cancellable, (obj, res) => {
+                try {
+                    ((Meta.Backend) obj).set_keymap_layout_group_async.end (res);
+                } catch (Error e) {
+                    if (e is GLib.IOError.CANCELLED) {
+                        // ignore
+                    } else {
+                        cancellable = null;
+                    }
+                }
+            });
+#else
             backend.lock_layout_group (settings.get_uint ("current"));
+#endif
         }
     }
 }

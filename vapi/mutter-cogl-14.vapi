@@ -122,6 +122,9 @@ namespace Cogl {
 		[CCode (cheader_filename = "cogl/cogl.h", cname = "cogl_foreach_feature")]
 		public void foreach_feature (Cogl.FeatureCallback callback);
 #endif
+#if HAS_MUTTER49
+		public bool format_supports_upload (Cogl.PixelFormat format);
+#endif
 		public void free_timestamp_query (owned Cogl.TimestampQuery query);
 		public unowned Cogl.Display get_display ();
 		public int64 get_gpu_time_ns ();
@@ -210,13 +213,21 @@ namespace Cogl {
 		[CCode (has_construct_function = false)]
 		protected FrameInfo ();
 		public int64 get_frame_counter ();
+#if !HAS_MUTTER49
 		public int64 get_global_frame_counter ();
+#endif
 		public bool get_is_symbolic ();
 		public int64 get_presentation_time_us ();
 		public float get_refresh_rate ();
 		public int64 get_rendering_duration_ns ();
 		public uint get_sequence ();
+#if HAS_MUTTER49
+		public int64 get_target_presentation_time_us ();
+#endif
 		public int64 get_time_before_buffer_swap_us ();
+#if HAS_MUTTER49
+		public int64 get_view_frame_counter ();
+#endif
 #if HAS_MUTTER47
 		public bool has_valid_gpu_rendering_duration ();
 #endif
@@ -613,6 +624,9 @@ namespace Cogl {
 		public bool check_onscreen_template (Cogl.OnscreenTemplate onscreen_template) throws GLib.Error;
 #endif
 		public bool connect () throws GLib.Error;
+#if HAS_MUTTER49
+		public void* get_custom_winsys_data ();
+#endif
 #if !HAS_MUTTER47
 		public void foreach_output (Cogl.OutputCallback callback);
 #endif
@@ -624,6 +638,9 @@ namespace Cogl {
 #endif
 #if HAS_MUTTER47
 		public void* get_proc_address (string name);
+#endif
+#if HAS_MUTTER49
+		public void* get_winsys ();
 #endif
 		public Cogl.WinsysID get_winsys_id ();
 		public bool is_dma_buf_supported ();
@@ -638,6 +655,10 @@ namespace Cogl {
 #endif
 #if !HAS_MUTTER47
 		public void set_winsys_id (Cogl.WinsysID winsys_id);
+#endif
+#if HAS_MUTTER49
+		public void set_driver (Cogl.DriverId driver);
+		public void set_winsys (void* winsys);
 #endif
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_scanout_get_type ()")]
@@ -697,7 +718,9 @@ namespace Cogl {
 	public sealed class SubTexture : Cogl.Texture {
 		[CCode (has_construct_function = false, type = "CoglTexture*")]
 		public SubTexture (Cogl.Context ctx, Cogl.Texture parent_texture, int sub_x, int sub_y, int sub_width, int sub_height);
+#if !HAS_MUTTER49
 		public unowned Cogl.Texture get_parent ();
+#endif
 	}
 #if !HAS_MUTTER47
 	[CCode (cheader_filename = "cogl/cogl.h", type_id = "cogl_swap_chain_get_type ()")]
@@ -736,7 +759,7 @@ namespace Cogl {
 		public uint get_width ();
 		public bool is_get_data_supported ();
 		public bool is_sliced ();
-#if HAS_MUTTER47
+#if HAS_MUTTER47 && !HAS_MUTTER49
 		public void set_auto_mipmap (bool value);
 #endif
 		public void set_components (Cogl.TextureComponents components);
@@ -1122,7 +1145,7 @@ namespace Cogl {
 		PURGED_CONTEXT_RESET
 	}
 #if HAS_MUTTER48
-    [CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_INDICES_TYPE_UNSIGNED_", type_id = "cogl_indices_type_get_type ()")]
+	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_INDICES_TYPE_UNSIGNED_", type_id = "cogl_indices_type_get_type ()")]
 #else
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_INDICES_TYPE_UNSIGNED_", has_type_id = false)]
 #endif
@@ -1382,7 +1405,10 @@ namespace Cogl {
 #endif
 	public errordomain RendererError {
 		XLIB_DISPLAY_OPEN,
-		BAD_CONSTRAINT
+		BAD_CONSTRAINT;
+#if HAS_MUTTER49
+		public static uint32 quark ();
+#endif
 	}
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "cogl/cogl.h", cprefix = "COGL_SCANOUT_ERROR_", type_id = "cogl_scanout_error_get_type ()")]

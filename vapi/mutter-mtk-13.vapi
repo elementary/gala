@@ -2,6 +2,12 @@
 
 [CCode (cprefix = "Mtk", gir_namespace = "Mtk", gir_version = "13", lower_case_cprefix = "mtk_")]
 namespace Mtk {
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "mtk/mtk.h", has_type_id = false)]
+	[Compact]
+	public class AnonymousFile {
+	}
+#endif
 #if HAS_MUTTER46
 	[CCode (cheader_filename = "mtk/mtk.h", ref_function = "mtk_region_ref", type_id = "mtk_region_get_type ()", unref_function = "mtk_region_unref")]
 	[Compact]
@@ -69,6 +75,9 @@ namespace Mtk {
 #if HAS_MUTTER46
 		public bool is_adjacent_to (Mtk.Rectangle other);
 #endif
+#if HAS_MUTTER49
+		public bool is_empty ();
+#endif
 		public bool overlap (Mtk.Rectangle rect2);
 #if HAS_MUTTER46
 		public void scale_double (double scale, Mtk.RoundingStrategy rounding_strategy, Mtk.Rectangle dest);
@@ -103,6 +112,13 @@ namespace Mtk {
 		public void init (Mtk.Region region);
 		public void next ();
 	}
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_ANONYMOUS_FILE_MAPMODE_", has_type_id = false)]
+	public enum AnonymousFileMapmode {
+		PRIVATE,
+		SHARED
+	}
+#endif
 #if HAS_MUTTER47
 	[CCode (cheader_filename = "mtk/mtk.h", cprefix = "MTK_MONITOR_TRANSFORM_", has_type_id = false)]
 	public enum MonitorTransform {
@@ -144,6 +160,10 @@ namespace Mtk {
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	public static void compute_viewport_matrix (Graphene.Matrix matrix, int width, int height, float scale, Mtk.MonitorTransform transform, Graphene.Rect src_rect);
+#endif
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static int64 extrapolate_next_interval_boundary (int64 base_us, int64 interval_us);
 #endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]

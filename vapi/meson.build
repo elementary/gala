@@ -343,3 +343,74 @@ if mutter48_dep.found()
 		output: 'libmutter-16.vapi'
 	)
 endif
+if mutter49_dep.found()
+	mtk_target = custom_target('mutter-mtk-17',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Mtk-17.gir',
+			'--library=mutter-mtk-17',
+			'--pkg=gobject-2.0',
+			'--pkg=gio-2.0',
+			'--pkg=cairo',
+			'--pkg=graphene-gobject-1.0',
+			vapigen_args
+		],
+		output: 'mutter-mtk-17.vapi'
+	)
+	cogl_target = custom_target('mutter-cogl-17',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Cogl-17.gir',
+			'--library=mutter-cogl-17',
+			'--pkg=mutter-mtk-17',
+			'--pkg=gobject-2.0',
+			'--pkg=gio-2.0',
+			'--pkg=cairo',
+			'--pkg=graphene-gobject-1.0',
+			'--pkg=x11',
+			vapigen_args,
+			files('Cogl-17-custom.vala')
+		],
+		depends: mtk_target,
+		output: 'mutter-cogl-17.vapi'
+	)
+
+	clutter_target = custom_target('mutter-clutter-17',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Clutter-17.gir',
+			'--library=mutter-clutter-17',
+			'--pkg=graphene-gobject-1.0',
+			'--pkg=mutter-mtk-17',
+			'--pkg=mutter-cogl-17',
+			'--pkg=atk',
+			'--pkg=gio-2.0',
+			'--pkg=json-glib-1.0',
+			'--pkg=pango',
+			'--pkg=x11',
+			vapigen_args,
+		],
+		depends: [ cogl_target, mtk_target ],
+		output: 'mutter-clutter-17.vapi'
+	)
+
+	libmutter_target = custom_target('libmutter-17',
+		command: [
+			vapigen,
+			mutter_typelib_dir / 'Meta-17.gir',
+			'--library=libmutter-17',
+			'--pkg=graphene-gobject-1.0',
+			'--pkg=mutter-cogl-17',
+			'--pkg=mutter-clutter-17',
+			'--pkg=atk',
+			'--pkg=gio-2.0',
+			'--pkg=json-glib-1.0',
+			'--pkg=pango',
+			'--pkg=x11',
+			'--pkg=xfixes-4.0',
+			vapigen_args
+		],
+		depends: [ cogl_target, clutter_target ],
+		output: 'libmutter-17.vapi'
+	)
+endif
