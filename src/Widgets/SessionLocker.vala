@@ -56,7 +56,7 @@ public class Gala.SessionLocker : Clutter.Actor {
     // is about to turn off
     public const uint LONG_ANIMATION_TIME = 3000;
     // Animation length used for manual lock action (i.e. Super+L or GUI action)
-    public const uint SHORT_ANIMATION_TIME = 300;
+    private const uint SHORT_ANIMATION_TIME = 300;
 
     private const string LOCK_ENABLED_KEY = "lock-enabled";
     private const string LOCK_PROHIBITED_KEY = "disable-lock-screen";
@@ -330,7 +330,11 @@ public class Gala.SessionLocker : Clutter.Actor {
 #else
         unowned var tracker = wm.get_display ().get_cursor_tracker ();
 #endif
+#if HAS_MUTTER49
+        tracker.inhibit_cursor_visibility ();
+#else
         tracker.set_pointer_visible (false);
+#endif
         visible = true;
         grab_key_focus ();
         modal_proxy = wm.push_modal (this, true);
@@ -398,7 +402,11 @@ public class Gala.SessionLocker : Clutter.Actor {
 #else
         unowned var tracker = wm.get_display ().get_cursor_tracker ();
 #endif
+#if HAS_MUTTER49
+        tracker.uninhibit_cursor_visibility ();
+#else
         tracker.set_pointer_visible (true);
+#endif
         visible = false;
 
         activation_time = 0;

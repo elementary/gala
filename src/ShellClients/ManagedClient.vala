@@ -50,8 +50,13 @@ public class Gala.ManagedClient : Object {
     private async void start_wayland () {
         var subprocess_launcher = new GLib.SubprocessLauncher (INHERIT_FDS);
         try {
+#if HAS_MUTTER49
+            wayland_client = new Meta.WaylandClient.subprocess (display.get_context (), subprocess_launcher, args);
+            subprocess = wayland_client.get_subprocess ();
+#else
             wayland_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
             subprocess = wayland_client.spawnv (display, args);
+#endif
 
             yield subprocess.wait_async ();
 
