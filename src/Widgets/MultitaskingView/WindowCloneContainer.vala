@@ -18,6 +18,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public int padding_bottom { get; set; default = 12; }
 
     public WindowManager wm { get; construct; }
+    public WindowListModel windows { get; construct; }
     public float monitor_scale { get; construct set; }
     public bool overview_mode { get; construct; }
 
@@ -29,79 +30,50 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, WindowListModel windows, float monitor_scale, bool overview_mode = false) {
+        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, overview_mode: overview_mode);
     }
 
-    /**
-     * Create a WindowClone for a Meta.Window and add it to the group
-     *
-     * @param window The window for which to create the WindowClone for
-     */
-    public void add_window (Meta.Window window) {
-        var windows = new List<Meta.Window> ();
-        windows.append (window);
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            windows.append (clone.window);
+    construct {
+        on_items_changed (0, 0, windows.get_n_items ());
+        windows.items_changed.connect (on_items_changed);
+    }
+
+    private void on_items_changed (uint position, uint removed, uint added) {
+        var to_remove = new HashTable<Meta.Window, WindowClone> (null, null);
+
+        for (uint i = 0; i < removed; i++) {
+            var window_clone = (WindowClone) get_child_at_index ((int) position);
+            to_remove[window_clone.window] = window_clone;
+            remove_child (window_clone);
         }
 
-        var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
-        new_window.selected.connect ((_new_window) => window_selected (_new_window.window));
-        new_window.request_reposition.connect (() => reflow (false));
-        new_window.destroy.connect ((_new_window) => {
-            // make sure to release reference if the window is selected
-            if (_new_window == current_window) {
-                select_next_window (Meta.MotionDirection.RIGHT, false);
+        for (int i = (int) position; i < position + added; i++) {
+            var window = (Meta.Window) windows.get_item (i);
+
+            WindowClone? clone = to_remove.take (window);
+
+            if (clone == null) {
+                clone = new WindowClone (wm, window, monitor_scale, overview_mode);
+                clone.selected.connect ((_clone) => window_selected (_clone.window));
+                clone.request_reposition.connect (() => reflow (false));
+                bind_property ("monitor-scale", clone, "monitor-scale");
             }
 
-            // if window is still selected, reset the selection
-            if (_new_window == current_window) {
+            insert_child_at_index (clone, i);
+        }
+
+        // Make sure we release the reference on the window
+        if (current_window != null && current_window.window in to_remove) {
+            select_next_window (RIGHT, false);
+
+            // There is no next window so select nothing
+            if (current_window.window in to_remove) {
                 current_window = null;
-            }
-
-            reflow (false);
-        });
-        bind_property ("monitor-scale", new_window, "monitor-scale");
-
-        unowned Meta.Window? target = null;
-        foreach (unowned var w in sort_windows (windows)) {
-            if (w != window) {
-                target = w;
-                continue;
-            }
-            break;
-        }
-
-        // top most or no other children
-        if (target == null) {
-            add_child (new_window);
-        }
-
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            if (target == clone.window) {
-                insert_child_below (new_window, clone);
-                break;
             }
         }
 
         reflow (false);
-    }
-
-    /**
-     * Find and remove the WindowClone for a MetaWindow
-     */
-    public void remove_window (Meta.Window window) {
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            if (clone.window == window) {
-                remove_child (clone);
-                reflow (false);
-                break;
-            }
-        }
-
-        if (get_n_children () == 0) {
-            last_window_closed ();
-        }
     }
 
     public override void start_progress (GestureAction action) {
@@ -147,6 +119,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      * during animations correct.
      */
     private void restack_windows () {
+        windows.sort ();
+        return;
         var children = (GLib.List<weak WindowClone>) get_children ();
 
         var windows = new GLib.List<Meta.Window> ();

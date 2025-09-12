@@ -18,6 +18,7 @@ gala_bin_sources = files(
     'WindowAttentionTracker.vala',
     'WindowDragProvider.vala',
     'WindowListener.vala',
+    'WindowListModel.vala',
     'WindowManager.vala',
     'WindowStateSaver.vala',
     'WindowTracker.vala',
