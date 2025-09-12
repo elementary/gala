@@ -176,6 +176,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
+
+        update_targets ();
     }
 
     /**
@@ -224,39 +226,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
 
-    /**
-     * Animate the window to the given slot
-     */
-    public void take_slot (Mtk.Rectangle rect, bool animate) {
-        slot = rect;
-
-        if (animate) {
-            save_easing_state ();
-            set_easing_duration (Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
-            set_easing_mode (EASE_OUT_QUAD);
-        }
-
-        update_targets ();
-
-        if (animate) {
-            restore_easing_state ();
-        }
-    }
-
     private void update_targets () {
-        remove_all_targets ();
-
-        if (slot == null) {
+        if (window_icon == null) {
             return;
         }
 
-        var window_rect = window.get_frame_rect ();
-        var monitor_geometry = window.display.get_monitor_geometry (window.get_monitor ());
+        remove_all_targets ();
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "x", typeof (float), (float) (window_rect.x - monitor_geometry.x), (float) slot.x));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "y", typeof (float), (float) (window_rect.y - monitor_geometry.y), (float) slot.y));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) window_rect.width, (float) slot.width));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "height", typeof (float), (float) window_rect.height, (float) slot.height));
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         if (should_fade ()) {
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
@@ -272,7 +248,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
