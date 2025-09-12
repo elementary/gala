@@ -23,6 +23,9 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
     private bool opened = false;
 
+    private HashTable<Clutter.Actor, Clutter.ActorBox?> target_allocations = new HashTable<Clutter.Actor, Clutter.ActorBox?> (null, null);
+    private HashTable<Clutter.Actor, Clutter.ActorBox?> origin_allocations = new HashTable<Clutter.Actor, Clutter.ActorBox?> (null, null);
+
     /**
      * The window that is currently selected via keyboard shortcuts.
      * It is not necessarily the same as the active window.
@@ -36,6 +39,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
     construct {
         on_items_changed (0, 0, windows.get_n_items ());
         windows.items_changed.connect (on_items_changed);
+
+        set_relayout_action (MULTITASKING_VIEW, true);
     }
 
     private void on_items_changed (uint position, uint removed, uint added) {
@@ -147,8 +152,42 @@ public class Gala.WindowCloneContainer : ActorTarget {
             (int) height - padding_top - padding_bottom
         };
 
+        target_allocations.remove_all ();
+        origin_allocations.remove_all ();
         foreach (var tilable in calculate_grid_placement (area, windows)) {
-            tilable.clone.take_slot (tilable.rect, !view_toggle);
+            var geom = wm.get_display ().get_monitor_geometry (tilable.clone.window.get_monitor ());
+            var rect = tilable.clone.window.get_frame_rect ();
+
+            origin_allocations[tilable.clone] = InternalUtils.actor_box_from_rect (rect.x - geom.x, rect.y - geom.y, rect.width, rect.height);
+            target_allocations[tilable.clone] = InternalUtils.actor_box_from_rect (tilable.rect.x, tilable.rect.y, tilable.rect.width, tilable.rect.height);
+        }
+    }
+
+    protected override void allocate (Clutter.ActorBox box) {
+        set_allocation (box);
+
+        for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
+            var target_allocation = target_allocations[child];
+            var origin_allocation = origin_allocations[child];
+
+            if (target_allocation == null || origin_allocation == null) {
+                child.allocate ({0, 0, 0, 0});
+                continue;
+            }
+
+            if (!animating) {
+                child.save_easing_state ();
+                child.set_easing_duration (Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
+                child.set_easing_mode (EASE_OUT_QUAD);
+            }
+
+            child.allocate (
+                origin_allocation.interpolate (target_allocation, get_current_progress (MULTITASKING_VIEW))
+            );
+
+            if (!animating) {
+                child.restore_easing_state ();
+            }
         }
     }
 
