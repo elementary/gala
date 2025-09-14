@@ -127,6 +127,7 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
+            BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
             show_stage ();

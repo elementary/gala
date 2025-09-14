@@ -68,8 +68,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                 uniform float clip_radius;
 
                 float rounded_rect_coverage (vec2 p) {
-                    float center_left = clip_radius + 1.5;
-                    float center_right = actor_size.x - clip_radius - 0.55;
+                    float center_left = clip_radius;
+                    float center_right = actor_size.x - clip_radius;
 
                     float center_x;
                     if (p.x < center_left) {
@@ -80,8 +80,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                         return 1.0;
                     }
 
-                    float center_top = clip_radius + 1.5;
-                    float center_bottom = actor_size.y - clip_radius - 0.55;
+                    float center_top = clip_radius;
+                    float center_bottom = actor_size.y - clip_radius;
 
                     float center_y;
                     if (p.y < center_top) {
@@ -107,7 +107,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
                         return 1.0;
                     }
                     // Only pixels on the edge of the curve need expensive antialiasing
-                    return outer_radius - sqrt (dist_squared);
+                    return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
                 }
                 """,
 
@@ -339,6 +339,11 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private bool update_framebuffers (Clutter.PaintContext paint_context, Clutter.ActorBox actor_box) {
         var width = (int) actor_box.get_width ();
         var height = (int) actor_box.get_height ();
+
+        if (width < 0 || height < 0) {
+            warning ("BackgroundBlurEffect: Couldn't update framebuffers, incorrect size");
+            return false;
+        }
 
         var downscale_factor = calculate_downscale_factor (width, height, real_blur_radius);
 
