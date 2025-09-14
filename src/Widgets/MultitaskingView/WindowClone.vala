@@ -70,10 +70,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
 
-    private Clutter.Actor prev_parent = null;
-    private int prev_index = -1;
-    private float prev_x = 0.0f;
-    private float prev_y = 0.0f;
+    private Clutter.Clone? drag_handle = null;
 
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
@@ -453,22 +450,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     /**
-     * A drag action has been initiated on us, we reparent ourselves to the stage so
-     * we can move freely, scale ourselves to a smaller scale and request that the
-     * position we just freed is immediately filled by the WindowCloneContainer.
+     * A drag action has been initiated on us, we scale ourselves to a smaller scale and
+     * provide a clone of ourselves as drag handle so that it can move freely.
      */
     private Clutter.Actor drag_begin (float click_x, float click_y) {
-        var last_window_icon_x = window_icon.x;
-        var last_window_icon_y = window_icon.y;
-
-        prev_parent = get_parent ();
-        prev_index = prev_parent.get_children ().index (this);
-        prev_parent.get_transformed_position (out prev_x, out prev_y);
-
-        var stage = get_stage ();
-        prev_parent.remove_child (this);
-        stage.add_child (this);
-
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
@@ -484,14 +469,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 0;
         clone.restore_easing_state ();
 
-        request_reposition ();
-
         get_transformed_position (out abs_x, out abs_y);
-
-        set_position (abs_x, abs_y);
-
-        // Set the last position so that it animates from there and not 0, 0
-        window_icon.set_position (last_window_icon_x, last_window_icon_y);
 
         window_icon.save_easing_state ();
         window_icon.set_easing_duration (duration);
@@ -511,7 +489,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 #endif
 
-        return this;
+        drag_handle = new Clutter.Clone (this);
+        drag_handle.set_position (abs_x, abs_y);
+        get_stage ().add_child (drag_handle);
+
+        visible = false;
+
+        return drag_handle;
     }
 
     private void destination_crossed (Clutter.Actor destination, bool hovered) {
@@ -538,43 +522,36 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private void drag_end (Clutter.Actor destination) {
         unowned var display = wm.get_display ();
 
-        Meta.Workspace workspace = null;
-        var primary = display.get_primary_monitor ();
-
         active_shape.show ();
 
         display.set_cursor (Meta.Cursor.DEFAULT);
 
+        bool did_move = false;
+
         if (destination is FramedBackground) {
-            workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
+            var primary = display.get_primary_monitor ();
+            if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
+                window.move_to_monitor (primary);
+                did_move = true;
+            }
+
+            var workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
+            if (workspace != window.get_workspace ()) {
+                window.change_workspace (workspace);
+                did_move = true;
+            }
         } else if (destination is MonitorClone) {
             var monitor = ((MonitorClone) destination).monitor;
             if (window.get_monitor () != monitor) {
                 window.move_to_monitor (monitor);
-                unmanaged ();
-            } else {
-                drag_canceled ();
+                did_move = true;
             }
-
-            return;
         } else if (destination is Meta.WindowActor) {
             WindowDragProvider.get_instance ().notify_dropped ();
         }
 
-        bool did_move = false;
-
-        if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
-            window.move_to_monitor (primary);
-            did_move = true;
-        }
-
-        if (workspace != null && workspace != window.get_workspace ()) {
-            window.change_workspace (workspace);
-            did_move = true;
-        }
-
         if (did_move) {
-            unmanaged ();
+            finish_drag ();
         } else {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
@@ -587,15 +564,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private void drag_canceled () {
         var duration = Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
-        // Adding to the previous parent will automatically update it to take it's slot
-        // so to animate it we set the easing
-        set_position (x - prev_x, y - prev_y);
-        get_parent ().remove_child (this);
-        save_easing_state ();
-        set_easing_duration (duration);
-        set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        prev_parent.add_child (this); // Add above so that it is above while it animates back to its place
-        restore_easing_state ();
+        float target_x, target_y;
+        get_transformed_position (out target_x, out target_y);
+        drag_handle.save_easing_state ();
+        drag_handle.set_easing_duration (duration);
+        drag_handle.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        drag_handle.set_position (target_x, target_y);
+        drag_handle.restore_easing_state ();
 
         clone.set_pivot_point (0.0f, 0.0f);
         clone.save_easing_state ();
@@ -605,18 +580,25 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 255;
         clone.restore_easing_state ();
 
-        request_reposition ();
-
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         if (duration > 0) {
             ulong handler = 0;
-            handler = clone.transitions_completed.connect (() => {
-                prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
-                clone.disconnect (handler);
+            handler = drag_handle.transitions_completed.connect (() => {
+                finish_drag ();
+                visible = true;
+                drag_handle.disconnect (handler);
             });
         } else {
-            prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
+            finish_drag ();
+            visible = true;
+        }
+    }
+
+    private void finish_drag () {
+        if (drag_handle != null) {
+            drag_handle.get_stage ().remove_child (drag_handle);
+            drag_handle = null;
         }
     }
 
