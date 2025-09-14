@@ -66,8 +66,10 @@
 
     private void on_window_unmanaged (Meta.Window window) {
         var pos = windows.index_of (window);
-        windows.remove_at (pos);
-        items_changed (pos, 1, 0);
+        if (pos >= 0) {
+            windows.remove_at (pos);
+            items_changed (pos, 1, 0);
+        }
     }
 
     private void check_all () {
