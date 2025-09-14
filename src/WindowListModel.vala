@@ -60,8 +60,14 @@
     }
 
     private void on_window_created (Meta.Window window) {
-        window.unmanaged.connect ((win) => windows.remove (win));
+        window.unmanaged.connect (on_window_unmanaged);
         check_window (window);
+    }
+
+    private void on_window_unmanaged (Meta.Window window) {
+        var pos = windows.index_of (window);
+        windows.remove_at (pos);
+        items_changed (pos, 1, 0);
     }
 
     private void check_all () {
