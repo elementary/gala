@@ -73,7 +73,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
             }
         }
 
-        reflow (false);
+        // Don't reflow if only the sorting changed
+        if (to_remove.size () > 0 || added != removed) {
+            reflow (false);
+        }
     }
 
     public override void start_progress (GestureAction action) {
