@@ -40,6 +40,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
     }
 
     private void on_items_changed (uint position, uint removed, uint added) {
+        // Used to make sure we only construct new window clones for windows that are really new
+        // and not when only the position changed (e.g. when sorted)
         var to_remove = new HashTable<Meta.Window, WindowClone> (null, null);
 
         for (uint i = 0; i < removed; i++) {
@@ -95,10 +97,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 }
             }
 
-            restack_windows ();
+            windows.sort ();
             reflow (true);
         } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
-            restack_windows ();
+            windows.sort ();
         }
     }
 
@@ -114,36 +116,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
             default:
                 break;
-        }
-    }
-
-    /**
-     * Sort the windows z-order by their actual stacking to make intersections
-     * during animations correct.
-     */
-    private void restack_windows () {
-        windows.sort ();
-        return;
-        var children = (GLib.List<weak WindowClone>) get_children ();
-
-        var windows = new GLib.List<Meta.Window> ();
-        foreach (unowned var clone in children) {
-            windows.prepend (clone.window);
-        }
-
-        var windows_ordered = sort_windows (windows);
-        windows_ordered.reverse ();
-
-        var i = 0;
-        foreach (unowned var window in windows_ordered) {
-            foreach (unowned var clone in children) {
-                if (clone.window == window) {
-                    set_child_at_index (clone, i);
-                    children.remove (clone);
-                    i++;
-                    break;
-                }
-            }
         }
     }
 
@@ -326,35 +298,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
         current_window = closest;
     }
-
-    /**
-     * Sorts the windows by stacking order so that the window on active workspaces come first.
-     */
-    private GLib.SList<weak Meta.Window> sort_windows (GLib.List<Meta.Window> windows) {
-        unowned var display = wm.get_display ();
-
-        var windows_on_active_workspace = new GLib.SList<Meta.Window> ();
-        var windows_on_other_workspaces = new GLib.SList<Meta.Window> ();
-        unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-        foreach (unowned var window in windows) {
-            if (window.get_workspace () == active_workspace) {
-                windows_on_active_workspace.append (window);
-            } else {
-                windows_on_other_workspaces.append (window);
-            }
-        }
-
-        var sorted_windows = new GLib.SList<weak Meta.Window> ();
-        var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
-        windows_on_active_workspace_sorted.reverse ();
-        var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
-        windows_on_other_workspaces_sorted.reverse ();
-        sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
-        sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
-
-        return sorted_windows;
-    }
-
 
     // Code ported from KWin present windows effect
     // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp

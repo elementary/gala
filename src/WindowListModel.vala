@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
- public class Gala.WindowListModel : Object, ListModel {
+public class Gala.WindowListModel : Object, ListModel {
     public enum SortMode {
         NONE,
         STACKING
@@ -16,7 +16,7 @@
     public SortMode sort_mode { get; construct; }
 
     /**
-     * If true only present windows that are normal as gotten by {@link InternalUtils.get_window_is_normal}.
+     * If true only present windows that are normal as gotten by {@link Utils.get_window_is_normal}.
      */
     public bool normal_filter { get; construct set; }
 
@@ -113,17 +113,9 @@
 
     public void sort () {
         if (sort_mode == STACKING) {
-            var to_sort = new GLib.SList<Meta.Window> ();
-
-            foreach (var window in windows) {
-                to_sort.prepend (window);
-            }
-
-            var sorted = display.sort_windows_by_stacking (to_sort);
-
             int i = 0;
-            foreach (var window in sorted) {
-                windows.set (i++, window);
+            foreach (var window in get_sorted_windows ()) {
+                windows[i++] = window;
             }
 
             items_changed (0, windows.size, windows.size);
@@ -131,7 +123,7 @@
     }
 
     public Object? get_item (uint position) {
-        return windows.get ((int) position);
+        return windows[(int) position];
     }
 
     public uint get_n_items () {
@@ -140,5 +132,29 @@
 
     public Type get_item_type () {
         return typeof (Meta.Window);
+    }
+
+    /**
+     * Sorts the windows by stacking order so that the window on active workspaces come first.
+     */
+    private GLib.SList<weak Meta.Window> get_sorted_windows () {
+        var windows_on_active_workspace = new GLib.SList<Meta.Window> ();
+        var windows_on_other_workspaces = new GLib.SList<Meta.Window> ();
+        unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
+        foreach (var window in windows) {
+            if (window.get_workspace () == active_workspace) {
+                windows_on_active_workspace.prepend (window);
+            } else {
+                windows_on_other_workspaces.prepend (window);
+            }
+        }
+
+        var sorted_windows = new GLib.SList<weak Meta.Window> ();
+        var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
+        var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
+        sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
+        sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
+
+        return sorted_windows;
     }
 }
