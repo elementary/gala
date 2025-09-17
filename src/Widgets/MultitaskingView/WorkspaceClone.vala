@@ -7,7 +7,9 @@
 /**
  * Utility class which adds a border and a shadow to a Background
  */
-private class Gala.FramedBackground : BackgroundManager {
+private class Gala.FramedBackground : Clutter.Actor {
+    public Meta.Display display { get; construct; }
+
     private Cogl.Pipeline pipeline;
     private Cairo.ImageSurface cached_surface;
     private Cairo.Context cached_context;
@@ -16,12 +18,7 @@ private class Gala.FramedBackground : BackgroundManager {
     private int last_height;
 
     public FramedBackground (Meta.Display display) {
-        Object (
-            display: display,
-            monitor_index: display.get_primary_monitor (),
-            control_position: false,
-            rounded_corners: true
-        );
+        Object (display: display);
     }
 
     construct {
@@ -34,7 +31,18 @@ private class Gala.FramedBackground : BackgroundManager {
 
         add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
 
+        var background = new BackgroundManager (display, display.get_primary_monitor (), false, true);
+        bind_property ("x", background, "x", DEFAULT, (binding, from_value, ref to_value) => {
+            to_value.set_float (-from_value.get_float ());
+        });
+        bind_property ("y", background, "y", DEFAULT, (binding, from_value, ref to_value) => {
+            to_value.set_float (-from_value.get_float ());
+        });
+
+        add_child (background);
+
         reactive = true;
+        clip_to_allocation = true;
     }
 
     public override void paint (Clutter.PaintContext context) {
@@ -120,7 +128,7 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     public WindowCloneContainer window_container { get; private set; }
 
-    private BackgroundManager background;
+    private Clutter.Actor background;
     private uint hover_activate_timeout = 0;
 
     public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
@@ -258,9 +266,16 @@ public class Gala.WorkspaceClone : ActorTarget {
         var initial_width = monitor.width;
         var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
 
+        var background_target_width = monitor.width * scale;
+        var background_target_height = monitor.height * scale;
+
+        var background_target_y = (monitor.height - background_target_height - Utils.scale_to_int (BOTTOM_OFFSET - TOP_OFFSET, monitor_scale)) / 2;
+
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "width", typeof (float), (float) monitor.width, (float) (background_target_width)));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "height", typeof (float), (float) monitor.height, (float) (background_target_height)));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "x", typeof (float), 0f, (float) (monitor.width - background_target_width) / 2f));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "y", typeof (float), 0f, (float) background_target_y));
 
         window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
