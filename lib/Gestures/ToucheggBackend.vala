@@ -20,7 +20,7 @@
  * Singleton class to manage the connection with Touchégg daemon and receive touch events.
  * See: [[https://github.com/JoseExposito/touchegg]]
  */
-public class Gala.ToucheggBackend : Object, GestureBackend {
+private class Gala.ToucheggBackend : Object, GestureBackend {
     /**
      * Gesture type as returned by the daemon.
      */
@@ -191,6 +191,10 @@ public class Gala.ToucheggBackend : Object, GestureBackend {
 
         signal_params.get ("(uudiut)", out type, out direction, out percentage, out fingers,
             out performed_on_device_type, out elapsed_time);
+
+        if (Meta.Util.is_wayland_compositor () && performed_on_device_type != DeviceType.TOUCHSCREEN && type != PINCH) {
+            return;
+        }
 
         var delta = percentage * DELTA_MULTIPLIER;
 

@@ -19,7 +19,7 @@
 /**
  * Utility class to access the gesture settings. Easily accessible through GestureTracker.settings.
  */
-public class Gala.GestureSettings : Object {
+private class Gala.GestureSettings : Object {
     private static GLib.Settings gala_settings;
     private static GLib.Settings touchpad_settings;
 
@@ -28,7 +28,7 @@ public class Gala.GestureSettings : Object {
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
     }
 
-    public bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
+    public static bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
         return (device_type == Clutter.InputDeviceType.TOUCHSCREEN_DEVICE)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");

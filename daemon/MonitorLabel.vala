@@ -4,7 +4,6 @@
  */
 
  public class Gala.Daemon.MonitorLabel : Gtk.Window {
-    private const int SPACING = 12;
     private const string COLORED_STYLE_CSS = """
     .%s {
         background-color: alpha(%s, 0.8);

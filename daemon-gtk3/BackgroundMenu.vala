@@ -4,8 +4,8 @@
  */
 
 public class Gala.Daemon.BackgroundMenu : Gtk.Menu {
-    public const string ACTION_GROUP_PREFIX = "background-menu";
-    public const string ACTION_PREFIX = ACTION_GROUP_PREFIX + ".";
+    private const string ACTION_GROUP_PREFIX = "background-menu";
+    private const string ACTION_PREFIX = ACTION_GROUP_PREFIX + ".";
 
     construct {
         var change_wallpaper = new Gtk.MenuItem.with_label (_("Change Wallpaper…")) {

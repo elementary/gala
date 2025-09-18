@@ -5876,7 +5876,17 @@ namespace Clutter {
 #endif
 		public void add_pipeline_transform (Clutter.ColorState target_color_state, Cogl.Pipeline pipeline);
 #if HAS_MUTTER48
-		public virtual void do_transform (Clutter.ColorState target_color_state, float input, float output, int n_samples);
+#if HAS_MUTTER49
+		[NoWrapper]
+		public virtual void append_transform_snippet (Clutter.ColorState target_color_state, GLib.StringBuilder snippet_globals, GLib.StringBuilder snippet_source, string snippet_color_var);
+		public void do_transform (Clutter.ColorState target_color_state, [CCode (array_length = false)] float[] data, int n_samples);
+		[NoWrapper]
+		public virtual void do_transform_from_XYZ ([CCode (array_length = false)] float[] data, int n_samples);
+		[NoWrapper]
+		public virtual void do_transform_to_XYZ ([CCode (array_length = false)] float[] data, int n_samples);
+#else
+		public virtual void do_transform (Clutter.ColorState target_color_state, [CCode (array_length = false)] float[] input, [CCode (array_length = false)] float[] output, int n_samples);
+#endif
 		public virtual bool equals (Clutter.ColorState other_color_state);
 		public virtual Clutter.ColorState get_blending (bool force);
 #else
@@ -5896,6 +5906,9 @@ namespace Clutter {
 #if HAS_MUTTER48
 		[NoWrapper]
 		public virtual void init_color_transform_key (Clutter.ColorState target_color_state, Clutter.ColorTransformKey key);
+#if HAS_MUTTER49
+		public void params_do_tone_mapping (Clutter.ColorState other_color_state, [CCode (array_length = false)] float[] data, int n_samples);
+#endif
 		public virtual Clutter.EncodingRequiredFormat required_format ();
 		public virtual string to_string ();
 		public virtual void update_uniforms (Clutter.ColorState target_color_state, Cogl.Pipeline pipeline);
@@ -5924,11 +5937,23 @@ namespace Clutter {
 #endif
 #endif
 	}
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_color_state_icc_get_type ()")]
+	public class ColorStateIcc : Clutter.ColorState {
+		[CCode (has_construct_function = false, type = "ClutterColorState*")]
+		public ColorStateIcc (Clutter.Context context, uint8 icc_bytes, uint32 icc_length) throws GLib.Error;
+		public unowned Mtk.AnonymousFile get_file ();
+	}
+#endif
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_color_state_params_get_type ()")]
 	public class ColorStateParams : Clutter.ColorState {
 		[CCode (has_construct_function = false, type = "ClutterColorState*")]
 		public ColorStateParams (Clutter.Context context, Clutter.Colorspace colorspace, Clutter.TransferFunction transfer_function);
+#if HAS_MUTTER49
+		[CCode (has_construct_function = false, type = "ClutterColorState*")]
+		public ColorStateParams.from_cicp (Clutter.Context context, Clutter.Cicp cicp) throws GLib.Error;
+#endif
 		[CCode (has_construct_function = false, type = "ClutterColorState*")]
 		public ColorStateParams.from_primitives (Clutter.Context context, Clutter.Colorimetry colorimetry, Clutter.EOTF eotf, Clutter.Luminance luminance);
 		[CCode (has_construct_function = false, type = "ClutterColorState*")]
@@ -6100,6 +6125,9 @@ namespace Clutter {
 		public void get_scroll_delta (out double dx, out double dy);
 		public Clutter.ScrollDirection get_scroll_direction ();
 		public Clutter.ScrollFinishFlags get_scroll_finish_flags ();
+#if HAS_MUTTER49
+		public Clutter.ScrollFlags get_scroll_flags ();
+#endif
 		public Clutter.ScrollSource get_scroll_source ();
 #if !HAS_MUTTER46
 		public unowned Clutter.Actor get_source ();
@@ -6198,7 +6226,13 @@ namespace Clutter {
 		public void add_future_time (int64 when_us);
 #endif
 		public void add_timeline (Clutter.Timeline timeline);
+#if HAS_MUTTER49
+		public Clutter.FrameResult dispatch (int64 time_us);
+#endif
 		public GLib.StringBuilder get_max_render_time_debug_info ();
+#if HAS_MUTTER49
+		public int get_priority ();
+#endif
 		public float get_refresh_rate ();
 		public void inhibit ();
 		public void notify_ready ();
@@ -6210,10 +6244,22 @@ namespace Clutter {
 		public void set_deadline_evasion (int64 deadline_evasion_us);
 		public void set_mode (Clutter.FrameClockMode mode);
 #endif
+#if HAS_MUTTER49
+		public void set_passive (Clutter.FrameClockDriver driver);
+#endif
 		public void uninhibit ();
 		[HasEmitter]
 		public signal void destroy ();
 	}
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_frame_clock_driver_get_type ()")]
+	public abstract class FrameClockDriver : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected FrameClockDriver ();
+		[NoWrapper]
+		public virtual void schedule_update ();
+	}
+#endif
 #if HAS_MUTTER47
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_gesture_get_type ()")]
 	public abstract class Gesture : Clutter.Action {
@@ -6343,6 +6389,9 @@ namespace Clutter {
 	public class InputDevice : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected InputDevice ();
+#if HAS_MUTTER49
+		public uint get_bus_type ();
+#endif
 		public Clutter.InputCapabilities get_capabilities ();
 		public Clutter.InputMode get_device_mode ();
 		public unowned string get_device_name ();
@@ -6353,30 +6402,54 @@ namespace Clutter {
 		public bool get_has_cursor ();
 		public int get_mode_switch_button_group (uint button);
 		public int get_n_buttons ();
+#if HAS_MUTTER49
+		public int get_n_dials ();
+#endif
 		public int get_n_mode_groups ();
 		public int get_n_rings ();
 		public int get_n_strips ();
 		public virtual int get_pad_feature_group (Clutter.InputDevicePadFeature feature, int n_feature);
-
+#if HAS_MUTTER49
+		public uint get_product_id ();
+#else
 		public unowned string get_product_id ();
+#endif
 		public unowned Clutter.Seat get_seat ();
+#if HAS_MUTTER49
+		public uint get_vendor_id ();
+#else
 		public unowned string get_vendor_id ();
+#endif
 		public virtual bool is_grouped (Clutter.InputDevice other_device);
 		public virtual bool is_mode_switch_button (uint group, uint button);
+#if HAS_MUTTER49
+		public uint bus_type { get; construct; }
+#endif
 		public Clutter.InputCapabilities capabilities { get; construct; }
 		public Clutter.InputMode device_mode { get; construct; }
 		public string device_node { get; construct; }
 		public Clutter.InputDeviceType device_type { get; construct; }
 		public bool has_cursor { get; construct; }
 		public int n_buttons { get; construct; }
+#if HAS_MUTTER49
+		public int n_dials { get; construct; }
+#endif
 		public int n_mode_groups { get; construct; }
 		public int n_rings { get; construct; }
 		public int n_strips { get; construct; }
 		[NoAccessorMethod]
 		public string name { owned get; construct; }
+#if HAS_MUTTER49
+		public uint product_id { get; construct; }
+#else
 		public string product_id { get; construct; }
+#endif
 		public Clutter.Seat seat { get; construct; }
+#if HAS_MUTTER49
+		public uint vendor_id { get; construct; }
+#else
 		public string vendor_id { get; construct; }
+#endif
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_id = "clutter_input_device_tool_get_type ()")]
 	public abstract class InputDeviceTool : GLib.Object {
@@ -6632,6 +6705,10 @@ namespace Clutter {
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	[Compact]
+	public class PadDialEvent : Clutter.Event {
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	[Compact]
 	public class PadRingEvent : Clutter.Event {
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
@@ -6662,6 +6739,7 @@ namespace Clutter {
 #else
 		public unowned Cairo.Region get_redraw_clip ();
 #endif
+		public unowned Clutter.StageView? get_stage_view ();
 #if HAS_MUTTER47
 		public void pop_color_state ();
 #endif
@@ -7134,7 +7212,7 @@ namespace Clutter {
 #endif
 		public virtual Clutter.PaintFlag get_default_paint_flags ();
 		public unowned Cogl.Framebuffer get_framebuffer ();
-		public void get_layout (Mtk.Rectangle rect);
+		public void get_layout (ref Mtk.Rectangle rect);
 #if HAS_MUTTER47
 		public void get_offscreen_transformation_matrix (Graphene.Matrix matrix);
 #else
@@ -7727,6 +7805,15 @@ namespace Clutter {
 #endif
 	}
 #endif
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct Cicp {
+		public Clutter.CicpPrimaries primaries;
+		public Clutter.CicpTransfer transfer;
+		public uint8 matrix_coefficients;
+		public uint8 video_full_range_flag;
+	}
+#endif
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	public struct Colorimetry {
@@ -8047,6 +8134,30 @@ namespace Clutter {
 		RELEASED,
 		PRESSED
 	}
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_CICP_PRIMARIES_", type_id = "clutter_cicp_primaries_get_type ()")]
+	public enum CicpPrimaries {
+		SRGB,
+		PAL,
+		NTSC,
+		NTSC_2,
+		BT2020,
+		P3
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_CICP_TRANSFER_", type_id = "clutter_cicp_transfer_get_type ()")]
+	public enum CicpTransfer {
+		BT709,
+		GAMMA22,
+		GAMMA28,
+		BT601,
+		LINEAR,
+		SRGB,
+		BT2020,
+		BT2020_2,
+		PQ,
+		HLG
+	}
+#endif
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_COLORIMETRY_TYPE_", type_id = "clutter_colorimetry_type_get_type ()")]
 	public enum ColorimetryType {
@@ -8064,6 +8175,10 @@ namespace Clutter {
 		SRGB,
 #if HAS_MUTTER48
 		BT2020,
+#if HAS_MUTTER49
+		PAL,
+		P3,
+#endif
 		NTSC;
 		public unowned Clutter.Primaries? to_primaries ();
 #else
@@ -8238,6 +8353,9 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_FRAME_CLOCK_MODE_", type_id = "clutter_frame_clock_mode_get_type ()")]
 	public enum FrameClockMode {
 		FIXED,
+#if HAS_MUTTER49
+		PASSIVE,
+#endif
 		VARIABLE
 	}
 #endif
@@ -8252,6 +8370,9 @@ namespace Clutter {
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_FRAME_RESULT_", type_id = "clutter_frame_result_get_type ()")]
 	public enum FrameResult {
 		PENDING_PRESENTED,
+#if HAS_MUTTER49
+		IGNORED,
+#endif
 		IDLE
 	}
 #if HAS_MUTTER47
@@ -8367,6 +8488,9 @@ namespace Clutter {
 	public enum InputDevicePadFeature {
 		BUTTON,
 		RING,
+#if HAS_MUTTER49
+		DIAL,
+#endif
 		STRIP
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_INPUT_DEVICE_PAD_SOURCE_", type_id = "clutter_input_device_pad_source_get_type ()")]
@@ -8601,6 +8725,14 @@ namespace Clutter {
 		HORIZONTAL,
 		VERTICAL
 	}
+#if HAS_MUTTER49
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_SCROLL_", type_id = "clutter_scroll_flags_get_type ()")]
+	[Flags]
+	public enum ScrollFlags {
+		NONE,
+		INVERTED
+	}
+#endif
 #if !HAS_MUTTER47
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_SCROLL_", type_id = "clutter_scroll_mode_get_type ()")]
 	[Flags]

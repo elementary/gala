@@ -20,7 +20,7 @@ namespace Gala {
     /**
      * Physical direction of the gesture. This direction doesn't follow natural scroll preferences.
      */
-    public enum GestureDirection {
+    private enum GestureDirection {
         UNKNOWN = 0,
 
         // GestureType.SWIPE and GestureType.SCROLL
@@ -34,7 +34,17 @@ namespace Gala {
         OUT = 6,
     }
 
-    public class Gesture {
+    public enum GestureAction {
+        NONE,
+        SWITCH_WORKSPACE,
+        SWITCH_WINDOWS,
+        MULTITASKING_VIEW,
+        ZOOM,
+        CUSTOM,
+        N_ACTIONS
+    }
+
+    private class Gesture {
         public const float INVALID_COORD = float.MAX;
 
         public Clutter.EventType type;

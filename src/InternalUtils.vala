@@ -9,6 +9,7 @@ namespace Gala {
     public enum InputArea {
         NONE,
         FULLSCREEN,
+        MULTITASKING_VIEW,
         DEFAULT
     }
 
@@ -30,6 +31,36 @@ namespace Gala {
 
                     X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
                     rects = {rect};
+                    break;
+
+                case InputArea.MULTITASKING_VIEW:
+                    var shell_client_rect = ShellClientsManager.get_instance ().get_shell_client_rect ();
+
+                    int width, height;
+                    display.get_size (out width, out height);
+
+                    if (shell_client_rect != null) {
+                        X.Xrectangle left_rect = {0, 0, (ushort) shell_client_rect.x, (ushort) height};
+                        X.Xrectangle right_rect = {
+                            (short) (shell_client_rect.x + shell_client_rect.width), 0,
+                            (ushort) (width - shell_client_rect.x - shell_client_rect.width), (ushort) height
+                        };
+                        X.Xrectangle top_rect = {
+                            (short) shell_client_rect.x, 0,
+                            (ushort) shell_client_rect.width, (ushort) shell_client_rect.y
+                        };
+                        X.Xrectangle bottom_rect = {
+                            (short) shell_client_rect.x,
+                            (short) (shell_client_rect.y + shell_client_rect.height),
+                            (ushort) shell_client_rect.width,
+                            (ushort) (height - shell_client_rect.y - shell_client_rect.height)
+                        };
+                        rects = {left_rect, right_rect, top_rect, bottom_rect};
+                    } else {
+                        X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
+                        rects = {rect};
+                    }
+
                     break;
 
                 case InputArea.DEFAULT:
@@ -158,6 +189,41 @@ namespace Gala {
             var primary_monitor = display.get_primary_monitor ();
             var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
             return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
+        }
+
+        /**
+         * Returns the most recently used "normal" window (as gotten via {@link get_window_is_normal}) in the given workspace.
+         * If there is a not normal but more recent window (e.g. a menu/tooltip) any_window will be set to that window otherwise
+         * it will be set to the same window that is returned.
+         */
+        public static Meta.Window? get_mru_window (Meta.Workspace workspace, out Meta.Window? any_window = null) {
+            any_window = null;
+
+            var list = workspace.list_windows ();
+
+            if (list.is_empty ()) {
+                return null;
+            }
+
+            list.sort ((a, b) => {
+                return (int) b.get_user_time () - (int) a.get_user_time ();
+            });
+
+            foreach (var window in list) {
+                if (!ShellClientsManager.get_instance ().is_positioned_window (window)) {
+                    if (any_window == null) {
+                        any_window = window;
+                    }
+
+                    if (!Utils.get_window_is_normal (window)) {
+                        continue;
+                    }
+
+                    return window;
+                }
+            }
+
+            return null;
         }
     }
 }
