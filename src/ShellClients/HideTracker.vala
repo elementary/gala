@@ -334,7 +334,7 @@ public class Gala.HideTracker : Object {
             monitor_geom.x + monitor_geom.width - offset,
             monitor_geom.y + monitor_geom.height,
             NEGATIVE_Y,
-            0,
+            2.5,
             0,
             int.MAX,
             int.MAX
