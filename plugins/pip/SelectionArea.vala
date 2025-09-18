@@ -306,7 +306,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     public void start_selection () {
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
     }
 
     protected override void draw (Cairo.Context ctx, int width, int height) {

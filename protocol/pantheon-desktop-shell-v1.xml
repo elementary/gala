@@ -98,6 +98,30 @@
 
       <arg name="hide_mode" type="uint" enum="hide_mode" summary="hide mode"/>
     </request>
+
+    <request name="request_visible_in_multitasking_view">
+      <description summary="request visible in multitasking view">
+        Tell the shell that the panel would like to be visible in the multitasking view.
+      </description>
+    </request>
+
+    <request name="add_blur">
+      <description summary="add blur">
+        Tell the window manager to add background blur.
+      </description>
+
+      <arg name="left" type="uint"/>
+      <arg name="right" type="uint"/>
+      <arg name="top" type="uint"/>
+      <arg name="bottom" type="uint"/>
+      <arg name="clip_radius" type="uint"/>
+    </request>
+
+    <request name="remove_blur">
+      <description summary="remove blur">
+        Tell the window manager to remove blur that was set in set_blur_region.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_widget_v1" version="1">

@@ -143,19 +143,31 @@ public class Gala.DesktopIntegration : GLib.Object {
         return (owned) returned_windows;
     }
 
-    public void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError {
+    private Meta.Window find_window_by_uid (uint64 uid) throws IOError {
         var apps = Gala.AppSystem.get_default ().get_running_apps ();
         foreach (unowned var app in apps) {
             foreach (weak Meta.Window window in app.get_windows ()) {
                 if (window.get_id () == uid) {
-                    if (window.has_focus ()) {
-                        notify_already_focused (window);
-                    } else {
-                        window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
-                    }
+                    return window;
                 }
             }
         }
+
+        throw new IOError.NOT_FOUND ("Window with UID " + uid.to_string () + " not found");
+    }
+
+    public void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError {
+        var window = find_window_by_uid (uid);
+        if (window.has_focus ()) {
+            notify_already_focused (window);
+        } else {
+            window.get_workspace ().activate_with_focus (window, wm.get_display ().get_current_time ());
+        }
+    }
+
+    public void move_window_to_workspace (uint64 uid, int index) throws DBusError, IOError {
+        var window = find_window_by_uid (uid);
+        window.change_workspace_by_index (index, false);
     }
 
     public void activate_workspace (int index) throws GLib.DBusError, GLib.IOError {
@@ -191,7 +203,11 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
 
+#if HAS_MUTTER49
+        if (window.is_maximized ()) {
+#else
         if (window.get_maximized () == BOTH) {
+#endif
             notifying = false;
             return;
         }

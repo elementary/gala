@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-07-14 01:55+0000\n"
+"PO-Revision-Date: 2025-08-30 22:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -26,7 +26,7 @@ msgstr "壁紙を変更…"
 
 #: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr "ディスプレイの設定…"
+msgstr "ディスプレイ設定…"
 
 #: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
@@ -177,8 +177,7 @@ msgstr "壁紙の遷移と同時にパネルの色を変更するように修正
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
-msgstr ""
-"壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定に従うように修正"
+msgstr "壁紙変更やスリープが\"視覚効果を減らす\"オプションの設定値に従うように修正"
 
 #: data/gala.metainfo.xml.in:268
 msgid "Use appropriate drag-and-drop pointers when moving windows"

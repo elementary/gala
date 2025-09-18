@@ -10,7 +10,6 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private const uint FADE_OUT_TIMEOUT = 200;
     private const float MINIMUM_SCALE = 0.1f;
     private const float MAXIMUM_SCALE = 1.0f;
-    private const int SCREEN_MARGIN = 0;
     private const float OFF_SCREEN_PERCENT = 0.5f;
     private const int OFF_SCREEN_VISIBLE_PIXELS = 80;
 
@@ -90,11 +89,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         float x_position, y_position;
         if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
-            x_position = SCREEN_MARGIN + workarea_rect.x;
+            x_position = workarea_rect.x;
         } else {
-            x_position = workarea_rect.x + workarea_rect.width - SCREEN_MARGIN - width;
+            x_position = workarea_rect.x + workarea_rect.width - width;
         }
-        y_position = workarea_rect.y + workarea_rect.height - SCREEN_MARGIN - height;
+        y_position = workarea_rect.y + workarea_rect.height - height;
 
         set_position (x_position, y_position);
 
@@ -421,10 +420,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         var workarea_rect = display.get_workspace_manager ().get_active_workspace ().get_work_area_all_monitors ();
 
-        var screen_limit_start_x = workarea_rect.x + SCREEN_MARGIN;
-        var screen_limit_end_x = workarea_rect.x + workarea_rect.width - SCREEN_MARGIN - width;
-        var screen_limit_start_y = workarea_rect.y + SCREEN_MARGIN;
-        var screen_limit_end_y = workarea_rect.y + workarea_rect.height - SCREEN_MARGIN - height;
+        var screen_limit_start_x = workarea_rect.x;
+        var screen_limit_end_x = workarea_rect.x + workarea_rect.width - width;
+        var screen_limit_start_y = workarea_rect.y;
+        var screen_limit_end_y = workarea_rect.y + workarea_rect.height - height;
 
         var duration = Utils.get_animation_duration (300);
 

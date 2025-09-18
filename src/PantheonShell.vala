@@ -39,6 +39,9 @@ namespace Gala {
             focus_panel,
             set_size,
             set_hide_mode,
+            request_visible_in_multitasking_view,
+            add_blur,
+            remove_blur,
         };
 
         wayland_pantheon_widget_interface = {
@@ -290,6 +293,57 @@ namespace Gala {
         }
 
         ShellClientsManager.get_instance ().set_hide_mode (window, hide_mode);
+    }
+
+    internal static void request_visible_in_multitasking_view (Wl.Client client, Wl.Resource resource) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to set visible in multitasking view but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set visible in multitasking view but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().request_visible_in_multitasking_view (window);
+    }
+
+    internal static void add_blur (Wl.Client client, Wl.Resource resource, uint left, uint right, uint top, uint bottom, uint clip_radius) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to set blur region but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to set blur region but wayland surface had no associated window.");
+            return;
+        }
+
+        BlurManager.get_instance ().add_blur (window, left, right, top, bottom, clip_radius);
+    }
+
+    internal static void remove_blur (Wl.Client client, Wl.Resource resource) {
+        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
+        if (panel_surface.wayland_surface == null) {
+            warning ("Window tried to remove blur but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        panel_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to remove blur but wayland surface had no associated window.");
+            return;
+        }
+
+        BlurManager.get_instance ().remove_blur (window);
     }
 
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {

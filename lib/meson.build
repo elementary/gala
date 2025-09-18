@@ -17,6 +17,7 @@ gala_lib_sources = files(
     'Plugin.vala',
     'RoundedCornersEffect.vala',
     'ShadowEffect.vala',
+    'Text.vala',
     'Utils.vala',
     'WindowIcon.vala',
     'WindowManager.vala',
@@ -30,7 +31,8 @@ gala_lib_sources = files(
     'Gestures/RootTarget.vala',
     'Gestures/ScrollBackend.vala',
     'Gestures/SpringTimeline.vala',
-    'Gestures/ToucheggBackend.vala'
+    'Gestures/ToucheggBackend.vala',
+    'Gestures/TouchpadBackend.vala'
 )
 
 gala_resources = gnome.compile_resources(
