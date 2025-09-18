@@ -480,8 +480,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         );
         window_icon.restore_easing_state ();
 
-        close_button.opacity = 0;
-        window_title.opacity = 0;
+        close_button.visible = false;
+        window_title.visible = false;
 
 #if HAS_MUTTER48
         wm.get_display ().set_cursor (Meta.Cursor.MOVE);
@@ -579,6 +579,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.set_scale (1, 1);
         clone.opacity = 255;
         clone.restore_easing_state ();
+
+        close_button.visible = true;
+        window_title.visible = true;
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
