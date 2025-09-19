@@ -116,6 +116,9 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var scale = display.get_monitor_scale (i);
 
             var model = new WindowListModel (display, STACKING, true, i);
+            model.set_custom_filter ((window) => {
+                return window_ids == null || (window.get_id () in window_ids);
+            });
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,

@@ -11,6 +11,8 @@ public class Gala.WindowListModel : Object, ListModel {
         STACKING
     }
 
+    public delegate bool WindowFilter (Meta.Window window);
+
     public Meta.Display display { get; construct; }
 
     public SortMode sort_mode { get; construct; }
@@ -32,6 +34,8 @@ public class Gala.WindowListModel : Object, ListModel {
     public Meta.Workspace? workspace_filter { get; construct set; }
 
     private Gee.ArrayList<Meta.Window> windows;
+
+    private WindowFilter? custom_filter = null;
 
     public WindowListModel (
         Meta.Display display, SortMode sort_mode = NONE,
@@ -56,6 +60,11 @@ public class Gala.WindowListModel : Object, ListModel {
 
         notify.connect (check_all);
 
+        check_all ();
+    }
+
+    public void set_custom_filter (WindowFilter? filter) {
+        custom_filter = filter;
         check_all ();
     }
 
@@ -108,6 +117,10 @@ public class Gala.WindowListModel : Object, ListModel {
             return false;
         }
 
+        if (custom_filter != null) {
+            return custom_filter (window);
+        }
+
         return true;
     }
 
@@ -152,8 +165,8 @@ public class Gala.WindowListModel : Object, ListModel {
         var sorted_windows = new GLib.SList<weak Meta.Window> ();
         var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
         var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
-        sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
         sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
+        sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
 
         return sorted_windows;
     }
