@@ -127,6 +127,7 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
+            BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
             show_stage ();
@@ -767,11 +768,19 @@ namespace Gala {
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
+#if HAS_MUTTER49
+                    if (current.is_maximized ()) {
+                        current.unmaximize ();
+                    } else {
+                        current.maximize ();
+                    }
+#else
                     var maximize_flags = current.get_maximized ();
                     if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
                         current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+#endif
                     break;
                 case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
@@ -887,6 +896,13 @@ namespace Gala {
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
 
+#if HAS_MUTTER49
+                    if (window.is_maximized ())
+                        flags |= WindowFlags.IS_MAXIMIZED;
+
+                    if (window.maximized_vertically && !window.maximized_horizontally)
+                        flags |= WindowFlags.IS_TILED;
+#else
                     var maximize_flags = window.get_maximized ();
                     if (maximize_flags > 0) {
                         flags |= WindowFlags.IS_MAXIMIZED;
@@ -895,6 +911,7 @@ namespace Gala {
                             flags |= WindowFlags.IS_TILED;
                         }
                     }
+#endif
 
                     if (window.allows_move ())
                         flags |= WindowFlags.ALLOWS_MOVE;

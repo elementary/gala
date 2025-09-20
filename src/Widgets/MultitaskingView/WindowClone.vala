@@ -72,6 +72,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private Clutter.Actor prev_parent = null;
     private int prev_index = -1;
+    private float prev_x = 0.0f;
+    private float prev_y = 0.0f;
+
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
@@ -95,7 +98,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
         add_gesture_controller (gesture_controller);
 
@@ -272,7 +275,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -295,7 +298,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public override void end_progress (GestureAction action) {
         update_hover_widgets (false);
 
-        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -458,12 +461,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var last_window_icon_x = window_icon.x;
         var last_window_icon_y = window_icon.y;
 
-        float abs_x, abs_y;
-        float prev_parent_x, prev_parent_y;
-
         prev_parent = get_parent ();
         prev_index = prev_parent.get_children ().index (this);
-        prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
+        prev_parent.get_transformed_position (out prev_x, out prev_y);
 
         var stage = get_stage ();
         prev_parent.remove_child (this);
@@ -474,6 +474,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var scale = window_icon.width / clone.width;
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
+        float abs_x, abs_y;
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
         clone.set_easing_duration (duration);
@@ -487,7 +488,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         get_transformed_position (out abs_x, out abs_y);
 
-        set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
+        set_position (abs_x, abs_y);
 
         // Set the last position so that it animates from there and not 0, 0
         window_icon.set_position (last_window_icon_x, last_window_icon_y);
@@ -496,8 +497,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
         window_icon.set_position (
-            click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
-            click_y - (abs_y + prev_parent_y) - window_icon.height / 2
+            click_x - abs_x - window_icon.width / 2,
+            click_y - abs_y - window_icon.height / 2
         );
         window_icon.restore_easing_state ();
 
@@ -584,12 +585,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * Animate back to our previous position with a bouncing animation.
      */
     private void drag_canceled () {
-        get_parent ().remove_child (this);
-
         var duration = Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
         // Adding to the previous parent will automatically update it to take it's slot
         // so to animate it we set the easing
+        set_position (x - prev_x, y - prev_y);
+        get_parent ().remove_child (this);
         save_easing_state ();
         set_easing_duration (duration);
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);

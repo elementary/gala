@@ -205,7 +205,11 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
 
+#if HAS_MUTTER49
+        if (window.is_maximized ()) {
+#else
         if (window.get_maximized () == BOTH) {
+#endif
             notifying = false;
             return;
         }
