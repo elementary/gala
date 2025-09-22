@@ -157,6 +157,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
         window.notify["minimized"].disconnect (update_targets);
         window.position_changed.disconnect (update_targets);
+
+        finish_drag ();
     }
 
     private void reallocate () {
@@ -453,7 +455,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * A drag action has been initiated on us, we scale ourselves to a smaller scale and
      * provide a clone of ourselves as drag handle so that it can move freely.
      */
-    private Clutter.Actor drag_begin (float click_x, float click_y) {
+    private Clutter.Actor drag_begin (float click_x, float click_y) requires (drag_handle == null) {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
@@ -588,9 +590,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         if (duration > 0) {
             ulong handler = 0;
             handler = drag_handle.transitions_completed.connect (() => {
+                drag_handle.disconnect (handler);
                 finish_drag ();
                 visible = true;
-                drag_handle.disconnect (handler);
             });
         } else {
             finish_drag ();
