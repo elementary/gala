@@ -15,7 +15,7 @@ basic_command = [
     mutter_packages_command,
     '--pkg', 'atk-bridge-2.0',
     '--pkg', 'gnome-desktop-3.0',
-    '--pkg', 'gtk+-3.0',
+    '--pkg', 'gtk4',
     '--pkg', 'gee-0.8',
     '--pkg', 'gio-unix-2.0',
     '--pkg', 'gmodule-2.0',

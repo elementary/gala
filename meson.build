@@ -5,8 +5,6 @@ project('gala',
     license: 'GPL3',
 )
 
-is_release = false
-
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
@@ -22,27 +20,16 @@ pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.proj
 pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
-conf.set_quoted('LOCALEDIR', locale_dir)
-conf.set_quoted('DATADIR', data_dir)
-conf.set_quoted('PKGDATADIR', pkgdata_dir)
-conf.set_quoted('PLUGINDIR', plugins_dir)
-conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
-conf.set_quoted('VERSION', meson.project_version())
-config_h = configure_file(
-    output: 'config.h',
+conf.set('GETTEXT_PACKAGE', meson.project_name())
+conf.set('LOCALEDIR', locale_dir)
+conf.set('VERSION', meson.project_version())
+conf.set('PLUGINDIR', plugins_dir)
+conf.set('RESOURCEPATH', '/org/pantheon/desktop/gala')
+config_header = configure_file (
+    input: 'config.vala.in',
+    output: 'config.vala',
     configuration: conf
 )
-
-config_dep = declare_dependency(
-    dependencies: vala.find_library('config', dirs: vapi_dir),
-    sources: config_h
-)
-
-config_inc_dir = include_directories('.')
-
-customconf = configuration_data()
-customconf.set('GETTEXT_PACKAGE', meson.project_name())
 
 add_project_arguments([
         '--target-glib=2.44',
@@ -59,7 +46,7 @@ add_project_arguments([
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
-        '-DGNOME_DESKTOP_USE_UNSTABLE_API',
+		'-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
         '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
         '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
@@ -70,20 +57,18 @@ add_project_arguments([
 
 # Dependencies
 glib_version_required = '2.74.0'
-gtk_version_required = '3.10.0'
 
 atk_bridge_dep = dependency('atk-bridge-2.0')
-canberra_dep = dependency('libcanberra')
+gdk_pixbuf_def = dependency ('gdk-pixbuf-2.0')
+gtk4_dep = dependency('gtk4')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
-gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
-gtk4_dep = dependency('gtk4')
 gee_dep = dependency('gee-0.8')
-granite_dep = dependency('granite-7')
-gnome_desktop_dep = dependency('gnome-desktop-3.0')
+gnome_desktop_dep = dependency('gnome-desktop-4')
+gnome_bg_dep = dependency('gnome-bg-4')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 sqlite3_dep = dependency('sqlite3')
@@ -169,7 +154,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [atk_bridge_dep, canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, gdk_pixbuf_def, gtk4_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, mutter_dep, gnome_desktop_dep, gnome_bg_dep, m_dep, posix_dep, sqlite3_dep, xext_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
@@ -180,7 +165,7 @@ subdir('protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')
-subdir('daemon-gtk3')
+subproject('daemon-gtk3')
 subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')

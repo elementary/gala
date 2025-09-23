@@ -1,0 +1,14 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * SPDX-FileCopyrightText: 2024 elementary, Inc. (https://elementary.io)
+ *                         2011 Robert Dyer
+ *                         2011 Rico Tzschichholz
+ */
+
+namespace Config {
+	public const string GETTEXT_PACKAGE = "@GETTEXT_PACKAGE@";
+	public const string LOCALEDIR = "@LOCALEDIR@";
+	public const string VERSION = "@VERSION@";
+	public const string PLUGINDIR = "@PLUGINDIR@";
+	public const string RESOURCEPATH = "@RESOURCEPATH@";
+}

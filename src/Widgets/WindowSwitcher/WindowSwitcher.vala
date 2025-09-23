@@ -170,7 +170,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        background_color.alpha = 0.6;
+        background_color.alpha = 0.6f;
 
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);

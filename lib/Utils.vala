@@ -35,7 +35,6 @@ namespace Gala {
 
         static construct {
             icon_theme = new Gtk.IconTheme ();
-            icon_theme.set_custom_theme ("elementary");
             icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
             unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
@@ -159,9 +158,19 @@ namespace Gala {
 
             // Construct a new "application-default-icon" and store it in the cache
             try {
-                var icon = icon_theme.load_icon_for_scale ("application-default-icon", icon_size, scale, 0);
-                unknown_icon_cache.add (CachedIcon () { icon = icon, icon_size = icon_size, scale = scale });
-                return icon;
+                var icon_paintable = icon_theme.lookup_icon (
+                    "application-default-icon",
+                    null,
+                    icon_size,
+                    scale,
+                    Gtk.TextDirection.NONE,
+                    0
+                );
+
+                var pixbuf = new Gdk.Pixbuf.from_file (icon_paintable.get_file ().get_path ());
+
+                unknown_icon_cache.add (CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
+                return pixbuf;
             } catch (Error e) {
                 var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
                 icon.fill (0x00000000);
@@ -228,14 +237,16 @@ namespace Gala {
 
             if (icon is GLib.ThemedIcon) {
                 var icon_names = ((GLib.ThemedIcon)icon).get_names ();
-                var icon_info = icon_theme.choose_icon_for_scale (icon_names, icon_size, scale, 0);
 
-                if (icon_info == null) {
+                Gtk.IconPaintable icon_paintable;
+                if (icon_names.length == 0) {
                     return null;
+                } else {
+                    icon_paintable = icon_theme.lookup_icon (icon_names[0], icon_names[1:], icon_size, scale, Gtk.TextDirection.NONE, 0);
                 }
 
                 try {
-                    var pixbuf = icon_info.load_icon ();
+                    var pixbuf = new Gdk.Pixbuf.from_file (icon_paintable.get_file ().get_path ());
                     icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
@@ -357,7 +368,7 @@ namespace Gala {
             if (resize_pixbufs[height] == null) {
                 try {
                     resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        Config.RESOURCEPATH + "/buttons/resize.svg",
+                        "/org/pantheon/desktop/gala/buttons/resize.svg",
                         -1,
                         height,
                         true
