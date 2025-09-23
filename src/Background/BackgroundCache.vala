@@ -5,25 +5,16 @@
  */
 
 public class Gala.BackgroundCache : Object {
-    private static BackgroundCache? instance = null;
-
+    private static GLib.Once<BackgroundCache> instance;
     public static unowned BackgroundCache get_default () {
-        if (instance == null)
-            instance = new BackgroundCache ();
-
-        return instance;
+        return instance.once (() => { return new BackgroundCache (); });
     }
 
     public signal void file_changed (string filename);
 
     private Gee.HashMap<string,FileMonitor> file_monitors;
     private BackgroundSource background_source;
-
     private Animation animation;
-
-    public BackgroundCache () {
-        Object ();
-    }
 
     construct {
         file_monitors = new Gee.HashMap<string,FileMonitor> ();
