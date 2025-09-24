@@ -7,7 +7,7 @@
 public class Gala.PluginManager : Object {
     private static GLib.Once<PluginManager> instance;
     public static unowned PluginManager get_default () {
-        return instance.once (() => { return new PluginManager (); });
+        return instance.once (() => new PluginManager ());
     }
 
     public delegate PluginInfo RegisterPluginFunction ();

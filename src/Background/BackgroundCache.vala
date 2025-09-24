@@ -7,7 +7,7 @@
 public class Gala.BackgroundCache : Object {
     private static GLib.Once<BackgroundCache> instance;
     public static unowned BackgroundCache get_default () {
-        return instance.once (() => { return new BackgroundCache (); });
+        return instance.once (() => new BackgroundCache ());
     }
 
     public signal void file_changed (string filename);
