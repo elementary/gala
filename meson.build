@@ -5,8 +5,6 @@ project('gala',
     license: 'GPL3',
 )
 
-is_release = false
-
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
@@ -18,16 +16,11 @@ vapi_dir = meson.current_source_dir() / 'vapi'
 locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
-pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('LOCALEDIR', locale_dir)
-conf.set_quoted('DATADIR', data_dir)
-conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
-conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', meson.project_version())
 config_h = configure_file(
     output: 'config.h',
@@ -40,9 +33,6 @@ config_dep = declare_dependency(
 )
 
 config_inc_dir = include_directories('.')
-
-customconf = configuration_data()
-customconf.set('GETTEXT_PACKAGE', meson.project_name())
 
 add_project_arguments([
         '--target-glib=2.44',
@@ -73,7 +63,6 @@ glib_version_required = '2.74.0'
 gtk_version_required = '3.10.0'
 
 atk_bridge_dep = dependency('atk-bridge-2.0')
-canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
@@ -169,7 +158,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [atk_bridge_dep, canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep, config_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
