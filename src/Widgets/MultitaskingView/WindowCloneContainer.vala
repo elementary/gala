@@ -383,7 +383,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
     // some math utilities
-    private static int squared_distance (Graphene.Point a, Graphene.Point b) {
+    private static float squared_distance (Graphene.Point a, Graphene.Point b) {
         var k1 = b.x - a.x;
         var k2 = b.y - a.y;
 
@@ -437,7 +437,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             var rect = window.rect;
 
             var slot_candidate = -1;
-            var slot_candidate_distance = int.MAX;
+            var slot_candidate_distance = float.MAX;
             var pos = rect_center (rect);
 
             // all slots
