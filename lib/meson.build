@@ -71,9 +71,5 @@ pkg.generate(
     name: 'Gala',
     description: 'Library to develop plugins for Gala',
     subdirs: 'gala',
-    requires: [glib_dep, gobject_dep, gio_dep, gio_unix_dep, libmutter_dep],
-    variables: [
-        'datarootdir=${prefix}/@0@'.format(get_option('datadir')),
-        'pkgdatadir=${datarootdir}/gala'
-    ]
+    requires: [glib_dep, gobject_dep, gio_dep, gio_unix_dep, libmutter_dep]
 )
