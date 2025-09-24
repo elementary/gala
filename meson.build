@@ -16,8 +16,6 @@ vapi_dir = meson.current_source_dir() / 'vapi'
 locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
-pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
 conf.set('GETTEXT_PACKAGE', meson.project_name())
