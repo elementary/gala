@@ -5,8 +5,6 @@ project('gala',
     license: 'GPL3',
 )
 
-is_release = false
-
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
@@ -18,16 +16,11 @@ vapi_dir = meson.current_source_dir() / 'vapi'
 locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
-pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('LOCALEDIR', locale_dir)
-conf.set_quoted('DATADIR', data_dir)
-conf.set_quoted('PKGDATADIR', pkgdata_dir)
 conf.set_quoted('PLUGINDIR', plugins_dir)
-conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
 conf.set_quoted('VERSION', meson.project_version())
 config_h = configure_file(
     output: 'config.h',
@@ -40,9 +33,6 @@ config_dep = declare_dependency(
 )
 
 config_inc_dir = include_directories('.')
-
-customconf = configuration_data()
-customconf.set('GETTEXT_PACKAGE', meson.project_name())
 
 add_project_arguments([
         '--target-glib=2.44',
