@@ -31,7 +31,7 @@ jobs:
     - name: Install Dependencies
       run: |
         apt update
-        apt install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libcanberra-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-3-dev libgranite-dev libgtk-3-dev ${{ matrix.mutter_pkg }} libsqlite3-dev meson valac valadoc
+        apt install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-3-dev libgranite-dev libgtk-3-dev ${{ matrix.mutter_pkg }} libsqlite3-dev meson valac valadoc
     - name: Build
       env:
         DESTDIR: out
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install Dependencies
         run: |
-          dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel libcanberra-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite-devel meson valac valadoc
+          dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite-devel meson valac valadoc
       - name: Build
         env:
           DESTDIR: out
@@ -69,7 +69,7 @@ jobs:
         run: |
           zypper addrepo https://download.opensuse.org/repositories/X11:Pantheon/15.6/X11:Pantheon.repo
           zypper --gpg-auto-import-keys refresh
-          zypper --non-interactive install tar git desktop-file-utils gsettings-desktop-schemas-devel libatk-1_0-0 libcanberra-devel clutter-devel libgee-devel glib2-devel libgnome-desktop-3-devel granite6-devel granite-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite3-devel meson vala valadoc gcc
+          zypper --non-interactive install tar git desktop-file-utils gsettings-desktop-schemas-devel libatk-1_0-0 clutter-devel libgee-devel glib2-devel libgnome-desktop-3-devel granite6-devel granite-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite3-devel meson vala valadoc gcc
       - uses: actions/checkout@v5
       - name: Build
         env:
