@@ -20,7 +20,6 @@ basic_command = [
     '--pkg', 'gio-unix-2.0',
     '--pkg', 'gmodule-2.0',
     '--pkg', 'posix',
-    '--pkg', 'libcanberra',
     '--pkg', 'sqlite3',
     '--pkg', 'libsystemd',
     '--pkg', 'granite',
