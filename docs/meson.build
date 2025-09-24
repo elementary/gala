@@ -23,7 +23,6 @@ basic_command = [
     '--pkg', 'sqlite3',
     '--pkg', 'libsystemd',
     '--pkg', 'granite-7',
-    '--pkg', 'config',
     vala_flags,
     '--vapidir=' + join_paths(meson.build_root(), 'lib'),
     '--vapidir=' + join_paths(meson.global_source_root(), 'vapi'),
