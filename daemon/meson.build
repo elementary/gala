@@ -15,6 +15,6 @@ gala_daemon_bin = executable(
     config_header,
     gala_resources,
     dependencies: [granite_dep, gtk4_dep],
-    include_directories: config_inc_dir,
+    include_directories: include_directories('.'),
     install: true,
 )
