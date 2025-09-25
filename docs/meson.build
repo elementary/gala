@@ -53,6 +53,6 @@ all_doc_target = custom_target(
         '@INPUT@'
     ],
     build_by_default: true,
-    input: gala_lib_sources + gala_bin_sources + [ config_header ],
+    input: gala_lib_sources + gala_bin_sources + [config_header],
     output: 'full'
 )

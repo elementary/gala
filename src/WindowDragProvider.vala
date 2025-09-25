@@ -9,7 +9,7 @@
 public class Gala.WindowDragProvider : Object {
     private static GLib.Once<WindowDragProvider> instance;
     public static WindowDragProvider get_instance () {
-        return instance.once (() => { return new WindowDragProvider (); });
+        return instance.once (() => new WindowDragProvider ());
     }
 
     public signal void enter (uint64 window_id);

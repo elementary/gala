@@ -20,9 +20,8 @@ plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.proje
 conf = configuration_data()
 conf.set('GETTEXT_PACKAGE', meson.project_name())
 conf.set('LOCALEDIR', locale_dir)
-conf.set('VERSION', meson.project_version())
 conf.set('PLUGINDIR', plugins_dir)
-conf.set('RESOURCEPATH', '/org/pantheon/desktop/gala')
+conf.set('VERSION', meson.project_version())
 config_header = configure_file (
     input: 'config.vala.in',
     output: 'config.vala',

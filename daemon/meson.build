@@ -12,9 +12,9 @@ granite_dep = dependency('granite-7')
 gala_daemon_bin = executable(
     'gala-daemon',
     gala_daemon_sources,
-    gala_resources,
     config_header,
+    gala_resources,
     dependencies: [granite_dep, gtk4_dep],
-    include_directories: include_directories('.'),
+    include_directories: config_inc_dir,
     install: true,
 )

@@ -36,7 +36,7 @@ public class Gala.Drawing.StyleManager : Object {
 
     private static GLib.Once<StyleManager> instance;
     public static StyleManager get_instance () {
-        return instance.once (() => {return new StyleManager ();});
+        return instance.once (() => new StyleManager ());
     }
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }

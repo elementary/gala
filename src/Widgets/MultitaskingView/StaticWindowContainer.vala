@@ -12,7 +12,7 @@
 public class Gala.StaticWindowContainer : ActorTarget {
     private static GLib.Once<StaticWindowContainer> instance;
     public static StaticWindowContainer get_instance (Meta.Display display) {
-        return instance.once (() => { return new StaticWindowContainer (display); });
+        return instance.once (() => new StaticWindowContainer (display));
     }
 
     public signal void window_changed (Meta.Window window, bool is_static);
