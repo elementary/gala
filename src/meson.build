@@ -72,7 +72,6 @@ gala_bin = executable(
     gala_bin_sources,
     config_header,
     dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep],
-    include_directories: config_inc_dir,
     install_rpath: mutter_typelib_dir,
     install: true,
 )
