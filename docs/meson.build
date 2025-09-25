@@ -23,7 +23,6 @@ basic_command = [
     '--pkg', 'sqlite3',
     '--pkg', 'libsystemd',
     '--pkg', 'granite',
-    '--pkg', 'config',
     vala_flags,
     '--vapidir=' + join_paths(meson.build_root(), 'lib'),
     '--vapidir=' + join_paths(meson.global_source_root(), 'vapi'),
@@ -58,6 +57,6 @@ all_doc_target = custom_target(
         '@INPUT@'
     ],
     build_by_default: true,
-    input: gala_lib_sources + gala_bin_sources,
+    input: gala_lib_sources + gala_bin_sources + [config_header],
     output: 'full'
 )

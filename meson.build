@@ -1,5 +1,5 @@
 project('gala',
-    'c', 'vala',
+    'vala',
     version: '8.2.5',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
@@ -18,18 +18,14 @@ data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
 
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
-conf.set_quoted('LOCALEDIR', locale_dir)
-conf.set_quoted('PLUGINDIR', plugins_dir)
-conf.set_quoted('VERSION', meson.project_version())
-config_h = configure_file(
-    output: 'config.h',
+conf.set('GETTEXT_PACKAGE', meson.project_name())
+conf.set('LOCALEDIR', locale_dir)
+conf.set('PLUGINDIR', plugins_dir)
+conf.set('VERSION', meson.project_version())
+config_header = configure_file (
+    input: 'config.vala.in',
+    output: 'config.vala',
     configuration: conf
-)
-
-config_dep = declare_dependency(
-    dependencies: vala.find_library('config', dirs: vapi_dir),
-    sources: config_h
 )
 
 config_inc_dir = include_directories('.')
@@ -158,7 +154,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [atk_bridge_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep

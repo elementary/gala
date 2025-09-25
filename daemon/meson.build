@@ -10,8 +10,9 @@ gala_daemon_sources = files(
 gala_daemon_bin = executable(
     'gala-daemon',
     gala_daemon_sources,
+    config_header,
     gala_resources,
-    dependencies: [config_dep, granite_dep, gtk4_dep],
+    dependencies: [granite_dep, gtk4_dep],
     include_directories: config_inc_dir,
     install: true,
 )
