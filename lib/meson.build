@@ -47,7 +47,6 @@ gala_lib = shared_library(
     gala_lib_sources,
     gala_resources,
     dependencies: [gala_base_dep],
-    include_directories: config_inc_dir,
     install: true,
     install_dir: [true, join_paths(get_option('includedir'), 'gala'), true],
     install_rpath: mutter_typelib_dir,
