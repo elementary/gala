@@ -34,7 +34,10 @@ namespace Gala {
         private static Gtk.IconTheme icon_theme;
 
         static construct {
-            icon_theme = new Gtk.IconTheme ();
+            icon_theme = new Gtk.IconTheme () {
+                theme_name = "elementary"
+            };
+
             icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
             unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
@@ -237,16 +240,19 @@ namespace Gala {
 
             if (icon is GLib.ThemedIcon) {
                 var icon_names = ((GLib.ThemedIcon)icon).get_names ();
-
-                Gtk.IconPaintable icon_paintable;
                 if (icon_names.length == 0) {
                     return null;
-                } else {
-                    icon_paintable = icon_theme.lookup_icon (icon_names[0], icon_names[1:], icon_size, scale, Gtk.TextDirection.NONE, 0);
+                }
+
+                var icon_paintable = icon_theme.lookup_icon (icon_names[0], icon_names[1:], icon_size, scale, NONE, 0);
+
+                var path = icon_paintable.get_file ()?.get_path ();
+                if (path == null) {
+                    return null;
                 }
 
                 try {
-                    var pixbuf = new Gdk.Pixbuf.from_file (icon_paintable.get_file ().get_path ());
+                    var pixbuf = new Gdk.Pixbuf.from_file (path);
                     icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
                     return pixbuf;
                 } catch (Error e) {
