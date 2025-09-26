@@ -43,7 +43,6 @@ all_doc_target = custom_target(
         '--pkg', 'gnome-bg-4',
         '--pkg', 'gnome-desktop-4',
         '--pkg', 'libsystemd',
-        '--pkg', 'gnome-desktop-3.0',
         '--pkg', 'pantheon-desktop-shell',
         '--pkg', 'sqlite3',
         '--pkg', 'wayland-server',
