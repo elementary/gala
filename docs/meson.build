@@ -1,12 +1,10 @@
-valadoc = find_program('valadoc')
-
 mutter_packages_command = []
 foreach dep : mutter_dep
     mutter_packages_command += [ '--pkg', dep.name() ]
 endforeach
 
 basic_command = [
-    valadoc,
+    find_program('valadoc'),
     '--force',
     '--verbose',
     '--package-name','gala',
@@ -18,7 +16,7 @@ basic_command = [
     '--pkg', 'gmodule-2.0',
     '--pkg', 'posix',
     vala_flags,
-    '--vapidir=' + join_paths(meson.build_root(), 'lib'),
+    '--vapidir=' + join_paths(meson.project_build_root(), 'lib'),
     '--vapidir=' + join_paths(meson.global_source_root(), 'vapi'),
     '--doclet=html',
     '--use-svg-images'
@@ -45,6 +43,7 @@ all_doc_target = custom_target(
         '--pkg', 'gnome-bg-4',
         '--pkg', 'gnome-desktop-4',
         '--pkg', 'libsystemd',
+        '--pkg', 'gnome-desktop-3.0',
         '--pkg', 'pantheon-desktop-shell',
         '--pkg', 'sqlite3',
         '--pkg', 'wayland-server',
