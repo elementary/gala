@@ -13,7 +13,8 @@ hdy_dep = dependency('libhandy-1')
 executable(
     'gala-daemon-gtk3',
     gala_daemon_sources,
+    gala_common_enums,
     config_header,
-    dependencies: [gala_base_dep, gala_dep, granite6_dep, hdy_dep],
+    dependencies: [granite6_dep, hdy_dep],
     install: true,
 )

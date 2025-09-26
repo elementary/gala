@@ -1,3 +1,7 @@
+gala_common_enums = files(
+  'CommonEnums.vala',
+)
+
 gala_lib_sources = files(
     'ActivatableComponent.vala',
     'App.vala',
@@ -33,7 +37,7 @@ gala_lib_sources = files(
     'Gestures/SpringTimeline.vala',
     'Gestures/ToucheggBackend.vala',
     'Gestures/TouchpadBackend.vala'
-)
+) + gala_common_enums
 
 gala_resources = gnome.compile_resources(
     'gala-resources',
