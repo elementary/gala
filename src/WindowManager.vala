@@ -1727,6 +1727,14 @@ namespace Gala {
             return modal_stack.peek_head ().filter_action (action);
         }
 
+        public void add_multitasking_view_target (GestureTarget target) {
+            multitasking_view.add_target (target);
+
+            if (window_overview is WindowOverview) {
+                ((WindowOverview) window_overview).add_target (target);
+            }
+        }
+
         public override void confirm_display_change () {
             unowned var monitor_manager = get_display ().get_context ().get_backend ().get_monitor_manager ();
             var timeout = monitor_manager.get_display_configuration_timeout ();
