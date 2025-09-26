@@ -14,6 +14,8 @@ You'll need the following dependencies:
 * libgnome-desktop-4-dev
 * libgnome-bg-4-dev
 * libgranite-dev (>= 5.4.0)
+* libgranite-7-dev
+* libgtk-3-dev
 * libgtk-4-dev
 * libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
 * meson (>= 0.59.0)

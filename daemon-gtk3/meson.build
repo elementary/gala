@@ -10,7 +10,7 @@ gala_daemon_sources = files(
 granite6_dep = dependency('granite')
 hdy_dep = dependency('libhandy-1')
 
-gala_daemon_bin = executable(
+executable(
     'gala-daemon-gtk3',
     gala_daemon_sources,
     gala_common_enums,

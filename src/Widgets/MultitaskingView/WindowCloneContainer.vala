@@ -387,7 +387,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         var k1 = b.x - a.x;
         var k2 = b.y - a.y;
 
-        return (int) (k1 * k1 + k2 * k2);
+        return k1 * k1 + k2 * k2;
     }
 
     private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {

@@ -39,13 +39,13 @@ all_doc_target = custom_target(
     command: [
         basic_command,
         '--internal',
+        '--pkg', 'sqlite3',
         '--pkg', 'atk-bridge-2.0',
         '--pkg', 'gnome-bg-4',
         '--pkg', 'gnome-desktop-4',
         '--pkg', 'libsystemd',
-        '--pkg', 'pantheon-desktop-shell',
-        '--pkg', 'sqlite3',
         '--pkg', 'wayland-server',
+        '--pkg', 'pantheon-desktop-shell',
         '--vapidir=' + join_paths(meson.global_source_root(), 'protocol'),
         '-o', '@OUTPUT@',
         '@INPUT@'
