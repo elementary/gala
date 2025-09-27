@@ -357,7 +357,7 @@ namespace Gala {
             if (resize_pixbufs[height] == null) {
                 try {
                     resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        Config.RESOURCEPATH + "/buttons/resize.svg",
+                        "/org/pantheon/desktop/gala/buttons/resize.svg",
                         -1,
                         height,
                         true

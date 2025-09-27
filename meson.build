@@ -1,11 +1,9 @@
 project('gala',
-    'c', 'vala',
+    'vala',
     version: '8.2.5',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
 )
-
-is_release = false
 
 gnome = import('gnome')
 i18n = import('i18n')
@@ -18,31 +16,17 @@ vapi_dir = meson.current_source_dir() / 'vapi'
 locale_dir = join_paths(get_option('prefix'), get_option('localedir'))
 data_dir = join_paths(get_option('prefix'), get_option('datadir'))
 plugins_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name(), 'plugins')
-pkgdata_dir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-pkglib_dir = join_paths(get_option('prefix'), get_option('libdir'), meson.project_name())
 
 conf = configuration_data()
-conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
-conf.set_quoted('LOCALEDIR', locale_dir)
-conf.set_quoted('DATADIR', data_dir)
-conf.set_quoted('PKGDATADIR', pkgdata_dir)
-conf.set_quoted('PLUGINDIR', plugins_dir)
-conf.set_quoted('RESOURCEPATH', '/org/pantheon/desktop/gala')
-conf.set_quoted('VERSION', meson.project_version())
-config_h = configure_file(
-    output: 'config.h',
+conf.set('GETTEXT_PACKAGE', meson.project_name())
+conf.set('LOCALEDIR', locale_dir)
+conf.set('PLUGINDIR', plugins_dir)
+conf.set('VERSION', meson.project_version())
+config_header = configure_file (
+    input: 'config.vala.in',
+    output: 'config.vala',
     configuration: conf
 )
-
-config_dep = declare_dependency(
-    dependencies: vala.find_library('config', dirs: vapi_dir),
-    sources: config_h
-)
-
-config_inc_dir = include_directories('.')
-
-customconf = configuration_data()
-customconf.set('GETTEXT_PACKAGE', meson.project_name())
 
 add_project_arguments([
         '--target-glib=2.44',
@@ -70,19 +54,15 @@ add_project_arguments([
 
 # Dependencies
 glib_version_required = '2.74.0'
-gtk_version_required = '3.10.0'
 
 atk_bridge_dep = dependency('atk-bridge-2.0')
-canberra_dep = dependency('libcanberra')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
-gtk_dep = [dependency('gtk+-3.0', version: '>= @0@'.format(gtk_version_required)), dependency('gdk-x11-3.0')]
-gtk4_dep = dependency('gtk4')
+gtk3_dep = dependency('gtk+-3.0')
 gee_dep = dependency('gee-0.8')
-granite_dep = dependency('granite-7')
 gnome_desktop_dep = dependency('gnome-desktop-3.0')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
@@ -169,7 +149,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [atk_bridge_dep, canberra_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep, config_dep]
+gala_base_dep = [atk_bridge_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk3_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep

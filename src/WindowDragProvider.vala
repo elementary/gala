@@ -8,8 +8,8 @@
 [DBus (name = "io.elementary.desktop.wm.WindowDragProvider")]
 public class Gala.WindowDragProvider : Object {
     private static GLib.Once<WindowDragProvider> instance;
-    public static unowned WindowDragProvider get_instance (Meta.Display display) {
-        return instance.once (() => { return new WindowDragProvider (display); });
+    public static WindowDragProvider get_instance (Meta.Display display) {
+        return instance.once (() => new WindowDragProvider (display));
     }
 
     public signal void enter (uint64 window_id);

@@ -8,7 +8,6 @@ A window & compositing manager based on libmutter and designed by elementary for
 You'll need the following dependencies:
 * gettext (>= 0.19.6)
 * gsettings-desktop-schemas-dev
-* libcanberra-dev
 * libclutter-1.0-dev (>= 1.12.0)
 * libgee-0.8-dev
 * libglib2.0-dev (>= 2.74)

@@ -1,3 +1,7 @@
+gala_common_enums = files(
+  'CommonEnums.vala',
+)
+
 gala_lib_sources = files(
     'ActivatableComponent.vala',
     'App.vala',
@@ -33,7 +37,7 @@ gala_lib_sources = files(
     'Gestures/SpringTimeline.vala',
     'Gestures/ToucheggBackend.vala',
     'Gestures/TouchpadBackend.vala'
-)
+) + gala_common_enums
 
 gala_resources = gnome.compile_resources(
     'gala-resources',
@@ -47,7 +51,6 @@ gala_lib = shared_library(
     gala_lib_sources,
     gala_resources,
     dependencies: [gala_base_dep],
-    include_directories: config_inc_dir,
     install: true,
     install_dir: [true, join_paths(get_option('includedir'), 'gala'), true],
     install_rpath: mutter_typelib_dir,
@@ -71,9 +74,5 @@ pkg.generate(
     name: 'Gala',
     description: 'Library to develop plugins for Gala',
     subdirs: 'gala',
-    requires: [glib_dep, gobject_dep, gio_dep, gio_unix_dep, libmutter_dep],
-    variables: [
-        'datarootdir=${prefix}/@0@'.format(get_option('datadir')),
-        'pkgdatadir=${datarootdir}/gala'
-    ]
+    requires: [glib_dep, gobject_dep, gio_dep, gio_unix_dep, libmutter_dep]
 )
