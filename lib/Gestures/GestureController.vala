@@ -88,8 +88,8 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
-    private ToucheggBackend? touchegg_backend;
-    private TouchpadBackend? touchpad_backend;
+    private List<GestureBackend> enabled_backends = new List<GestureBackend> ();
+
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
@@ -121,26 +121,24 @@ public class Gala.GestureController : Object {
 
     public void enable_touchpad (Clutter.Actor actor) {
         if (Meta.Util.is_wayland_compositor ()) {
-            touchpad_backend = new TouchpadBackend (actor, group);
-            touchpad_backend.on_gesture_detected.connect (gesture_detected);
-            touchpad_backend.on_begin.connect (gesture_begin);
-            touchpad_backend.on_update.connect (gesture_update);
-            touchpad_backend.on_end.connect (gesture_end);
+            enable_backend (new TouchpadBackend (actor, group));
         }
 
-        touchegg_backend = ToucheggBackend.get_default (); // Will automatically filter events on wayland
-        touchegg_backend.on_gesture_detected.connect (gesture_detected);
-        touchegg_backend.on_begin.connect (gesture_begin);
-        touchegg_backend.on_update.connect (gesture_update);
-        touchegg_backend.on_end.connect (gesture_end);
+        enable_backend (ToucheggBackend.get_default ()); // Will automatically filter events on wayland
     }
 
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
         scroll_backend = new ScrollBackend (actor, orientation, new GestureSettings ());
-        scroll_backend.on_gesture_detected.connect (gesture_detected);
-        scroll_backend.on_begin.connect (gesture_begin);
-        scroll_backend.on_update.connect (gesture_update);
-        scroll_backend.on_end.connect (gesture_end);
+        enable_backend (scroll_backend);
+    }
+
+    internal void enable_backend (GestureBackend backend) {
+        backend.on_gesture_detected.connect (gesture_detected);
+        backend.on_begin.connect (gesture_begin);
+        backend.on_update.connect (gesture_update);
+        backend.on_end.connect (gesture_end);
+
+        enabled_backends.append (backend);
     }
 
     private void prepare () {

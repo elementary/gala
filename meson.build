@@ -166,6 +166,9 @@ subdir('plugins/template')
 if get_option('documentation')
     subdir('docs')
 endif
+if get_option('tests')
+    subdir('tests')
+endif
 subdir('po')
 
 vapigen = find_program('vapigen', required: false)
