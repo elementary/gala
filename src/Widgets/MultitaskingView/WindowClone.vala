@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : ActorTarget, RootTarget {
+public class Gala.WindowClone : ActorTarget, RootTarget, Focusable {
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -34,21 +34,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
     public Mtk.Rectangle? slot { get; private set; default = null; }
-
-    /**
-     * When active fades a white border around the window in. Used for the visually
-     * indicating the WindowCloneContainer's current_window.
-     */
-    public bool active {
-        set {
-            active_shape.update_color ();
-
-            active_shape.save_easing_state ();
-            active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
-            active_shape.opacity = value ? 255 : 0;
-            active_shape.restore_easing_state ();
-        }
-    }
 
     public bool overview_mode { get; construct; }
     public float monitor_scale { get; construct set; }
@@ -148,6 +133,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title.set_text (window.get_title () ?? "");
 
         notify["has-pointer"].connect (() => update_hover_widgets ());
+
+        key_press_event.connect (on_key_press_event);
     }
 
     ~WindowClone () {
@@ -271,6 +258,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     public override void start_progress (GestureAction action) {
         update_hover_widgets (true);
+
+        if (action == MULTITASKING_VIEW && get_current_commit (MULTITASKING_VIEW) == 0 && window.has_focus ()) {
+            focus (NEXT);
+        }
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
@@ -376,6 +367,31 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     public override bool button_press_event (Clutter.Event event) {
         return Clutter.EVENT_STOP;
+    }
+
+    public override bool can_focus () {
+        return true;
+    }
+
+    protected override void update_focus (bool has_visible_focus) {
+        active_shape.update_color ();
+
+        active_shape.save_easing_state ();
+        active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
+        active_shape.opacity = has_visible_focus ? 255 : 0;
+        active_shape.restore_easing_state ();
+    }
+
+    private bool on_key_press_event (Clutter.Event event) {
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                selected ();
+                return Clutter.EVENT_STOP;
+
+            default:
+                return Clutter.EVENT_PROPAGATE;
+        }
     }
 
     private void update_hover_widgets (bool? animating = null) {
