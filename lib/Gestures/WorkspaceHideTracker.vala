@@ -51,6 +51,7 @@ public class Gala.WorkspaceHideTracker : Object, GestureTarget {
         window.position_changed.connect (recalculate_workspace);
         window.size_changed.connect (recalculate_workspace);
         window.workspace_changed.connect (recalculate_all_workspaces);
+        window.focused.connect (recalculate_workspace);
         window.notify["on-all-workspaces"].connect (recalculate_all_workspaces);
         window.notify["fullscreen"].connect (recalculate_workspace_pspec);
         window.notify["minimized"].connect (recalculate_workspace_pspec);
@@ -65,6 +66,7 @@ public class Gala.WorkspaceHideTracker : Object, GestureTarget {
         window.position_changed.disconnect (recalculate_workspace);
         window.size_changed.disconnect (recalculate_workspace);
         window.workspace_changed.disconnect (recalculate_all_workspaces);
+        window.focused.disconnect (recalculate_workspace);
         window.notify["on-all-workspaces"].disconnect (recalculate_all_workspaces);
         window.notify["fullscreen"].disconnect (recalculate_workspace_pspec);
         window.notify["minimized"].disconnect (recalculate_workspace_pspec);
