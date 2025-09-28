@@ -25,6 +25,8 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
             } else {
                 unmake_exclusive ();
             }
+
+            workspace_hide_tracker.recalculate_all_workspaces ();
         }
     }
 
@@ -32,7 +34,6 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
 
     private Meta.WindowActor window_actor;
     private double custom_progress = 0;
-    private bool last_custom_action_is_show = false;
     private double multitasking_view_progress = 0;
     private double workspace_reveal_progress = 0;
 
@@ -52,6 +53,23 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
     construct {
         window_actor = (Meta.WindowActor) window.get_compositor_private ();
 
+        custom_gesture_controller = new GestureController (CUSTOM, wm) {
+            progress = 1.0
+        };
+        add_gesture_controller (custom_gesture_controller);
+
+        workspace_gesture_controller = new GestureController (CUSTOM_2, wm);
+        add_gesture_controller (workspace_gesture_controller);
+
+        hide_tracker = new HideTracker (window.display, this);
+        hide_tracker.hide.connect (() => custom_gesture_controller.goto (1));
+        hide_tracker.show.connect (() => custom_gesture_controller.goto (0));
+
+        workspace_hide_tracker = new WorkspaceHideTracker (window.display, actor);
+        workspace_hide_tracker.compute_progress.connect (update_overlap);
+        workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
+        workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
+
         window_actor.notify["width"].connect (update_clip);
         window_actor.notify["height"].connect (update_clip);
         window_actor.notify["translation-y"].connect (update_clip);
@@ -66,33 +84,6 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
         window.size_changed.connect (update_target);
         notify["position"].connect (update_target);
         update_target ();
-
-        custom_gesture_controller = new GestureController (CUSTOM, wm) {
-            progress = 1.0
-        };
-        add_gesture_controller (custom_gesture_controller);
-
-        workspace_gesture_controller = new GestureController (CUSTOM_2, wm);
-        add_gesture_controller (workspace_gesture_controller);
-
-        hide_tracker = new HideTracker (window.display, this);
-        hide_tracker.hide.connect (hide);
-        hide_tracker.show.connect (show);
-
-        workspace_hide_tracker = new WorkspaceHideTracker (window.display, actor);
-        workspace_hide_tracker.compute_progress.connect (update_overlap);
-        workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
-        workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
-    }
-
-    private void hide () {
-        last_custom_action_is_show = false;
-        custom_gesture_controller.goto (1);
-    }
-
-    private void show () {
-        last_custom_action_is_show = true;
-        custom_gesture_controller.goto (0);
     }
 
     private void update_target () {
@@ -103,6 +94,8 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
             calculate_value (false),
             calculate_value (true)
         );
+
+        workspace_hide_tracker.recalculate_all_workspaces ();
     }
 
     private double get_hidden_progress () {
@@ -303,7 +296,7 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
                 return overlap ? 1.0 : 0.0;
 
             case ALWAYS:
-                return 0.0;
+                return 1.0;
 
             case NEVER:
                 return fullscreen_overlap ? 1.0 : 0.0;

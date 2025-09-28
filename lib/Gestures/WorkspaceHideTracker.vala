@@ -99,7 +99,10 @@ public class Gala.WorkspaceHideTracker : Object, GestureTarget {
         );
     }
 
-    private void recalculate_all_workspaces () {
+    /**
+     * Trigger recalculation of all workspaces
+     */
+    public void recalculate_all_workspaces () {
         unowned var workspace_manager = display.get_workspace_manager ();
         workspace_hide_progress_cache = new double[workspace_manager.n_workspaces];
         foreach (unowned var workspace in workspace_manager.get_workspaces ()) {
