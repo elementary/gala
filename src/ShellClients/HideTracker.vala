@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -7,7 +7,6 @@
 
 public class Gala.HideTracker : Object {
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
-    private const int UPDATE_TIMEOUT = 200;
     private const int HIDE_DELAY = 500;
 
     public signal void hide ();
@@ -33,7 +32,7 @@ public class Gala.HideTracker : Object {
 
     private uint hide_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, PanelWindow panel) {
+    public HideTracker (Meta.Display display, ShellWindow panel) {
         Object (display: display, panel: panel);
     }
 
