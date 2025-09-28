@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -7,15 +7,13 @@
 
 public class Gala.HideTracker : Object {
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
-    private const int UPDATE_TIMEOUT = 200;
     private const int HIDE_DELAY = 500;
 
     public signal void hide ();
     public signal void show ();
 
     public Meta.Display display { get; construct; }
-    public unowned PanelWindow panel { get; construct; }
-    public Pantheon.Desktop.HideMode hide_mode { get; set; }
+    public unowned ShellWindow panel { get; construct; }
 
     private static GLib.Settings behavior_settings;
 
@@ -23,19 +21,11 @@ public class Gala.HideTracker : Object {
 
     private bool hovered = false;
 
-    private bool overlap = false;
-    private bool focus_overlap = false;
-    private bool focus_maximized_overlap = false;
-    private bool fullscreen_overlap = false;
-
-    private Meta.Window current_focus_window;
-
     private Barrier? barrier;
 
     private uint hide_timeout_id = 0;
-    private uint update_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, PanelWindow panel) {
+    public HideTracker (Meta.Display display, ShellWindow panel) {
         Object (display: display, panel: panel);
     }
 
@@ -49,22 +39,6 @@ public class Gala.HideTracker : Object {
             // access the panel which was already freed. To prevent that make sure we reset
             // the timeouts so that we get freed immediately
             reset_hide_timeout ();
-            reset_update_timeout ();
-        });
-
-        // Can't be local otherwise we get a memory leak :(
-        // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
-        current_focus_window = display.focus_window;
-        track_focus_window (current_focus_window);
-        display.notify["focus-window"].connect (() => {
-            untrack_focus_window (current_focus_window);
-            current_focus_window = display.focus_window;
-            track_focus_window (current_focus_window);
-        });
-
-        display.window_created.connect ((window) => {
-            schedule_update ();
-            window.unmanaged.connect (schedule_update);
         });
 
 #if HAS_MUTTER48
@@ -77,11 +51,14 @@ public class Gala.HideTracker : Object {
 
             if (hovered != has_pointer) {
                 hovered = has_pointer;
-                schedule_update ();
+
+                if (hovered) {
+                    trigger_show ();
+                } else {
+                    trigger_hide ();
+                }
             }
         });
-
-        display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
 
         pan_action = new Clutter.PanAction () {
             n_touch_points = 1,
@@ -101,144 +78,27 @@ public class Gala.HideTracker : Object {
         var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => {
             setup_barrier (); //Make sure barriers are still on the primary monitor
-            schedule_update ();
         });
 
         setup_barrier ();
     }
 
-
-    private void track_focus_window (Meta.Window? window) {
-        if (window == null) {
-            return;
-        }
-
-        window.position_changed.connect (schedule_update);
-        window.size_changed.connect (schedule_update);
-        schedule_update ();
-    }
-
-    private void untrack_focus_window (Meta.Window? window) {
-        if (window == null) {
-            return;
-        }
-
-        window.position_changed.disconnect (schedule_update);
-        window.size_changed.disconnect (schedule_update);
-        schedule_update ();
-    }
-
-    public void schedule_update () {
-        if (update_timeout_id != 0) {
-            return;
-        }
-
-        update_timeout_id = Timeout.add (UPDATE_TIMEOUT, () => {
-            update_overlap ();
-            update_timeout_id = 0;
-            return Source.REMOVE;
-        });
-    }
-
-    private void reset_update_timeout () {
-        if (update_timeout_id != 0) {
-            Source.remove (update_timeout_id);
-            update_timeout_id = 0;
-        }
-    }
-
-    public void update_overlap () {
-        overlap = false;
-        focus_overlap = false;
-        focus_maximized_overlap = false;
-        fullscreen_overlap = display.get_monitor_in_fullscreen (panel.window.get_monitor ());
-
-        unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-
-        Meta.Window? normal_mru_window, any_mru_window;
-        normal_mru_window = InternalUtils.get_mru_window (active_workspace, out any_mru_window);
-
-        foreach (var window in active_workspace.list_windows ()) {
-            if (window == panel.window) {
-                continue;
-            }
-
-            if (window.minimized) {
-                continue;
-            }
-
-            var type = window.get_window_type ();
-            if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
-                continue;
-            }
-
-            if (!panel.get_custom_window_rect ().overlap (window.get_frame_rect ())) {
-                continue;
-            }
-
-            overlap = true;
-
-            if (window != normal_mru_window && window != any_mru_window) {
-                continue;
-            }
-
-            focus_overlap = true;
-            focus_maximized_overlap = window.maximized_vertically;
-        }
-
-        update_hidden ();
-    }
-
-    private void update_hidden () {
-        switch (hide_mode) {
-            case MAXIMIZED_FOCUS_WINDOW:
-                toggle_display (focus_maximized_overlap);
-                break;
-
-            case OVERLAPPING_FOCUS_WINDOW:
-                toggle_display (focus_overlap);
-                break;
-
-            case OVERLAPPING_WINDOW:
-                toggle_display (overlap);
-                break;
-
-            case ALWAYS:
-                toggle_display (true);
-                break;
-
-            case NEVER:
-                toggle_display (fullscreen_overlap);
-                break;
-        }
-    }
-
-    private void toggle_display (bool should_hide) {
-        hovered = panel.window.has_pointer ();
-
-        // Showing panels in fullscreen is broken in X11
-        if (should_hide && !hovered && !panel.window.has_focus () || InternalUtils.get_x11_in_fullscreen (display)) {
-            trigger_hide ();
-        } else {
-            trigger_show ();
-        }
-    }
-
     private void trigger_hide () {
-        if (hide_timeout_id != 0) {
-            return;
-        }
+        reset_hide_timeout ();
 
         // Don't hide if we have transients, e.g. an open popover, dialog, etc.
+        // TODO: this is broken, we should monitor transients for has_pointer and use it instead.
         var has_transients = false;
-        panel.window.foreach_transient (() => {
+        panel.window.foreach_transient ((transient) => {
+            if (transient.window_type == DROPDOWN_MENU) {
+                return true;
+            }
+
             has_transients = true;
             return false;
         });
 
         if (has_transients) {
-            reset_hide_timeout ();
-
             return;
         }
 
@@ -349,9 +209,10 @@ public class Gala.HideTracker : Object {
             return;
         }
 
-        if (hide_mode != NEVER || behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")) {
+        if (!display.get_monitor_in_fullscreen (panel.window.get_monitor ()) ||
+            behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
+        ) {
             trigger_show ();
-            schedule_update ();
         }
     }
 }

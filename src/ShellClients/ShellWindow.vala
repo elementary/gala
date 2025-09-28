@@ -5,18 +5,45 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellWindow : PositionedWindow, GestureTarget {
+public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
+    public WindowManager wm { get; construct; }
     public Clutter.Actor? actor { get { return window_actor; } }
     public bool restore_previous_x11_region { private get; set; default = false; }
     public bool visible_in_multitasking_view { get; set; default = false; }
+    public Pantheon.Desktop.Anchor anchor { get; construct set; }
+
+    private Pantheon.Desktop.HideMode _hide_mode;
+    public Pantheon.Desktop.HideMode hide_mode {
+        get {
+            return _hide_mode;
+        }
+        set {
+            _hide_mode = value;
+
+            if (value == NEVER) {
+                make_exclusive ();
+            } else {
+                unmake_exclusive ();
+            }
+        }
+    }
+
+    private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     private Meta.WindowActor window_actor;
     private double custom_progress = 0;
+    private bool last_custom_action_is_show = false;
     private double multitasking_view_progress = 0;
+    private double workspace_reveal_progress = 0;
 
     private int animations_ongoing = 0;
 
     private PropertyTarget property_target;
+
+    private GestureController custom_gesture_controller;
+    private GestureController workspace_gesture_controller;
+    private HideTracker hide_tracker;
+    private WorkspaceHideTracker workspace_hide_tracker;
 
     public ShellWindow (Meta.Window window, Position position, Variant? position_data = null) {
         base (window, position, position_data);
@@ -30,9 +57,42 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         window_actor.notify["translation-y"].connect (update_clip);
         notify["position"].connect (update_clip);
 
+        window.unmanaging.connect (() => {
+            if (window_struts.remove (window)) {
+                update_struts ();
+            }
+        });
+
         window.size_changed.connect (update_target);
         notify["position"].connect (update_target);
         update_target ();
+
+        custom_gesture_controller = new GestureController (CUSTOM, wm) {
+            progress = 1.0
+        };
+        add_gesture_controller (custom_gesture_controller);
+
+        workspace_gesture_controller = new GestureController (CUSTOM_2, wm);
+        add_gesture_controller (workspace_gesture_controller);
+
+        hide_tracker = new HideTracker (window.display, this);
+        hide_tracker.hide.connect (hide);
+        hide_tracker.show.connect (show);
+
+        workspace_hide_tracker = new WorkspaceHideTracker (window.display, actor);
+        workspace_hide_tracker.compute_progress.connect (update_overlap);
+        workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
+        workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
+    }
+
+    private void hide () {
+        last_custom_action_is_show = false;
+        custom_gesture_controller.goto (1);
+    }
+
+    private void show () {
+        last_custom_action_is_show = true;
+        custom_gesture_controller.goto (0);
     }
 
     private void update_target () {
@@ -47,9 +107,9 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     private double get_hidden_progress () {
         if (visible_in_multitasking_view) {
-            return double.min (custom_progress, 1 - multitasking_view_progress);
+            return double.min (double.min (custom_progress, workspace_reveal_progress), 1 - multitasking_view_progress);
         } else {
-            return double.max (custom_progress, multitasking_view_progress);
+            return double.max (double.min (custom_progress, workspace_reveal_progress), multitasking_view_progress);
         }
     }
 
@@ -58,6 +118,8 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     }
 
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+        workspace_hide_tracker.propagate (update_type, action, progress);
+
         switch (update_type) {
             case START:
                 animations_ongoing++;
@@ -86,6 +148,10 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
             case CUSTOM:
                 custom_progress = progress;
+                break;
+
+            case CUSTOM_2:
+                workspace_reveal_progress = progress;
                 break;
 
             default:
@@ -186,6 +252,119 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
             window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
         } else {
             window_actor.remove_clip ();
+        }
+    }
+
+    private double update_overlap (Meta.Workspace workspace) {
+        var overlap = false;
+        var focus_overlap = false;
+        var focus_maximized_overlap = false;
+        var fullscreen_overlap = window.display.get_monitor_in_fullscreen (window.get_monitor ());
+
+        Meta.Window? normal_mru_window, any_mru_window;
+        normal_mru_window = InternalUtils.get_mru_window (workspace, out any_mru_window);
+
+        foreach (var window in workspace.list_windows ()) {
+            if (window == this.window) {
+                continue;
+            }
+
+            if (window.minimized) {
+                continue;
+            }
+
+            var type = window.get_window_type ();
+            if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
+                continue;
+            }
+
+            if (!get_custom_window_rect ().overlap (window.get_frame_rect ())) {
+                continue;
+            }
+
+            overlap = true;
+
+            if (window != normal_mru_window && window != any_mru_window) {
+                continue;
+            }
+
+            focus_overlap = true;
+            focus_maximized_overlap = window.maximized_vertically;
+        }
+
+        switch (hide_mode) {
+            case MAXIMIZED_FOCUS_WINDOW:
+                return focus_maximized_overlap ? 1.0 : 0.0;
+
+            case OVERLAPPING_FOCUS_WINDOW:
+                return focus_overlap ? 1.0 : 0.0;
+
+            case OVERLAPPING_WINDOW:
+                return overlap ? 1.0 : 0.0;
+
+            case ALWAYS:
+                return 0.0;
+
+            case NEVER:
+                return fullscreen_overlap ? 1.0 : 0.0;
+        }
+
+        return 0.0;
+    }
+
+    private void make_exclusive () {
+        update_strut ();
+    }
+
+    internal void update_strut () {
+        if (hide_mode != NEVER) {
+            return;
+        }
+
+        var rect = get_custom_window_rect ();
+
+        Meta.Strut strut = {
+            rect,
+            side_from_anchor (anchor)
+        };
+
+        window_struts[window] = strut;
+
+        update_struts ();
+    }
+
+    internal void update_struts () {
+        var list = new SList<Meta.Strut?> ();
+
+        foreach (var window_strut in window_struts.get_values ()) {
+            list.append (window_strut);
+        }
+
+        foreach (var workspace in wm.get_display ().get_workspace_manager ().get_workspaces ()) {
+            workspace.set_builtin_struts (list);
+        }
+    }
+
+    private void unmake_exclusive () {
+        if (window in window_struts) {
+            window_struts.remove (window);
+            update_struts ();
+        }
+    }
+
+    private Meta.Side side_from_anchor (Pantheon.Desktop.Anchor anchor) {
+        switch (anchor) {
+            case BOTTOM:
+                return BOTTOM;
+
+            case LEFT:
+                return LEFT;
+
+            case RIGHT:
+                return RIGHT;
+
+            default:
+                return TOP;
         }
     }
 }
