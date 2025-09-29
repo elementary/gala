@@ -97,31 +97,29 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
             return;
         }
 
-        var popup_window = new PopupWindow (wm.get_display (), active);
+        var popup_window = new PopupWindow (wm, active);
         popup_window.set_container_clip (rect);
-        popup_window.show.connect (on_popup_window_show);
-        popup_window.hide.connect (on_popup_window_hide);
         add_window (popup_window);
-    }
-
-    private void on_popup_window_show (Clutter.Actor popup_window) {
-        track_actor (popup_window);
-        update_region ();
-    }
-
-    private void on_popup_window_hide (Clutter.Actor popup_window) {
-        untrack_actor (popup_window);
-        update_region ();
     }
 
     private void select_window_at (int x, int y) {
         var selected = get_window_actor_at (x, y);
         if (selected != null) {
-            var popup_window = new PopupWindow (wm.get_display (), selected);
-            popup_window.show.connect (on_popup_window_show);
-            popup_window.hide.connect (on_popup_window_hide);
+            var popup_window = new PopupWindow (wm, selected);
             add_window (popup_window);
         }
+    }
+
+    private void popup_window_reactive_changed (GLib.Object obj, GLib.ParamSpec pspec) requires (obj is PopupWindow) {
+        var popup_window = (PopupWindow) obj;
+
+        if (popup_window.reactive) {
+            track_actor (popup_window);
+        } else {
+            untrack_actor (popup_window);
+        }
+
+        update_region ();
     }
 
     private void clear_selection_area () {
@@ -189,6 +187,8 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
     }
 
     private void add_window (PopupWindow popup_window) {
+        track_actor (popup_window);
+        popup_window.notify["reactive"].connect (popup_window_reactive_changed);
         popup_window.closed.connect (() => remove_window (popup_window));
         windows.add (popup_window);
         wm.ui_group.add_child (popup_window);
