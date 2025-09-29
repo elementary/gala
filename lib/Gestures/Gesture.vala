@@ -41,6 +41,7 @@ namespace Gala {
         MULTITASKING_VIEW,
         ZOOM,
         CUSTOM,
+        CUSTOM_2,
         N_ACTIONS
     }
 
