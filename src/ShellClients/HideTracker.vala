@@ -21,6 +21,9 @@ public class Gala.HideTracker : Object {
 
     private bool hovered = false;
 
+    private uint num_transients = 0;
+    private bool has_transients { get { return num_transients > 0; } }
+
     private Barrier? barrier;
 
     private uint hide_timeout_id = 0;
@@ -51,13 +54,22 @@ public class Gala.HideTracker : Object {
 
             if (hovered != has_pointer) {
                 hovered = has_pointer;
-
-                if (hovered) {
-                    trigger_show ();
-                } else {
-                    trigger_hide ();
-                }
+                check_trigger_conditions ();
             }
+        });
+
+        display.window_created.connect ((new_window) => {
+            InternalUtils.wait_for_window_actor (new_window, (new_window_actor) => {
+                if (panel.window.is_ancestor_of_transient (new_window_actor.meta_window)) {
+                    num_transients++;
+                    check_trigger_conditions ();
+
+                    new_window_actor.meta_window.unmanaged.connect (() => {
+                        num_transients = uint.max (num_transients - 1, 0);
+                        check_trigger_conditions ();
+                    });
+                }
+            });
         });
 
         pan_action = new Clutter.PanAction () {
@@ -83,24 +95,16 @@ public class Gala.HideTracker : Object {
         setup_barrier ();
     }
 
+    private void check_trigger_conditions () {
+        if (hovered || has_transients) {
+            trigger_show ();
+        } else {
+            trigger_hide ();
+        }
+    }
+
     private void trigger_hide () {
         reset_hide_timeout ();
-
-        // Don't hide if we have transients, e.g. an open popover, dialog, etc.
-        // TODO: this is broken, we should monitor transients for has_pointer and use it instead.
-        var has_transients = false;
-        panel.window.foreach_transient ((transient) => {
-            if (transient.window_type == DROPDOWN_MENU) {
-                return true;
-            }
-
-            has_transients = true;
-            return false;
-        });
-
-        if (has_transients) {
-            return;
-        }
 
         hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
             hide ();
