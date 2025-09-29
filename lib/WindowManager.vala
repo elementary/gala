@@ -173,5 +173,13 @@ namespace Gala {
          * @return true if the action should be prohibited, false otherwise
          */
         public abstract bool filter_action (GestureAction action);
+
+        /**
+         * Adds target to the multitasking view and window overview so the target responds to the multitasking view
+         * close/open gesture and shortcuts.
+         *
+         * @param target Target to add to multitasking view and window overview
+         */
+        public abstract void add_multitasking_view_target (GestureTarget target);
     }
 }
