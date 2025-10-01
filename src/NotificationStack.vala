@@ -164,18 +164,13 @@ public class Gala.NotificationStack : Object {
     }
 
     public void destroy_notification (Meta.WindowActor notification) {
-        if (Meta.Prefs.get_gnome_animations ()) {
-            notification.save_easing_state ();
-            notification.set_easing_duration (100);
-            notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-            notification.opacity = 0;
+        notification.save_easing_state ();
+        notification.set_easing_duration (Utils.get_animation_duration (AnimationDuration.CLOSE));
+        notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
+        notification.opacity = 0;
 
-            notification.x += stack_width;
-            notification.restore_easing_state ();
-        } else {
-            notification.opacity = 0;
-            notification.x += stack_width;
-        }
+        notification.x += stack_width;
+        notification.restore_easing_state ();
 
         notifications.remove (notification);
         update_positions ();
