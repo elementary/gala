@@ -139,7 +139,7 @@ public class Gala.Drawing.StyleManager : Object {
                 return 0x667885;
 
             case 11: // Latte
-                return 0xcfa25e;
+                return 0xe7c591;
         }
 
         return 0;
