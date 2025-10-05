@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-04-15 14:03+0000\n"
+"PO-Revision-Date: 2025-10-06 12:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
 "he/>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
@@ -129,7 +129,7 @@ msgstr "מצב החלון נשמר לפני מצב שינה וכיבוי"
 
 #: data/gala.metainfo.xml.in:103
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "הסרת אפקט התאמת קנה מידה מהתפריטים"
 
 #: data/gala.metainfo.xml.in:104
 msgid "Swipe up to close windows in Multitasking View"
@@ -269,10 +269,9 @@ msgstr "צילום מסך מ־%s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:167
-#, fuzzy, c-format
-#| msgid "Show in Files"
+#, c-format
 msgid "Show in %s"
-msgstr "הצגה בקבצים"
+msgstr "הצגה ב־%s"
 
 #: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
 msgid "Screenshot taken"
