@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-10-06 12:55+0000\n"
+"PO-Revision-Date: 2025-10-08 05:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
 "he/>\n"
@@ -133,7 +133,7 @@ msgstr "הסרת אפקט התאמת קנה מידה מהתפריטים"
 
 #: data/gala.metainfo.xml.in:104
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "יש להחליק למעלה כדי לסגור חלונות בתצוגת ריבוי משימות"
 
 #: data/gala.metainfo.xml.in:135
 msgid "Fixed rare crash when a dock window was killed"
