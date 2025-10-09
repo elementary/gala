@@ -56,14 +56,16 @@ add_project_arguments([
 glib_version_required = '2.74.0'
 
 atk_bridge_dep = dependency('atk-bridge-2.0')
+gdk_pixbuf_def = dependency ('gdk-pixbuf-2.0')
+gtk4_dep = dependency('gtk4')
 glib_dep = dependency('glib-2.0', version: '>= @0@'.format(glib_version_required))
 gobject_dep = dependency('gobject-2.0', version: '>= @0@'.format(glib_version_required))
 gio_dep = dependency('gio-2.0', version: '>= @0@'.format(glib_version_required))
 gio_unix_dep = dependency('gio-unix-2.0', version: '>= @0@'.format(glib_version_required))
 gmodule_dep = dependency('gmodule-2.0')
-gtk3_dep = dependency('gtk+-3.0')
 gee_dep = dependency('gee-0.8')
-gnome_desktop_dep = dependency('gnome-desktop-3.0')
+gnome_desktop_dep = dependency('gnome-desktop-4')
+gnome_bg_dep = dependency('gnome-bg-4')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 sqlite3_dep = dependency('sqlite3')
@@ -149,7 +151,7 @@ endif
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 
-gala_base_dep = [atk_bridge_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, gtk3_dep, mutter_dep, gnome_desktop_dep, m_dep, posix_dep, sqlite3_dep, xext_dep]
+gala_base_dep = [atk_bridge_dep, gdk_pixbuf_def, gtk4_dep, glib_dep, gobject_dep, gio_dep, gio_unix_dep, gmodule_dep, gee_dep, mutter_dep, gnome_desktop_dep, gnome_bg_dep, m_dep, posix_dep, sqlite3_dep, xext_dep]
 
 if get_option('systemd')
     gala_base_dep += systemd_dep
