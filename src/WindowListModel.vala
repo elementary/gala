@@ -5,6 +5,11 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
+/**
+ * A list model that provides all current windows optionally filtered and sorted.
+ * While a window is in the model it is guaranteed to have an associated actor, i.e.
+ * {@link Meta.Window.get_compositor_private} will not return null.
+ */
 public class Gala.WindowListModel : Object, ListModel {
     public enum SortMode {
         NONE,
@@ -69,11 +74,11 @@ public class Gala.WindowListModel : Object, ListModel {
     }
 
     private void on_window_created (Meta.Window window) {
-        window.unmanaged.connect (on_window_unmanaged);
-        check_window (window);
+        window.unmanaging.connect (on_window_unmanaging);
+        InternalUtils.wait_for_window_actor (window, (actor) => check_window (actor.meta_window));
     }
 
-    private void on_window_unmanaged (Meta.Window window) {
+    private void on_window_unmanaging (Meta.Window window) {
         var pos = windows.index_of (window);
         if (pos >= 0) {
             windows.remove_at (pos);
