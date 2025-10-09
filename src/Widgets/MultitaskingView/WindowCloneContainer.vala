@@ -303,7 +303,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
     // some math utilities
-    private static int squared_distance (Gdk.Point a, Gdk.Point b) {
+    private static float squared_distance (Graphene.Point a, Graphene.Point b) {
         var k1 = b.x - a.x;
         var k2 = b.y - a.y;
 
@@ -314,7 +314,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
     }
 
-    private static Gdk.Point rect_center (Mtk.Rectangle rect) {
+    private static Graphene.Point rect_center (Mtk.Rectangle rect) {
         return {rect.x + rect.width / 2, rect.y + rect.height / 2};
     }
 
@@ -339,7 +339,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         taken_slots.resize (rows * columns);
 
         // precalculate all slot centers
-        Gdk.Point[] slot_centers = {};
+        Graphene.Point[] slot_centers = {};
         slot_centers.resize (rows * columns);
         for (int x = 0; x < columns; x++) {
             for (int y = 0; y < rows; y++) {
@@ -357,7 +357,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             var rect = window.rect;
 
             var slot_candidate = -1;
-            var slot_candidate_distance = int.MAX;
+            var slot_candidate_distance = float.MAX;
             var pos = rect_center (rect);
 
             // all slots
@@ -430,8 +430,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
             if (scale > 1.0) {
                 scale = 1.0f;
                 target = {
-                    rect_center (target).x - (int) Math.floorf (rect.width * scale) / 2,
-                    rect_center (target).y - (int) Math.floorf (rect.height * scale) / 2,
+                    (int) (rect_center (target).x - Math.floorf (rect.width * scale) / 2),
+                    (int) (rect_center (target).y - Math.floorf (rect.height * scale) / 2),
                     (int) Math.floorf (scale * rect.width),
                     (int) Math.floorf (scale * rect.height)
                 };
