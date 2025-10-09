@@ -224,6 +224,10 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private bool update_actor_fbo (int width, int height, float downscale_factor) {
+        if (width <= 0 || height <= 0) {
+            return false;
+        }
+
         if (
             texture_width == width &&
             texture_height == height &&
