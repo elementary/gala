@@ -27,6 +27,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public signal void request_reposition ();
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
