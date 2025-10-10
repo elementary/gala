@@ -20,8 +20,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return instance;
     }
 
-    public Clutter.Actor? actor { get { return wm.stage; } }
-
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
