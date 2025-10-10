@@ -121,6 +121,7 @@ public class Gala.WorkspaceClone : ActorTarget {
     public WindowCloneContainer window_container { get; private set; }
 
     private BackgroundManager background;
+    private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
     public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
@@ -136,7 +137,9 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        window_container = new WindowCloneContainer (wm, monitor_scale) {
+        windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
+
+        window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
@@ -164,21 +167,8 @@ public class Gala.WorkspaceClone : ActorTarget {
             }
         });
 
-        display.window_entered_monitor.connect (window_entered_monitor);
-        display.window_left_monitor.connect (window_left_monitor);
-        workspace.window_added.connect (add_window);
-        workspace.window_removed.connect (window_container.remove_window);
-
         add_child (background);
         add_child (window_container);
-
-        // add existing windows
-        foreach (var window in workspace.list_windows ()) {
-            add_window (window);
-        }
-
-        var static_windows = StaticWindowContainer.get_instance (display);
-        static_windows.window_changed.connect (on_window_static_changed);
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
@@ -187,54 +177,8 @@ public class Gala.WorkspaceClone : ActorTarget {
     }
 
     ~WorkspaceClone () {
-        unowned var display = workspace.get_display ();
-
-        display.window_entered_monitor.disconnect (window_entered_monitor);
-        display.window_left_monitor.disconnect (window_left_monitor);
-        workspace.window_added.disconnect (add_window);
-        workspace.window_removed.disconnect (window_container.remove_window);
-
         background.destroy ();
         window_container.destroy ();
-    }
-
-    /**
-     * Add a window to the WindowCloneContainer if it belongs to this workspace and this monitor.
-     */
-    private void add_window (Meta.Window window) {
-        if (window.window_type != NORMAL ||
-            window.get_workspace () != workspace ||
-            StaticWindowContainer.get_instance (workspace.get_display ()).is_static (window) ||
-            !window.is_on_primary_monitor ()
-        ) {
-            return;
-        }
-
-        foreach (var child in (GLib.List<weak WindowClone>) window_container.get_children ()) {
-            if (child.window == window) {
-                return;
-            }
-        }
-
-        window_container.add_window (window);
-    }
-
-    private void window_entered_monitor (Meta.Display display, int monitor, Meta.Window window) {
-        add_window (window);
-    }
-
-    private void window_left_monitor (Meta.Display display, int monitor, Meta.Window window) {
-        if (monitor == display.get_primary_monitor ()) {
-            window_container.remove_window (window);
-        }
-    }
-
-    private void on_window_static_changed (Meta.Window window, bool is_static) {
-        if (is_static) {
-            window_container.remove_window (window);
-        } else {
-            add_window (window);
-        }
     }
 
     public void update_size (Mtk.Rectangle monitor_geometry) {
@@ -248,8 +192,11 @@ public class Gala.WorkspaceClone : ActorTarget {
         remove_all_targets ();
 
         unowned var display = workspace.get_display ();
+        var primary = display.get_primary_monitor ();
 
-        var monitor = display.get_monitor_geometry (display.get_primary_monitor ());
+        windows.monitor_filter = primary;
+
+        var monitor = display.get_monitor_geometry (primary);
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);

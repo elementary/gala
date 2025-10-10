@@ -440,8 +440,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
             check_confirm_dialog_cb = 0;
         }
-
-        destroy ();
     }
 
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {

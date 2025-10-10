@@ -33,40 +33,18 @@ public class Gala.MonitorClone : ActorTarget {
 
         background = new BackgroundManager (display, monitor, false);
 
-        window_container = new WindowCloneContainer (wm, monitor_scale);
+        var windows = new WindowListModel (display, STACKING, true, monitor);
+
+        window_container = new WindowCloneContainer (wm, windows, monitor_scale);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));
         window_container.window_selected.connect ((w) => { window_selected (w); });
         bind_property ("monitor-scale", window_container, "monitor-scale");
-
-        display.window_entered_monitor.connect (window_entered);
-        display.window_left_monitor.connect (window_left);
-
-#if HAS_MUTTER48
-        unowned GLib.List<Meta.WindowActor> window_actors = display.get_compositor ().get_window_actors ();
-#else
-        unowned GLib.List<Meta.WindowActor> window_actors = display.get_window_actors ();
-#endif
-        foreach (unowned Meta.WindowActor window_actor in window_actors) {
-            if (window_actor.is_destroyed ())
-                continue;
-
-            unowned Meta.Window window = window_actor.get_meta_window ();
-            if (window.get_monitor () == monitor) {
-                window_entered (monitor, window);
-            }
-        }
 
         add_child (background);
         add_child (window_container);
 
         var drop = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         add_action (drop);
-    }
-
-    ~MonitorClone () {
-        unowned var display = wm.get_display ();
-        display.window_entered_monitor.disconnect (window_entered);
-        display.window_left_monitor.disconnect (window_left);
     }
 
     /**
@@ -81,19 +59,5 @@ public class Gala.MonitorClone : ActorTarget {
         set_size (monitor_geometry.width, monitor_geometry.height);
 
         monitor_scale = display.get_monitor_scale (monitor);
-    }
-
-    private void window_left (int window_monitor, Meta.Window window) {
-        if (window_monitor != monitor)
-            return;
-
-        window_container.remove_window (window);
-    }
-
-    private void window_entered (int window_monitor, Meta.Window window) {
-        if (window_monitor != monitor || window.window_type != Meta.WindowType.NORMAL)
-            return;
-
-        window_container.add_window (window);
     }
 }
