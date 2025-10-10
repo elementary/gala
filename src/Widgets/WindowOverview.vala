@@ -119,6 +119,11 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             model.set_custom_filter ((window) => {
                 return window_ids == null || (window.get_id () in window_ids);
             });
+            model.items_changed.connect ((_model, pos, removed, added) => {
+                if (_model.get_n_items () == 0) {
+                    close ();
+                }
+            });
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,
@@ -132,7 +137,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             };
             window_clone_container.window_selected.connect (thumb_selected);
             window_clone_container.requested_close.connect (() => close ());
-            window_clone_container.last_window_closed.connect (() => close ());
 
             add_child (window_clone_container);
         }
