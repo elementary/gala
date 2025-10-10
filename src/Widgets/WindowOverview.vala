@@ -19,6 +19,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private List<Meta.Workspace> workspaces;
     private WindowCloneContainer window_clone_container;
 
+    private uint64[]? window_ids = null;
+
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
     }
@@ -66,10 +68,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             workspaces.append (workspace);
         }
 
-        uint64[]? window_ids = null;
-        if (hints != null && "windows" in hints) {
-            window_ids = (uint64[]) hints["windows"];
-        }
+        window_ids = hints != null && "windows" in hints ? (uint64[]) hints["windows"] : null;
 
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
@@ -116,14 +115,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var scale = display.get_monitor_scale (i);
 
             var model = new WindowListModel (display, STACKING, true, i);
-            model.set_custom_filter ((window) => {
-                return window_ids == null || (window.get_id () in window_ids);
-            });
-            model.items_changed.connect ((_model, pos, removed, added) => {
-                if (_model.get_n_items () == 0) {
-                    close ();
-                }
-            });
+            model.set_custom_filter (window_filter_func);
+            model.items_changed.connect (on_items_changed);
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,
@@ -170,6 +163,16 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         }
 
         return true;
+    }
+
+    private bool window_filter_func (Meta.Window window) {
+        return window_ids == null || (window.get_id () in window_ids);
+    }
+
+    private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
+        if (is_opened () && removed > added && model.get_n_items () == 0) {
+            close ();
+        }
     }
 
     private void thumb_selected (Meta.Window window) {
