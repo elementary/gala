@@ -50,7 +50,7 @@ public class Gala.WorkspaceRow : ActorTarget, Focusable {
     }
 
     public override bool move_focus (FocusDirection direction) {
-        var child_index = -(int) get_current_commit (SWITCH_WORKSPACE);
+        var child_index = - (int) get_current_commit (SWITCH_WORKSPACE);
         return ((Focusable) get_child_at_index (child_index)).focus (direction);
     }
 }
