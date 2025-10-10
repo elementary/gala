@@ -26,6 +26,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     private GestureController workspaces_gesture_controller;
     private GestureController multitasking_gesture_controller;
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManagerGala wm { get; construct; }
 
     private Meta.Display display;

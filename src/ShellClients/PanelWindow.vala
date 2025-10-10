@@ -8,6 +8,7 @@
 public class Gala.PanelWindow : ShellWindow, RootTarget {
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
+    public Clutter.Actor? actor { get { return (Clutter.Actor) window.get_compositor_private (); } }
     public WindowManager wm { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 

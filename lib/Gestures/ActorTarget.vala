@@ -11,12 +11,6 @@
  * If a new child (or target via {@link add_target}) is added, its progress will be synced.
  */
 public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
-    public Clutter.Actor? actor {
-        get {
-            return this;
-        }
-    }
-
     public bool animating { get { return ongoing_animations > 0; } }
 
     private double[] current_progress;

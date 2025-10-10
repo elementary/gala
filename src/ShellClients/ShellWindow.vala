@@ -6,7 +6,6 @@
  */
 
 public class Gala.ShellWindow : PositionedWindow, GestureTarget {
-    public Clutter.Actor? actor { get { return window_actor; } }
     public bool restore_previous_x11_region { private get; set; default = false; }
     public bool visible_in_multitasking_view { get; set; default = false; }
 
