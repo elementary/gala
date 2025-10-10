@@ -8,12 +8,9 @@
 public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public Clutter.Actor? actor { get { return window_actor; } }
     public bool restore_previous_x11_region { private get; set; default = false; }
-    public bool visible_in_multitasking_view { get; set; default = false; }
 
     private Meta.WindowActor window_actor;
-    private double custom_progress = 0;
     private double multitasking_view_progress = 0;
-
     private int animations_ongoing = 0;
 
     private PropertyTarget property_target;
@@ -45,18 +42,6 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         );
     }
 
-    private double get_hidden_progress () {
-        if (visible_in_multitasking_view) {
-            return double.min (custom_progress, 1 - multitasking_view_progress);
-        } else {
-            return double.max (custom_progress, multitasking_view_progress);
-        }
-    }
-
-    private void update_property () {
-        property_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
-    }
-
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
             case START:
@@ -65,7 +50,11 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
                 break;
 
             case UPDATE:
-                on_update (action, progress);
+                if (action == MULTITASKING_VIEW) {
+                    multitasking_view_progress = progress;
+                }
+
+                property_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
                 break;
 
             case END:
@@ -78,21 +67,8 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         }
     }
 
-    private void on_update (GestureAction action, double progress) {
-        switch (action) {
-            case MULTITASKING_VIEW:
-                multitasking_view_progress = progress;
-                break;
-
-            case CUSTOM:
-                custom_progress = progress;
-                break;
-
-            default:
-                break;
-        }
-
-        update_property ();
+    protected virtual double get_hidden_progress () {
+        return multitasking_view_progress;
     }
 
     private void update_visibility () {
