@@ -6,36 +6,32 @@
  */
 
 public class Gala.FocusController : Object {
-    public static FocusController get_default (Clutter.Stage stage) {
-        return instance.once (() => new FocusController (stage));
+    private static HashTable<Clutter.Stage, FocusController> instances;
+
+    static construct {
+        instances = new HashTable<Clutter.Stage, FocusController> (null, null);
+    }
+
+    public static FocusController get_for_stage (Clutter.Stage stage) {
+        if (!instances.contains (stage)) {
+            instances[stage] = new FocusController (stage);
+        }
+        return instances[stage];
     }
 
     public Clutter.Stage stage { get; construct; }
+    public bool focus_visible { get; private set; default = false; }
 
-    private bool _focus_visible = false;
-    public bool focus_visible {
-        get { return _focus_visible; }
-        private set {
-            _focus_visible = value;
-            if (stage.get_key_focus () is Focusable) {
-                ((Focusable) stage.get_key_focus ()).notify_visible_focus_changed ();
-            }
-        }
-    }
-
-    private static GLib.Once<FocusController> instance;
-
-    private Gee.List<unowned Focusable> root_focusables;
-
+    private Gee.List<weak Focusable> root_focusables;
     private uint timeout_id = 0;
 
-    public FocusController (Clutter.Stage stage) {
+    private FocusController (Clutter.Stage stage) {
         Object (stage: stage);
     }
 
     construct {
         root_focusables = new Gee.LinkedList<unowned Focusable> ();
-        stage.key_press_event.connect (on_key_press_event);
+        stage.key_press_event.connect (handle_key_event);
     }
 
     public void register_root (Focusable root) {
@@ -46,15 +42,6 @@ public class Gala.FocusController : Object {
 
         root_focusables.add (root);
         root.weak_ref ((obj) => root_focusables.remove ((Focusable) obj));
-    }
-
-    private bool on_key_press_event (Clutter.Event event) {
-        if (handle_key_event (event) == Clutter.EVENT_STOP) {
-            show_focus ();
-            return Clutter.EVENT_STOP;
-        }
-
-        return Clutter.EVENT_PROPAGATE;
     }
 
     private bool handle_key_event (Clutter.Event event) {
@@ -72,13 +59,15 @@ public class Gala.FocusController : Object {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        if(!mapped_root.focus (direction)) {
+        if (!mapped_root.focus (direction)) {
 #if HAS_MUTTER47
             stage.context.get_backend ().get_default_seat ().bell_notify ();
 #else
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
         }
+
+        show_focus ();
 
         return Clutter.EVENT_STOP;
     }

@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public interface Gala.Focusable : Clutter.Actor{
+public interface Gala.Focusable : Clutter.Actor {
     public enum FocusDirection {
         UP,
         DOWN,
@@ -180,9 +180,11 @@ public interface Gala.Focusable : Clutter.Actor{
             return false;
         }
 
-        get_stage ().set_key_focus (this);
-        notify_visible_focus_changed ();
-        key_focus_out.connect (notify_visible_focus_changed);
+        var stage = get_stage ();
+        stage.set_key_focus (this);
+        focus_changed ();
+        key_focus_out.connect (focus_changed);
+        FocusController.get_for_stage (stage).notify["focus-visible"].connect (focus_changed);
 
         return true;
     }
@@ -191,9 +193,9 @@ public interface Gala.Focusable : Clutter.Actor{
         return false;
     }
 
-    internal void notify_visible_focus_changed () {
+    private void focus_changed () {
         var stage = get_stage ();
-        update_focus (stage?.get_key_focus () == this && FocusController.get_default (stage).focus_visible);
+        update_focus (stage?.get_key_focus () == this && FocusController.get_for_stage (stage).focus_visible);
     }
 
     protected virtual void update_focus (bool has_visible_focus) { }

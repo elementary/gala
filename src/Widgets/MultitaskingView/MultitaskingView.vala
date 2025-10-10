@@ -56,7 +56,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         reactive = true;
         clip_to_allocation = true;
 
-        FocusController.get_default (wm.stage).register_root (this);
+        FocusController.get_for_stage (wm.stage).register_root (this);
 
         opened = false;
         display = wm.get_display ();
