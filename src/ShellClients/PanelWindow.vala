@@ -12,12 +12,13 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     public WindowManager wm { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
+    private Pantheon.Desktop.HideMode _hide_mode;
     public Pantheon.Desktop.HideMode hide_mode {
         get {
-            return hide_tracker.hide_mode;
+            return _hide_mode;
         }
         set {
-            hide_tracker.hide_mode = value;
+            _hide_mode = value;
 
             if (value == NEVER) {
                 make_exclusive ();
