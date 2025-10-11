@@ -6,14 +6,6 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    public struct DaemonWindowMenuItem {
-        WindowMenuItemType type;
-        bool sensitive;
-        bool toggle_state;
-        string display_name;
-        string keybinding;
-    }
-
     [DBus (name = "org.pantheon.gala.daemon")]
     public interface Daemon: GLib.Object {
         public signal void window_menu_action_invoked (int action);

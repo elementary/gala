@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-[DBus (name = "org.pantheon.gala")]
-public interface Gala.WMDBus : GLib.Object {
-    public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
-}
-
 public struct Gala.Daemon.MonitorLabelInfo {
     public int monitor;
     public string label;
@@ -19,9 +14,6 @@ public struct Gala.Daemon.MonitorLabelInfo {
 
 [DBus (name = "org.pantheon.gala.daemon")]
 public class Gala.Daemon.DBus : GLib.Object {
-    private const string DBUS_NAME = "org.pantheon.gala";
-    private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
-
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
 
