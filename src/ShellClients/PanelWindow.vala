@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -30,8 +30,10 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
     public bool visible_in_multitasking_view { get; private set; default = false; }
 
-    private GestureController gesture_controller;
+    private GestureController user_gesture_controller;
     private HideTracker hide_tracker;
+    private GestureController workspace_gesture_controller;
+    private WorkspaceHideTracker workspace_hide_tracker;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
@@ -55,12 +57,21 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         notify["width"].connect (update_strut);
         notify["height"].connect (update_strut);
 
-        gesture_controller = new GestureController (CUSTOM, wm);
-        add_gesture_controller (gesture_controller);
+        user_gesture_controller = new GestureController (CUSTOM, wm) {
+            progress = 1.0
+        };
+        add_gesture_controller (user_gesture_controller);
 
         hide_tracker = new HideTracker (wm.get_display (), this);
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
+
+        workspace_gesture_controller = new GestureController (CUSTOM, wm);
+        add_gesture_controller (workspace_gesture_controller);
+
+        workspace_hide_tracker = new WorkspaceHideTracker (window.display, update_overlap);
+        workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
+        workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
     }
 
     public void request_visible_in_multitasking_view () {
@@ -68,20 +79,83 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
     }
 
+    protected override void update_target () {
+        base.update_target ();
+        workspace_hide_tracker.recalculate_all_workspaces ();
+    }
+
     protected override double get_hidden_progress () {
+        var user_workspace_hidden_progress = double.min (
+            user_gesture_controller.progress,
+            workspace_gesture_controller.progress
+        );
+
         if (visible_in_multitasking_view) {
-            return double.min (gesture_controller.progress, 1 - base.get_hidden_progress ());
+            return double.min (user_workspace_hidden_progress, 1 - base.get_hidden_progress ());
         } else {
-            return double.max (gesture_controller.progress, base.get_hidden_progress ());
+            return double.max (user_workspace_hidden_progress, base.get_hidden_progress ());
         }
     }
 
+    public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
+        workspace_hide_tracker.update (update_type, action, progress);
+        base.propagate (update_type, action, progress);
+    }
+
     private void hide () {
-        gesture_controller.goto (1);
+        user_gesture_controller.goto (1);
     }
 
     private void show () {
-        gesture_controller.goto (0);
+        user_gesture_controller.goto (0);
+    }
+
+    private bool update_overlap (Meta.Workspace workspace) {
+        var overlap = false;
+        var focus_overlap = false;
+        var focus_maximized_overlap = false;
+        var fullscreen_overlap = window.display.get_monitor_in_fullscreen (window.get_monitor ());
+
+        Meta.Window? normal_mru_window, any_mru_window;
+        normal_mru_window = InternalUtils.get_mru_window (workspace, out any_mru_window);
+
+        foreach (var window in workspace.list_windows ()) {
+            if (window == this.window) {
+                continue;
+            }
+
+            if (window.minimized) {
+                continue;
+            }
+
+            var type = window.get_window_type ();
+            if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
+                continue;
+            }
+
+            if (!get_custom_window_rect ().overlap (window.get_frame_rect ())) {
+                continue;
+            }
+
+            overlap = true;
+
+            if (window != normal_mru_window && window != any_mru_window) {
+                continue;
+            }
+
+            focus_overlap = true;
+            focus_maximized_overlap = window.maximized_vertically;
+        }
+
+        switch (hide_mode) {
+            case MAXIMIZED_FOCUS_WINDOW: return focus_maximized_overlap;
+            case OVERLAPPING_FOCUS_WINDOW: return focus_overlap;
+            case OVERLAPPING_WINDOW: return overlap;
+            case ALWAYS: return true;
+            case NEVER: return fullscreen_overlap;
+        }
+
+        return false;
     }
 
     private void make_exclusive () {
