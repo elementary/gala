@@ -1073,19 +1073,13 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            if (!Meta.Prefs.get_gnome_animations () ||
-                actor.get_meta_window ().window_type != Meta.WindowType.NORMAL) {
+            if (!Utils.get_window_is_normal (actor.meta_window)) {
                 minimize_completed (actor);
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-
             kill_window_effects (actor);
             minimizing.add (actor);
-
-            int width, height;
-            get_display ().get_size (out width, out height);
 
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
@@ -1096,45 +1090,43 @@ namespace Gala {
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
                 icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
-                float scale_x = (float)icon.width / actor.width;
-                float scale_y = (float)icon.height / actor.height;
+                var scale_x = (double) icon.width / actor.width;
+                var scale_y = (double) icon.height / actor.height;
                 float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
                 float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
                 actor.set_pivot_point (anchor_x, anchor_y);
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (scale_x, scale_y);
-                actor.opacity = 0U;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0UL;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
-
+                new PropertyAnimator (
+                    actor,
+                    AnimationDuration.HIDE,
+                    Clutter.AnimationMode.EASE_IN_EXPO,
+                    {
+                        { "scale-x", typeof (double), null, scale_x },
+                        { "scale-y", typeof (double), null, scale_y },
+                        { "opacity", typeof (uint), null, 0u },
+                    },
+                    (actor) => {
+                        minimize_completed ((Meta.WindowActor) actor);
+                        minimizing.remove ((Meta.WindowActor) actor);
+                    }
+                );
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (0.0f, 0.0f);
-                actor.opacity = 0U;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0UL;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    actor.set_pivot_point (0.0f, 0.0f);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
+                new PropertyAnimator (
+                    actor,
+                    AnimationDuration.HIDE,
+                    Clutter.AnimationMode.EASE_IN_EXPO,
+                    {
+                        { "scale-x", typeof (double), null, 0.0 },
+                        { "scale-y", typeof (double), null, 0.0 },
+                        { "opacity", typeof (uint), null, 0u },
+                    },
+                    (actor) => {
+                        minimize_completed ((Meta.WindowActor) actor);
+                        minimizing.remove ((Meta.WindowActor) actor);
+                    }
+                );
             }
         }
 
