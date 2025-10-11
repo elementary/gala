@@ -41,7 +41,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         );
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
             case START:
                 animations_ongoing++;
