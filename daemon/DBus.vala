@@ -3,20 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public enum Gala.WindowMenuItemType {
-    BUTTON,
-    TOGGLE,
-    SEPARATOR
-}
-
-public struct Gala.DaemonWindowMenuItem {
-    WindowMenuItemType type;
-    bool sensitive;
-    bool toggle_state;
-    string display_name;
-    string keybinding;
-}
-
 [DBus (name = "org.pantheon.gala")]
 public interface Gala.WMDBus : GLib.Object {
     public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;

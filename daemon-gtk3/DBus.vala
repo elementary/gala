@@ -3,14 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public struct Gala.Daemon.DaemonWindowMenuItem {
-    WindowMenuItemType type;
-    bool sensitive;
-    bool toggle_state;
-    string display_name;
-    string keybinding;
-}
-
 public struct Gala.Daemon.MonitorLabelInfo {
     public int monitor;
     public string label;

@@ -26,12 +26,6 @@ namespace Gala {
 
     public delegate void WindowMenuItemCallback (Meta.Window window);
 
-    public enum WindowMenuItemType {
-        BUTTON,
-        TOGGLE,
-        SEPARATOR
-    }
-
     public struct WindowMenuItem {
         WindowMenuItemType type;
         bool sensitive;
