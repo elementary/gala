@@ -415,7 +415,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         update_uniforms ();
     }
 
-    private void update_uniforms () requires (round_texture != null || actor_texture != null) {
+    private void update_uniforms () requires (round_texture != null) {
         float[] actor_size = {
             round_texture.get_width (),
             round_texture.get_height ()
