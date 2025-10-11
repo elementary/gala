@@ -5,38 +5,11 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
-    public WindowManager wm { get; construct; }
-    public Clutter.Actor? actor { get { return window_actor; } }
+public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public bool restore_previous_x11_region { private get; set; default = false; }
-    public bool visible_in_multitasking_view { get; set; default = false; }
-    public Pantheon.Desktop.Anchor anchor { get; construct set; }
-
-    private Pantheon.Desktop.HideMode _hide_mode;
-    public Pantheon.Desktop.HideMode hide_mode {
-        get {
-            return _hide_mode;
-        }
-        set {
-            _hide_mode = value;
-
-            if (value == NEVER) {
-                make_exclusive ();
-            } else {
-                unmake_exclusive ();
-            }
-
-            workspace_hide_tracker.recalculate_all_workspaces ();
-        }
-    }
-
-    private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     private Meta.WindowActor window_actor;
-    private double custom_progress = 0;
     private double multitasking_view_progress = 0;
-    private double workspace_reveal_progress = 0;
-
     private int animations_ongoing = 0;
 
     private PropertyTarget property_target;
@@ -98,18 +71,6 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
         workspace_hide_tracker.recalculate_all_workspaces ();
     }
 
-    private double get_hidden_progress () {
-        if (visible_in_multitasking_view) {
-            return double.min (double.min (custom_progress, workspace_reveal_progress), 1 - multitasking_view_progress);
-        } else {
-            return double.max (double.min (custom_progress, workspace_reveal_progress), multitasking_view_progress);
-        }
-    }
-
-    private void update_property () {
-        property_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
-    }
-
     public override void propagate (UpdateType update_type, GestureAction action, double progress) {
         workspace_hide_tracker.propagate (update_type, action, progress);
 
@@ -120,7 +81,11 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
                 break;
 
             case UPDATE:
-                on_update (action, progress);
+                if (action == MULTITASKING_VIEW) {
+                    multitasking_view_progress = progress;
+                }
+
+                property_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
                 break;
 
             case END:
@@ -133,25 +98,8 @@ public class Gala.ShellWindow : PositionedWindow, RootTarget, GestureTarget {
         }
     }
 
-    private void on_update (GestureAction action, double progress) {
-        switch (action) {
-            case MULTITASKING_VIEW:
-                multitasking_view_progress = progress;
-                break;
-
-            case CUSTOM:
-                custom_progress = progress;
-                break;
-
-            case CUSTOM_2:
-                workspace_reveal_progress = progress;
-                break;
-
-            default:
-                break;
-        }
-
-        update_property ();
+    protected virtual double get_hidden_progress () {
+        return multitasking_view_progress;
     }
 
     private void update_visibility () {

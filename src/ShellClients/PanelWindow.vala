@@ -5,7 +5,33 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : ShellWindow {
+public class Gala.PanelWindow : ShellWindow, RootTarget {
+    private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
+
+    public Clutter.Actor? actor { get { return (Clutter.Actor) window.get_compositor_private (); } }
+    public WindowManager wm { get; construct; }
+    public Pantheon.Desktop.Anchor anchor { get; construct set; }
+
+    public Pantheon.Desktop.HideMode hide_mode {
+        get {
+            return hide_tracker.hide_mode;
+        }
+        set {
+            hide_tracker.hide_mode = value;
+
+            if (value == NEVER) {
+                make_exclusive ();
+            } else {
+                unmake_exclusive ();
+            }
+        }
+    }
+
+    public bool visible_in_multitasking_view { get; private set; default = false; }
+
+    private GestureController gesture_controller;
+    private HideTracker hide_tracker;
+
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
@@ -26,5 +52,77 @@ public class Gala.PanelWindow : ShellWindow {
     public void request_visible_in_multitasking_view () {
         visible_in_multitasking_view = true;
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
+    }
+
+    protected override double get_hidden_progress () {
+        if (visible_in_multitasking_view) {
+            return double.min (gesture_controller.progress, 1 - base.get_hidden_progress ());
+        } else {
+            return double.max (gesture_controller.progress, base.get_hidden_progress ());
+        }
+    }
+
+    private void hide () {
+        gesture_controller.goto (1);
+    }
+
+    private void show () {
+        gesture_controller.goto (0);
+    }
+
+    private void make_exclusive () {
+        update_strut ();
+    }
+
+    private void update_strut () {
+        if (hide_mode != NEVER) {
+            return;
+        }
+
+        var rect = get_custom_window_rect ();
+
+        Meta.Strut strut = {
+            rect,
+            side_from_anchor (anchor)
+        };
+
+        window_struts[window] = strut;
+
+        update_struts ();
+    }
+
+    private void update_struts () {
+        var list = new SList<Meta.Strut?> ();
+
+        foreach (var window_strut in window_struts.get_values ()) {
+            list.append (window_strut);
+        }
+
+        foreach (var workspace in wm.get_display ().get_workspace_manager ().get_workspaces ()) {
+            workspace.set_builtin_struts (list);
+        }
+    }
+
+    private void unmake_exclusive () {
+        if (window in window_struts) {
+            window_struts.remove (window);
+            update_struts ();
+        }
+    }
+
+    private Meta.Side side_from_anchor (Pantheon.Desktop.Anchor anchor) {
+        switch (anchor) {
+            case BOTTOM:
+                return BOTTOM;
+
+            case LEFT:
+                return LEFT;
+
+            case RIGHT:
+                return RIGHT;
+
+            default:
+                return TOP;
+        }
     }
 }
