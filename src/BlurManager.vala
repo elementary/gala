@@ -5,7 +5,6 @@
 
 public class Gala.BlurManager : Object {
     private struct BlurData {
-        Clutter.Actor actor;
         BackgroundBlurEffect blur_effect;
         uint left;
         uint right;
@@ -43,6 +42,13 @@ public class Gala.BlurManager : Object {
             window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
             parse_mutter_hints (window);
         });
+
+        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => {
+            foreach (unowned var window in blurred_windows.get_keys ()) {
+                blurred_windows[window].blur_effect.monitor_scale = window.display.get_monitor_scale (window.get_monitor ());
+            }
+        });
     }
 
     /**
@@ -57,42 +63,43 @@ public class Gala.BlurManager : Object {
 
         var blur_data = blurred_windows[window];
         if (blur_data == null) {
-            var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, (int) clip_radius, 1.0f);
+            var blur_effect = new BackgroundBlurEffect (
+                BLUR_RADIUS,
+                (int) clip_radius,
+                window.display.get_monitor_scale (window.get_monitor ())
+            );
 
-            var blurred_actor = new Clutter.Actor ();
-            blurred_actor.add_effect (blur_effect);
-            window_actor.insert_child_below (blurred_actor, null);
+            window_actor.add_effect (blur_effect);
 
-            blur_data = { blurred_actor, blur_effect, left, right, top, bottom, clip_radius };
+            blur_data = { blur_effect, left, right, top, bottom, clip_radius };
             blurred_windows[window] = blur_data;
 
+            // TODO: We can require users of blur API to calculate shadow_size themselves and remove connecting to this
             window.size_changed.connect (on_size_changed);
         }
 
         var buffer_rect = window.get_buffer_rect ();
         var frame_rect = window.get_frame_rect ();
-        var x_shadow_size = frame_rect.x - buffer_rect.x;
-        var y_shadow_size = frame_rect.y - buffer_rect.y;
+        var left_shadow_size = frame_rect.x - buffer_rect.x;
+        var right_shadow_size = buffer_rect.width - frame_rect.width - left_shadow_size;
+        var top_shadow_size = frame_rect.y - buffer_rect.y;
+        var bottom_shadow_size = buffer_rect.height - frame_rect.height - top_shadow_size;
 
-        blur_data.actor.set_position (x_shadow_size + left, y_shadow_size + top);
-        blur_data.actor.set_size (frame_rect.width - left - right, frame_rect.height - top - bottom);
+        blur_data.blur_effect.left = left_shadow_size + left;
+        blur_data.blur_effect.right = right_shadow_size + right;
+        blur_data.blur_effect.top = top_shadow_size + top;
+        blur_data.blur_effect.bottom = bottom_shadow_size + bottom;
     }
 
     public void remove_blur (Meta.Window window) {
-        var blur_data = blurred_windows[window];
-        if (blur_data == null) {
+        unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        var blur_data = blurred_windows.take (window);
+
+        if (blur_data == null || window_actor == null) {
             return;
         }
 
-        var actor = blur_data.actor;
-        actor.remove_effect (blur_data.blur_effect);
-
-        unowned var parent = actor.get_parent ();
-        if (parent != null) {
-            parent.remove_child (actor);
-        }
-
-        blurred_windows.remove (window);
+        window_actor.remove_effect (blur_data.blur_effect);
     }
 
     private void on_size_changed (Meta.Window window) {

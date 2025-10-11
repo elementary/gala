@@ -12,11 +12,13 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     public float clip_radius { get; construct; }
     public float monitor_scale { get; construct set; }
 
+    public uint left { get; set; default = 0; }
+    public uint right { get; set; default = 0; }
+    public uint top { get; set; default = 0; }
+    public uint bottom { get; set; default = 0; }
+
     private float real_blur_radius;
     private float downscale_factor;
-
-    private int texture_width;
-    private int texture_height;
 
     private Cogl.Framebuffer actor_framebuffer;
     private Cogl.Pipeline actor_pipeline;
@@ -122,40 +124,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         round_clip_radius_location = round_pipeline.get_uniform_location ("clip_radius");
         round_actor_size_location = round_pipeline.get_uniform_location ("actor_size");
-
-        update_clip_radius ();
-        update_actor_size ();
-
-        notify["monitor-scale"].connect (update_clip_radius);
-    }
-
-    public override void set_actor (Clutter.Actor? new_actor) {
-        if (actor != null) {
-            actor.notify["width"].disconnect (update_actor_size);
-            actor.notify["height"].disconnect (update_actor_size);
-        }
-
-        base.set_actor (new_actor);
-
-        if (actor != null) {
-            actor.notify["width"].connect (update_actor_size);
-            actor.notify["height"].connect (update_actor_size);
-            update_actor_size ();
-        }
-    }
-
-    private void update_clip_radius () {
-        float[] _clip_radius = { clip_radius * monitor_scale };
-        round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, _clip_radius);
-    }
-
-    private void update_actor_size () {
-        float[] actor_size = {
-            actor.width,
-            actor.height
-        };
-
-        round_pipeline.set_uniform_float (round_actor_size_location, 2, 1, actor_size);
     }
 
     private void update_actor_box (Clutter.PaintContext paint_context, ref Clutter.ActorBox source_actor_box) {
@@ -223,16 +191,13 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         framebuffer.set_projection_matrix (projection);
     }
 
-    private bool update_actor_fbo (int width, int height, float downscale_factor) {
-        if (width <= 0 || height <= 0) {
-            return false;
-        }
-
+    private bool update_actor_fbo (int width, int height, float new_downscale_factor) {
         if (
-            texture_width == width &&
-            texture_height == height &&
-            this.downscale_factor == downscale_factor &&
-            actor_framebuffer != null
+            actor_framebuffer != null &&
+            actor_texture != null &&
+            actor_texture.get_width () == width &&
+            actor_texture.get_height () == height &&
+            downscale_factor == new_downscale_factor
         ) {
             return true;
         }
@@ -243,8 +208,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 #endif
 
-        var new_width = (int) Math.floorf (width / downscale_factor);
-        var new_height = (int) Math.floorf (height / downscale_factor);
+        var new_width = (int) Math.floorf (width / new_downscale_factor);
+        var new_height = (int) Math.floorf (height / new_downscale_factor);
 
 #if HAS_MUTTER46
         actor_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
@@ -266,12 +231,13 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         return true;
     }
 
-    private bool update_rounded_fbo (int width, int height, float downscale_factor) {
+    private bool update_rounded_fbo (int width, int height, float new_downscale_factor) {
         if (
-            texture_width == width &&
-            texture_height == height &&
-            this.downscale_factor == downscale_factor &&
-            round_framebuffer != null
+            round_framebuffer != null &&
+            round_texture != null &&
+            round_texture.get_width () == width &&
+            round_texture.get_height () == height &&
+            downscale_factor == new_downscale_factor
         ) {
             return true;
         }
@@ -282,8 +248,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 #endif
 
-        var new_width = (int) Math.floorf (width / downscale_factor);
-        var new_height = (int) Math.floorf (height / downscale_factor);
+        var new_width = (int) Math.floorf (width / new_downscale_factor);
+        var new_height = (int) Math.floorf (height / new_downscale_factor);
 
 #if HAS_MUTTER46
         round_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
@@ -307,9 +273,10 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private bool update_background_fbo (int width, int height) {
         if (
-            texture_width == width &&
-            texture_height == height &&
-            background_framebuffer != null
+            background_framebuffer != null &&
+            background_texture != null &&
+            background_texture.get_width () == width &&
+            background_texture.get_height () == height
         ) {
             return true;
         }
@@ -341,32 +308,34 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private bool update_framebuffers (Clutter.PaintContext paint_context, Clutter.ActorBox actor_box) {
-        var width = (int) actor_box.get_width ();
-        var height = (int) actor_box.get_height ();
+        var actor_width = (int) actor_box.get_width ();
+        var actor_height = (int) actor_box.get_height ();
 
-        if (width < 0 || height < 0) {
+        var blur_width = (int) (actor_width - left - right);
+        var blur_height = (int) (actor_height - top - bottom);
+
+        if (actor_width <= 0 || actor_height <= 0 || blur_width <= 0 || blur_height <= 0) {
             warning ("BackgroundBlurEffect: Couldn't update framebuffers, incorrect size");
             return false;
         }
 
-        var downscale_factor = calculate_downscale_factor (width, height, real_blur_radius);
+        var new_downscale_factor = calculate_downscale_factor (blur_width, blur_height, real_blur_radius);
 
-        var updated = update_actor_fbo (width, height, downscale_factor) && update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
+        var updated = (
+            update_actor_fbo (actor_width, actor_height, new_downscale_factor) &&
+            update_rounded_fbo (blur_width, blur_height, new_downscale_factor) &&
+            update_background_fbo (blur_width, blur_height)
+        );
 
-        texture_width = width;
-        texture_height = height;
-        this.downscale_factor = downscale_factor;
+        downscale_factor = new_downscale_factor;
 
         return updated;
     }
 
     private Clutter.PaintNode create_blur_nodes (Clutter.PaintNode node) {
-        float width, height;
-        actor.get_size (out width, out height);
-
         var blur_node = new Clutter.BlurNode (
-            (uint) (texture_width / downscale_factor),
-            (uint) (texture_height / downscale_factor),
+            round_texture.get_width (),
+            round_texture.get_height (),
             real_blur_radius / downscale_factor
         );
         blur_node.add_rectangle ({
@@ -378,7 +347,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         var round_node = new Clutter.LayerNode.to_framebuffer (round_framebuffer, round_pipeline);
         round_node.add_child (blur_node);
-        round_node.add_rectangle ({ 0.0f, 0.0f, width, height });
+        round_node.add_rectangle ({ left, top, actor_texture.get_width () - right, actor_texture.get_height () - bottom });
 
         node.add_child (round_node);
 
@@ -391,25 +360,24 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private void paint_background (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.ActorBox source_actor_box) {
-        float transformed_x, transformed_y, transformed_width, transformed_height;
-
+        float transformed_x, transformed_y;
         source_actor_box.get_origin (out transformed_x, out transformed_y);
-        source_actor_box.get_size (out transformed_width, out transformed_height);
 
         /* Background layer node */
         var background_node = new Clutter.LayerNode.to_framebuffer (background_framebuffer, background_pipeline);
         node.add_child (background_node);
-        background_node.add_rectangle ({ 0.0f, 0.0f, texture_width / downscale_factor, texture_height / downscale_factor });
+        background_node.add_rectangle ({ 0.0f, 0.0f, background_texture.get_width (), background_texture.get_height () });
 
         /* Blit node */
         var blit_node = new Clutter.BlitNode (paint_context.get_framebuffer ());
         background_node.add_child (blit_node);
         blit_node.add_blit_rectangle (
-            (int) transformed_x,
-            (int) transformed_y,
-            0, 0,
-            (int) transformed_width,
-            (int) transformed_height
+            (int) (transformed_x + left),
+            (int) (transformed_y + top),
+            0,
+            0,
+            (int) background_texture.get_width (),
+            (int) background_texture.get_height ()
         );
     }
 
@@ -443,6 +411,21 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var blur_node = create_blur_nodes (node);
         paint_background (blur_node, paint_context, source_actor_box);
         add_actor_node (node);
+
+        update_uniforms ();
+    }
+
+    private void update_uniforms () requires (round_texture != null) {
+        float[] actor_size = {
+            round_texture.get_width (),
+            round_texture.get_height ()
+        };
+        round_pipeline.set_uniform_float (round_actor_size_location, 2, 1, actor_size);
+
+        float[] clip_vals = {
+            (clip_radius * monitor_scale) / downscale_factor
+        };
+        round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, clip_vals);
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags) {
