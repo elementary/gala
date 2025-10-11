@@ -27,7 +27,7 @@ public class Gala.WindowMenuManager : Object {
             return;
         }
 
-        DaemonManager.DaemonWindowMenuItem[] daemon_items = {};
+        DaemonWindowMenuItem[] daemon_items = {};
         for (var i = 0; i < items.length; i++) {
             daemon_items += prepare_item_for_daemon (items[i]);
         }
@@ -177,7 +177,7 @@ public class Gala.WindowMenuManager : Object {
         return strv[0];
     }
 
-    private DaemonManager.DaemonWindowMenuItem prepare_item_for_daemon (WindowMenuItem item) {
+    private DaemonWindowMenuItem prepare_item_for_daemon (WindowMenuItem item) {
         return { item.type, item.sensitive, item.toggle_state, item.display_name, item.keybinding };
     }
 
