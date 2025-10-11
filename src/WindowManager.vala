@@ -1407,6 +1407,7 @@ namespace Gala {
             }
 
             if (!Meta.Prefs.get_gnome_animations ()) {
+                actor.opacity = 0;
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {
