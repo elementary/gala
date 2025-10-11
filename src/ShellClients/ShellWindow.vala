@@ -31,7 +31,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         update_target ();
     }
 
-    private void update_target () {
+    protected virtual void update_target () {
         property_target = new PropertyTarget (
             CUSTOM, window_actor,
             get_animation_property (),
@@ -41,7 +41,7 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
         );
     }
 
-    public void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public virtual void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
             case START:
                 animations_ongoing++;
