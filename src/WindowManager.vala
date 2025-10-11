@@ -1079,59 +1079,50 @@ namespace Gala {
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-
             kill_window_effects (actor);
             minimizing.add (actor);
-
-            int width, height;
-            get_display ().get_size (out width, out height);
 
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
-                float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
+                var ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
                 icon.x = Utils.scale_to_int (icon.x, ui_scale);
                 icon.y = Utils.scale_to_int (icon.y, ui_scale);
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
                 icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
-                float scale_x = (float)icon.width / actor.width;
-                float scale_y = (float)icon.height / actor.height;
-                float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
-                float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
-                actor.set_pivot_point (anchor_x, anchor_y);
+                actor.set_pivot_point (
+                    (actor.x - icon.x) / (icon.width - actor.width),
+                    (actor.y - icon.y) / (icon.height - actor.height)
+                );
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (scale_x, scale_y);
-                actor.opacity = 0U;
+                actor.set_easing_duration (AnimationDuration.HIDE);
+                actor.set_scale (icon.width / actor.width, icon.height / actor.height);
+                actor.opacity = 0;
                 actor.restore_easing_state ();
 
-                ulong minimize_handler_id = 0UL;
+                ulong minimize_handler_id = 0;
                 minimize_handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (minimize_handler_id);
                     minimize_completed (actor);
                     minimizing.remove (actor);
                 });
-
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (0.0f, 0.0f);
-                actor.opacity = 0U;
+                actor.set_easing_duration (AnimationDuration.HIDE);
+                actor.set_scale (0.0, 0.0);
+                actor.opacity = 0;
                 actor.restore_easing_state ();
 
-                ulong minimize_handler_id = 0UL;
+                ulong minimize_handler_id = 0;
                 minimize_handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (minimize_handler_id);
                     actor.set_pivot_point (0.0f, 0.0f);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
                     minimize_completed (actor);
                     minimizing.remove (actor);
                 });
