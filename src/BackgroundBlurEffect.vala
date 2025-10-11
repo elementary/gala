@@ -124,40 +124,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         round_clip_radius_location = round_pipeline.get_uniform_location ("clip_radius");
         round_actor_size_location = round_pipeline.get_uniform_location ("actor_size");
-
-        update_clip_radius ();
-        update_actor_size ();
-
-        notify["monitor-scale"].connect (update_clip_radius);
-    }
-
-    public override void set_actor (Clutter.Actor? new_actor) {
-        if (actor != null) {
-            actor.notify["width"].disconnect (update_actor_size);
-            actor.notify["height"].disconnect (update_actor_size);
-        }
-
-        base.set_actor (new_actor);
-
-        if (actor != null) {
-            actor.notify["width"].connect (update_actor_size);
-            actor.notify["height"].connect (update_actor_size);
-            update_actor_size ();
-        }
-    }
-
-    private void update_clip_radius () {
-        float[] _clip_radius = { clip_radius * monitor_scale };
-        round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, _clip_radius);
-    }
-
-    private void update_actor_size () {
-        float[] actor_size = {
-            actor.width,
-            actor.height
-        };
-
-        round_pipeline.set_uniform_float (round_actor_size_location, 2, 1, actor_size);
     }
 
     private void update_actor_box (Clutter.PaintContext paint_context, ref Clutter.ActorBox source_actor_box) {
@@ -444,6 +410,21 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var blur_node = create_blur_nodes (node);
         paint_background (blur_node, paint_context, source_actor_box);
         add_actor_node (node);
+
+        update_uniforms ();
+    }
+
+    private void update_uniforms () requires (round_texture != null || actor_texture != null) {
+        float[] actor_size = {
+            round_texture.get_width (),
+            round_texture.get_height ()
+        };
+        round_pipeline.set_uniform_float (round_actor_size_location, 2, 1, actor_size);
+
+        float[] clip_vals = {
+            (clip_radius * monitor_scale) / downscale_factor
+        };
+        round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, clip_vals);
     }
 
     public override void paint (Clutter.PaintNode node, Clutter.PaintContext paint_context, Clutter.EffectPaintFlags flags) {
