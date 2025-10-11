@@ -10,6 +10,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
 
     private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
