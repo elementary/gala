@@ -8,7 +8,7 @@ on:
       - synchronize
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-22.04
 
@@ -36,9 +36,12 @@ jobs:
       env:
         DESTDIR: out
       run: |
-        meson build -Ddocumentation=true
+        meson build -Ddocumentation=true -Dtests=true
         ninja -C build
         ninja -C build install
+    - name: Run Tests
+      run: |
+        meson test -v -C build
 
   fedora:
     runs-on: ubuntu-latest
@@ -93,3 +96,4 @@ jobs:
         io.elementary.vala-lint -d lib
         io.elementary.vala-lint -d plugins
         io.elementary.vala-lint -d src
+        io.elementary.vala-lint -d tests
