@@ -82,8 +82,6 @@ src/ShellClients/NotificationsClient.vala
 src/ShellClients/PanelWindow.vala
 src/ShellClients/ShellClientsManager.vala
 src/Widgets/DwellClickTimer.vala
-src/Widgets/MultitaskingView/IconGroup.vala
-src/Widgets/MultitaskingView/IconGroupContainer.vala
 src/Widgets/MultitaskingView/MonitorClone.vala
 src/Widgets/MultitaskingView/MultitaskingView.vala
 src/Widgets/MultitaskingView/StaticWindowClone.vala
@@ -91,9 +89,7 @@ src/Widgets/MultitaskingView/StaticWindowContainer.vala
 src/Widgets/MultitaskingView/Tooltip.vala
 src/Widgets/MultitaskingView/WindowClone.vala
 src/Widgets/MultitaskingView/WindowCloneContainer.vala
-src/Widgets/MultitaskingView/WindowIconActor.vala
 src/Widgets/MultitaskingView/WorkspaceClone.vala
-src/Widgets/MultitaskingView/WorkspaceInsertThumb.vala
 src/Widgets/MultitaskingView/WorkspaceRow.vala
 src/Widgets/PixelPicker.vala
 src/Widgets/PointerLocator.vala

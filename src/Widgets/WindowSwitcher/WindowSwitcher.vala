@@ -10,7 +10,6 @@
 public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int WRAPPER_PADDING = 12;
 
-    private const string CAPTION_FONT_NAME = "Inter";
     private const int MIN_OFFSET = 64;
     private const double GESTURE_STEP = 0.1;
 
@@ -24,7 +23,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private Gala.ModalProxy modal_proxy = null;
     private Drawing.StyleManager style_manager;
     private Clutter.Actor container;
-    private Clutter.Text caption;
+    private Gala.Text caption;
     private ShadowEffect shadow_effect;
     private BackgroundBlurEffect blur_effect;
 
@@ -65,7 +64,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
-        gesture_controller.enable_touchpad ();
+        gesture_controller.enable_touchpad (wm.stage);
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
         add_gesture_controller (gesture_controller);
 
@@ -81,8 +80,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         get_accessible ().accessible_name = _("Window switcher");
         container.get_accessible ().accessible_role = LIST;
 
-        caption = new Clutter.Text () {
-            font_name = CAPTION_FONT_NAME,
+        caption = new Gala.Text () {
             ellipsize = END,
             line_alignment = CENTER
         };
@@ -172,7 +170,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        background_color.alpha = 0.6;
+        background_color.alpha = 0.6f;
 
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
@@ -448,7 +446,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     }
 
     private void push_modal () {
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (get_stage (), true);
         modal_proxy.allow_actions ({ SWITCH_WINDOWS });
         modal_proxy.set_keybinding_filter ((binding) => {
             var action = Meta.Prefs.get_keybinding_action (binding.get_name ());

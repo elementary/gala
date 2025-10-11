@@ -7,14 +7,14 @@ gala_daemon_sources = files(
     'BackgroundMenu.vala',
 )
 
-granite_dep_old = dependency('granite')
+granite6_dep = dependency('granite')
 hdy_dep = dependency('libhandy-1')
 
-gala_daemon_bin = executable(
+executable(
     'gala-daemon-gtk3',
     gala_daemon_sources,
-    gala_resources,
-    dependencies: [gala_dep, gala_base_dep, granite_dep_old, hdy_dep],
-    include_directories: config_inc_dir,
+    gala_common_enums,
+    config_header,
+    dependencies: [granite6_dep, hdy_dep],
     install: true,
 )

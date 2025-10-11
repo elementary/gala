@@ -6,10 +6,9 @@
  */
 
 public class Gala.PanelWindow : ShellWindow, RootTarget {
-    private const int ANIMATION_DURATION = 250;
-
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
+    public Clutter.Actor? actor { get { return (Clutter.Actor) window.get_compositor_private (); } }
     public WindowManager wm { get; construct; }
     public Pantheon.Desktop.Anchor anchor { get; construct set; }
 
@@ -27,6 +26,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
             }
         }
     }
+
+    public bool visible_in_multitasking_view { get; private set; default = false; }
 
     private GestureController gesture_controller;
     private HideTracker hide_tracker;
@@ -53,12 +54,25 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         notify["width"].connect (update_strut);
         notify["height"].connect (update_strut);
 
-        gesture_controller = new GestureController (DOCK, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         add_gesture_controller (gesture_controller);
 
         hide_tracker = new HideTracker (wm.get_display (), this);
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
+    }
+
+    public void request_visible_in_multitasking_view () {
+        visible_in_multitasking_view = true;
+        actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
+    }
+
+    protected override double get_hidden_progress () {
+        if (visible_in_multitasking_view) {
+            return double.min (gesture_controller.progress, 1 - base.get_hidden_progress ());
+        } else {
+            return double.max (gesture_controller.progress, base.get_hidden_progress ());
+        }
     }
 
     private void hide () {

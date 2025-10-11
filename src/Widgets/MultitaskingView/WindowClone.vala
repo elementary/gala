@@ -27,6 +27,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public signal void request_reposition ();
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
     public Meta.Window window { get; construct; }
 
@@ -70,8 +71,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Clone? clone = null;
     private ShadowEffect? shadow_effect = null;
 
-    private Clutter.Actor prev_parent = null;
-    private int prev_index = -1;
+    private Clutter.Clone? drag_handle = null;
+
     private ulong check_confirm_dialog_cb = 0;
     private bool in_slot_animation = false;
 
@@ -95,7 +96,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CLOSE_WINDOW, wm);
+        gesture_controller = new GestureController (CUSTOM, wm);
         gesture_controller.enable_scroll (this, VERTICAL);
         add_gesture_controller (gesture_controller);
 
@@ -117,7 +118,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             drag_action = new DragDropAction (DragDropActionType.SOURCE, "multitaskingview-window");
             drag_action.drag_begin.connect (drag_begin);
-            drag_action.destination_crossed.connect (drag_destination_crossed);
+            drag_action.destination_crossed.connect (destination_crossed);
+            drag_action.destination_motion.connect (destination_motion);
             drag_action.drag_end.connect (drag_end);
             drag_action.drag_canceled.connect (drag_canceled);
             drag_action.actor_clicked.connect (actor_clicked);
@@ -156,6 +158,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
         window.notify["minimized"].disconnect (update_targets);
         window.position_changed.disconnect (update_targets);
+
+        finish_drag ();
     }
 
     private void reallocate () {
@@ -271,7 +275,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CLOSE_WINDOW || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -294,7 +298,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     public override void end_progress (GestureAction action) {
         update_hover_widgets (false);
 
-        if (action == CLOSE_WINDOW && get_current_commit (CLOSE_WINDOW) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -449,30 +453,16 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     /**
-     * A drag action has been initiated on us, we reparent ourselves to the stage so
-     * we can move freely, scale ourselves to a smaller scale and request that the
-     * position we just freed is immediately filled by the WindowCloneContainer.
+     * A drag action has been initiated on us, we scale ourselves to a smaller scale and
+     * provide a clone of ourselves as drag handle so that it can move freely.
      */
-    private Clutter.Actor drag_begin (float click_x, float click_y) {
-        var last_window_icon_x = window_icon.x;
-        var last_window_icon_y = window_icon.y;
-
-        float abs_x, abs_y;
-        float prev_parent_x, prev_parent_y;
-
-        prev_parent = get_parent ();
-        prev_index = prev_parent.get_children ().index (this);
-        prev_parent.get_transformed_position (out prev_parent_x, out prev_parent_y);
-
-        var stage = get_stage ();
-        prev_parent.remove_child (this);
-        stage.add_child (this);
-
+    private Clutter.Actor drag_begin (float click_x, float click_y) requires (drag_handle == null) {
         active_shape.hide ();
 
         var scale = window_icon.width / clone.width;
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
+        float abs_x, abs_y;
         clone.get_transformed_position (out abs_x, out abs_y);
         clone.save_easing_state ();
         clone.set_easing_duration (duration);
@@ -482,26 +472,19 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 0;
         clone.restore_easing_state ();
 
-        request_reposition ();
-
         get_transformed_position (out abs_x, out abs_y);
-
-        set_position (abs_x + prev_parent_x, abs_y + prev_parent_y);
-
-        // Set the last position so that it animates from there and not 0, 0
-        window_icon.set_position (last_window_icon_x, last_window_icon_y);
 
         window_icon.save_easing_state ();
         window_icon.set_easing_duration (duration);
         window_icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_CUBIC);
         window_icon.set_position (
-            click_x - (abs_x + prev_parent_x) - window_icon.width / 2,
-            click_y - (abs_y + prev_parent_y) - window_icon.height / 2
+            click_x - abs_x - window_icon.width / 2,
+            click_y - abs_y - window_icon.height / 2
         );
         window_icon.restore_easing_state ();
 
-        close_button.opacity = 0;
-        window_title.opacity = 0;
+        close_button.visible = false;
+        window_title.visible = false;
 
 #if HAS_MUTTER48
         wm.get_display ().set_cursor (Meta.Cursor.MOVE);
@@ -509,62 +492,29 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 #endif
 
-        return this;
+        drag_handle = new Clutter.Clone (this);
+        drag_handle.set_position (abs_x, abs_y);
+        get_stage ().add_child (drag_handle);
+
+        visible = false;
+
+        return drag_handle;
     }
 
-    /**
-     * When we cross an IconGroup, we animate to an even smaller size and slightly
-     * less opacity and add ourselves as temporary window to the group. When left,
-     * we reverse those steps.
-     */
-    private void drag_destination_crossed (Clutter.Actor destination, bool hovered) {
-        var icon_group = destination as IconGroup;
-        var insert_thumb = destination as WorkspaceInsertThumb;
-
-        // if we have don't dynamic workspace, we don't allow inserting
-        if (icon_group == null && insert_thumb == null
-            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
-                return;
+    private void destination_crossed (Clutter.Actor destination, bool hovered) {
+        if (!(destination is Meta.WindowActor)) {
+            return;
         }
 
-        // for an icon group, we only do animations if there is an actual movement possible
-        if (icon_group != null
-            && icon_group.workspace == window.get_workspace ()
-            && window.is_on_primary_monitor ()) {
-                return;
+        if (hovered) {
+            WindowDragProvider.get_instance ().notify_enter (window.get_id ());
+        } else {
+            WindowDragProvider.get_instance ().notify_leave ();
         }
+    }
 
-        var scale = hovered ? 0.4 : 1.0;
-        var opacity = hovered ? 0 : 255;
-        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = Utils.get_animation_duration (duration);
-
-        window_icon.save_easing_state ();
-
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
-        window_icon.set_scale (scale, scale);
-        window_icon.set_opacity (opacity);
-
-        window_icon.restore_easing_state ();
-
-        if (insert_thumb != null) {
-            insert_thumb.set_window_thumb (window);
-        }
-
-        if (icon_group != null) {
-            if (hovered) {
-                icon_group.add_window (window, false, true);
-            } else {
-                icon_group.remove_window (window, false);
-            }
-        }
-
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE: Meta.Cursor.NO_DROP);
-#else
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE: Meta.Cursor.DND_IN_DRAG);
-#endif
+    private void destination_motion (Clutter.Actor destination, float x, float y) {
+        WindowDragProvider.get_instance ().notify_motion (x, y);
     }
 
     /**
@@ -575,64 +525,36 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private void drag_end (Clutter.Actor destination) {
         unowned var display = wm.get_display ();
 
-        Meta.Workspace workspace = null;
-        var primary = display.get_primary_monitor ();
-
         active_shape.show ();
 
         display.set_cursor (Meta.Cursor.DEFAULT);
 
-        if (destination is IconGroup) {
-            workspace = ((IconGroup) destination).workspace;
-        } else if (destination is FramedBackground) {
-            workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
-        } else if (destination is WorkspaceInsertThumb) {
-            unowned WorkspaceInsertThumb inserter = (WorkspaceInsertThumb) destination;
+        bool did_move = false;
 
-            var will_move = window.get_workspace ().index () != inserter.workspace_index;
-
-            if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
+        if (destination is FramedBackground) {
+            var primary = display.get_primary_monitor ();
+            if (Meta.Prefs.get_workspaces_only_on_primary () && window.get_monitor () != primary) {
                 window.move_to_monitor (primary);
-                will_move = true;
+                did_move = true;
             }
 
-            InternalUtils.insert_workspace_with_window (inserter.workspace_index, window);
-
-            // if we don't actually change workspaces, the window-added/removed signals won't
-            // be emitted so we can just keep our window here
-            if (will_move) {
-                unmanaged ();
-            } else {
-                drag_canceled ();
+            var workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
+            if (workspace != window.get_workspace ()) {
+                window.change_workspace (workspace);
+                did_move = true;
             }
-
-            return;
         } else if (destination is MonitorClone) {
             var monitor = ((MonitorClone) destination).monitor;
             if (window.get_monitor () != monitor) {
                 window.move_to_monitor (monitor);
-                unmanaged ();
-            } else {
-                drag_canceled ();
+                did_move = true;
             }
-
-            return;
-        }
-
-        bool did_move = false;
-
-        if (Meta.Prefs.get_workspaces_only_on_primary () && !window.is_on_primary_monitor ()) {
-            window.move_to_monitor (primary);
-            did_move = true;
-        }
-
-        if (workspace != null && workspace != window.get_workspace ()) {
-            window.change_workspace (workspace);
-            did_move = true;
+        } else if (destination is Meta.WindowActor) {
+            WindowDragProvider.get_instance ().notify_dropped ();
         }
 
         if (did_move) {
-            unmanaged ();
+            finish_drag ();
         } else {
             // if we're dropped at the place where we came from interpret as cancel
             drag_canceled ();
@@ -643,17 +565,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * Animate back to our previous position with a bouncing animation.
      */
     private void drag_canceled () {
-        get_parent ().remove_child (this);
-
         var duration = Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION);
 
-        // Adding to the previous parent will automatically update it to take it's slot
-        // so to animate it we set the easing
-        save_easing_state ();
-        set_easing_duration (duration);
-        set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        prev_parent.add_child (this); // Add above so that it is above while it animates back to its place
-        restore_easing_state ();
+        float target_x, target_y;
+        get_transformed_position (out target_x, out target_y);
+        drag_handle.save_easing_state ();
+        drag_handle.set_easing_duration (duration);
+        drag_handle.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        drag_handle.set_position (target_x, target_y);
+        drag_handle.restore_easing_state ();
 
         clone.set_pivot_point (0.0f, 0.0f);
         clone.save_easing_state ();
@@ -663,18 +583,28 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         clone.opacity = 255;
         clone.restore_easing_state ();
 
-        request_reposition ();
+        close_button.visible = true;
+        window_title.visible = true;
 
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         if (duration > 0) {
             ulong handler = 0;
-            handler = clone.transitions_completed.connect (() => {
-                prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
-                clone.disconnect (handler);
+            handler = drag_handle.transitions_completed.connect (() => {
+                drag_handle.disconnect (handler);
+                finish_drag ();
+                visible = true;
             });
         } else {
-            prev_parent.set_child_at_index (this, prev_index); // Set the correct index so that correct stacking order is kept
+            finish_drag ();
+            visible = true;
+        }
+    }
+
+    private void finish_drag () {
+        if (drag_handle != null) {
+            drag_handle.get_stage ().remove_child (drag_handle);
+            drag_handle = null;
         }
     }
 

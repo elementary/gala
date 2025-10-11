@@ -1,5 +1,6 @@
 gala_bin_sources = files(
     'BackgroundBlurEffect.vala',
+    'BlurManager.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
     'DaemonManager.vala',
@@ -16,6 +17,7 @@ gala_bin_sources = files(
     'SessionManager.vala',
     'SuperScrollAction.vala',
     'WindowAttentionTracker.vala',
+    'WindowDragProvider.vala',
     'WindowListener.vala',
     'WindowManager.vala',
     'WindowMenuManager.vala',
@@ -48,8 +50,6 @@ gala_bin_sources = files(
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
     'Widgets/DwellClickTimer.vala',
-    'Widgets/MultitaskingView/IconGroup.vala',
-    'Widgets/MultitaskingView/IconGroupContainer.vala',
     'Widgets/MultitaskingView/MonitorClone.vala',
     'Widgets/MultitaskingView/MultitaskingView.vala',
     'Widgets/MultitaskingView/StaticWindowClone.vala',
@@ -57,9 +57,7 @@ gala_bin_sources = files(
     'Widgets/MultitaskingView/Tooltip.vala',
     'Widgets/MultitaskingView/WindowClone.vala',
     'Widgets/MultitaskingView/WindowCloneContainer.vala',
-    'Widgets/MultitaskingView/WindowIconActor.vala',
     'Widgets/MultitaskingView/WorkspaceClone.vala',
-    'Widgets/MultitaskingView/WorkspaceInsertThumb.vala',
     'Widgets/MultitaskingView/WorkspaceRow.vala',
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
@@ -73,8 +71,8 @@ gala_bin_sources = files(
 gala_bin = executable(
     'gala',
     gala_bin_sources,
+    config_header,
     dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep],
-    include_directories: config_inc_dir,
     install_rpath: mutter_typelib_dir,
     install: true,
 )

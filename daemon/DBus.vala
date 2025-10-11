@@ -17,6 +17,11 @@ public struct Gala.DaemonWindowMenuItem {
     string keybinding;
 }
 
+[DBus (name = "org.pantheon.gala")]
+public interface Gala.WMDBus : GLib.Object {
+    public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
+}
+
 public struct Gala.Daemon.MonitorLabelInfo {
     public int monitor;
     public string label;
@@ -37,7 +42,7 @@ public class Gala.Daemon.DBus : GLib.Object {
     private const string BG_MENU_ACTION_GROUP_PREFIX = "background-menu";
     private const string BG_MENU_ACTION_PREFIX = BG_MENU_ACTION_GROUP_PREFIX + ".";
 
-public signal void window_menu_action_invoked (int action);
+    public signal void window_menu_action_invoked (int action);
 
     private Window window;
     private WindowMenu window_menu;

@@ -7,11 +7,15 @@ gala_daemon_sources = files(
     'WindowMenu.vala',
 )
 
-gala_daemon_bin = executable(
+gtk4_dep = dependency('gtk4')
+granite7_dep = dependency('granite-7')
+
+executable(
     'gala-daemon',
     gala_daemon_sources,
+    gala_common_enums,
+    config_header,
     gala_resources,
-    dependencies: [config_dep, granite_dep, gtk4_dep],
-    include_directories: config_inc_dir,
-    install: true,
+    dependencies: [gtk4_dep, granite7_dep],
+    install: true
 )

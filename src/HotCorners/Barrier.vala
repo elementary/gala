@@ -11,9 +11,9 @@ public class Gala.Barrier : Object {
 
     public bool triggered { get; set; default = false; }
 
-    public int trigger_pressure_threshold { get; construct; }
-    public int release_pressure_threshold { get; construct; }
-    public int retrigger_pressure_threshold { get; construct; }
+    public double trigger_pressure_threshold { get; construct; }
+    public double release_pressure_threshold { get; construct; }
+    public double retrigger_pressure_threshold { get; construct; }
     public int retrigger_delay { get; construct; }
 
     private Meta.Barrier barrier;
@@ -34,9 +34,9 @@ public class Gala.Barrier : Object {
         int x2,
         int y2,
         Meta.BarrierDirection directions,
-        int trigger_pressure_threshold,
-        int release_pressure_threshold,
-        int retrigger_pressure_threshold,
+        double trigger_pressure_threshold,
+        double release_pressure_threshold,
+        double retrigger_pressure_threshold,
         int retrigger_delay
     ) {
         Object (

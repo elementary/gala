@@ -1,32 +1,22 @@
-valadoc = find_program('valadoc')
-
 mutter_packages_command = []
 foreach dep : mutter_dep
     mutter_packages_command += [ '--pkg', dep.name() ]
 endforeach
 
 basic_command = [
-    valadoc,
+    find_program('valadoc'),
     '--force',
     '--verbose',
     '--package-name','gala',
-    '--package-version', '0.0.0',
-    '--driver', vala.version(),
+    '--package-version', meson.project_version(),
     mutter_packages_command,
-    '--pkg', 'atk-bridge-2.0',
-    '--pkg', 'gnome-desktop-3.0',
-    '--pkg', 'gtk+-3.0',
+    '--pkg', 'gtk4',
     '--pkg', 'gee-0.8',
     '--pkg', 'gio-unix-2.0',
     '--pkg', 'gmodule-2.0',
     '--pkg', 'posix',
-    '--pkg', 'libcanberra',
-    '--pkg', 'sqlite3',
-    '--pkg', 'libsystemd',
-    '--pkg', 'granite',
-    '--pkg', 'config',
     vala_flags,
-    '--vapidir=' + join_paths(meson.build_root(), 'lib'),
+    '--vapidir=' + join_paths(meson.project_build_root(), 'lib'),
     '--vapidir=' + join_paths(meson.global_source_root(), 'vapi'),
     '--doclet=html',
     '--use-svg-images'
@@ -49,9 +39,11 @@ all_doc_target = custom_target(
     command: [
         basic_command,
         '--internal',
-        '--pkg', 'granite',
-        '--pkg', 'gnome-desktop-3.0',
-        '--pkg', 'gmodule-2.0',
+        '--pkg', 'sqlite3',
+        '--pkg', 'atk-bridge-2.0',
+        '--pkg', 'gnome-bg-4',
+        '--pkg', 'gnome-desktop-4',
+        '--pkg', 'libsystemd',
         '--pkg', 'wayland-server',
         '--pkg', 'pantheon-desktop-shell',
         '--vapidir=' + join_paths(meson.global_source_root(), 'protocol'),
@@ -59,6 +51,6 @@ all_doc_target = custom_target(
         '@INPUT@'
     ],
     build_by_default: true,
-    input: gala_lib_sources + gala_bin_sources,
+    input: gala_lib_sources + gala_bin_sources + [config_header],
     output: 'full'
 )

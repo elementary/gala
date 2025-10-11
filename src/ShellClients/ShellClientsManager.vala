@@ -20,8 +20,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return instance;
     }
 
-    public Clutter.Actor? actor { get { return wm.stage; } }
-
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -108,13 +106,18 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_dock (Meta.Window window) {
+#if HAS_MUTTER49
+        window.set_type (Meta.WindowType.DOCK);
+#else
         if (Meta.Util.is_wayland_compositor ()) {
             make_dock_wayland (window);
         } else {
             make_dock_x11 (window);
         }
+#endif
     }
 
+#if !HAS_MUTTER49
     private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in protocol_clients) {
             if (client.wayland_client.owns_window (window)) {
@@ -144,6 +147,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         // 0 means replace
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
     }
+#endif
 
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
@@ -183,6 +187,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         panel_windows[window].hide_mode = hide_mode;
+    }
+
+    public void request_visible_in_multitasking_view (Meta.Window window) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before visible in mutltiasking view.");
+            return;
+        }
+
+        panel_windows[window].request_visible_in_multitasking_view ();
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
@@ -290,6 +303,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                     }
                     break;
 
+                case "visible-in-multitasking-view":
+                    request_visible_in_multitasking_view (window);
+                    break;
+
                 case "centered":
                     make_centered (window);
                     break;
@@ -308,5 +325,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     requires (!Meta.Util.is_wayland_compositor ())
     requires (window in panel_windows) {
         panel_windows[window].restore_previous_x11_region = true;
+    }
+
+    public Mtk.Rectangle? get_shell_client_rect () {
+        foreach (var client in panel_windows.get_values ()) {
+            if (client.visible_in_multitasking_view) {
+                return client.get_custom_window_rect ();
+            }
+        }
+        return null;
     }
 }

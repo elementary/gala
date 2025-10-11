@@ -10,6 +10,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
 
     private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
@@ -112,7 +113,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
         modal_proxy.set_keybinding_filter (keybinding_filter);
         modal_proxy.allow_actions ({ ZOOM });
 
