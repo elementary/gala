@@ -103,7 +103,7 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         gesture_controller.goto (current_commit + (delta / 10));
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
             case COMMIT:
                 current_commit = progress;

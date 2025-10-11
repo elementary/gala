@@ -230,7 +230,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         ctx.restore ();
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         if (update_type != UPDATE || container.get_n_children () == 0) {
             return;
         }

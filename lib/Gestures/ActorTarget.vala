@@ -64,7 +64,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
     public virtual void commit_progress (GestureAction action, double to) {}
     public virtual void end_progress (GestureAction action) {}
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         if (update_type == COMMIT) {
             current_commit[action] = progress;
         } else {
