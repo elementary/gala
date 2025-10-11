@@ -334,8 +334,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private Clutter.PaintNode create_blur_nodes (Clutter.PaintNode node) {
         var blur_node = new Clutter.BlurNode (
-            (uint) (round_texture.get_width () / downscale_factor),
-            (uint) (round_texture.get_height () / downscale_factor),
+            round_texture.get_width (),
+            round_texture.get_height (),
             real_blur_radius / downscale_factor
         );
         blur_node.add_rectangle ({
@@ -366,7 +366,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         /* Background layer node */
         var background_node = new Clutter.LayerNode.to_framebuffer (background_framebuffer, background_pipeline);
         node.add_child (background_node);
-        background_node.add_rectangle ({ 0.0f, 0.0f, background_texture.get_width () / downscale_factor, background_texture.get_height () / downscale_factor });
+        background_node.add_rectangle ({ 0.0f, 0.0f, background_texture.get_width (), background_texture.get_height () });
 
         /* Blit node */
         var blit_node = new Clutter.BlitNode (paint_context.get_framebuffer ());
@@ -374,7 +374,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         blit_node.add_blit_rectangle (
             (int) (transformed_x + left),
             (int) (transformed_y + top),
-            0, 0,
+            0,
+            0,
             (int) background_texture.get_width (),
             (int) background_texture.get_height ()
         );

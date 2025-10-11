@@ -42,6 +42,13 @@ public class Gala.BlurManager : Object {
             window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
             parse_mutter_hints (window);
         });
+
+        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (() => {
+            foreach (unowned var window in blurred_windows.get_keys ()) {
+                blurred_windows[window].blur_effect.monitor_scale = window.display.get_monitor_scale (window.get_monitor ());
+            }
+        });
     }
 
     /**
@@ -54,24 +61,29 @@ public class Gala.BlurManager : Object {
             return;
         }
 
-        var buffer_rect = window.get_buffer_rect ();
-        var frame_rect = window.get_frame_rect ();
-        var left_shadow_size = frame_rect.x - buffer_rect.x;
-        var right_shadow_size = buffer_rect.width - frame_rect.width - left_shadow_size;
-        var top_shadow_size = frame_rect.y - buffer_rect.y;
-        var bottom_shadow_size = buffer_rect.height - frame_rect.height - top_shadow_size;
-
         var blur_data = blurred_windows[window];
         if (blur_data == null) {
-            var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, (int) clip_radius, 1.0f);
+            var blur_effect = new BackgroundBlurEffect (
+                BLUR_RADIUS,
+                (int) clip_radius,
+                window.display.get_monitor_scale (window.get_monitor ())
+            );
 
             window_actor.add_effect (blur_effect);
 
             blur_data = { blur_effect, left, right, top, bottom, clip_radius };
             blurred_windows[window] = blur_data;
 
+            // TODO: We can require users of blur API to calculate shadow_size themselves and remove connecting to this
             window.size_changed.connect (on_size_changed);
         }
+
+        var buffer_rect = window.get_buffer_rect ();
+        var frame_rect = window.get_frame_rect ();
+        var left_shadow_size = frame_rect.x - buffer_rect.x;
+        var right_shadow_size = buffer_rect.width - frame_rect.width - left_shadow_size;
+        var top_shadow_size = frame_rect.y - buffer_rect.y;
+        var bottom_shadow_size = buffer_rect.height - frame_rect.height - top_shadow_size;
 
         blur_data.blur_effect.left = left_shadow_size + left;
         blur_data.blur_effect.right = right_shadow_size + right;
