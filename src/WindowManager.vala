@@ -976,24 +976,24 @@ namespace Gala {
             unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
             window_group.set_child_below_sibling (tile_preview, window_actor);
 
-            var duration = AnimationDuration.SNAP / 2U;
-
             var rect = window.get_frame_rect ();
             tile_preview.set_position (rect.x, rect.y);
             tile_preview.set_size (rect.width, rect.height);
             tile_preview.show ();
 
-            if (Meta.Prefs.get_gnome_animations ()) {
-                tile_preview.save_easing_state ();
-                tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                tile_preview.set_easing_duration (duration);
-                tile_preview.opacity = 255U;
-                tile_preview.set_position (tile_rect.x, tile_rect.y);
-                tile_preview.set_size (tile_rect.width, tile_rect.height);
-                tile_preview.restore_easing_state ();
-            } else {
-                tile_preview.opacity = 255U;
-            }
+            new PropertyAnimator (
+                tile_preview,
+                AnimationDuration.SNAP / 2,
+                Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+                {
+                    { "opacity", typeof (uint), null, 255u },
+                    { "x", typeof (float), null, (float) tile_rect.x },
+                    { "y", typeof (float), null, (float) tile_rect.y },
+                    { "width", typeof (float), null, (float) tile_rect.width },
+                    { "height", typeof (float), null, (float) tile_rect.height }
+                },
+                () => {}
+            );
         }
 
         public override void hide_tile_preview () {
@@ -1073,19 +1073,13 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            if (!Meta.Prefs.get_gnome_animations () ||
-                actor.get_meta_window ().window_type != Meta.WindowType.NORMAL) {
+            if (!Utils.get_window_is_normal (actor.meta_window)) {
                 minimize_completed (actor);
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-
             kill_window_effects (actor);
             minimizing.add (actor);
-
-            int width, height;
-            get_display ().get_size (out width, out height);
 
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
@@ -1096,45 +1090,43 @@ namespace Gala {
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
                 icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
-                float scale_x = (float)icon.width / actor.width;
-                float scale_y = (float)icon.height / actor.height;
+                var scale_x = (double) icon.width / actor.width;
+                var scale_y = (double) icon.height / actor.height;
                 float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
                 float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
                 actor.set_pivot_point (anchor_x, anchor_y);
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (scale_x, scale_y);
-                actor.opacity = 0U;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0UL;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
-
+                new PropertyAnimator (
+                    actor,
+                    AnimationDuration.HIDE,
+                    Clutter.AnimationMode.EASE_IN_EXPO,
+                    {
+                        { "scale-x", typeof (double), null, scale_x },
+                        { "scale-y", typeof (double), null, scale_y },
+                        { "opacity", typeof (uint), null, 0u },
+                    },
+                    (actor) => {
+                        minimize_completed ((Meta.WindowActor) actor);
+                        minimizing.remove ((Meta.WindowActor) actor);
+                    }
+                );
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (0.0f, 0.0f);
-                actor.opacity = 0U;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0UL;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    actor.set_pivot_point (0.0f, 0.0f);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
+                new PropertyAnimator (
+                    actor,
+                    AnimationDuration.HIDE,
+                    Clutter.AnimationMode.EASE_IN_EXPO,
+                    {
+                        { "scale-x", typeof (double), null, 0.0 },
+                        { "scale-y", typeof (double), null, 0.0 },
+                        { "opacity", typeof (uint), null, 0u },
+                    },
+                    (actor) => {
+                        minimize_completed ((Meta.WindowActor) actor);
+                        minimizing.remove ((Meta.WindowActor) actor);
+                    }
+                );
             }
         }
 
@@ -1500,26 +1492,27 @@ namespace Gala {
 
             ui_group.add_child (latest_window_snapshot);
 
-            var scale_x = (float) ew / old_rect_size_change.width;
-            var scale_y = (float) eh / old_rect_size_change.height;
+            var scale_x = (double) ew / old_rect_size_change.width;
+            var scale_y = (double) eh / old_rect_size_change.height;
 
-            latest_window_snapshot.save_easing_state ();
-            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            latest_window_snapshot.set_easing_duration (duration);
-            latest_window_snapshot.set_position (ex, ey);
-            latest_window_snapshot.set_scale (scale_x, scale_y);
-            latest_window_snapshot.opacity = 0U;
-            latest_window_snapshot.restore_easing_state ();
-
-            ulong unmaximize_old_handler_id = 0;
-            unmaximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
-                snapshot.disconnect (unmaximize_old_handler_id);
-
-                unowned var parent = snapshot.get_parent ();
-                if (parent != null) {
-                    parent.remove_child (snapshot);
+            new PropertyAnimator (
+                latest_window_snapshot,
+                duration,
+                Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+                {
+                    { "x", typeof (float), null, (float) ex },
+                    { "y", typeof (float), null, (float) ey },
+                    { "scale-x", typeof (double), null, scale_x },
+                    { "scale-y", typeof (double), null, scale_y },
+                    { "opacity", typeof (uint), null, 0u }
+                },
+                (actor) => {
+                    unowned var parent = actor.get_parent ();
+                    if (parent != null) {
+                        parent.remove_child (actor);
+                    }
                 }
-            });
+            );
 
             latest_window_snapshot = null;
 
@@ -1530,21 +1523,28 @@ namespace Gala {
 
             actor.set_pivot_point (0.0f, 0.0f);
             actor.set_position (ex - real_actor_offset_x, ey - real_actor_offset_y);
-            actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
+            actor.set_translation (
+                (float) (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x),
+                (float) (-ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y),
+                0.0f
+            );
             actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
-            actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            actor.set_easing_duration (duration);
-            actor.set_scale (1.0f, 1.0f);
-            actor.set_translation (0.0f, 0.0f, 0.0f);
-            actor.restore_easing_state ();
-
-            ulong handler_id = 0UL;
-            handler_id = actor.transitions_completed.connect (() => {
-                actor.disconnect (handler_id);
-                unmaximizing.remove (actor);
-            });
+            new PropertyAnimator (
+                actor,
+                duration,
+                Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+                {
+                    { "scale-x", typeof (double), null, 1.0 },
+                    { "scale-y", typeof (double), null, 1.0 },
+                    { "translation-x", typeof (float), null, 0.0f },
+                    { "translation-y", typeof (float), null, 0.0f },
+                    { "translation-z", typeof (float), null, 0.0f },
+                },
+                (actor) => {
+                    unmaximizing.remove ((Meta.WindowActor) actor);
+                }
+            );
         }
 
         private void move_window_to_next_ws (Meta.Window window) {
