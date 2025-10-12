@@ -73,7 +73,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         // Scroll events apply the natural scroll preferences out of the box
         // Standardize them so the direction matches the physical direction of the gesture and the
         // GestureTracker user can decide if it wants to follow natural scroll settings or not
-        bool natural_scroll = settings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
+        bool natural_scroll = GestureSettings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
         if (natural_scroll) {
             x *= -1;
             y *= -1;
