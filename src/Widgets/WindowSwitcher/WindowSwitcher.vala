@@ -102,7 +102,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         add_effect (shadow_effect);
 
 
-        blur_effect = new BackgroundBlurEffect (40, 9, scaling_factor);
+        blur_effect = new BackgroundBlurEffect (40, 9);
         add_effect (blur_effect);
 
         scale ();
@@ -123,7 +123,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
 
         shadow_effect.monitor_scale = scaling_factor;
-        blur_effect.monitor_scale = scaling_factor;
 
         var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 

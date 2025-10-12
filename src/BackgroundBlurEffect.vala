@@ -10,7 +10,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     public float blur_radius { get; construct; }
     public float clip_radius { get; construct; }
-    public float monitor_scale { get; construct set; }
 
     public uint left { get; set; default = 0; }
     public uint right { get; set; default = 0; }
@@ -36,8 +35,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     private int frame_counter = 0;
 
-    public BackgroundBlurEffect (float blur_radius, float clip_radius, float monitor_scale) {
-        Object (blur_radius: blur_radius, clip_radius: clip_radius, monitor_scale: monitor_scale);
+    public BackgroundBlurEffect (float blur_radius, float clip_radius) {
+        Object (blur_radius: blur_radius, clip_radius: clip_radius);
     }
 
     construct {
@@ -126,28 +125,27 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         round_actor_size_location = round_pipeline.get_uniform_location ("actor_size");
     }
 
+    private float get_stage_view_scale (Clutter.PaintContext paint_context) {
+        unowned var stage_view = paint_context.get_stage_view ();
+
+        return stage_view != null ? stage_view.scale : 1.0f;
+    }
+
     private void update_actor_box (Clutter.PaintContext paint_context, ref Clutter.ActorBox source_actor_box) {
-        float box_scale_factor = 1.0f;
-        float origin_x, origin_y;
-        float width, height;
-
-        var stage_view = paint_context.get_stage_view ();
-
+        float origin_x, origin_y, width, height;
         actor.get_transformed_position (out origin_x, out origin_y);
         actor.get_transformed_size (out width, out height);
+        
+        float box_scale_factor = get_stage_view_scale (paint_context);
+        var stage_view = paint_context.get_stage_view ();
 
         if (stage_view != null) {
             Mtk.Rectangle stage_view_layout = {};
 
-            box_scale_factor = stage_view.get_scale ();
             stage_view.get_layout (ref stage_view_layout);
 
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
-        } else {
-            /* If we're drawing off stage, just assume scale = 1, this won't work
-             * with stage-view scaling though.
-             */
         }
 
         source_actor_box.set_origin (origin_x, origin_y);
@@ -395,7 +393,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         }
 
         var relative_opacity = (float) actor.opacity / 255.0f;
-        real_blur_radius = blur_radius * (float) Math.pow (relative_opacity, 2) * monitor_scale * (float) total_scale;
+        real_blur_radius = blur_radius * (float) Math.pow (relative_opacity, 2) * get_stage_view_scale (paint_context) * (float) total_scale;
 
         Clutter.ActorBox source_actor_box = {};
         update_actor_box (paint_context, ref source_actor_box);
@@ -412,10 +410,10 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         paint_background (blur_node, paint_context, source_actor_box);
         add_actor_node (node);
 
-        update_uniforms ();
+        update_uniforms (paint_context);
     }
 
-    private void update_uniforms () requires (round_texture != null) {
+    private void update_uniforms (Clutter.PaintContext paint_context) requires (round_texture != null) {
         float[] actor_size = {
             round_texture.get_width (),
             round_texture.get_height ()
@@ -423,7 +421,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         round_pipeline.set_uniform_float (round_actor_size_location, 2, 1, actor_size);
 
         float[] clip_vals = {
-            (clip_radius * monitor_scale) / downscale_factor
+            (clip_radius * get_stage_view_scale (paint_context)) / downscale_factor
         };
         round_pipeline.set_uniform_float (round_clip_radius_location, 1, 1, clip_vals);
     }

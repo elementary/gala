@@ -42,13 +42,6 @@ public class Gala.BlurManager : Object {
             window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
             parse_mutter_hints (window);
         });
-
-        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => {
-            foreach (unowned var window in blurred_windows.get_keys ()) {
-                blurred_windows[window].blur_effect.monitor_scale = window.display.get_monitor_scale (window.get_monitor ());
-            }
-        });
     }
 
     /**
@@ -63,11 +56,7 @@ public class Gala.BlurManager : Object {
 
         var blur_data = blurred_windows[window];
         if (blur_data == null) {
-            var blur_effect = new BackgroundBlurEffect (
-                BLUR_RADIUS,
-                (int) clip_radius,
-                window.display.get_monitor_scale (window.get_monitor ())
-            );
+            var blur_effect = new BackgroundBlurEffect (BLUR_RADIUS, (int) clip_radius);
 
             window_actor.add_effect (blur_effect);
 
