@@ -1492,26 +1492,27 @@ namespace Gala {
 
             ui_group.add_child (latest_window_snapshot);
 
-            var scale_x = (float) ew / old_rect_size_change.width;
-            var scale_y = (float) eh / old_rect_size_change.height;
+            var scale_x = (double) ew / old_rect_size_change.width;
+            var scale_y = (double) eh / old_rect_size_change.height;
 
-            latest_window_snapshot.save_easing_state ();
-            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            latest_window_snapshot.set_easing_duration (duration);
-            latest_window_snapshot.set_position (ex, ey);
-            latest_window_snapshot.set_scale (scale_x, scale_y);
-            latest_window_snapshot.opacity = 0U;
-            latest_window_snapshot.restore_easing_state ();
-
-            ulong unmaximize_old_handler_id = 0;
-            unmaximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
-                snapshot.disconnect (unmaximize_old_handler_id);
-
-                unowned var parent = snapshot.get_parent ();
-                if (parent != null) {
-                    parent.remove_child (snapshot);
+            new PropertyAnimator (
+                latest_window_snapshot,
+                duration,
+                Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+                {
+                    { "x", typeof (float), null, (float) ex },
+                    { "y", typeof (float), null, (float) ey },
+                    { "scale-x", typeof (double), null, scale_x },
+                    { "scale-y", typeof (double), null, scale_y },
+                    { "opacity", typeof (uint), null, 0u }
+                },
+                (actor) => {
+                    unowned var parent = actor.get_parent ();
+                    if (parent != null) {
+                        parent.remove_child (actor);
+                    }
                 }
-            });
+            );
 
             latest_window_snapshot = null;
 
@@ -1522,21 +1523,28 @@ namespace Gala {
 
             actor.set_pivot_point (0.0f, 0.0f);
             actor.set_position (ex - real_actor_offset_x, ey - real_actor_offset_y);
-            actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
+            actor.set_translation (
+                (float) (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x),
+                (float) (-ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y),
+                0.0f
+            );
             actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
 
-            actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            actor.set_easing_duration (duration);
-            actor.set_scale (1.0f, 1.0f);
-            actor.set_translation (0.0f, 0.0f, 0.0f);
-            actor.restore_easing_state ();
-
-            ulong handler_id = 0UL;
-            handler_id = actor.transitions_completed.connect (() => {
-                actor.disconnect (handler_id);
-                unmaximizing.remove (actor);
-            });
+            new PropertyAnimator (
+                actor,
+                duration,
+                Clutter.AnimationMode.EASE_IN_OUT_QUAD,
+                {
+                    { "scale-x", typeof (double), null, 1.0 },
+                    { "scale-y", typeof (double), null, 1.0 },
+                    { "translation-x", typeof (float), null, 0.0f },
+                    { "translation-y", typeof (float), null, 0.0f },
+                    { "translation-z", typeof (float), null, 0.0f },
+                },
+                (actor) => {
+                    unmaximizing.remove ((Meta.WindowActor) actor);
+                }
+            );
         }
 
         private void move_window_to_next_ws (Meta.Window window) {
