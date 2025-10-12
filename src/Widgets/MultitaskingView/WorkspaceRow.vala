@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.WorkspaceRow : ActorTarget {
+public class Gala.WorkspaceRow : ActorTarget, Focusable {
     public const int WORKSPACE_GAP = 24;
 
     public Meta.Display display { get; construct; }
@@ -47,5 +47,10 @@ public class Gala.WorkspaceRow : ActorTarget {
             unowned var workspace_clone = (WorkspaceClone) child;
             set_child_at_index (workspace_clone, workspace_clone.workspace.index ());
         }
+    }
+
+    public override bool move_focus (FocusDirection direction) {
+        var child_index = - (int) get_current_commit (SWITCH_WORKSPACE);
+        return ((Focusable) get_child_at_index (child_index)).focus (direction);
     }
 }
