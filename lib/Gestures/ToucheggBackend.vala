@@ -150,18 +150,6 @@ private class Gala.ToucheggBackend : Object, GestureBackend {
         new Thread<void> (null, (owned) run);
     }
 
-    public void stop () {
-        try {
-            reconnection_attempts = MAX_RECONNECTION_ATTEMPTS;
-
-            if (!connection.closed) {
-                connection.close_sync ();
-            }
-        } catch (Error e) {
-            // Ignore this error, the process is being killed as this point
-        }
-    }
-
     [CCode (instance_pos = -1)]
     private void on_new_message (DBusConnection connection, string? sender_name, string object_path,
         string interface_name, string signal_name, Variant parameters) {
