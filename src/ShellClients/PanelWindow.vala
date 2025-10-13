@@ -35,6 +35,9 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     private GestureController workspace_gesture_controller;
     private WorkspaceHideTracker workspace_hide_tracker;
 
+    private int width = -1;
+    private int height = -1;
+
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
     }
@@ -84,6 +87,30 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         window_actor.notify["height"].connect (update_clip);
         window_actor.notify["translation-y"].connect (update_clip);
         notify["position"].connect (update_clip);
+    }
+
+    public Mtk.Rectangle get_custom_window_rect () {
+        var window_rect = window.get_frame_rect ();
+
+        if (width > 0) {
+            window_rect.width = width;
+        }
+
+        if (height > 0) {
+            window_rect.height = height;
+
+            if (position == BOTTOM) {
+                var geom = window.display.get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
+        }
+
+        return window_rect;
+    }
+
+    public void set_size (int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public void request_visible_in_multitasking_view () {
