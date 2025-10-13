@@ -166,7 +166,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         return true;
     }
 
-    private bool window_filter_func (Object obj) {
+    private bool window_filter_func (Object obj) requires (obj is Meta.Window) {
         var window = (Meta.Window) obj;
         return window_ids == null || (window.get_id () in window_ids);
     }
