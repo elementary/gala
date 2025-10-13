@@ -6,6 +6,8 @@
  */
 
 private interface Gala.GestureBackend : Object {
+    public signal float request_travel_distance ();
+
     public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
     public signal void on_begin (double percentage, uint64 time);
     public signal void on_update (double percentage, uint64 time);

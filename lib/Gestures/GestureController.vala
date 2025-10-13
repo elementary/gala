@@ -89,6 +89,7 @@ public class Gala.GestureController : Object {
 
     private ToucheggBackend? touchegg_backend;
     private TouchpadBackend? touchpad_backend;
+    private PanBackend? pan_backend;
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
@@ -134,12 +135,25 @@ public class Gala.GestureController : Object {
         touchegg_backend.on_end.connect (gesture_end);
     }
 
+    public void enable_touchscreen (Clutter.Actor actor) {
+        pan_backend = new PanBackend (wm, actor);
+        pan_backend.request_travel_distance.connect (on_request_travel_distance);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
+    }
+
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
         scroll_backend = new ScrollBackend (actor, orientation, new GestureSettings ());
         scroll_backend.on_gesture_detected.connect (gesture_detected);
         scroll_backend.on_begin.connect (gesture_begin);
         scroll_backend.on_update.connect (gesture_update);
         scroll_backend.on_end.connect (gesture_end);
+    }
+
+    private float on_request_travel_distance () {
+        return target.get_travel_distance (action);
     }
 
     private void prepare () {
