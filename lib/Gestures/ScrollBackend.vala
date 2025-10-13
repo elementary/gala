@@ -156,6 +156,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         }
 
         return new Gesture () {
+            custom = true,
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
