@@ -71,18 +71,24 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
         workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
 
+        window.size_changed.connect (update_target);
+        notify["position"].connect (update_target);
+        update_target ();
+
         add_gesture_controller (user_gesture_controller);
         add_gesture_controller (workspace_gesture_controller);
+
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        window_actor.notify["width"].connect (update_clip);
+        window_actor.notify["height"].connect (update_clip);
+        window_actor.notify["translation-y"].connect (update_clip);
+        notify["position"].connect (update_clip);
     }
 
     public void request_visible_in_multitasking_view () {
         visible_in_multitasking_view = true;
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
-    }
-
-    protected override void update_target () {
-        base.update_target ();
-        workspace_hide_tracker.recalculate_all_workspaces ();
     }
 
     protected override double get_hidden_progress () {
@@ -212,6 +218,28 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
             default:
                 return TOP;
+        }
+    }
+
+    private void update_target () {
+        var to_value = anchor == TOP ? -get_custom_window_rect ().height : get_custom_window_rect ().height;
+        hide_target = new PropertyTarget (CUSTOM, actor, "translation-y", typeof (float), 0f, (float) to_value);
+
+        workspace_hide_tracker.recalculate_all_workspaces ();
+    }
+
+    private void update_clip () {
+        var monitor_geom = window.display.get_monitor_geometry (window.get_monitor ());
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        var y = window_actor.y + window_actor.translation_y;
+
+        if (y + window_actor.height > monitor_geom.y + monitor_geom.height) {
+            window_actor.set_clip (0, 0, window_actor.width, monitor_geom.y + monitor_geom.height - y);
+        } else if (y < monitor_geom.y) {
+            window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
+        } else {
+            window_actor.remove_clip ();
         }
     }
 }
