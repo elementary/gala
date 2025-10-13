@@ -17,10 +17,6 @@ public class Gala.ShellWindow : PositionedWindow, GestureTarget {
     private double multitasking_view_progress = 0;
     private int animations_ongoing = 0;
 
-    public ShellWindow (Meta.Window window, Position position, Variant? position_data = null) {
-        base (window, position, position_data);
-    }
-
     public virtual void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
             case START:
