@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.ShellWindow : PositionedWindow, GestureTarget {
+public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
     public bool restore_previous_x11_region { private get; set; default = false; }
 
     /**
