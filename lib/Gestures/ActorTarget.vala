@@ -11,12 +11,6 @@
  * If a new child (or target via {@link add_target}) is added, its progress will be synced.
  */
 public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
-    public Clutter.Actor? actor {
-        get {
-            return this;
-        }
-    }
-
     public bool animating { get { return ongoing_animations > 0; } }
 
     private double[] current_progress;
@@ -70,7 +64,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
     public virtual void commit_progress (GestureAction action, double to) {}
     public virtual void end_progress (GestureAction action) {}
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         if (update_type == COMMIT) {
             current_commit[action] = progress;
         } else {

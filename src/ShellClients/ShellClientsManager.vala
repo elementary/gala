@@ -20,8 +20,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return instance;
     }
 
-    public Clutter.Actor? actor { get { return wm.stage; } }
-
     public WindowManager wm { get; construct; }
 
     private NotificationsClient notifications_client;
@@ -207,7 +205,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
         }
