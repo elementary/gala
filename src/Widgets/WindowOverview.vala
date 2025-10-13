@@ -115,8 +115,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            var model = new WindowListModel (display, STACKING, true, i);
-            model.set_custom_filter (window_filter_func);
+            var custom_filter = new Gtk.CustomFilter (window_filter_func);
+            var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
@@ -166,7 +166,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         return true;
     }
 
-    private bool window_filter_func (Meta.Window window) {
+    private bool window_filter_func (Object obj) {
+        var window = (Meta.Window) obj;
         return window_ids == null || (window.get_id () in window_ids);
     }
 

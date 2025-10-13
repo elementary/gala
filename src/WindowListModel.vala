@@ -16,8 +16,6 @@ public class Gala.WindowListModel : Object, ListModel {
         STACKING
     }
 
-    public delegate bool WindowFilter (Meta.Window window);
-
     public Meta.Display display { get; construct; }
 
     public SortMode sort_mode { get; construct; }
@@ -38,18 +36,20 @@ public class Gala.WindowListModel : Object, ListModel {
      */
     public Meta.Workspace? workspace_filter { get; construct set; }
 
-    private Gee.ArrayList<Meta.Window> windows;
+    public Gtk.Filter? custom_filter { get; construct set; }
 
-    private WindowFilter? custom_filter = null;
+    private Gee.ArrayList<Meta.Window> windows;
 
     public WindowListModel (
         Meta.Display display, SortMode sort_mode = NONE,
         bool normal_filter = false, int monitor_filter = -1,
-        Meta.Workspace? workspace_filter = null
+        Meta.Workspace? workspace_filter = null,
+        Gtk.Filter? custom_filter = null
     ) {
         Object (
             display: display, sort_mode: sort_mode, normal_filter: normal_filter,
-            monitor_filter: monitor_filter, workspace_filter: workspace_filter
+            monitor_filter: monitor_filter, workspace_filter: workspace_filter,
+            custom_filter: custom_filter
         );
     }
 
@@ -65,11 +65,6 @@ public class Gala.WindowListModel : Object, ListModel {
 
         notify.connect (check_all);
 
-        check_all ();
-    }
-
-    public void set_custom_filter (WindowFilter? filter) {
-        custom_filter = filter;
         check_all ();
     }
 
@@ -123,7 +118,7 @@ public class Gala.WindowListModel : Object, ListModel {
         }
 
         if (custom_filter != null) {
-            return custom_filter (window);
+            return custom_filter.match (window);
         }
 
         return true;
