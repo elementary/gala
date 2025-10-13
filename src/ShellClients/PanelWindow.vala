@@ -39,7 +39,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     private int height = -1;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
-        Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
+        Object (wm: wm, window: window, anchor: anchor);
     }
 
     construct {
@@ -48,8 +48,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
                 update_struts ();
             }
         });
-
-        notify["anchor"].connect (() => position = Position.from_anchor (anchor));
 
         unowned var workspace_manager = window.display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
@@ -77,7 +75,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
 
         window.size_changed.connect (update_target);
-        notify["position"].connect (update_target);
+        notify["anchor"].connect (update_target);
         update_target ();
 
         var window_actor = (Meta.WindowActor) window.get_compositor_private ();
@@ -85,7 +83,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         window_actor.notify["width"].connect (update_clip);
         window_actor.notify["height"].connect (update_clip);
         window_actor.notify["translation-y"].connect (update_clip);
-        notify["position"].connect (update_clip);
+        notify["anchor"].connect (update_clip);
     }
 
     public Mtk.Rectangle get_custom_window_rect () {
@@ -98,7 +96,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         if (height > 0) {
             window_rect.height = height;
 
-            if (position == BOTTOM) {
+            if (anchor == BOTTOM) {
                 var geom = window.display.get_monitor_geometry (window.get_monitor ());
                 window_rect.y = geom.y + geom.height - height;
             }
@@ -244,6 +242,28 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
             default:
                 return TOP;
+        }
+    }
+
+    protected override void get_window_position (
+        Mtk.Rectangle window_rect, Mtk.Rectangle monitor_rect, out int x, out int y
+    ) {
+        switch (anchor) {
+            case TOP:
+                x = monitor_rect.x + (monitor_rect.width - window_rect.width) / 2;
+                y = monitor_rect.y;
+                break;
+
+            case BOTTOM:
+                x = monitor_rect.x + (monitor_rect.width - window_rect.width) / 2;
+                y = monitor_rect.y + monitor_rect.height - window_rect.height;
+                break;
+
+            default:
+                warning ("Unsupported anchor %s for PanelWindow", anchor.to_string ());
+                x = 0;
+                y = 0;
+                break;
         }
     }
 
