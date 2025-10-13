@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PositionedWindow : Object {
+public abstract class Gala.PositionedWindow : Object {
     public Meta.Window window { get; construct; }
 
     private ulong position_changed_id;
@@ -33,8 +33,5 @@ public class Gala.PositionedWindow : Object {
         SignalHandler.unblock (window, position_changed_id);
     }
 
-    protected virtual void get_window_position (Mtk.Rectangle window_rect, out int x, out int y) {
-        x = 0;
-        y = 0;
-    }
+    protected abstract void get_window_position (Mtk.Rectangle window_rect, out int x, out int y);
 }
