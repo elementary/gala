@@ -90,6 +90,7 @@ public class Gala.GestureController : Object {
 
     private ToucheggBackend? touchegg_backend;
     private TouchpadBackend? touchpad_backend;
+    private PanBackend? pan_backend;
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
@@ -133,6 +134,14 @@ public class Gala.GestureController : Object {
         touchegg_backend.on_begin.connect (gesture_begin);
         touchegg_backend.on_update.connect (gesture_update);
         touchegg_backend.on_end.connect (gesture_end);
+    }
+
+    public void enable_touchscreen (Clutter.Actor actor, TouchscreenTarget target) {
+        pan_backend = new PanBackend (wm, actor, target);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
     }
 
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
