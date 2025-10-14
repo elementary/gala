@@ -26,7 +26,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private ManagedClient[] protocol_clients = {};
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
+    private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -199,10 +199,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
-        positioned_windows[window] = new ShellWindow (window, CENTER);
+        positioned_windows[window] = new ExtendedBehaviorWindow (window);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
+
+    public void make_modal (Meta.Window window, bool dim) requires (window in positioned_windows) {
+        positioned_windows[window].make_modal (dim);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -230,6 +234,27 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         });
 
         return positioned;
+    }
+
+    private bool is_itself_system_modal (Meta.Window window) {
+        return (window in positioned_windows) && positioned_windows[window].modal;
+    }
+
+    public bool is_system_modal_window (Meta.Window window) {
+        var modal = is_itself_system_modal (window);
+        window.foreach_ancestor ((ancestor) => {
+            if (is_itself_system_modal (ancestor)) {
+                modal = true;
+            }
+
+            return !modal;
+        });
+
+        return modal;
+    }
+
+    public bool is_system_modal_dimmed (Meta.Window window) {
+        return is_itself_system_modal (window) && positioned_windows[window].dim;
     }
 
     //X11 only
