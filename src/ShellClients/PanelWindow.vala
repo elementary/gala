@@ -35,8 +35,11 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     private GestureController workspace_gesture_controller;
     private WorkspaceHideTracker workspace_hide_tracker;
 
+    private int width = -1;
+    private int height = -1;
+
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
-        Object (wm: wm, anchor: anchor, window: window, position: Position.from_anchor (anchor));
+        Object (wm: wm, window: window, anchor: anchor);
     }
 
     construct {
@@ -46,7 +49,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
             }
         });
 
-        notify["anchor"].connect (() => position = Position.from_anchor (anchor));
+        notify["anchor"].connect (position_window);
 
         unowned var workspace_manager = window.display.get_workspace_manager ();
         workspace_manager.workspace_added.connect (update_strut);
@@ -71,18 +74,48 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
         workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
 
+        window.size_changed.connect (update_target);
+        notify["anchor"].connect (update_target);
+        update_target ();
+
         add_gesture_controller (user_gesture_controller);
         add_gesture_controller (workspace_gesture_controller);
+
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        window_actor.notify["width"].connect (update_clip);
+        window_actor.notify["height"].connect (update_clip);
+        window_actor.notify["translation-y"].connect (update_clip);
+        notify["anchor"].connect (update_clip);
+    }
+
+    public Mtk.Rectangle get_custom_window_rect () {
+        var window_rect = window.get_frame_rect ();
+
+        if (width > 0) {
+            window_rect.width = width;
+        }
+
+        if (height > 0) {
+            window_rect.height = height;
+
+            if (anchor == BOTTOM) {
+                var geom = window.display.get_monitor_geometry (window.get_monitor ());
+                window_rect.y = geom.y + geom.height - height;
+            }
+        }
+
+        return window_rect;
+    }
+
+    public void set_size (int width, int height) {
+        this.width = width;
+        this.height = height;
     }
 
     public void request_visible_in_multitasking_view () {
         visible_in_multitasking_view = true;
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
-    }
-
-    protected override void update_target () {
-        base.update_target ();
-        workspace_hide_tracker.recalculate_all_workspaces ();
     }
 
     protected override double get_hidden_progress () {
@@ -212,6 +245,49 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
             default:
                 return TOP;
+        }
+    }
+
+    protected override void get_window_position (Mtk.Rectangle window_rect, out int x, out int y) {
+        var monitor_rect = window.display.get_monitor_geometry (window.display.get_primary_monitor ());
+        switch (anchor) {
+            case TOP:
+                x = monitor_rect.x + (monitor_rect.width - window_rect.width) / 2;
+                y = monitor_rect.y;
+                break;
+
+            case BOTTOM:
+                x = monitor_rect.x + (monitor_rect.width - window_rect.width) / 2;
+                y = monitor_rect.y + monitor_rect.height - window_rect.height;
+                break;
+
+            default:
+                warning ("Unsupported anchor %s for PanelWindow", anchor.to_string ());
+                x = 0;
+                y = 0;
+                break;
+        }
+    }
+
+    private void update_target () {
+        var to_value = anchor == TOP ? -get_custom_window_rect ().height : get_custom_window_rect ().height;
+        hide_target = new PropertyTarget (CUSTOM, actor, "translation-y", typeof (float), 0f, (float) to_value);
+
+        workspace_hide_tracker.recalculate_all_workspaces ();
+    }
+
+    private void update_clip () {
+        var monitor_geom = window.display.get_monitor_geometry (window.get_monitor ());
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+
+        var y = window_actor.y + window_actor.translation_y;
+
+        if (y + window_actor.height > monitor_geom.y + monitor_geom.height) {
+            window_actor.set_clip (0, 0, window_actor.width, monitor_geom.y + monitor_geom.height - y);
+        } else if (y < monitor_geom.y) {
+            window_actor.set_clip (0, monitor_geom.y - y, window_actor.width, window_actor.height);
+        } else {
+            window_actor.remove_clip ();
         }
     }
 }
