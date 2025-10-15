@@ -173,7 +173,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
             overlap = true;
 
-            fullscreen_overlap = fullscreen_overlap  || window.fullscreen;
+            fullscreen_overlap = fullscreen_overlap || window.fullscreen;
 
             if (window != normal_mru_window && window != any_mru_window) {
                 continue;
