@@ -167,6 +167,8 @@ public class Gala.WorkspaceClone : ActorTarget {
             }
         });
 
+        clip_to_allocation = true;
+
         add_child (background);
         add_child (window_container);
 
@@ -200,18 +202,31 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
-        background.set_pivot_point (0.5f, pivot_y);
+        background.set_pivot_point (0f, pivot_y);
 
         var initial_width = monitor.width;
-        var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
+        var target_width = monitor.width * scale;
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
+        var target_height = monitor.height * scale;
+
+        add_target (new PropertyTarget (MULTITASKING_VIEW, window_container, "width", typeof (float), (float) target_height, (float) target_width));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width + WorkspaceRow.WORKSPACE_GAP, (float) target_width + WorkspaceRow.WORKSPACE_GAP));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
-        window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        background.x = WorkspaceRow.WORKSPACE_GAP / 2;
+        window_container.x = WorkspaceRow.WORKSPACE_GAP / 2;
+
+        window_container.area = {
+            12,
+            Utils.scale_to_int (TOP_OFFSET, monitor_scale),
+            (int) (target_width - 24),
+            (int) target_height
+        };
+    }
+
+    public override void update_progress (GestureAction action, double progress) {
+        //  background.set_pivot_point (0.5f, 0f);
     }
 
     private void activate (bool close_view) {
