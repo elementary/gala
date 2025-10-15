@@ -121,11 +121,16 @@ public class Gala.WorkspaceClone : ActorTarget {
     public WindowCloneContainer window_container { get; private set; }
 
     private BackgroundManager background;
+    private Clutter.Actor background_container;
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
     public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
         Object (wm: wm, workspace: workspace, monitor_scale: monitor_scale);
+    }
+
+    class construct {
+        set_layout_manager_type (typeof (Clutter.BinLayout));
     }
 
     construct {
@@ -137,12 +142,15 @@ public class Gala.WorkspaceClone : ActorTarget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
+        // Background will always request the whole unscaled monitor size and we can't
+        // force it smaller via set_size because that would cause effects to get the size wrong
+        // Therefore put it into this container and force the container's size to the scaled size
+        background_container = new Clutter.Actor ();
+        background_container.add_child (background);
+
         windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
-            width = monitor_geometry.width,
-            height = monitor_geometry.height,
-        };
+        window_container = new WindowCloneContainer (wm, windows, monitor_scale);
         window_container.window_selected.connect ((window) => window_selected (window));
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
@@ -167,7 +175,7 @@ public class Gala.WorkspaceClone : ActorTarget {
             }
         });
 
-        add_child (background);
+        add_child (background_container);
         add_child (window_container);
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
@@ -181,13 +189,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         window_container.destroy ();
     }
 
-    public void update_size (Mtk.Rectangle monitor_geometry) {
-        if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            background.set_size (window_container.width, window_container.height);
-        }
-    }
-
     private void update_targets () {
         remove_all_targets ();
 
@@ -198,20 +199,23 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var monitor = display.get_monitor_geometry (primary);
 
+        background_container.height = window_container.height = monitor.height;
+
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
-        background.set_pivot_point (0.5f, pivot_y);
+        background.set_pivot_point (0f, pivot_y);
 
         var initial_width = monitor.width;
-        var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
+        var target_width = (int) Math.ceilf (monitor.width * scale);
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background_container, "width", typeof (float), (float) initial_width, (float) target_width));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, window_container, "width", typeof (float), (float) initial_width, (float) target_width));
 
-        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
-        window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        window_container.area = {
+            12, Utils.scale_to_int (TOP_OFFSET, monitor_scale), target_width - 24, (int) (monitor.height * scale)
+        };
     }
 
     private void activate (bool close_view) {
