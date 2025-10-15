@@ -60,18 +60,19 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         user_gesture_controller = new GestureController (CUSTOM, wm) {
             progress = 1.0
         };
-        add_gesture_controller (user_gesture_controller);
 
         hide_tracker = new HideTracker (wm.get_display (), this);
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
 
         workspace_gesture_controller = new GestureController (CUSTOM, wm);
-        add_gesture_controller (workspace_gesture_controller);
 
         workspace_hide_tracker = new WorkspaceHideTracker (window.display, update_overlap);
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
         workspace_hide_tracker.window_state_changed_progress_updated.connect (workspace_gesture_controller.goto);
+
+        add_gesture_controller (user_gesture_controller);
+        add_gesture_controller (workspace_gesture_controller);
     }
 
     public void request_visible_in_multitasking_view () {
