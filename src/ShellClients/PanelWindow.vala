@@ -148,7 +148,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         var overlap = false;
         var focus_overlap = false;
         var focus_maximized_overlap = false;
-        var fullscreen_overlap = window.display.get_monitor_in_fullscreen (window.get_monitor ());
+        var fullscreen_overlap = false;
 
         Meta.Window? normal_mru_window, any_mru_window;
         normal_mru_window = InternalUtils.get_mru_window (workspace, out any_mru_window);
@@ -172,6 +172,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
             }
 
             overlap = true;
+
+            fullscreen_overlap = fullscreen_overlap || window.fullscreen;
 
             if (window != normal_mru_window && window != any_mru_window) {
                 continue;
