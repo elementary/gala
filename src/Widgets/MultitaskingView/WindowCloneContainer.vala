@@ -40,7 +40,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
         on_items_changed (0, 0, windows.get_n_items ());
         windows.items_changed.connect (on_items_changed);
 
+        clip_to_allocation = true;
+
         set_relayout_action (MULTITASKING_VIEW, true);
+        set_relayout_action (SWITCH_WORKSPACE, true);
     }
 
     private void on_items_changed (uint position, uint removed, uint added) {
@@ -166,7 +169,18 @@ public class Gala.WindowCloneContainer : ActorTarget {
     protected override void allocate (Clutter.ActorBox box) {
         set_allocation (box);
 
+        var static_windows = StaticWindowContainer.get_instance (wm.get_display ());
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
+            if (child is WindowClone && static_windows.is_static (child.window)) {
+                float x, y;
+                get_transformed_position (out x, out y);
+
+                var allocation = origin_allocations[child];
+                allocation.set_origin (allocation.x1 - x, allocation.y1 - y);
+                child.allocate (allocation);
+                continue;
+            }
+
             var target_allocation = target_allocations[child];
             var origin_allocation = origin_allocations[child];
 
