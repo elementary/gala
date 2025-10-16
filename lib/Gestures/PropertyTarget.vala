@@ -7,27 +7,34 @@
 
 public class Gala.PropertyTarget : Object, GestureTarget {
     public GestureAction action { get; construct; }
-
-    //we don't want to hold a strong reference to the actor because we might've been added to it which would form a reference cycle
-    private weak Clutter.Actor? _actor;
-    public Clutter.Actor? actor { get { return _actor; } }
-
+    // Don't take a reference since we are most of the time owned by the target
+    public weak Object? target { get; private set; }
     public string property { get; construct; }
 
     public Clutter.Interval interval { get; construct; }
 
-    public PropertyTarget (GestureAction action, Clutter.Actor actor, string property, Type value_type, Value from_value, Value to_value) {
+    public PropertyTarget (GestureAction action, Object target, string property, Type value_type, Value from_value, Value to_value) {
         Object (action: action, property: property, interval: new Clutter.Interval.with_values (value_type, from_value, to_value));
 
-        _actor = actor;
-        _actor.destroy.connect (() => _actor = null);
+        this.target = target;
+        this.target.weak_ref (on_target_disposed);
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
-        if (update_type != UPDATE || action != this.action) {
+    ~PropertyTarget () {
+        if (target != null) {
+            target.weak_unref (on_target_disposed);
+        }
+    }
+
+    private void on_target_disposed () {
+        target = null;
+    }
+
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
+        if (target == null || update_type != UPDATE || action != this.action) {
             return;
         }
 
-        actor.set_property (property, interval.compute (progress));
+        target.set_property (property, interval.compute (progress));
     }
 }

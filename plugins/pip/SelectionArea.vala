@@ -23,8 +23,8 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     public Gala.WindowManager wm { get; construct; }
 
     private Gala.ModalProxy? modal_proxy;
-    private Gdk.Point start_point;
-    private Gdk.Point end_point;
+    private Graphene.Point start_point;
+    private Graphene.Point end_point;
     private bool dragging = false;
     private bool clicked = false;
 
@@ -126,14 +126,14 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this);
+        modal_proxy = wm.push_modal (this, true);
     }
 
     private void get_selection_rectangle (out int x, out int y, out int width, out int height) {
-        x = int.min (start_point.x, end_point.x);
-        y = int.min (start_point.y, end_point.y);
-        width = (start_point.x - end_point.x).abs ();
-        height = (start_point.y - end_point.y).abs ();
+        x = (int) float.min (start_point.x, end_point.x);
+        y = (int) float.min (start_point.y, end_point.y);
+        width = (int) (start_point.x - end_point.x).abs ();
+        height = (int) (start_point.y - end_point.y).abs ();
     }
 
     protected override void draw (Cairo.Context ctx, int width, int height) {

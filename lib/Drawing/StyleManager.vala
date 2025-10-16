@@ -31,12 +31,12 @@ public class Gala.Drawing.StyleManager : Object {
     private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
     private const string FDO_ACCOUNTS_PATH = "/org/freedesktop/Accounts";
 
-    private const double ACCENT_COLOR_ALPHA = 0.25;
+    private const float ACCENT_COLOR_ALPHA = 0.25f;
     private const Gdk.RGBA DEFAULT_ACCENT_COLOR = { 0, 0, 0, ACCENT_COLOR_ALPHA };
 
     private static GLib.Once<StyleManager> instance;
     public static StyleManager get_instance () {
-        return instance.once (() => {return new StyleManager ();});
+        return instance.once (() => new StyleManager ());
     }
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
@@ -94,9 +94,9 @@ public class Gala.Drawing.StyleManager : Object {
     private void update_color (int color) {
         var rgb = get_color (color);
 
-        double r = ((rgb >> 16) & 255) / 255.0;
-        double g = ((rgb >> 8) & 255) / 255.0;
-        double b = (rgb & 255) / 255.0;
+        var r = ((rgb >> 16) & 255) / 255.0f;
+        var g = ((rgb >> 8) & 255) / 255.0f;
+        var b = (rgb & 255) / 255.0f;
 
         theme_accent_color = {
             r,
@@ -137,6 +137,9 @@ public class Gala.Drawing.StyleManager : Object {
 
             case 10: // Slate
                 return 0x667885;
+
+            case 11: // Latte
+                return 0xe7c591;
         }
 
         return 0;

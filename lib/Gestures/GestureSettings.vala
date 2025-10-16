@@ -28,25 +28,10 @@ private class Gala.GestureSettings : Object {
         touchpad_settings = new GLib.Settings ("org.gnome.desktop.peripherals.touchpad");
     }
 
-    public bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
+    public static bool is_natural_scroll_enabled (Clutter.InputDeviceType device_type) {
         return (device_type == Clutter.InputDeviceType.TOUCHSCREEN_DEVICE)
             ? true
             : touchpad_settings.get_boolean ("natural-scroll");
-    }
-
-    public Meta.MotionDirection? get_direction (Gesture gesture) {
-        switch (gesture.direction) {
-            case GestureDirection.UP:
-                return Meta.MotionDirection.UP;
-            case GestureDirection.DOWN:
-                return Meta.MotionDirection.DOWN;
-            case GestureDirection.LEFT:
-                return Meta.MotionDirection.LEFT;
-            case GestureDirection.RIGHT:
-                return Meta.MotionDirection.RIGHT;
-            default:
-                return null;
-        }
     }
 
     public Meta.MotionDirection? get_natural_scroll_direction (Gesture gesture) {

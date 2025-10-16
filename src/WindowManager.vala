@@ -127,6 +127,7 @@ namespace Gala {
 
         public override void start () {
             ShellClientsManager.init (this);
+            BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
             show_stage ();
@@ -145,6 +146,8 @@ namespace Gala {
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
+
+            display.notify["focus-window"].connect (on_focus_window_changed);
 
 #if WITH_SYSTEMD
             if (Meta.Util.is_wayland_compositor ()) {
@@ -574,10 +577,12 @@ namespace Gala {
                 }
             }
 
-            if (is_modal ())
-                InternalUtils.set_input_area (display, InputArea.FULLSCREEN);
-            else
+            if (is_modal ()) {
+                var area = multitasking_view.is_opened () ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
+                InternalUtils.set_input_area (display, area);
+            } else {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
+            }
         }
 
         /**
@@ -611,28 +616,29 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal (Clutter.Actor actor) {
+        public ModalProxy push_modal (Clutter.Actor actor, bool grab) {
             var proxy = new ModalProxy ();
 
             modal_stack.offer_head (proxy);
 
-            // modal already active
-            if (modal_stack.size >= 2)
-                return proxy;
-
-            unowned Meta.Display display = get_display ();
-
-            update_input_area ();
-            proxy.grab = stage.grab (actor);
-
-            if (modal_stack.size == 1) {
-#if HAS_MUTTER48
-                display.get_compositor ().disable_unredirect ();
-#else
-                display.disable_unredirect ();
-#endif
+            if (grab) {
+                proxy.grab = stage.grab (actor);
             }
 
+            on_focus_window_changed ();
+
+            // modal already active
+            if (modal_stack.size >= 2) {
+                return proxy;
+            }
+
+            update_input_area ();
+
+#if HAS_MUTTER48
+            get_display ().get_compositor ().disable_unredirect ();
+#else
+            get_display ().disable_unredirect ();
+#endif
             return proxy;
         }
 
@@ -645,20 +651,25 @@ namespace Gala {
                 return;
             }
 
-            proxy.grab.dismiss ();
+            if (proxy.grab != null) {
+                proxy.grab.dismiss ();
+            }
 
-            if (is_modal ())
+            on_focus_window_changed ();
+
+            if (is_modal ()) {
                 return;
+            }
 
             update_input_area ();
 
-            unowned Meta.Display display = get_display ();
-
+            unowned var display = get_display ();
 #if HAS_MUTTER48
             display.get_compositor ().enable_unredirect ();
 #else
             display.enable_unredirect ();
 #endif
+            display.focus_default_window (display.get_current_time ());
         }
 
         /**
@@ -673,6 +684,18 @@ namespace Gala {
          */
         public bool modal_proxy_valid (ModalProxy proxy) {
             return (proxy in modal_stack);
+        }
+
+        private void on_focus_window_changed () {
+            unowned var display = get_display ();
+
+            if (!is_modal () || modal_stack.peek_head ().grab != null || display.focus_window == null ||
+                ShellClientsManager.get_instance ().is_positioned_window (display.focus_window)
+            ) {
+                return;
+            }
+
+            display.unset_input_focus (display.get_current_time ());
         }
 
         private void dim_parent_window (Meta.Window window) {
@@ -699,7 +722,7 @@ namespace Gala {
         }
 
         private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
-            var proxy = push_modal (stage);
+            var proxy = push_modal (stage, true);
 
             ulong handler = 0;
             handler = stage.captured_event.connect ((event) => {
@@ -745,11 +768,19 @@ namespace Gala {
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
+#if HAS_MUTTER49
+                    if (current.is_maximized ()) {
+                        current.unmaximize ();
+                    } else {
+                        current.maximize ();
+                    }
+#else
                     var maximize_flags = current.get_maximized ();
                     if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
                         current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
                     else
                         current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+#endif
                     break;
                 case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)
@@ -865,6 +896,13 @@ namespace Gala {
                     if (window.can_maximize ())
                         flags |= WindowFlags.CAN_MAXIMIZE;
 
+#if HAS_MUTTER49
+                    if (window.is_maximized ())
+                        flags |= WindowFlags.IS_MAXIMIZED;
+
+                    if (window.maximized_vertically && !window.maximized_horizontally)
+                        flags |= WindowFlags.IS_TILED;
+#else
                     var maximize_flags = window.get_maximized ();
                     if (maximize_flags > 0) {
                         flags |= WindowFlags.IS_MAXIMIZED;
@@ -873,6 +911,7 @@ namespace Gala {
                             flags |= WindowFlags.IS_TILED;
                         }
                     }
+#endif
 
                     if (window.allows_move ())
                         flags |= WindowFlags.ALLOWS_MOVE;
@@ -1040,59 +1079,50 @@ namespace Gala {
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-
             kill_window_effects (actor);
             minimizing.add (actor);
-
-            int width, height;
-            get_display ().get_size (out width, out height);
 
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
-                float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
+                var ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
                 icon.x = Utils.scale_to_int (icon.x, ui_scale);
                 icon.y = Utils.scale_to_int (icon.y, ui_scale);
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
                 icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
-                float scale_x = (float)icon.width / actor.width;
-                float scale_y = (float)icon.height / actor.height;
-                float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
-                float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
-                actor.set_pivot_point (anchor_x, anchor_y);
+                actor.set_pivot_point (
+                    (actor.x - icon.x) / (icon.width - actor.width),
+                    (actor.y - icon.y) / (icon.height - actor.height)
+                );
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (scale_x, scale_y);
-                actor.opacity = 0U;
+                actor.set_easing_duration (AnimationDuration.HIDE);
+                actor.set_scale (icon.width / actor.width, icon.height / actor.height);
+                actor.opacity = 0;
                 actor.restore_easing_state ();
 
-                ulong minimize_handler_id = 0UL;
+                ulong minimize_handler_id = 0;
                 minimize_handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (minimize_handler_id);
                     minimize_completed (actor);
                     minimizing.remove (actor);
                 });
-
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (duration);
-                actor.set_scale (0.0f, 0.0f);
-                actor.opacity = 0U;
+                actor.set_easing_duration (AnimationDuration.HIDE);
+                actor.set_scale (0.0, 0.0);
+                actor.opacity = 0;
                 actor.restore_easing_state ();
 
-                ulong minimize_handler_id = 0UL;
+                ulong minimize_handler_id = 0;
                 minimize_handler_id = actor.transitions_completed.connect (() => {
                     actor.disconnect (minimize_handler_id);
                     actor.set_pivot_point (0.0f, 0.0f);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
                     minimize_completed (actor);
                     minimizing.remove (actor);
                 });
@@ -1368,6 +1398,7 @@ namespace Gala {
             }
 
             if (!Meta.Prefs.get_gnome_animations ()) {
+                actor.opacity = 0;
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {

@@ -51,7 +51,7 @@ public class Gala.CloseButton : Clutter.Actor {
         if (close_pixbufs[height] == null) {
             try {
                 close_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                    Config.RESOURCEPATH + "/buttons/close.svg",
+                    "/org/pantheon/desktop/gala/buttons/close.svg",
                     -1,
                     height,
                     true

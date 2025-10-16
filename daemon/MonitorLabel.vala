@@ -4,7 +4,6 @@
  */
 
  public class Gala.Daemon.MonitorLabel : Gtk.Window {
-    private const int SPACING = 12;
     private const string COLORED_STYLE_CSS = """
     .%s {
         background-color: alpha(%s, 0.8);
@@ -32,8 +31,8 @@
         var provider = new Gtk.CssProvider ();
         try {
             provider.load_from_string (COLORED_STYLE_CSS.printf (title, info.background_color, info.text_color));
-            get_style_context ().add_class (title);
-            get_style_context ().add_class ("monitor-label");
+            add_css_class (title);
+            add_css_class ("monitor-label");
 
             Gtk.StyleContext.add_provider_for_display (
                 Gdk.Display.get_default (),

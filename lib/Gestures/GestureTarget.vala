@@ -13,11 +13,5 @@ public interface Gala.GestureTarget : Object {
         END
     }
 
-    /**
-     * The actor manipulated by the gesture. The associated frame clock
-     * will be used for animation timelines.
-     */
-    public abstract Clutter.Actor? actor { get; }
-
-    public virtual void propagate (UpdateType update_type, GestureAction action, double progress) { }
+    public abstract void propagate (UpdateType update_type, GestureAction action, double progress);
 }
