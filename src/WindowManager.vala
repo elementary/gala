@@ -96,6 +96,8 @@ namespace Gala {
 
         private NotificationStack notification_stack;
 
+        private TilingManager tiling_manager;
+
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -131,6 +133,8 @@ namespace Gala {
             daemon_manager = new DaemonManager (get_display ());
 
             show_stage ();
+
+            tiling_manager = new TilingManager (get_display ());
 
             init_a11y ();
 
