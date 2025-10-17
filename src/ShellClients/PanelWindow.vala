@@ -37,6 +37,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
     private int width = -1;
     private int height = -1;
+    private bool starting = true;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, window: window, anchor: anchor);
@@ -119,6 +120,10 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     protected override double get_hidden_progress () {
+        if (starting) {
+            return user_gesture_controller.progress;
+        }
+
         var user_workspace_hidden_progress = double.min (
             user_gesture_controller.progress,
             workspace_gesture_controller.progress
@@ -134,13 +139,18 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         workspace_hide_tracker.update (update_type, action, progress);
         base.propagate (update_type, action, progress);
+
+        if (starting && update_type == END && action == CUSTOM) {
+            // We were shown for the first time, so we can leave the special starting state
+            starting = false;
+        }
     }
 
     private void hide () {
         user_gesture_controller.goto (1);
     }
 
-    private void show () {
+    public void show () {
         user_gesture_controller.goto (0);
     }
 

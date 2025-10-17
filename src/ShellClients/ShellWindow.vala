@@ -12,7 +12,14 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
      * A gesture target that will receive a CUSTOM update every time a gesture
      * is propagated, with the progress gotten via {@link get_hidden_progress()}
      */
-    public GestureTarget hide_target { get; construct set; }
+    private GestureTarget? _hide_target = null;
+    public GestureTarget? hide_target {
+        private get { return _hide_target; }
+        construct set {
+            _hide_target = value;
+            _hide_target?.propagate (UPDATE, CUSTOM, get_hidden_progress ());
+        }
+    }
 
     private double multitasking_view_progress = 0;
     private int animations_ongoing = 0;
@@ -29,7 +36,7 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
                     multitasking_view_progress = progress;
                 }
 
-                hide_target.propagate (UPDATE, CUSTOM, get_hidden_progress ());
+                hide_target?.propagate (UPDATE, CUSTOM, get_hidden_progress ());
                 break;
 
             case END:
