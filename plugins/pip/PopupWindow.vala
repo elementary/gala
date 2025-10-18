@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
+public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTarget {
     private int button_size;
     private int container_margin;
     private const uint FADE_OUT_TIMEOUT = 200;
@@ -15,7 +15,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     public signal void closed ();
 
-    public Meta.Display display { get; construct; }
+    public Clutter.Actor? actor { get { return this; } }
+
+    public WindowManager wm { get; construct; }
     public Meta.WindowActor window_actor { get; construct; }
 
     private Clutter.Clone clone; // clone itself
@@ -35,7 +37,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private bool off_screen = false;
     private Clutter.Grab? grab = null;
 
-    private static unowned Meta.Window? previous_focus = null;
+    private WorkspaceHideTracker workspace_hide_tracker;
+    private GestureController gesture_controller;
+    private PropertyTarget property_target;
 
     // From https://opensourcehacker.com/2011/12/01/calculate-aspect-ratio-conserving-resize-for-images-in-javascript/
     private static void calculate_aspect_ratio_size_fit (float src_width, float src_height, float max_width, float max_height,
@@ -45,11 +49,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         height = src_height * ratio;
     }
 
-    public PopupWindow (Meta.Display display, Meta.WindowActor window_actor) {
-        Object (display: display, window_actor: window_actor);
+    public PopupWindow (WindowManager wm, Meta.WindowActor window_actor) {
+        Object (wm: wm, window_actor: window_actor);
     }
 
     construct {
+        unowned var display = wm.get_display ();
+
         var scale = display.get_monitor_scale (display.get_current_monitor ());
 
         button_size = Gala.Utils.scale_to_int (36, scale);
@@ -122,41 +128,29 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
-        window.notify["appears-focused"].connect (update_window_focus);
 
-        unowned var workspace_manager = display.get_workspace_manager ();
-        workspace_manager.active_workspace_changed.connect (update_window_focus);
+        gesture_controller = new GestureController (CUSTOM, wm);
+
+        workspace_hide_tracker = new WorkspaceHideTracker (display, calculate_should_hide);
+        workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => gesture_controller.progress = value);
+        workspace_hide_tracker.window_state_changed_progress_updated.connect (gesture_controller.goto);
+
+        add_gesture_controller (gesture_controller);
+
+        property_target = new PropertyTarget (CUSTOM, this, "opacity", typeof (uint), 255u, 0u);
     }
 
-    public override void show () {
-        base.show ();
+    public void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
+        workspace_hide_tracker.update (update_type, action, progress);
 
-        opacity = 0;
-
-        save_easing_state ();
-        set_easing_duration (Utils.get_animation_duration (200));
-        opacity = 255;
-        restore_easing_state ();
-    }
-
-    public override void hide () {
-        opacity = 255;
-
-        var duration = Utils.get_animation_duration (200);
-        save_easing_state ();
-        set_easing_duration (duration);
-        opacity = 0;
-        restore_easing_state ();
-
-        if (duration == 0) {
-            base.hide ();
-        } else {
-            ulong completed_id = 0;
-            completed_id = transitions_completed.connect (() => {
-                disconnect (completed_id);
-                base.hide ();
-            });
+        if (action != CUSTOM || update_type == COMMIT) {
+            return;
         }
+
+        property_target.propagate (UPDATE, CUSTOM, progress);
+
+        reactive = update_type == END;
+        warning (reactive.to_string ());
     }
 
     public override bool enter_event (Clutter.Event event) {
@@ -199,9 +193,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
     private Clutter.Actor on_move_begin () {
 #if HAS_MUTTER48
-        display.set_cursor (Meta.Cursor.MOVE);
+        wm.get_display ().set_cursor (Meta.Cursor.MOVE);
 #else
-        display.set_cursor (Meta.Cursor.DND_IN_DRAG);
+        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 #endif
 
         return this;
@@ -210,7 +204,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
-        display.set_cursor (Meta.Cursor.DEFAULT);
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private bool on_resize_button_press (Clutter.Event event) {
@@ -228,7 +222,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
 
-        display.set_cursor (Meta.Cursor.SE_RESIZE);
+        wm.get_display ().set_cursor (Meta.Cursor.SE_RESIZE);
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -289,7 +283,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         update_screen_position ();
 
-        display.set_cursor (Meta.Cursor.DEFAULT);
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
     }
 
     private void on_allocation_changed () {
@@ -305,35 +299,15 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         opacity = 0;
         restore_easing_state ();
 
-#if HAS_MUTTER48
-        GLib.Timeout.add (duration, () => {
-#else
-        Clutter.Threads.Timeout.add (duration, () => {
-#endif
+        Timeout.add (duration, () => {
             closed ();
             return Source.REMOVE;
         });
     }
 
-    private void update_window_focus () {
-        unowned Meta.Window focus_window = display.get_focus_window ();
-        if ((focus_window != null && !Utils.get_window_is_normal (focus_window))
-            || (previous_focus != null && !Utils.get_window_is_normal (previous_focus))) {
-            previous_focus = focus_window;
-            return;
-        }
-
-        unowned var workspace_manager = display.get_workspace_manager ();
-        unowned var active_workspace = workspace_manager.get_active_workspace ();
+    private bool calculate_should_hide (Meta.Workspace workspace) {
         unowned var window = window_actor.get_meta_window ();
-
-        if (window.appears_focused && window.located_on_workspace (active_workspace)) {
-            hide ();
-        } else if (!window_actor.is_destroyed ()) {
-            show ();
-        }
-
-        previous_focus = focus_window;
+        return window.has_focus () && window.located_on_workspace (workspace);
     }
 
     private void update_size () {
@@ -422,6 +396,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void place_window_in_screen () {
         off_screen = false;
 
+        unowned var display = wm.get_display ();
         var workarea_rect = display.get_workspace_manager ().get_active_workspace ().get_work_area_all_monitors ();
 
         var screen_limit_start_x = workarea_rect.x;
@@ -448,6 +423,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
         set_easing_duration (duration);
 
+        unowned var display = wm.get_display ();
         var monitor_rect = display.get_monitor_geometry (display.get_current_monitor ());
 
         int monitor_x = monitor_rect.x;
@@ -495,8 +471,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private bool coord_is_in_other_monitor (float coord, Clutter.Orientation axis) {
-        int n_monitors = display.get_n_monitors ();
+        unowned var display = wm.get_display ();
 
+        int n_monitors = display.get_n_monitors ();
         if (n_monitors == 1) {
             return false;
         }
