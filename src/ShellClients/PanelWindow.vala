@@ -111,6 +111,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     public void set_size (int width, int height) {
         this.width = width;
         this.height = height;
+        position_window ();
     }
 
     public void request_visible_in_multitasking_view () {
