@@ -76,15 +76,10 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
             }
         }
 
-        unowned var manager = ShellClientsManager.get_instance ();
         window.foreach_transient ((transient) => {
-            if (manager.is_itself_positioned (transient)) {
-                return true;
+            if (!Utils.get_window_is_normal (window)) {
+                ((Meta.WindowActor) transient.get_compositor_private ()).visible = visible && !animating;
             }
-
-            unowned var transient_window_actor = (Meta.WindowActor) transient.get_compositor_private ();
-
-            transient_window_actor.visible = visible && !animating;
 
             return true;
         });
