@@ -127,11 +127,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     protected override double get_hidden_progress () {
-        if (starting) {
-            // Don't show when starting
-            return 1.0;
-        }
-
         var user_workspace_hidden_progress = double.min (
             user_gesture_controller.progress,
             workspace_gesture_controller.progress
