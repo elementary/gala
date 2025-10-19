@@ -47,6 +47,11 @@ namespace Gala {
     private class Gesture {
         public const float INVALID_COORD = float.MAX;
 
+        /**
+         * A hint that this gesture isn't a globally configured gesture but instead a local custom one.
+         * Examples for this are a scroll gesture on the workspaces or a scroll gesture to close windows.
+         */
+        public bool custom = false;
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;
