@@ -37,6 +37,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
     private int width = -1;
     private int height = -1;
+    private bool starting = true;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         Object (wm: wm, window: window, anchor: anchor);
@@ -68,7 +69,9 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
 
-        workspace_gesture_controller = new GestureController (CUSTOM, wm);
+        workspace_gesture_controller = new GestureController (CUSTOM, wm) {
+            progress = 1.0
+        };
 
         workspace_hide_tracker = new WorkspaceHideTracker (window.display, update_overlap);
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
@@ -119,6 +122,11 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
     }
 
+    public void animate_start () {
+        starting = false;
+        workspace_hide_tracker.recalculate_all_workspaces ();
+    }
+
     protected override double get_hidden_progress () {
         var user_workspace_hidden_progress = double.min (
             user_gesture_controller.progress,
@@ -146,6 +154,10 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     private bool update_overlap (Meta.Workspace workspace) {
+        if (starting) {
+            return true;
+        }
+
         var overlap = false;
         var focus_overlap = false;
         var focus_maximized_overlap = false;

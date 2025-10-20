@@ -25,6 +25,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
+    private int starting_panels = 0;
+
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
 
@@ -43,6 +45,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                 parse_mutter_hints (window);
             });
         }
+
+        Timeout.add_seconds_once (5, on_failsafe_timeout);
     }
 
     private async void start_clients () {
@@ -103,6 +107,19 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                 warning ("Failed to load launch args for client %s: %s", group, e.message);
             }
         }
+
+        starting_panels = protocol_clients.length;
+    }
+
+    private void on_failsafe_timeout () {
+        if (starting_panels > 0) {
+            warning ("%d panels failed to start in time, showing the others", starting_panels);
+
+            starting_panels = 0;
+            foreach (var window in panel_windows.get_values ()) {
+                window.animate_start ();
+            }
+        }
     }
 
     public void make_dock (Meta.Window window) {
@@ -160,8 +177,26 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
 
+        InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
+
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
+    }
+
+    private void on_panel_ready (Meta.WindowActor actor) {
+        if (starting_panels == 0) {
+            panel_windows[actor.meta_window].animate_start ();
+            return;
+        }
+
+        starting_panels--;
+        assert (starting_panels >= 0);
+
+        if (starting_panels == 0) {
+            foreach (var window in panel_windows.get_values ()) {
+                window.animate_start ();
+            }
+        }
     }
 
     /**
