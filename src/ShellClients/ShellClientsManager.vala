@@ -117,7 +117,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
             starting_panels = 0;
             foreach (var window in panel_windows.get_values ()) {
-                window.show ();
+                window.animate_start ();
             }
         }
     }
@@ -185,7 +185,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     private void on_panel_ready (Meta.WindowActor actor) {
         if (starting_panels == 0) {
-            panel_windows[actor.meta_window].show ();
+            panel_windows[actor.meta_window].animate_start ();
             return;
         }
 
@@ -194,7 +194,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         if (starting_panels == 0) {
             foreach (var window in panel_windows.get_values ()) {
-                window.show ();
+                window.animate_start ();
             }
         }
     }

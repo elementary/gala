@@ -69,7 +69,9 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
 
-        workspace_gesture_controller = new GestureController (CUSTOM, wm);
+        workspace_gesture_controller = new GestureController (CUSTOM, wm) {
+            progress = 1.0
+        };
 
         workspace_hide_tracker = new WorkspaceHideTracker (window.display, update_overlap);
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => workspace_gesture_controller.progress = value);
@@ -119,11 +121,12 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
     }
 
-    protected override double get_hidden_progress () {
-        if (starting) {
-            return user_gesture_controller.progress;
-        }
+    public void animate_start () {
+        starting = false;
+        workspace_hide_tracker.recalculate_all_workspaces ();
+    }
 
+    protected override double get_hidden_progress () {
         var user_workspace_hidden_progress = double.min (
             user_gesture_controller.progress,
             workspace_gesture_controller.progress
@@ -139,22 +142,21 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         workspace_hide_tracker.update (update_type, action, progress);
         base.propagate (update_type, action, progress);
-
-        if (starting && update_type == END && action == CUSTOM) {
-            // We were shown for the first time, so we can leave the special starting state
-            starting = false;
-        }
     }
 
     private void hide () {
         user_gesture_controller.goto (1);
     }
 
-    public void show () {
+    private void show () {
         user_gesture_controller.goto (0);
     }
 
     private bool update_overlap (Meta.Workspace workspace) {
+        if (starting) {
+            return true;
+        }
+
         var overlap = false;
         var focus_overlap = false;
         var focus_maximized_overlap = false;
