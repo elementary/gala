@@ -34,21 +34,6 @@ private class Gala.GestureSettings : Object {
             : touchpad_settings.get_boolean ("natural-scroll");
     }
 
-    public Meta.MotionDirection? get_direction (Gesture gesture) {
-        switch (gesture.direction) {
-            case GestureDirection.UP:
-                return Meta.MotionDirection.UP;
-            case GestureDirection.DOWN:
-                return Meta.MotionDirection.DOWN;
-            case GestureDirection.LEFT:
-                return Meta.MotionDirection.LEFT;
-            case GestureDirection.RIGHT:
-                return Meta.MotionDirection.RIGHT;
-            default:
-                return null;
-        }
-    }
-
     public Meta.MotionDirection? get_natural_scroll_direction (Gesture gesture) {
         bool natural_scroll = is_natural_scroll_enabled (gesture.performed_on_device_type);
 

@@ -224,10 +224,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private bool update_actor_fbo (int width, int height, float downscale_factor) {
-        if (width <= 0 || height <= 0) {
-            return false;
-        }
-
         if (
             texture_width == width &&
             texture_height == height &&
@@ -344,7 +340,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var width = (int) actor_box.get_width ();
         var height = (int) actor_box.get_height ();
 
-        if (width < 0 || height < 0) {
+        if (width <= 0 || height <= 0) {
             warning ("BackgroundBlurEffect: Couldn't update framebuffers, incorrect size");
             return false;
         }

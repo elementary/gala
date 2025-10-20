@@ -1084,7 +1084,7 @@ namespace Gala {
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
-                float ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
+                var ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
                 icon.x = Utils.scale_to_int (icon.x, ui_scale);
                 icon.y = Utils.scale_to_int (icon.y, ui_scale);
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
@@ -1399,6 +1399,7 @@ namespace Gala {
             }
 
             if (!Meta.Prefs.get_gnome_animations ()) {
+                actor.opacity = 0;
                 destroy_completed (actor);
 
                 if (window.window_type == Meta.WindowType.NORMAL) {

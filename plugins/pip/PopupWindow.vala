@@ -118,7 +118,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
-        update_clone_clip ();
+        on_allocation_changed ();
 
         unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);

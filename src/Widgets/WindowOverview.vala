@@ -20,6 +20,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private List<Meta.Workspace> workspaces;
     private WindowCloneContainer window_clone_container;
 
+    private uint64[]? window_ids = null;
+
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
     }
@@ -67,10 +69,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             workspaces.append (workspace);
         }
 
-        uint64[]? window_ids = null;
-        if (hints != null && "windows" in hints) {
-            window_ids = (uint64[]) hints["windows"];
-        }
+        window_ids = hints != null && "windows" in hints ? (uint64[]) hints["windows"] : null;
 
         var windows = new List<Meta.Window> ();
         foreach (var workspace in workspaces) {
@@ -104,13 +103,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             return;
         }
 
-        foreach (var workspace in workspaces) {
-            workspace.window_added.connect (add_window);
-            workspace.window_removed.connect (remove_window);
-        }
-
-        wm.get_display ().window_left_monitor.connect (window_left_monitor);
-
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this, true);
@@ -123,7 +115,11 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var geometry = display.get_monitor_geometry (i);
             var scale = display.get_monitor_scale (i);
 
-            window_clone_container = new WindowCloneContainer (wm, scale, true) {
+            var custom_filter = new Gtk.CustomFilter (window_filter_func);
+            var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
+            model.items_changed.connect (on_items_changed);
+
+            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -135,7 +131,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             };
             window_clone_container.window_selected.connect (thumb_selected);
             window_clone_container.requested_close.connect (() => close ());
-            window_clone_container.last_window_closed.connect (() => close ());
 
             add_child (window_clone_container);
         }
@@ -145,13 +140,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         foreach (unowned var window in windows) {
             unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
             actor.hide ();
-
-            unowned var container = (WindowCloneContainer) get_child_at_index (window.get_monitor ());
-            if (container == null) {
-                continue;
-            }
-
-            container.add_window (window);
         }
 
         gesture_controller.goto (1);
@@ -178,58 +166,17 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         return true;
     }
 
-    private void window_left_monitor (int num, Meta.Window window) {
-        unowned var container = (WindowCloneContainer) get_child_at_index (num);
-        if (container == null) {
-            return;
-        }
-
-        // make sure the window belongs to one of our workspaces
-        foreach (var workspace in workspaces) {
-            if (window.located_on_workspace (workspace)) {
-                container.remove_window (window);
-                break;
-            }
-        }
+    private bool window_filter_func (Object obj) requires (obj is Meta.Window) {
+        var window = (Meta.Window) obj;
+        return window_ids == null || (window.get_id () in window_ids);
     }
 
-    private void add_window (Meta.Window window) {
-        if (!visible) {
-            return;
+    private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
+        // Check removed > added to make sure we only close once when the last window is removed
+        // This avoids an inifinite loop since closing will sort the windows which also triggers this signal
+        if (is_opened () && removed > added && model.get_n_items () == 0) {
+            close ();
         }
-        if (window.window_type == Meta.WindowType.DOCK || NotificationStack.is_notification (window)) {
-            return;
-        }
-        if (window.window_type != Meta.WindowType.NORMAL &&
-            window.window_type != Meta.WindowType.DIALOG ||
-            window.is_attached_dialog ()) {
-            unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-            actor.hide ();
-
-            return;
-        }
-
-        unowned var container = (WindowCloneContainer) get_child_at_index (window.get_monitor ());
-        if (container == null) {
-            return;
-        }
-
-        // make sure the window belongs to one of our workspaces
-        foreach (var workspace in workspaces) {
-            if (window.located_on_workspace (workspace)) {
-                container.add_window (window);
-                break;
-            }
-        }
-    }
-
-    private void remove_window (Meta.Window window) {
-        unowned var container = (WindowCloneContainer) get_child_at_index (window.get_monitor ());
-        if (container == null) {
-            return;
-        }
-
-        container.remove_window (window);
     }
 
     private void thumb_selected (Meta.Window window) {
@@ -254,12 +201,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         if (!visible) {
             return;
         }
-
-        foreach (var workspace in workspaces) {
-            workspace.window_added.disconnect (add_window);
-            workspace.window_removed.disconnect (remove_window);
-        }
-        wm.get_display ().window_left_monitor.disconnect (window_left_monitor);
 
 #if HAS_MUTTER48
         GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
