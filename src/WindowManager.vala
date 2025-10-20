@@ -1081,6 +1081,7 @@ namespace Gala {
             kill_window_effects (actor);
             minimizing.add (actor);
 
+            var scale_x = 0.0, scale_y = 0.0;
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
                 // Fix icon position and size according to ui scaling factor.
@@ -1090,44 +1091,31 @@ namespace Gala {
                 icon.width = Utils.scale_to_int (icon.width, ui_scale);
                 icon.height = Utils.scale_to_int (icon.height, ui_scale);
 
-                var scale_x = (double) icon.width / actor.width;
-                var scale_y = (double) icon.height / actor.height;
-                float anchor_x = (float)(actor.x - icon.x) / (icon.width - actor.width);
-                float anchor_y = (float)(actor.y - icon.y) / (icon.height - actor.height);
-                actor.set_pivot_point (anchor_x, anchor_y);
-
-                new PropertyAnimator (
-                    actor,
-                    AnimationDuration.HIDE,
-                    Clutter.AnimationMode.EASE_IN_EXPO,
-                    {
-                        { "scale-x", typeof (double), null, scale_x },
-                        { "scale-y", typeof (double), null, scale_y },
-                        { "opacity", typeof (uint), null, 0u },
-                    },
-                    (actor) => {
-                        minimize_completed ((Meta.WindowActor) actor);
-                        minimizing.remove ((Meta.WindowActor) actor);
-                    }
+                actor.set_pivot_point (
+                    (actor.x - icon.x) / (icon.width - actor.width),
+                    (actor.y - icon.y) / (icon.height - actor.height)
                 );
+
+                scale_x = (double) icon.width / actor.width;
+                scale_y = (double) icon.height / actor.height;
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
-
-                new PropertyAnimator (
-                    actor,
-                    AnimationDuration.HIDE,
-                    Clutter.AnimationMode.EASE_IN_EXPO,
-                    {
-                        { "scale-x", typeof (double), null, 0.0 },
-                        { "scale-y", typeof (double), null, 0.0 },
-                        { "opacity", typeof (uint), null, 0u },
-                    },
-                    (actor) => {
-                        minimize_completed ((Meta.WindowActor) actor);
-                        minimizing.remove ((Meta.WindowActor) actor);
-                    }
-                );
             }
+
+            new PropertyAnimator (
+                actor,
+                AnimationDuration.HIDE,
+                Clutter.AnimationMode.EASE_IN_EXPO,
+                {
+                    { "scale-x", typeof (double), null, scale_x },
+                    { "scale-y", typeof (double), null, scale_y },
+                    { "opacity", typeof (uint), null, 0u }
+                },
+                (actor) => {
+                    minimize_completed ((Meta.WindowActor) actor);
+                    minimizing.remove ((Meta.WindowActor) actor);
+                }
+            );
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1529,7 +1517,7 @@ namespace Gala {
                 (float) (-ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y),
                 0.0f
             );
-            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
+            actor.set_scale (1.0 / scale_x, 1.0 / scale_y);
 
             new PropertyAnimator (
                 actor,
@@ -1539,8 +1527,7 @@ namespace Gala {
                     { "scale-x", typeof (double), null, 1.0 },
                     { "scale-y", typeof (double), null, 1.0 },
                     { "translation-x", typeof (float), null, 0.0f },
-                    { "translation-y", typeof (float), null, 0.0f },
-                    { "translation-z", typeof (float), null, 0.0f },
+                    { "translation-y", typeof (float), null, 0.0f }
                 },
                 (actor) => {
                     unmaximizing.remove ((Meta.WindowActor) actor);
