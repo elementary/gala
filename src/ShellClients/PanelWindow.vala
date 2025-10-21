@@ -66,8 +66,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         };
 
         hide_tracker = new HideTracker (wm.get_display (), this);
-        hide_tracker.hide.connect (hide);
-        hide_tracker.show.connect (show);
+        hide_tracker.hide.connect (() => user_gesture_controller.goto (1));
+        hide_tracker.show.connect (() => user_gesture_controller.goto (0));
 
         workspace_gesture_controller = new GestureController (CUSTOM, wm) {
             progress = 1.0
@@ -143,14 +143,10 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         workspace_hide_tracker.update (update_type, action, progress);
         base.propagate (update_type, action, progress);
-    }
 
-    private void hide () {
-        user_gesture_controller.goto (1);
-    }
-
-    private void show () {
-        user_gesture_controller.goto (0);
+        // Forcefully release barrier events when we are fully visible
+        // to avoid interference with multiple monitors workflow
+        hide_tracker.release_barrier_events = get_hidden_progress () == 1.0;
     }
 
     private bool update_overlap (Meta.Workspace workspace) {
