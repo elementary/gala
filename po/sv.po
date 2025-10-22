@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-10-22 05:26+0000\n"
+"PO-Revision-Date: 2025-10-22 09:58+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "sv/>\n"
@@ -23,27 +23,27 @@ msgstr ""
 
 #: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Ändra bakgrundsbild…"
 
 #: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "Skärminställningar…"
 
 #: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "Systeminställningar…"
 
 #: daemon/DBus.vala:218 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "Det gick inte att öppna Systeminställningar"
 
 #: daemon/DBus.vala:219 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "En hanterare för URI-schemat \"settings://\" måste installeras."
 
 #: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
 msgid "Hide"
-msgstr ""
+msgstr "Dölj"
 
 #: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
 msgid "Move"
@@ -71,7 +71,7 @@ msgstr "Flytta till arbetsytan till höger"
 
 #: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Ta skärmdump"
 
 #: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
 msgid "Close"
@@ -79,7 +79,7 @@ msgstr "Stäng"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "Återställ"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
@@ -91,17 +91,19 @@ msgstr "Maximera"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr ""
+msgstr "Multitasking &amp; Fönsterhantering"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr ""
+msgstr "Ett fönster och en compositing-hanterare för Pantheon"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
 "A window &amp; compositing manager based on libmutter and designed by "
 "elementary for use with Pantheon."
 msgstr ""
+"En fönsterhanterare baserad på libmutter och designad av elementary för "
+"användning med Pantheon."
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
@@ -129,71 +131,71 @@ msgstr "Uppdaterade översättningar"
 
 #: data/gala.metainfo.xml.in:102
 msgid "Window state is now saved on sleep and shutdown"
-msgstr ""
+msgstr "Fönsterstatus sparas nu vid viloläge och avstängning"
 
 #: data/gala.metainfo.xml.in:103
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Ta bort skalningseffekten från menyerna"
 
 #: data/gala.metainfo.xml.in:104
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Svep uppåt för att stänga fönster i multitasking-vyn"
 
 #: data/gala.metainfo.xml.in:135
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Fixade en sällsynt krasch när ett dockningsfönster dödades"
 
 #: data/gala.metainfo.xml.in:136
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Lagt till genväg för interaktiv skärmdump"
 
 #: data/gala.metainfo.xml.in:137
 msgid "Fixed crash when using tiling shortcuts"
-msgstr ""
+msgstr "Fixad krasch vid användning av kortkommandon för tiling"
 
 #: data/gala.metainfo.xml.in:166
 msgid "Improved shadows performance"
-msgstr ""
+msgstr "Förbättrad prestanda för skuggor"
 
 #: data/gala.metainfo.xml.in:210
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr ""
+msgstr "Åtgärdat en potentiell krasch när du flyttar fönster mellan arbetsytor"
 
 #: data/gala.metainfo.xml.in:211
 msgid "Fix notification animation when entering multitasking view"
-msgstr ""
+msgstr "Fixa animering av meddelanden när du går in i multitasking-vyn"
 
 #: data/gala.metainfo.xml.in:226
-#, fuzzy
-#| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Multitaskingvy"
+msgstr "Förbättrad tangentbordsnavigering i Multitasking View"
 
 #: data/gala.metainfo.xml.in:227
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr ""
+msgstr "Ändra panelens färg samtidigt som du byter bakgrundsbild"
 
 #: data/gala.metainfo.xml.in:267
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Byte av bakgrundsbild eller insomning respekterar alternativet "
+"\"Reduce Motion\""
 
 #: data/gala.metainfo.xml.in:268
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Använd lämpliga dra-och-släpp-pekare när du flyttar fönster"
 
 #: data/gala.metainfo.xml.in:269
 msgid "Fix the issue when gestures in the multitasking view might stop working"
-msgstr ""
+msgstr "Åtgärda problemet när gester i multitasking-vyn kan sluta fungera"
 
 #: data/gala.metainfo.xml.in:270
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Förbättra dynamiska arbetsytors beteende med flera skärmar"
 
 #: data/gala.metainfo.xml.in:292
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Förbättra hanteringen av genvägen \"flytta till arbetsyta"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -215,79 +217,81 @@ msgstr "Reservskrivbordsfil för notifikationer från utdaterade program."
 #: lib/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Okänd"
 
 #: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "\"%s\" svarar inte"
 
 #: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
-msgstr ""
+msgstr "Programmet svarar inte"
 
 #: src/Dialogs/CloseDialog.vala:28
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Du kan välja att vänta en kort stund på att programmet ska fortsätta eller "
+"tvinga det att avsluta helt och hållet."
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr ""
+msgstr "Tvinga fram avslutning"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
-msgstr ""
+msgstr "Vänta"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "\"%s\" vill hindra genvägar i systemet"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Ett program vill hindra systemgenvägar"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Alla systemgenvägar kommer att omdirigeras till applikationen."
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
-msgstr ""
+msgstr "Tillåt"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
-msgstr ""
+msgstr "Neka"
 
 #: src/DesktopIntegration.vala:192
 msgid "Window has already focus"
-msgstr ""
+msgstr "Fönstret har redan fokus"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/ScreenshotManager.vala:102
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Skärmdump från %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:167
 #, c-format
 msgid "Show in %s"
-msgstr ""
+msgstr "Visa i %s"
 
 #: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Skärmdump tagen"
 
 #: src/ScreenshotManager.vala:175
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Skärmdump sparas till urklipp"
 
 #: src/ScreenshotManager.vala:175
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Skärmdump sparas i mappen Skärmdumpar"
 
 #: src/ScreenshotManager.vala:461
 msgid "Screenshots"
@@ -295,7 +299,7 @@ msgstr "Skärmbilder"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
 msgid "Window switcher"
-msgstr ""
+msgstr "Fönsterväxlare"
 
 #: src/WindowManager.vala:1799
 #, c-format
