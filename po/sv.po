@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-10-22 09:58+0000\n"
+"PO-Revision-Date: 2025-10-23 12:55+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "sv/>\n"
@@ -91,7 +91,7 @@ msgstr "Maximera"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking &amp; Window Management"
-msgstr "Multitasking &amp; Fönsterhantering"
+msgstr "Multitasking och fönsterhantering"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
@@ -167,7 +167,7 @@ msgstr "Fixa animering av meddelanden när du går in i multitasking-vyn"
 
 #: data/gala.metainfo.xml.in:226
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Förbättrad tangentbordsnavigering i Multitasking View"
+msgstr "Förbättrad tangentbordsnavigering i Multitaskingvyn"
 
 #: data/gala.metainfo.xml.in:227
 msgid "Change panel color at the same time as wallpaper transition"
@@ -187,7 +187,7 @@ msgstr "Använd lämpliga dra-och-släpp-pekare när du flyttar fönster"
 
 #: data/gala.metainfo.xml.in:269
 msgid "Fix the issue when gestures in the multitasking view might stop working"
-msgstr "Åtgärda problemet när gester i multitasking-vyn kan sluta fungera"
+msgstr "Åtgärda problemet när gester i multitaskingvyn kan sluta fungera"
 
 #: data/gala.metainfo.xml.in:270
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
@@ -212,7 +212,7 @@ msgstr "Annat"
 
 #: data/gala-other.desktop.in:5
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Reservskrivbordsfil för notifikationer från utdaterade program."
+msgstr "Reservskrivbordsfil för aviseringar från utdaterade program."
 
 #: lib/App.vala:51
 msgctxt "program"
@@ -255,7 +255,7 @@ msgstr "Ett program vill hindra systemgenvägar"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr "Alla systemgenvägar kommer att omdirigeras till applikationen."
+msgstr "Alla systemgenvägar kommer att omdirigeras till programmet."
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
