@@ -49,6 +49,8 @@ namespace Gala {
          */
         public Clutter.Actor shell_group { get; private set; }
 
+        private Clutter.Actor menu_group { get; set; }
+
         /**
          * {@inheritDoc}
          */
@@ -223,6 +225,7 @@ namespace Gala {
              * +-- window switcher
              * +-- window overview
              * +-- shell group
+             * +-- menu group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
@@ -290,6 +293,9 @@ namespace Gala {
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();
             ui_group.add_child (shell_group);
+
+            menu_group = new Clutter.Actor ();
+            ui_group.add_child (menu_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1017,6 +1023,14 @@ namespace Gala {
 
             if (NotificationStack.is_notification (window)) {
                 notification_stack.show_notification (actor);
+            }
+
+            if (window.window_type == MENU ||
+                window.window_type == DROPDOWN_MENU ||
+                window.window_type == POPUP_MENU ||
+                window.window_type == TOOLTIP
+            ) {
+                InternalUtils.clutter_actor_reparent (actor, menu_group);
             }
         }
 
