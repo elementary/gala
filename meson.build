@@ -138,6 +138,10 @@ if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
 
+if libmutter_dep.version().version_compare('>= 48') and libmutter_dep.get_variable('have_fonts') == 'false'
+	error ('Gala requires mutter to be built with fonts rendering support!')
+endif
+
 mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
 
 if get_option('systemd')
