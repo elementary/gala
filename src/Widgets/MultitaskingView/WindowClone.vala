@@ -629,13 +629,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
 
         public void update_color () {
-            var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-            background_color = {
-                (uint8) (accent_color.red * uint8.MAX),
-                (uint8) (accent_color.green * uint8.MAX),
-                (uint8) (accent_color.blue * uint8.MAX),
-                (uint8) (COLOR_OPACITY * uint8.MAX)
-            };
+            background_color = Drawing.StyleManager.get_instance ().theme_accent_color;
         }
     }
 }
