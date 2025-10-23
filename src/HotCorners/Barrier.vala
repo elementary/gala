@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -9,7 +9,12 @@
 public class Gala.Barrier : Object {
     public signal void trigger ();
 
-    public bool triggered { get; set; default = false; }
+    public bool triggered { get; private set; default = false; }
+    /**
+     * Automatically release barrier events.
+     * May be useful for disabling barrier's pointer 'grabbing' when moving it between monitors.
+     */
+    public bool release_events { get; set; default = false; }
 
     public double trigger_pressure_threshold { get; construct; }
     public double release_pressure_threshold { get; construct; }
@@ -66,20 +71,19 @@ public class Gala.Barrier : Object {
             pressure += event.dy.abs ();
         }
 
-        if (!triggered && pressure > trigger_pressure_threshold) {
+        if (
+            !triggered && pressure > trigger_pressure_threshold ||
+            triggered && pressure.abs () > retrigger_pressure_threshold && event.time > retrigger_delay + triggered_time
+        ) {
             emit_trigger (event.time);
         }
 
-        if (!triggered && pressure > release_pressure_threshold) {
+        if (
+            release_events ||
+            !triggered && pressure > release_pressure_threshold ||
+            triggered && event.time - triggered_time > 150
+        ) {
             barrier.release (event);
-        }
-
-        if (triggered && event.time - triggered_time > 150) {
-            barrier.release (event);
-        }
-
-        if (triggered && pressure.abs () > retrigger_pressure_threshold && event.time > retrigger_delay + triggered_time) {
-            emit_trigger (event.time);
         }
     }
 
