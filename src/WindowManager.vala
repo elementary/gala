@@ -951,18 +951,13 @@ namespace Gala {
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
-                tile_preview = new Clutter.Actor ();
-                var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
-                tile_preview.background_color = {
-                    (uint8)(255.0 * rgba.red),
-                    (uint8)(255.0 * rgba.green),
-                    (uint8)(255.0 * rgba.blue),
-                    (uint8)(255.0 * rgba.alpha)
+                tile_preview = new Clutter.Actor () {
+                    background_color = Drawing.StyleManager.get_instance ().theme_accent_color,
+                    opacity = 0
                 };
-                tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
-            } else if (tile_preview.is_visible ()) {
+            } else {
                 float width, height, x, y;
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
