@@ -110,7 +110,6 @@ namespace Gala {
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
-        private GLib.Settings new_behavior_settings;
 
         construct {
 #if !HAS_MUTTER48
@@ -119,7 +118,6 @@ namespace Gala {
 #endif
 
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
-            new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
             //Make it start watching the settings daemon bus
             Drawing.StyleManager.get_instance ();
@@ -368,7 +366,7 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_ui_group_size);
 
-            hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 

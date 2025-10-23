@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 elementary, Inc (https://elementary.io)
+ * Copyright 2021-2025 elementary, Inc (https://elementary.io)
  *           2021 José Expósito <jose.exposito89@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,12 +21,11 @@ public class Gala.HotCornerManager : Object {
 
     public WindowManager wm { get; construct; }
     public GLib.Settings behavior_settings { get; construct; }
-    public GLib.Settings new_behavior_settings { get; construct; }
 
     private GLib.GenericArray<HotCorner> hot_corners;
 
-    public HotCornerManager (WindowManager wm, GLib.Settings behavior_settings, GLib.Settings new_behavior_settings) {
-        Object (wm: wm, behavior_settings: behavior_settings, new_behavior_settings: new_behavior_settings);
+    public HotCornerManager (WindowManager wm, GLib.Settings behavior_settings) {
+        Object (wm: wm, behavior_settings: behavior_settings);
 
         hot_corners = new GLib.GenericArray<HotCorner> ();
         behavior_settings.changed.connect (configure);
@@ -74,7 +73,7 @@ public class Gala.HotCornerManager : Object {
         hot_corner.trigger.connect (() => {
             if (
                 display.get_monitor_in_fullscreen (display.get_primary_monitor ()) &&
-                !new_behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
+                !behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
             ) {
                 return;
             }
