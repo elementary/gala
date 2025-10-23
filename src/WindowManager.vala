@@ -110,7 +110,6 @@ namespace Gala {
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
-        private GLib.Settings new_behavior_settings;
 
         construct {
 #if !HAS_MUTTER48
@@ -119,7 +118,6 @@ namespace Gala {
 #endif
 
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
-            new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
             //Make it start watching the settings daemon bus
             Drawing.StyleManager.get_instance ();
@@ -368,7 +366,7 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_ui_group_size);
 
-            hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 
@@ -951,18 +949,13 @@ namespace Gala {
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
-                tile_preview = new Clutter.Actor ();
-                var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
-                tile_preview.background_color = {
-                    (uint8)(255.0 * rgba.red),
-                    (uint8)(255.0 * rgba.green),
-                    (uint8)(255.0 * rgba.blue),
-                    (uint8)(255.0 * rgba.alpha)
+                tile_preview = new Clutter.Actor () {
+                    background_color = Drawing.StyleManager.get_instance ().theme_accent_color,
+                    opacity = 0
                 };
-                tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
-            } else if (tile_preview.is_visible ()) {
+            } else {
                 float width, height, x, y;
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
