@@ -15,19 +15,9 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
     public bool selected {
         set {
             if (value) {
-                var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-                background_color = {
-                    (uint8) (accent_color.red * uint8.MAX),
-                    (uint8) (accent_color.green * uint8.MAX),
-                    (uint8) (accent_color.blue * uint8.MAX),
-                    (uint8) (accent_color.alpha * uint8.MAX)
-                };
+                background_color = Drawing.StyleManager.get_instance ().theme_accent_color;
             } else {
-#if HAS_MUTTER47
-                background_color = Cogl.Color.from_4f (0, 0, 0, 0);
-#else
-                background_color = Clutter.Color.alloc ();
-#endif
+                background_color = { 0, 0, 0, 0 };
             }
 
             get_accessible ().notify_state_change (Atk.StateType.SELECTED, value);
