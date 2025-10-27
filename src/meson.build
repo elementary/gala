@@ -69,6 +69,15 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
 )
 
+if get_option('old-icon-groups')
+    gala_bin_sources += [
+        'Widgets/MultitaskingView/IconGroups/IconGroup.vala',
+        'Widgets/MultitaskingView/IconGroups/IconGroupContainer.vala',
+        'Widgets/MultitaskingView/IconGroups/WindowIconActor.vala',
+        'Widgets/MultitaskingView/IconGroups/WorkspaceInsertThumb.vala'
+    ]
+endif
+
 gala_bin = executable(
     'gala',
     gala_bin_sources,
