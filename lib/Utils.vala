@@ -17,7 +17,7 @@
 
 namespace Gala {
     public class Utils {
-        private static int BUTTON_SIZE = 36;
+        private const int BUTTON_SIZE = 36;
 
         private struct CachedIcon {
             public Gdk.Pixbuf icon;
