@@ -129,6 +129,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         active_shape = new ActiveShape ();
         active_shape.opacity = 0;
+        bind_property ("monitor-scale", active_shape, "monitor-scale", SYNC_CREATE);
 
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }
@@ -624,8 +625,17 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         private const int BORDER_RADIUS = 16;
         private const double COLOR_OPACITY = 0.8;
 
+        public float monitor_scale {
+            set {
+                rounded_corners_effect.monitor_scale = value;
+            }
+        }
+
+        private RoundedCornersEffect rounded_corners_effect;
+
         construct {
-            add_effect (new RoundedCornersEffect (BORDER_RADIUS, 1.0f));
+            rounded_corners_effect = new RoundedCornersEffect (BORDER_RADIUS, 1.0f);
+            add_effect (rounded_corners_effect);
         }
 
         public void update_color () {
