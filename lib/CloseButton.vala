@@ -8,15 +8,22 @@ public class Gala.CloseButton : Clutter.Actor {
     private static Gee.HashMap<int, Gdk.Pixbuf?> close_pixbufs;
 
     public signal void triggered (uint32 timestamp);
-    public float scale { get; construct set; }
+
+    private float _monitor_scale = 1.0f;
+    public float monitor_scale {
+        get {
+            return _monitor_scale;
+        }
+        set {
+            _monitor_scale = value;
+
+            load_pixbuf ();
+        }
+    }
 
     // used to avoid changing hitbox of the button
     private Clutter.Actor pixbuf_actor;
     private bool is_pressed = false;
-
-    public CloseButton (float scale) {
-        Object (scale: scale);
-    }
 
     static construct {
         close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
@@ -30,23 +37,23 @@ public class Gala.CloseButton : Clutter.Actor {
         };
         add_child (pixbuf_actor);
 
-        var pixbuf = get_close_button_pixbuf (scale);
+        load_pixbuf ();
+    }
+
+    private void load_pixbuf () {
+        var pixbuf = get_close_button_pixbuf (monitor_scale);
         if (pixbuf != null) {
-            try {
-                var image = new Gala.Image.from_pixbuf (pixbuf);
-                pixbuf_actor.set_content (image);
-                pixbuf_actor.set_size (pixbuf.width, pixbuf.height);
-                set_size (pixbuf.width, pixbuf.height);
-            } catch (Error e) {
-                create_error_texture ();
-            }
+            var image = new Gala.Image.from_pixbuf (pixbuf);
+            pixbuf_actor.set_content (image);
+            pixbuf_actor.set_size (pixbuf.width, pixbuf.height);
+            set_size (pixbuf.width, pixbuf.height);
         } else {
             create_error_texture ();
         }
     }
 
-    private static Gdk.Pixbuf? get_close_button_pixbuf (float scale) {
-        var height = Utils.scale_to_int (36, scale);
+    private static Gdk.Pixbuf? get_close_button_pixbuf (float monitor_scale) {
+        var height = Utils.scale_to_int (36, monitor_scale);
 
         if (close_pixbufs[height] == null) {
             try {
@@ -71,7 +78,7 @@ public class Gala.CloseButton : Clutter.Actor {
         // works as good as some weird fallback-image-failed-to-load pixbuf
         critical ("Could not create close button");
 
-        var size = Utils.scale_to_int (36, scale);
+        var size = Utils.scale_to_int (36, monitor_scale);
         pixbuf_actor.set_size (size, size);
         pixbuf_actor.background_color = { 255, 0, 0, 255 };
     }
