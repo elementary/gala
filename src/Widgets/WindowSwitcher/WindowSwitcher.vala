@@ -127,6 +127,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
 
+        foreach (unowned var icon in (GLib.List<weak WindowSwitcherIcon>) container.get_children ()) {
+            icon.scale_factor = scaling_factor;
+        }
+
         container.margin_left = margin;
         container.margin_right = margin;
         container.margin_bottom = margin;
