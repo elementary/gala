@@ -17,6 +17,8 @@
 
 namespace Gala {
     public class Utils {
+        private static int BUTTON_SIZE = 36;
+
         private struct CachedIcon {
             public Gdk.Pixbuf icon;
             public int icon_size;
@@ -365,7 +367,7 @@ namespace Gala {
          * @return the resize button pixbuf or null if it failed to load
          */
         public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
-            var height = scale_to_int (36, scale);
+            var height = calculate_button_size (scale);
 
             if (resize_pixbufs == null) {
                 resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
@@ -407,7 +409,7 @@ namespace Gala {
                 // we'll just make this red so there's at least something as an
                 // indicator that loading failed. Should never happen and this
                 // works as good as some weird fallback-image-failed-to-load pixbuf
-                var size = scale_to_int (36, scale);
+                var size = calculate_button_size (scale);
                 texture.set_size (size, size);
                 texture.background_color = { 255, 0, 0, 255 };
             }
@@ -479,6 +481,10 @@ namespace Gala {
                 default:
                     return false;
             }
+        }
+
+        public static int calculate_button_size (float monitor_scale) {
+            return Utils.scale_to_int (BUTTON_SIZE, monitor_scale);
         }
     }
 }

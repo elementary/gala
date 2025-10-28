@@ -309,8 +309,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
         return k1 * k1 + k2 * k2;
     }
 
-    private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-        return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
+    private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dw, int dh) {
+        return { rect.x + dw / 2, rect.y + dh / 2, rect.width - dw, rect.height - dh };
     }
 
     private static Graphene.Point rect_center (Mtk.Rectangle rect) {
@@ -325,7 +325,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     /**
      * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
      */
-    private static GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
+    private GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
         uint window_count = windows.length ();
         int columns = (int) Math.ceil (Math.sqrt (window_count));
         int rows = (int) Math.ceil (window_count / (double) columns);
@@ -395,6 +395,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
         // see how many windows we have on the last row
         int left_over = (int) window_count - columns * (rows - 1);
 
+        var button_size = Utils.calculate_button_size (monitor_scale);
+
         for (int slot = 0; slot < columns * rows; slot++) {
             var window = taken_slots[slot];
             // some slots might be empty
@@ -410,7 +412,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 slot_width,
                 slot_height
             };
-            target = rect_adjusted (target, 10, 10, -10, -10);
+            target = rect_adjusted (target, button_size, button_size);
 
             float scale;
             if (target.width / (double) rect.width < target.height / (double) rect.height) {
