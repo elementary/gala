@@ -135,6 +135,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
 
         window_title = new Tooltip ();
+        bind_property ("monitor-scale", window_title, "monitor-scale", SYNC_CREATE);
 
         add_child (active_shape);
         add_child (clone_container);
