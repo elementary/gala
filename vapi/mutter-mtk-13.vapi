@@ -80,7 +80,7 @@ namespace Mtk {
 #endif
 		public bool overlap (Mtk.Rectangle rect2);
 #if HAS_MUTTER46
-		public void scale_double (double scale, Mtk.RoundingStrategy rounding_strategy, Mtk.Rectangle dest);
+		public void scale_double (double scale, Mtk.RoundingStrategy rounding_strategy, out Mtk.Rectangle dest);
 #endif
 		public Graphene.Rect? to_graphene_rect ();
 #if HAS_MUTTER47

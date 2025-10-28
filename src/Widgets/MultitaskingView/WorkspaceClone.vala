@@ -137,16 +137,17 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     construct {
         unowned var display = workspace.get_display ();
-        var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
+        var primary_monitor = display.get_primary_monitor ();
+        var monitor_geometry = display.get_monitor_geometry (primary_monitor);
 
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
+        windows = new WindowListModel (display, STACKING, true, primary_monitor, workspace);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
+        window_container = new WindowCloneContainer (wm, windows, primary_monitor, monitor_scale) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
