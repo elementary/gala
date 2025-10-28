@@ -3,6 +3,9 @@
 %:
 	dh $@ --buildsystem=meson
 
+override_dh_auto_configure:
+	dh_auto_configure -- -Dold-icon-groups=false
+
 override_dh_missing:
 	dh_missing --fail-missing
 
