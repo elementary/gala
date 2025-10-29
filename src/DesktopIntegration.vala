@@ -78,10 +78,6 @@ public class Gala.DesktopIntegration : GLib.Object {
             return false;
         }
 
-        if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
-            return false;
-        }
-
         switch (window.get_window_type ()) {
             case Meta.WindowType.NORMAL:
             case Meta.WindowType.DIALOG:

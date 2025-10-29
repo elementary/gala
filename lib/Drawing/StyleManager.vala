@@ -30,9 +30,7 @@ public class Gala.Drawing.StyleManager : Object {
 
     private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
     private const string FDO_ACCOUNTS_PATH = "/org/freedesktop/Accounts";
-
-    private const float ACCENT_COLOR_ALPHA = 0.25f;
-    private const Gdk.RGBA DEFAULT_ACCENT_COLOR = { 0, 0, 0, ACCENT_COLOR_ALPHA };
+    private const uint8 ACCENT_COLOR_ALPHA = 64;
 
     private static GLib.Once<StyleManager> instance;
     public static StyleManager get_instance () {
@@ -40,7 +38,11 @@ public class Gala.Drawing.StyleManager : Object {
     }
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
-    public Gdk.RGBA theme_accent_color { get; private set; default = DEFAULT_ACCENT_COLOR; }
+#if !HAS_MUTTER47
+    public Clutter.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
+#else
+    public Cogl.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
+#endif
 
     private PantheonAccountsService? pantheon_proxy;
     private SettingsDaemonAccountsService? settings_daemon_proxy;
@@ -94,16 +96,11 @@ public class Gala.Drawing.StyleManager : Object {
     private void update_color (int color) {
         var rgb = get_color (color);
 
-        var r = ((rgb >> 16) & 255) / 255.0f;
-        var g = ((rgb >> 8) & 255) / 255.0f;
-        var b = (rgb & 255) / 255.0f;
+        var r = (uint8) ((rgb >> 16) & 255);
+        var g = (uint8) ((rgb >> 8) & 255);
+        var b = (uint8) (rgb & 255);
 
-        theme_accent_color = {
-            r,
-            g,
-            b,
-            ACCENT_COLOR_ALPHA
-        };
+        theme_accent_color = { r, g, b, ACCENT_COLOR_ALPHA };
     }
 
     private int get_color (int color) {
@@ -137,6 +134,9 @@ public class Gala.Drawing.StyleManager : Object {
 
             case 10: // Slate
                 return 0x667885;
+
+            case 11: // Latte
+                return 0xe7c591;
         }
 
         return 0;

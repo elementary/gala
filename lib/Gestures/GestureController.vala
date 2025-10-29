@@ -73,7 +73,7 @@ public class Gala.GestureController : Object {
         get { return _progress; }
         set {
             _progress = value;
-            target.propagate (UPDATE, action, value);
+            target?.propagate (UPDATE, action, value);
         }
     }
 

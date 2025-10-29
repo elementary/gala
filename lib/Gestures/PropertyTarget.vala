@@ -30,7 +30,7 @@ public class Gala.PropertyTarget : Object, GestureTarget {
         target = null;
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
         if (target == null || update_type != UPDATE || action != this.action) {
             return;
         }

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-06-30 17:54+0000\n"
+"POT-Creation-Date: 2025-10-28 21:49+0000\n"
 "PO-Revision-Date: 2025-06-15 15:55+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <italo@gp-mail.com>\n"
 "Language-Team: Spanish <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -20,23 +20,23 @@ msgstr ""
 "X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-27 05:44+0000\n"
 
-#: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Cambiar fondo de escritorio…"
 
-#: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Configuración de Pantalla…"
 
-#: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Configuración del Sistema…"
 
-#: daemon/DBus.vala:218 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "No se pudo abrir la Configuración del Sistema"
 
-#: daemon/DBus.vala:219 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 "Se debe instalar un programa que controle el esquema URI «settings://»."
@@ -109,82 +109,108 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:85
-#: data/gala.metainfo.xml.in:99 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:176
-#: data/gala.metainfo.xml.in:191 data/gala.metainfo.xml.in:208
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:265
-#: data/gala.metainfo.xml.in:290 data/gala.metainfo.xml.in:306
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:65
+#: data/gala.metainfo.xml.in:77 data/gala.metainfo.xml.in:92
+#: data/gala.metainfo.xml.in:118 data/gala.metainfo.xml.in:130
+#: data/gala.metainfo.xml.in:144 data/gala.metainfo.xml.in:177
+#: data/gala.metainfo.xml.in:208 data/gala.metainfo.xml.in:221
+#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:253
+#: data/gala.metainfo.xml.in:269 data/gala.metainfo.xml.in:310
+#: data/gala.metainfo.xml.in:335 data/gala.metainfo.xml.in:351
 msgid "Improvements:"
 msgstr "Mejoras:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:87
-#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:178
-#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:212
-#: data/gala.metainfo.xml.in:228 data/gala.metainfo.xml.in:271
-#: data/gala.metainfo.xml.in:293 data/gala.metainfo.xml.in:308
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
+#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:257
+#: data/gala.metainfo.xml.in:273 data/gala.metainfo.xml.in:316
+#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:353
 msgid "Updated translations"
 msgstr "Traducciones actualizadas"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:35
+msgid "Improved HiDPI support"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36
+#, fuzzy
+#| msgid "Improved shadows performance"
+msgid "Improved render performance"
+msgstr "Se aplicaron mejoras en el rendimiento de las sombras"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Reveal dock and panel in sync when starting"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:38
+#, fuzzy
+#| msgid "Duration of the workspace switch animation"
+msgid "Improved workspace switch dock animation"
+msgstr "Duración de la animación del cambio de área de trabajo"
+
+#: data/gala.metainfo.xml.in:39
+msgid "Picture-in-Picture windows now have rounded corners"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:147
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 "El estado de las ventanas ahora se guardan al dormir y al apagar el equipo"
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:148
 msgid "Remove scaling effect from menus"
 msgstr "Se eliminó el efecto de escala en los menús"
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:149
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 "Ahora se puede arrastrar hacia arriba para cerrar ventana en la vista "
 "multitarea"
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:180
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 "Se corrigió un error fatal al terminar un proceso asociado a una ventana "
 "anclada"
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:181
 msgid "Added interactive screenshot shortcut"
 msgstr "Se agregó un atajo para captura de pantalla interactiva"
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:182
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Solucionado un error fatal al usar los atajos de mosaico"
 
-#: data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:211
 msgid "Improved shadows performance"
 msgstr "Se aplicaron mejoras en el rendimiento de las sombras"
 
-#: data/gala.metainfo.xml.in:210
+#: data/gala.metainfo.xml.in:255
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Se corrigió una posible falla grave al mover ventanas entre espacios de "
 "trabajo"
 
-#: data/gala.metainfo.xml.in:211
+#: data/gala.metainfo.xml.in:256
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Se corrigió la animación de las notificaciones al entrar a la Vista "
 "Multitarea"
 
-#: data/gala.metainfo.xml.in:226
+#: data/gala.metainfo.xml.in:271
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Se mejoró la navegación con el teclado en la Vista Multitarea"
 
-#: data/gala.metainfo.xml.in:227
+#: data/gala.metainfo.xml.in:272
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Ahora se cambia el color del panel al mismo tiempo que cuando se atenúa el "
 "fondo de escritorio"
 
-#: data/gala.metainfo.xml.in:267
+#: data/gala.metainfo.xml.in:312
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -192,23 +218,23 @@ msgstr ""
 "Al cambiar el fondo de escritorio o poner en reposo el escritorio, ahora "
 "respeta la opción «Reducir el movimiento»"
 
-#: data/gala.metainfo.xml.in:268
+#: data/gala.metainfo.xml.in:313
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Se usan los iconos de puntero apropiados para las acciones de arrastrar y "
 "soltar"
 
-#: data/gala.metainfo.xml.in:269
+#: data/gala.metainfo.xml.in:314
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Se corrigió un problema donde los gestos en la Vista Multitarea podrían "
 "dejar de funcionar"
 
-#: data/gala.metainfo.xml.in:270
+#: data/gala.metainfo.xml.in:315
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Se mejoraron las áreas de trabajo dinámicas con múltiples monitores"
 
-#: data/gala.metainfo.xml.in:292
+#: data/gala.metainfo.xml.in:337
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Se mejoró el funcionamiento del atajo de «mover al área de trabajo»"
 
@@ -281,58 +307,58 @@ msgstr "Permitir"
 msgid "Deny"
 msgstr "Denegar"
 
-#: src/DesktopIntegration.vala:192
+#: src/DesktopIntegration.vala:200
 msgid "Window has already focus"
 msgstr "La ventana ya está enfocada"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:102
+#: src/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:167
+#: src/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr "Mostrar en %s"
 
-#: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
+#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
 msgid "Screenshot taken"
 msgstr "Se tomó una captura de pantalla"
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr "La captura se guardó en el portapapeles"
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr "Captura guardada en la carpeta «Capturas de pantalla»"
 
-#: src/ScreenshotManager.vala:461
+#: src/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "Capturas de pantalla"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
 msgstr "Selector de ventanas"
 
-#: src/WindowManager.vala:1799
+#: src/WindowManager.vala:1719
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Los cambios se revertirán automáticamente después de %i segundo."
 msgstr[1] "Los cambios se revertirán automáticamente después de %i segundos."
 
-#: src/WindowManager.vala:1806
+#: src/WindowManager.vala:1726
 msgid "Keep new display settings?"
 msgstr "¿Desea conservar la nueva configuración de pantalla?"
 
-#: src/WindowManager.vala:1810
+#: src/WindowManager.vala:1730
 msgid "Keep Settings"
 msgstr "Conservar configuración"
 
-#: src/WindowManager.vala:1811
+#: src/WindowManager.vala:1731
 msgid "Use Previous Settings"
 msgstr "Usar configuración previa"
 
@@ -665,9 +691,6 @@ msgstr "Usar configuración previa"
 
 #~ msgid "Duration of the minimize animation"
 #~ msgstr "Duración de la animación de minimización"
-
-#~ msgid "Duration of the workspace switch animation"
-#~ msgstr "Duración de la animación del cambio de área de trabajo"
 
 #~ msgid "Duration of the menu mapping animation"
 #~ msgstr "Duración de la animación de mapeo del menú"

@@ -105,10 +105,10 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         }
 
         var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
-
+        var red = rgba.red / 255.0, green = rgba.green / 255.0, blue = rgba.blue / 255.0;
+        stroke_color = new Cairo.Pattern.rgb (red, green, blue);
         /* Don't use alpha from the stylesheet to ensure contrast */
-        stroke_color = new Cairo.Pattern.rgb (rgba.red, rgba.green, rgba.blue);
-        fill_color = new Cairo.Pattern.rgba (rgba.red, rgba.green, rgba.blue, BACKGROUND_OPACITY);
+        fill_color = new Cairo.Pattern.rgba (red, green, blue, BACKGROUND_OPACITY);
 
         var radius = int.min (cursor_size / 2, cursor_size / 2);
         var end_angle = START_ANGLE + angle;
