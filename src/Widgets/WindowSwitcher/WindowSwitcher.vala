@@ -342,6 +342,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
             var icon = new WindowSwitcherIcon (window, scaling_factor);
+            bind_property ("monitor-scale", icon, "monitor-scale");
             add_icon (icon);
 
             if (window == current_window) {
@@ -371,6 +372,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
                 var icon = new WindowSwitcherIcon (window, scaling_factor);
+                bind_property ("monitor-scale", icon, "monitor-scale");
                 add_icon (icon);
 
                 if (window == current_window) {
