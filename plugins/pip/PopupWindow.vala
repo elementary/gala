@@ -52,7 +52,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     construct {
         var scale = display.get_monitor_scale (display.get_current_monitor ());
 
-        button_size = Gala.Utils.scale_to_int (36, scale);
+        button_size = Gala.Utils.calculate_button_size (scale);
         container_margin = button_size / 2;
 
         reactive = true;
