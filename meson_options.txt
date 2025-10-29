@@ -1,4 +1,5 @@
 option ('documentation', type : 'boolean', value : false)
+option ('tests', type : 'boolean', value : false)
 option ('systemd', type : 'boolean', value : true)
 option ('systemduserunitdir', type : 'string', value : '')
 option ('old-icon-groups', type : 'boolean', value : false)
