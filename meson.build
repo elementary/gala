@@ -148,6 +148,10 @@ if get_option('systemd')
     vala_flags += ['--define', 'WITH_SYSTEMD']
 endif
 
+if get_option('old-icon-groups')
+	vala_flags += ['--define', 'OLD_ICON_GROUPS']
+endif
+
 if vala.version().version_compare('>= 0.56.17')
     vala_flags += ['--define', 'VALA_0_56_17']
 endif
@@ -171,6 +175,9 @@ subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')
     subdir('docs')
+endif
+if get_option('tests')
+    subdir('tests')
 endif
 subdir('po')
 
