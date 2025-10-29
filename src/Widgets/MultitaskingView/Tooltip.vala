@@ -18,35 +18,19 @@ public class Gala.Tooltip : Clutter.Actor {
     private RoundedCornersEffect rounded_corners_effect;
 
     construct {
-#if HAS_MUTTER47
-        Cogl.Color text_color = {
-#else
-        Clutter.Color text_color = {
-#endif
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.red * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.green * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.blue * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.alpha * uint8.MAX,
-        };
-
         text_actor = new Gala.Text () {
             margin_left = 6,
             margin_top = 6,
             margin_bottom = 6,
             margin_right = 6,
             ellipsize = Pango.EllipsizeMode.MIDDLE,
-            color = text_color
+            color = Drawing.Color.TOOLTIP_TEXT_COLOR
         };
 
         add_child (text_actor);
 
         layout_manager = new Clutter.BinLayout ();
-        background_color = {
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.red * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.green * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.blue * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.alpha * uint8.MAX)
-        };
+        background_color = Drawing.Color.TOOLTIP_BACKGROUND;
 
         rounded_corners_effect = new RoundedCornersEffect (3, 1.0f);
         add_effect (rounded_corners_effect);
