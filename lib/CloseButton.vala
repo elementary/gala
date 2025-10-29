@@ -46,7 +46,7 @@ public class Gala.CloseButton : Clutter.Actor {
     }
 
     private static Gdk.Pixbuf? get_close_button_pixbuf (float scale) {
-        var height = Utils.scale_to_int (36, scale);
+        var height = Utils.calculate_button_size (scale);
 
         if (close_pixbufs[height] == null) {
             try {
@@ -71,7 +71,7 @@ public class Gala.CloseButton : Clutter.Actor {
         // works as good as some weird fallback-image-failed-to-load pixbuf
         critical ("Could not create close button");
 
-        var size = Utils.scale_to_int (36, scale);
+        var size = Utils.calculate_button_size (scale);
         pixbuf_actor.set_size (size, size);
         pixbuf_actor.background_color = { 255, 0, 0, 255 };
     }
