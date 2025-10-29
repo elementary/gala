@@ -1011,6 +1011,11 @@ namespace Gala {
             if (NotificationStack.is_notification (window)) {
                 notification_stack.show_notification (actor);
             }
+
+            // Workaround for X11 bug: https://github.com/elementary/dock/issues/479
+            if (!Meta.Util.is_wayland_compositor () && window.window_type == DND) {
+                InternalUtils.clutter_actor_reparent (actor, get_display ().get_compositor ().get_feedback_group ());
+            }
         }
 
         /*
