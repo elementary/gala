@@ -14,67 +14,81 @@ public class Gala.DBus {
     public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
-        Bus.own_name (
-            SESSION, "io.elementary.gala", NONE,
-            (connection) => {
-                try {
-                    connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
-                } catch (Error e) {
-                    warning (e.message);
-                }
-            },
-            () => {},
-            () => critical ("Could not acquire name")
-        );
+        try {
+            var session_connection = Bus.get_sync (SESSION, null);
 
-        Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
-            (connection) => {
-                if (instance == null)
-                    instance = new DBus ();
+            Bus.own_name_on_connection (session_connection, "io.elementary.gala", NONE,
+                (connection, name) => {
+                    try {
+                        connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
+                    } catch (Error e) {
+                        warning (e.message);
+                    }
+                },
+                print_warning
+            );
 
-                try {
-                    connection.register_object ("/org/pantheon/gala", instance);
-                } catch (Error e) { warning (e.message); }
+            Bus.own_name_on_connection (session_connection, "org.pantheon.gala", NONE,
+                (connection, name) => {
+                    if (instance == null) {
+                        instance = new DBus ();
+                    }
 
-                try {
-                    connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
-                } catch (Error e) { warning (e.message); }
-            },
-            () => {},
-            () => warning ("Could not acquire name\n") );
+                    try {
+                        connection.register_object ("/org/pantheon/gala", instance);
+                        connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
+                    } catch (Error e) {
+                        warning (e.message);
+                    }
+                },
+                print_warning
+            );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
-            (connection) => {
-                try {
-                    connection.register_object ("/org/gnome/Shell", new DBusAccelerator (wm.get_display (), notifications_manager));
-                    connection.register_object ("/org/gnome/Shell/Screenshot", screenshot_manager);
-                } catch (Error e) { warning (e.message); }
-            },
-            () => {},
-            () => critical ("Could not acquire name") );
+            Bus.own_name_on_connection (session_connection, "org.gnome.Shell", NONE,
+                (connection, name) => {
+                    try {
+                        connection.register_object ("/org/gnome/Shell", new DBusAccelerator (wm.get_display (), notifications_manager));
+                        connection.register_object ("/org/gnome/Shell/Screenshot", screenshot_manager);
+                    } catch (Error e) {
+                        warning (e.message);
+                    }
+                },
+                print_warning
+            );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.Shell.Screenshot", BusNameOwnerFlags.REPLACE,
-            () => {},
-            () => {},
-            () => critical ("Could not acquire name") );
+            Bus.own_name_on_connection (session_connection, "org.gnome.Shell.Screenshot", REPLACE,
+                null,
+                print_warning
+            );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
-            (connection) => {
-                try {
-                    connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
-                } catch (Error e) { warning (e.message); }
-            },
-            () => {},
-            () => critical ("Could not acquire name") );
+            Bus.own_name_on_connection (session_connection, "org.gnome.SessionManager.EndSessionDialog", NONE,
+                (connection, name) => {
+                    try {
+                        connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
+                    } catch (Error e) {
+                        warning (e.message);
+                    }
+                },
+                print_warning
+            );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
-            (connection) => {
-                try {
-                    connection.register_object ("/org/gnome/ScreenSaver", wm.screensaver);
-                } catch (Error e) { warning (e.message); }
-            },
-            () => {},
-            () => critical ("Could not acquire ScreenSaver bus") );
+            Bus.own_name_on_connection (session_connection, "org.gnome.ScreenSaver", REPLACE,
+                (connection, name) => {
+                    try {
+                        connection.register_object ("/org/gnome/ScreenSaver", wm.screensaver);
+                    } catch (Error e) {
+                        warning (e.message);
+                    }
+                },
+                print_warning
+            );
+        } catch (Error e) {
+            critical ("Couldn't connect to DBus");
+        }
+    }
+
+    private static void print_warning (GLib.DBusConnection connection, string name) {
+        warning ("DBus: Lost name %s", name);
     }
 
     public void perform_action (ActionType type) throws DBusError, IOError {
