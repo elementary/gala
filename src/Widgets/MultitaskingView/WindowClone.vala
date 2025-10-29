@@ -127,7 +127,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape (monitor_scale) {};
+        active_shape = new ActiveShape (monitor_scale);
         active_shape.opacity = 0;
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
