@@ -8,14 +8,14 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : Clutter.Actor {
-    public float monitor_scale {
-        set {
-            rounded_corners_effect.monitor_scale = value;
-        }
-    }
+    public float monitor_scale { get; construct set; }
 
     private Gala.Text text_actor;
     private RoundedCornersEffect rounded_corners_effect;
+
+    public Tooltip (float monitor_scale) {
+        Object (monitor_scale: monitor_scale);
+    }
 
     construct {
         text_actor = new Gala.Text () {
@@ -32,7 +32,8 @@ public class Gala.Tooltip : Clutter.Actor {
         layout_manager = new Clutter.BinLayout ();
         background_color = Drawing.Color.TOOLTIP_BACKGROUND;
 
-        rounded_corners_effect = new RoundedCornersEffect (3, 1.0f);
+        rounded_corners_effect = new RoundedCornersEffect (3, monitor_scale);
+        bind_property ("monitor_scale", rounded_corners_effect, "monitor_scale");
         add_effect (rounded_corners_effect);
     }
 
