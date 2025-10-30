@@ -679,15 +679,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             unowned var style_manager = Drawing.StyleManager.get_instance ();
             style_manager.bind_property ("theme-accent-color", this, "background-color", SYNC_CREATE, (binding, from_value, ref to_value) => {
 #if !HAS_MUTTER47
-                var new_color_ptr = (Clutter.Color*) from_value.get_boxed ();
+                var new_color = (Clutter.Color) from_value;
 #else
-                var new_color_ptr = (Cogl.Color*) from_value.get_boxed ();
+                var new_color = (Cogl.Color) from_value;
 #endif
-
-                var new_color = *new_color_ptr;
                 new_color.alpha = COLOR_OPACITY;
 
-                to_value = new_color;
+                to_value.set_boxed (&new_color);
                 return true;
             }, null);
         }
