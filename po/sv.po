@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-10-28 21:49+0000\n"
-"PO-Revision-Date: 2025-10-23 12:55+0000\n"
+"PO-Revision-Date: 2025-10-30 06:55+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "sv/>\n"
@@ -59,7 +59,7 @@ msgstr "Alltid överst"
 
 #: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
 msgid "Always on Visible Workspace"
-msgstr "Alltid på aktiv arbetsyta"
+msgstr "Alltid på synlig arbetsyta"
 
 #: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
 msgid "Move to Workspace Left"
@@ -95,7 +95,7 @@ msgstr "Multitasking och fönsterhantering"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window &amp; compositing manager for Pantheon"
-msgstr "Ett fönster och en compositing-hanterare för Pantheon"
+msgstr "Ett fönster- och compositing-hanterare för Pantheon"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
@@ -133,31 +133,27 @@ msgstr "Uppdaterade översättningar"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Förbättrat HiDPI-stöd"
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Förbättrad prestanda för skuggor"
+msgstr "Förbättrad renderingsprestanda"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Visa docka och panel synkront vid start"
 
 #: data/gala.metainfo.xml.in:38
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Varaktighet för animation vid byte av arbetsyta"
+msgstr "Förbättrad dockanimering vid byte av arbetsyta"
 
 #: data/gala.metainfo.xml.in:39
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Bild-i-bild-fönster har nu rundade hörn"
 
 #: data/gala.metainfo.xml.in:147
 msgid "Window state is now saved on sleep and shutdown"
-msgstr "Fönsterstatus sparas nu vid viloläge och avstängning"
+msgstr "Fönstertillstånd sparas nu vid viloläge och avstängning"
 
 #: data/gala.metainfo.xml.in:148
 msgid "Remove scaling effect from menus"
@@ -177,7 +173,7 @@ msgstr "Lagt till genväg för interaktiv skärmdump"
 
 #: data/gala.metainfo.xml.in:182
 msgid "Fixed crash when using tiling shortcuts"
-msgstr "Fixad krasch vid användning av kortkommandon för tiling"
+msgstr "Fixade krasch vid användning av kortkommandon för tiling"
 
 #: data/gala.metainfo.xml.in:211
 msgid "Improved shadows performance"
@@ -185,15 +181,16 @@ msgstr "Förbättrad prestanda för skuggor"
 
 #: data/gala.metainfo.xml.in:255
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr "Åtgärdat en potentiell krasch när du flyttar fönster mellan arbetsytor"
+msgstr ""
+"Åtgärdat en potentiell krasch vid förflyttning av fönster mellan arbetsytor"
 
 #: data/gala.metainfo.xml.in:256
 msgid "Fix notification animation when entering multitasking view"
-msgstr "Fixa animering av meddelanden när du går in i multitasking-vyn"
+msgstr "Fixa animering av meddelanden när man går in i multitasking-vyn"
 
 #: data/gala.metainfo.xml.in:271
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr "Förbättrad tangentbordsnavigering i Multitaskingvyn"
+msgstr "Förbättrad tangentbordsnavigering i multitaskingvyn"
 
 #: data/gala.metainfo.xml.in:272
 msgid "Change panel color at the same time as wallpaper transition"
@@ -204,8 +201,8 @@ msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
-"Byte av bakgrundsbild eller insomning respekterar alternativet \"Reduce "
-"Motion\""
+"Byte av bakgrundsbild eller insomning respekterar alternativet "
+"\"Minska rörelse\""
 
 #: data/gala.metainfo.xml.in:313
 msgid "Use appropriate drag-and-drop pointers when moving windows"
@@ -221,7 +218,7 @@ msgstr "Förbättra dynamiska arbetsytors beteende med flera skärmar"
 
 #: data/gala.metainfo.xml.in:337
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr "Förbättra hanteringen av genvägen \"flytta till arbetsyta"
+msgstr "Förbättra hanteringen av genvägen move-to-workspace"
 
 #: data/gala-multitaskingview.desktop.in:4
 #: data/gala-multitaskingview.desktop.in:6
@@ -264,7 +261,7 @@ msgstr ""
 
 #: src/Dialogs/CloseDialog.vala:29
 msgid "Force Quit"
-msgstr "Tvinga fram avslutning"
+msgstr "Tvinga avslutning"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid "Wait"
@@ -273,7 +270,7 @@ msgstr "Vänta"
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr "\"%s\" vill hindra genvägar i systemet"
+msgstr "\"%s\" vill hindra systemgenvägar"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
@@ -317,11 +314,11 @@ msgstr "Skärmdump sparas till urklipp"
 
 #: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
-msgstr "Skärmdump sparas i mappen Skärmdumpar"
+msgstr "Skärmdump sparas i skärmdumpsmappen"
 
 #: src/ScreenshotManager.vala:470
 msgid "Screenshots"
-msgstr "Skärmbilder"
+msgstr "Skärmdumpar"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
 msgid "Window switcher"
@@ -336,7 +333,7 @@ msgstr[1] "Ändringar återställs automatiskt efter %i sekunder."
 
 #: src/WindowManager.vala:1726
 msgid "Keep new display settings?"
-msgstr "Behålla nya skärminställningar?"
+msgstr "Behåll nya skärminställningar?"
 
 #: src/WindowManager.vala:1730
 msgid "Keep Settings"
