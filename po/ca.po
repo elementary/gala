@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-10-28 21:49+0000\n"
-"PO-Revision-Date: 2025-06-05 07:55+0000\n"
+"PO-Revision-Date: 2025-10-31 09:55+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ca/>\n"
@@ -132,27 +132,23 @@ msgstr "Traduccions actualitzades"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Suport per a HiDPI millorat"
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Rendiment de les ombres millorat"
+msgstr "Rendiment de renderització millorat"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Revelació de l'acoblador i el plafó sincronitzats a l'inici"
 
 #: data/gala.metainfo.xml.in:38
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Durada de l'animació del canvi d'espai de treball"
+msgstr "Animació millorada de l'acoblador per canviar l'espai de treball"
 
 #: data/gala.metainfo.xml.in:39
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Les finestres d'imatge dins d'imatge ara tenen cantonades arrodonides."
 
 #: data/gala.metainfo.xml.in:147
 msgid "Window state is now saved on sleep and shutdown"
