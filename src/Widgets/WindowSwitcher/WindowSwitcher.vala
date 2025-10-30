@@ -170,8 +170,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        background_color.alpha = 0.6f;
-
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
 #else
@@ -195,19 +193,19 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         );
 
         ctx.set_source_rgba (
-            background_color.red,
-            background_color.green,
-            background_color.blue,
-            background_color.alpha
+            background_color.red / 255.0,
+            background_color.green / 255.0,
+            background_color.blue / 255.0,
+            0.6
         );
         ctx.fill_preserve ();
 
         ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
-            border_color.red,
-            border_color.green,
-            border_color.blue,
-            border_color.alpha
+            border_color.red / 255.0,
+            border_color.green / 255.0,
+            border_color.blue / 255.0,
+            border_color.alpha / 255.0
         );
         ctx.stroke ();
         ctx.restore ();
@@ -221,9 +219,9 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
-            highlight_color.red,
-            highlight_color.green,
-            highlight_color.blue,
+            highlight_color.red / 255.0,
+            highlight_color.green / 255.0,
+            highlight_color.blue / 255.0,
             0.3
         );
         ctx.stroke ();
