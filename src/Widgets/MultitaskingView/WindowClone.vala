@@ -138,9 +138,17 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
 
+        close_button = new Gala.CloseButton (monitor_scale) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale", close_button, "monitor-scale");
+        close_button.triggered.connect (close_window);
+        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
+
         add_child (active_shape);
         add_child (clone_container);
         add_child (window_title);
+        add_child (close_button);
 
         notify["monitor-scale"].connect (reallocate);
         reallocate ();
@@ -165,19 +173,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void reallocate () {
-        close_button = new Gala.CloseButton (monitor_scale) {
-            opacity = 0
-        };
-        close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
-
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
             visible = !overview_mode
         };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
 
-        add_child (close_button);
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
