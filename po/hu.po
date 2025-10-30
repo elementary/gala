@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-10-28 21:49+0000\n"
-"PO-Revision-Date: 2025-06-26 09:55+0000\n"
+"PO-Revision-Date: 2025-10-30 06:55+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/hu/>\n"
@@ -134,27 +134,23 @@ msgstr "Frissített fordítások"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Javított HiDPI-támogatás"
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Árnyékok teljesítménye javítva"
+msgstr "Leképezési teljesítmény javítva"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "A dokk és a panel szinkronban jelenik meg indulás után"
 
 #: data/gala.metainfo.xml.in:38
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "A munkaterület-váltó animáció időtartama"
+msgstr "Szebben animált dokk munkaterület-váltáskor"
 
 #: data/gala.metainfo.xml.in:39
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "A kép a képben ablakok lekerekített sarkakat kaptak"
 
 #: data/gala.metainfo.xml.in:147
 msgid "Window state is now saved on sleep and shutdown"
