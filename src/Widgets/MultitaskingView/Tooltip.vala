@@ -32,7 +32,7 @@ public class Gala.Tooltip : Clutter.Actor {
         background_color = Drawing.Color.TOOLTIP_BACKGROUND;
 
         var rounded_corners_effect = new RoundedCornersEffect (3, monitor_scale);
-        bind_property ("monitor_scale", rounded_corners_effect, "monitor_scale");
+        bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
         add_effect (rounded_corners_effect);
     }
 
