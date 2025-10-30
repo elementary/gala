@@ -14,13 +14,12 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     public WindowManager wm { get; construct; }
 
     private GestureController gesture_controller; // Currently not used for actual touchpad gestures but only as controller
-
-    private ModalProxy modal_proxy;
-    // the workspaces which we expose right now
-    private List<Meta.Workspace> workspaces;
+    private ModalProxy? modal_proxy = null;
     private WindowCloneContainer window_clone_container;
 
     private uint64[]? window_ids = null;
+    private Meta.Window? last_selected_window = null;
+    private bool opened = false;
 
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
@@ -29,12 +28,20 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     construct {
         visible = false;
         reactive = true;
-        gesture_controller = new GestureController (MULTITASKING_VIEW, wm) {
-            enabled = false
-        };
+
+        gesture_controller = new GestureController (MULTITASKING_VIEW, wm);
         add_gesture_controller (gesture_controller);
     }
 
+    public override void end_progress (Gala.GestureAction action) {
+        if (action == MULTITASKING_VIEW && get_current_progress (MULTITASKING_VIEW) == 0.0) {
+            if (last_selected_window != null) {
+                last_selected_window.get_workspace ().activate_with_focus (last_selected_window, Meta.CURRENT_TIME);
+            }
+
+            cleanup ();
+        }
+    }
 
     public override bool key_press_event (Clutter.Event event) {
         if (!is_opened ()) {
@@ -56,90 +63,70 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
      * {@inheritDoc}
      */
     public bool is_opened () {
-        return visible;
+        return opened;
+    }
+
+    public void toggle () {
+        if (is_opened ()) {
+            close ();
+        } else {
+            open ();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void open (HashTable<string,Variant>? hints = null) {
-        workspaces = new List<Meta.Workspace> ();
-        unowned var manager = wm.get_display ().get_workspace_manager ();
-        foreach (unowned var workspace in manager.get_workspaces ()) {
-            workspaces.append (workspace);
-        }
-
         window_ids = hints != null && "windows" in hints ? (uint64[]) hints["windows"] : null;
-
-        var windows = new List<Meta.Window> ();
-        foreach (var workspace in workspaces) {
-            foreach (unowned var window in workspace.list_windows ()) {
-                if (window.window_type == Meta.WindowType.DOCK || NotificationStack.is_notification (window) ) {
-                    continue;
-                }
-
-                if (window.window_type != Meta.WindowType.NORMAL &&
-                    window.window_type != Meta.WindowType.DIALOG ||
-                    window.is_attached_dialog () ||
-                    (window_ids != null && !(window.get_id () in window_ids))
-                ) {
-                    unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-                    actor.hide ();
-
-                    continue;
-                }
-
-                // skip windows that are on all workspace except we're currently
-                // processing the workspace it actually belongs to
-                if (window.on_all_workspaces && window.get_workspace () != workspace) {
-                    continue;
-                }
-
-                windows.append (window);
-            }
-        }
-
-        if (windows.is_empty ()) {
-            return;
-        }
-
-        grab_key_focus ();
-
-        modal_proxy = wm.push_modal (this, true);
-        modal_proxy.set_keybinding_filter (keybinding_filter);
-        modal_proxy.allow_actions ({ ZOOM });
-
-        unowned var display = wm.get_display ();
-
-        for (var i = 0; i < display.get_n_monitors (); i++) {
-            var geometry = display.get_monitor_geometry (i);
-            var scale = display.get_monitor_scale (i);
-
-            var custom_filter = new Gtk.CustomFilter (window_filter_func);
-            var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
-            model.items_changed.connect (on_items_changed);
-
-            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
-                padding_top = TOP_GAP,
-                padding_left = BORDER,
-                padding_right = BORDER,
-                padding_bottom = BOTTOM_GAP,
-                width = geometry.width,
-                height = geometry.height,
-                x = geometry.x,
-                y = geometry.y,
-            };
-            window_clone_container.window_selected.connect (thumb_selected);
-            window_clone_container.requested_close.connect (() => close ());
-
-            add_child (window_clone_container);
-        }
-
+        opened = true;
+        last_selected_window = null;
         visible = true;
 
-        foreach (unowned var window in windows) {
-            unowned var actor = (Meta.WindowActor) window.get_compositor_private ();
-            actor.hide ();
+        wm.window_group.hide ();
+        wm.top_window_group.hide ();
+        grab_key_focus ();
+
+        if (modal_proxy == null) {
+            modal_proxy = wm.push_modal (this, true);
+            modal_proxy.set_keybinding_filter (keybinding_filter);
+            modal_proxy.allow_actions ({ ZOOM });
+        }
+
+        if (get_n_children () == 0) {
+            var windows_number = 0u;
+
+            unowned var display = wm.get_display ();
+            for (var i = 0; i < display.get_n_monitors (); i++) {
+                var geometry = display.get_monitor_geometry (i);
+                var scale = display.get_monitor_scale (i);
+
+                var custom_filter = new Gtk.CustomFilter (window_filter_func);
+                var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
+                model.items_changed.connect (on_items_changed);
+
+                windows_number += model.get_n_items ();
+
+                window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
+                    padding_top = TOP_GAP,
+                    padding_left = BORDER,
+                    padding_right = BORDER,
+                    padding_bottom = BOTTOM_GAP,
+                    width = geometry.width,
+                    height = geometry.height,
+                    x = geometry.x,
+                    y = geometry.y,
+                };
+                window_clone_container.window_selected.connect (thumb_selected);
+                window_clone_container.requested_close.connect (() => close ());
+
+                add_child (window_clone_container);
+            }
+
+            if (windows_number == 0) {
+                cleanup ();
+                return;
+            }
         }
 
         gesture_controller.goto (1);
@@ -173,7 +160,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
     private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
         // Check removed > added to make sure we only close once when the last window is removed
-        // This avoids an inifinite loop since closing will sort the windows which also triggers this signal
+        // This avoids an infinite loop since closing will sort the windows which also triggers this signal
         if (is_opened () && removed > added && model.get_n_items () == 0) {
             close ();
         }
@@ -182,48 +169,30 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private void thumb_selected (Meta.Window window) {
         if (window.get_workspace () == wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
             window.activate (window.get_display ().get_current_time ());
-            close ();
         } else {
-            close ();
-
-            // wait for the animation to finish before switching
-            Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-                window.get_workspace ().activate_with_focus (window, window.get_display ().get_current_time ());
-                return Source.REMOVE;
-            });
+            last_selected_window = window;
         }
+
+        close ();
     }
 
     /**
      * {@inheritDoc}
      */
     public void close (HashTable<string,Variant>? hints = null) {
-        if (!visible) {
-            return;
-        }
-
-#if HAS_MUTTER48
-        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#else
-        Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#endif
-            cleanup ();
-
-            return Source.REMOVE;
-        });
-
+        opened = false;
         gesture_controller.goto (0);
     }
 
     private void cleanup () {
         visible = false;
+        opened = false;
 
-        wm.pop_modal (modal_proxy);
+        wm.window_group.show ();
+        wm.top_window_group.show ();
 
-        foreach (var window in wm.get_display ().get_workspace_manager ().get_active_workspace ().list_windows ()) {
-            if (window.showing_on_its_workspace ()) {
-                ((Clutter.Actor) window.get_compositor_private ()).show ();
-            }
+        if (modal_proxy != null) {
+            wm.pop_modal (modal_proxy);
         }
 
         destroy_all_children ();

@@ -191,10 +191,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * effect and makes sure the shadow is updated on size changes.
      */
     private void load_clone (Meta.WindowActor actor) {
-        if (overview_mode) {
-            actor.hide ();
-        }
-
         clone = new Clutter.Clone (actor);
         clone_container.add_child (clone);
 

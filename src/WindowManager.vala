@@ -216,8 +216,8 @@ namespace Gala {
              * stage
              * + system background
              * + ui group
+             * +-- background manager
              * +-- window group
-             * +---- background manager
              * +-- top window group
              * +-- multitasking view
              * +-- window switcher
@@ -240,6 +240,10 @@ namespace Gala {
             update_ui_group_size ();
             stage.add_child (ui_group);
 
+            background_group = new BackgroundContainer (display);
+            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
+            ui_group.add_child (background_group);
+
 #if HAS_MUTTER48
             window_group = display.get_compositor ().get_window_group ();
 #else
@@ -247,11 +251,6 @@ namespace Gala {
 #endif
             stage.remove_child (window_group);
             ui_group.add_child (window_group);
-
-            background_group = new BackgroundContainer (display);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
-            window_group.add_child (background_group);
-            window_group.set_child_below_sibling (background_group, null);
 
 #if HAS_MUTTER48
             top_window_group = display.get_compositor ().get_top_window_group ();
@@ -332,10 +331,14 @@ namespace Gala {
             });
 
             display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, () => {
-                if (window_overview.is_opened ()) {
-                    window_overview.close ();
+                if (window_overview is WindowOverview) {
+                    ((WindowOverview) window_overview).toggle ();
                 } else {
-                    window_overview.open ();
+                    if (window_overview.is_opened ()) {
+                        window_overview.close ();
+                    } else {
+                        window_overview.open ();
+                    }
                 }
             });
 
