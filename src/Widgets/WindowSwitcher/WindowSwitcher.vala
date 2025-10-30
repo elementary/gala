@@ -16,7 +16,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
     public bool opened { get; private set; default = false; }
-    public float monitor_scale { get; private set; }
+    public float monitor_scale { get; private set; default = 1.0f; }
 
     private GestureController gesture_controller;
     private int modifier_mask;
@@ -93,10 +93,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             orientation = VERTICAL
         };
 
-        unowned var display = wm.get_display ();
-        monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
         notify["monitor-scale"].connect (scale);
-
         scale ();
 
         shadow_effect = new ShadowEffect ("window-switcher", monitor_scale) {
@@ -115,11 +112,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         // Redraw the components if the colour scheme changes.
         style_manager.notify["prefers-color-scheme"].connect (content.invalidate);
-
-        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (() => {
-            monitor_scale = display.get_monitor_scale (display.get_primary_monitor ());
-        });
 
         notify["opacity"].connect (() => visible = opacity != 0);
     }
@@ -334,6 +326,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
+        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
@@ -356,6 +350,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
         container.remove_all_children ();
         select_icon (null);
+
+        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
