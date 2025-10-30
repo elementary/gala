@@ -18,6 +18,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
     public WindowManager wm { get; construct; }
     public WindowListModel windows { get; construct; }
+    public int monitor { get; construct; }
     public float monitor_scale { get; construct set; }
     public bool overview_mode { get; construct; }
 
@@ -29,8 +30,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, WindowListModel windows, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, WindowListModel windows, int monitor, float monitor_scale, bool overview_mode = false) {
+        Object (wm: wm, windows: windows, monitor: monitor, monitor_scale: monitor_scale, overview_mode: overview_mode);
     }
 
     construct {
@@ -140,14 +141,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             return (int) (seq_b - seq_a);
         });
 
-        Mtk.Rectangle area = {
-            padding_left,
-            padding_top,
-            (int) width - padding_left - padding_right,
-            (int) height - padding_top - padding_bottom
-        };
-
-        foreach (var tilable in calculate_grid_placement (area, windows)) {
+        foreach (var tilable in calculate_window_clones_placement (windows)) {
             tilable.clone.take_slot (tilable.rect, !view_toggle);
         }
     }
@@ -322,10 +316,95 @@ public class Gala.WindowCloneContainer : ActorTarget {
         Mtk.Rectangle rect;
     }
 
+    private bool windows_overlap (GLib.List<TilableWindow?> windows) {
+        var checked_rects = new GLib.List<Mtk.Rectangle?> ();
+        foreach (var tilable in windows) {
+            var window_rect = tilable.clone.window.get_frame_rect ();
+            foreach (var checked_rect in checked_rects) {
+                if (window_rect.overlap (checked_rect)) {
+                    return true;
+                }
+            }
+
+            checked_rects.append (window_rect);
+        }
+
+        return false;
+    }
+
+    private bool window_out_of_screen (GLib.List<TilableWindow?> windows) {
+        foreach (var tilable in windows) {
+            unowned var window = tilable.clone.window;
+            var window_rect = window.get_frame_rect ();
+            var monitor_geometry = window.display.get_monitor_geometry (window.get_monitor ());
+            if (window_rect.x < monitor_geometry.x ||
+                window_rect.y < monitor_geometry.y ||
+                window_rect.x + window_rect.width > monitor_geometry.width ||
+                window_rect.y + window_rect.height > monitor_geometry.height
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Mtk.Rectangle get_rectangle_with_padding () {
+        return {
+            padding_left,
+            padding_top,
+            (int) width - padding_left - padding_right,
+            (int) height - padding_top - padding_bottom
+        };
+    }
+
+    private GLib.List<TilableWindow?> calculate_window_clones_placement (GLib.List<TilableWindow?> windows) {
+        if (windows_overlap (windows) || window_out_of_screen (windows)) {
+            return calculate_grid_placement (windows);
+        } else {
+            Mtk.Rectangle area;
+            if (overview_mode) {
+                area = { 0, 0, (int) width, (int) height };
+            } else {
+                area = get_rectangle_with_padding ();
+            }
+
+            var monitor_geometry = wm.get_display ().get_monitor_geometry (monitor);
+            var scale = (float) area.width / monitor_geometry.width;
+
+            var result = new GLib.List<TilableWindow?> ();
+            foreach (var tilable in windows) {
+                Mtk.Rectangle rect;
+#if HAS_MUTTER46
+                tilable.rect.scale_double (scale, Mtk.RoundingStrategy.ROUND, out rect);
+#else
+                rect = {
+                    0,
+                    0,
+                    Utils.scale_to_int (tilable.rect.width, scale),
+                    Utils.scale_to_int (tilable.rect.height, scale)
+                };
+#endif
+
+                var x_ratio = (float) tilable.rect.x / monitor_geometry.width;
+                rect.x = area.x + Utils.scale_to_int (area.width, x_ratio);
+
+                var y_ratio = (float) tilable.rect.y / monitor_geometry.height;
+                rect.y = area.y + Utils.scale_to_int (area.height, y_ratio);
+
+                result.append ({ tilable.clone, rect });
+            }
+
+            return result;
+        }
+    }
+
     /**
      * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
      */
-    private GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
+    private GLib.List<TilableWindow?> calculate_grid_placement (GLib.List<TilableWindow?> windows) {
+        var area = get_rectangle_with_padding ();
+
         uint window_count = windows.length ();
         int columns = (int) Math.ceil (Math.sqrt (window_count));
         int rows = (int) Math.ceil (window_count / (double) columns);
