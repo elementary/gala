@@ -697,7 +697,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
                 to_value.set_boxed (&new_color);
                 return true;
-            }, null);
+            });
         }
     }
 }
