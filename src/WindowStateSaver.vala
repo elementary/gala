@@ -4,6 +4,8 @@
  */
 
 public class Gala.WindowStateSaver : GLib.Object {
+    private const double REQUIRED_AREA_PERCENTAGE_IN_BOUNDS = 5.0;
+
     [DBus (name = "org.freedesktop.login1.Manager")]
     private interface LoginManager : Object {
         public signal void prepare_for_sleep (bool about_to_suspend);
@@ -125,7 +127,10 @@ public class Gala.WindowStateSaver : GLib.Object {
                 }
             }
 
-            window.move_resize_frame (false, last_x, last_y, last_width, last_height);
+            if (validate_last_window_position (window.display, { last_x, last_y, last_width, last_height })) {
+                window.move_resize_frame (true, last_x, last_y, last_width, last_height);
+            }
+
             track_window (window, app_id);
             return;
         }
@@ -157,6 +162,22 @@ public class Gala.WindowStateSaver : GLib.Object {
 
     public static void on_shutdown () {
         save_all_windows_state ();
+    }
+
+    private static bool validate_last_window_position (Meta.Display display, Mtk.Rectangle position) {
+        var area_in_bounds = 0;
+
+        var n_monitors = display.get_n_monitors ();
+        for (var i = 0; i < n_monitors; i++) {
+            var monitor_rect = display.get_monitor_geometry (i);
+
+            Mtk.Rectangle intersection;
+            monitor_rect.intersect (position, out intersection);
+
+            area_in_bounds += intersection.area ();
+        }
+
+        return (double) area_in_bounds / position.area () * 100.0 >= REQUIRED_AREA_PERCENTAGE_IN_BOUNDS;
     }
 
     private static void track_window (Meta.Window window, string app_id) {
