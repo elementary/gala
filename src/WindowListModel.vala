@@ -63,6 +63,8 @@ public class Gala.WindowListModel : Object, ListModel {
         StaticWindowContainer.get_instance (display).window_changed.connect (check_window);
         display.window_entered_monitor.connect ((monitor, win) => check_window (win));
 
+        //  display.get_workspace_manager ().active_workspace_changed.connect (() => Idle.add_once (check_all));
+
         notify.connect (check_all);
 
         check_all ();
@@ -106,10 +108,7 @@ public class Gala.WindowListModel : Object, ListModel {
             return false;
         }
 
-        if (workspace_filter != null &&
-            (StaticWindowContainer.get_instance (display).is_static (window) ||
-            !window.located_on_workspace (workspace_filter))
-        ) {
+        if (workspace_filter != null && !window.located_on_workspace (workspace_filter)) {
             return false;
         }
 

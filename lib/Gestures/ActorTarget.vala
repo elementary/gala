@@ -15,6 +15,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
 
     private double[] current_progress;
     private double[] current_commit;
+    private bool[] relayout_actions;
     private Gee.List<GestureTarget> targets;
 
     private int ongoing_animations = 0;
@@ -22,6 +23,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
     construct {
         current_progress = new double[GestureAction.N_ACTIONS];
         current_commit = new double[GestureAction.N_ACTIONS];
+        relayout_actions = new bool[GestureAction.N_ACTIONS];
         targets = new Gee.ArrayList<GestureTarget> ();
 
 #if HAS_MUTTER46
@@ -36,6 +38,10 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
             target.propagate (COMMIT, action, current_commit[action]);
             target.propagate (UPDATE, action, current_progress[action]);
         }
+    }
+
+    public void set_relayout_action (GestureAction action, bool relayout) {
+        relayout_actions[action] = relayout;
     }
 
     public void add_target (GestureTarget target) {
@@ -88,6 +94,11 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
                 break;
             case UPDATE:
                 update_progress (action, progress);
+
+                if (relayout_actions[action]) {
+                    queue_relayout ();
+                }
+
                 break;
             case COMMIT:
                 commit_progress (action, progress);
