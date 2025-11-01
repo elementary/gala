@@ -4,7 +4,7 @@
  */
 
 public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
-    public float clip_radius { get; construct; }
+    public int clip_radius { get; construct; }
     public float monitor_scale { get; construct set; }
 
     private int offset_location;
@@ -12,7 +12,7 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
     private int full_texture_size_location;
     private int clip_radius_location;
 
-    public RoundedCornersEffect (float clip_radius, float monitor_scale) {
+    public RoundedCornersEffect (int clip_radius, float monitor_scale) {
         Object (clip_radius: clip_radius, monitor_scale: monitor_scale);
     }
 
@@ -28,7 +28,7 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
             uniform vec2 offset; 
             uniform vec2 actor_size;
             uniform vec2 full_texture_size;
-            uniform float clip_radius;
+            uniform int clip_radius;
 
             float rounded_rect_coverage (vec2 p) {
                 float center_left = clip_radius;
@@ -71,7 +71,8 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
                 }
 
                 // Only pixels on the edge of the curve need expensive antialiasing
-                return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
+                // return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
+                return outer_radius - sqrt (dist_squared);
             }
             """,
             null
@@ -84,7 +85,7 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
             if (texture_coord.x < offset.x || texture_coord.x > offset.x + actor_size.x ||
                 texture_coord.y < offset.y || texture_coord.y > offset.y + actor_size.y
             ) {
-                cogl_color_out = sample * cogl_color_in;
+                cogl_color_out = vec4(0, 0, 0, 0);
                 return;
             }
 
@@ -116,15 +117,21 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
         float texture_width, texture_height;
         get_target_size (out texture_width, out texture_height);
 
+        var resource_scale = actor.get_resource_scale ();
+
         var actor_box = actor.get_allocation_box ();
+        actor_box.scale (resource_scale);
         var effect_box = actor_box.copy ();
         clutter_actor_box_enlarge_for_effects (ref effect_box);
 
+        var offset_x = Math.ceilf ((actor_box.x1 - effect_box.x1) * resource_scale);
+        var offset_y = Math.ceilf ((actor_box.y1 - effect_box.y1) * resource_scale);
+
         unowned var pipeline = get_pipeline ();
-        pipeline.set_uniform_float (offset_location, 2, 1, { actor_box.x1 - effect_box.x1, actor_box.y1 - effect_box.y1 });
-        pipeline.set_uniform_float (actor_size_location, 2, 1, { actor.width, actor.height });
+        pipeline.set_uniform_float (offset_location, 2, 1, { offset_x, offset_y });
+        pipeline.set_uniform_float (actor_size_location, 2, 1, { Math.ceilf (actor_box.get_width ()), Math.ceilf (actor_box.get_height ()) });
         pipeline.set_uniform_float (full_texture_size_location, 2, 1, { texture_width, texture_height });
-        pipeline.set_uniform_1f (clip_radius_location, clip_radius * monitor_scale);
+        pipeline.set_uniform_1i (clip_radius_location, Utils.scale_to_int (clip_radius, monitor_scale));
 
         base.paint_target (node, paint_context);
     }
