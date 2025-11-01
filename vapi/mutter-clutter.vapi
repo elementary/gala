@@ -6690,6 +6690,7 @@ namespace Clutter {
 #else
 		public virtual Cogl.Handle create_texture (float width, float height);
 #endif
+		public virtual Cogl.Pipeline create_pipeline (Cogl.Texture texture);
 		public unowned Cogl.Pipeline? get_pipeline ();
 		public bool get_target_size (out float width, out float height);
 #if HAS_MUTTER46
