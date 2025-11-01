@@ -71,8 +71,7 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
                 }
 
                 // Only pixels on the edge of the curve need expensive antialiasing
-                // return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
-                return outer_radius - sqrt (dist_squared);
+                return smoothstep (outer_radius, inner_radius, sqrt (dist_squared));
             }
             """,
             null
@@ -152,7 +151,7 @@ public class Gala.RoundedCornersEffect : Clutter.OffscreenEffect {
         var height = box.y2 - box.y1;
         width = Math.nearbyintf (width);
         height = Math.nearbyintf (height);
- 
+
         box.x2 = Math.ceilf (box.x2 + 0.75f);
         box.y2 = Math.ceilf (box.y2 + 0.75f);
 
