@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-10-28 21:49+0000\n"
-"PO-Revision-Date: 2025-06-15 15:55+0000\n"
+"PO-Revision-Date: 2025-11-05 20:49+0000\n"
 "Last-Translator: Italo Felipe Capasso Ballesteros <italo@gp-mail.com>\n"
 "Language-Team: Spanish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "es/>\n"
@@ -133,27 +133,26 @@ msgstr "Traducciones actualizadas"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Se mejoró el soporte para HiDPI"
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Se aplicaron mejoras en el rendimiento de las sombras"
+msgstr "Se aplicaron mejoras en el renderizado"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Ahora se muestra el Dock y el Panel en sincronía al iniciar el sistema"
 
 #: data/gala.metainfo.xml.in:38
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Duración de la animación del cambio de área de trabajo"
+msgstr ""
+"Se aplicaron mejoras de animación al cambiar espacios de trabajo en el Dock"
 
 #: data/gala.metainfo.xml.in:39
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr ""
+"La ventanas en «Picture-in-Picture» (imagen dentro de imagen) ahora tiene "
+"bordes redondeados"
 
 #: data/gala.metainfo.xml.in:147
 msgid "Window state is now saved on sleep and shutdown"
