@@ -64,7 +64,6 @@ public class Gala.GestureController : Object {
 
     /**
      * When disabled gesture progress will stay where the gesture ended and not snap to full integers values.
-     * This will also cause the controller to emit smooth progress information even if animations are disabled.
      */
     public bool snap { get; construct set; default = true; }
 
@@ -171,12 +170,6 @@ public class Gala.GestureController : Object {
                 !GestureSettings.is_natural_scroll_enabled (gesture.performed_on_device_type)
             ) {
                 direction_multiplier *= -1;
-            }
-
-            if (snap && !Meta.Prefs.get_gnome_animations ()) {
-                recognizing = false;
-                prepare ();
-                finish (0, progress + direction_multiplier);
             }
 
             recognizing_backend = backend;
