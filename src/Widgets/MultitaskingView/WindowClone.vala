@@ -232,7 +232,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     /**
      * Sets the window slot.
      */
-    public void set_slot (Mtk.Rectangle rect) {
+    public void take_slot (Mtk.Rectangle rect) {
         slot = rect;
         update_targets ();
     }
