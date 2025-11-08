@@ -33,7 +33,7 @@ public class Gala.Drawing.StyleManager : Object {
     private const uint8 ACCENT_COLOR_ALPHA = 64;
 
     private static GLib.Once<StyleManager> instance;
-    public static StyleManager get_instance () {
+    public static unowned StyleManager get_instance () {
         return instance.once (() => new StyleManager ());
     }
 
