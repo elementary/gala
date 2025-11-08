@@ -57,7 +57,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             if (clone == null) {
                 clone = new WindowClone (wm, window, monitor_scale, overview_mode);
                 clone.selected.connect ((_clone) => window_selected (_clone.window));
-                clone.request_reposition.connect (() => reflow (false));
+                clone.request_reposition.connect (reflow);
                 bind_property ("monitor-scale", clone, "monitor-scale");
             }
 
@@ -76,7 +76,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
         // Don't reflow if only the sorting changed
         if (to_remove.size () > 0 || added != removed) {
-            reflow (false);
+            reflow ();
         }
     }
 
@@ -97,7 +97,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             }
 
             windows.sort ();
-            reflow (true);
+            reflow ();
         } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
             windows.sort ();
         }
@@ -121,7 +121,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     /**
      * Recalculate the tiling positions of the windows and animate them to the resulting spots.
      */
-    private void reflow (bool view_toggle) {
+    private void reflow () {
         if (!opened || get_n_children () == 0) {
             return;
         }
@@ -148,7 +148,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         };
 
         foreach (var tilable in calculate_grid_placement (area, windows)) {
-            tilable.clone.take_slot (tilable.rect, !view_toggle);
+            tilable.clone.set_slot (tilable.rect);
         }
     }
 
