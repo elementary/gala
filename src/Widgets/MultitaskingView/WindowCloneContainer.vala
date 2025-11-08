@@ -148,7 +148,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         };
 
         foreach (var tilable in calculate_grid_placement (area, windows)) {
-            tilable.clone.set_slot (tilable.rect);
+            tilable.clone.take_slot (tilable.rect);
         }
     }
 
