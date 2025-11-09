@@ -248,8 +248,12 @@ public class Gala.DesktopIntegration : GLib.Object {
             throw new IOError.NOT_FOUND ("App not found");
         }
 
+        var sorted_windows = wm.get_display ().sort_windows_by_stacking (app.get_windows ());
+
         uint64[] window_ids = {};
-        foreach (var window in app.get_windows ()) {
+        foreach (var window in sorted_windows) {
+            window.raise ();
+            window.focus (Meta.CURRENT_TIME);
             window_ids += window.get_id ();
         }
 
