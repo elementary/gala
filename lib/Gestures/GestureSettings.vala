@@ -57,6 +57,11 @@ private class Gala.GestureSettings : Object {
 
     public static GestureAction get_action (Gesture gesture, out Variant? action_info = null) {
         action_info = null;
+
+        if (gesture.custom) {
+            return CUSTOM;
+        }
+
         var fingers = gesture.fingers;
 
         switch (gesture.type) {
