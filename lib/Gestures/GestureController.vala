@@ -178,8 +178,8 @@ public class Gala.GestureController : Object {
         return recognizing;
     }
 
-    private void gesture_begin (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_begin (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -190,8 +190,8 @@ public class Gala.GestureController : Object {
         previous_time = elapsed_time;
     }
 
-    private void gesture_update (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_update (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -215,8 +215,8 @@ public class Gala.GestureController : Object {
         previous_delta = updated_delta;
     }
 
-    private void gesture_end (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_end (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -311,8 +311,8 @@ public class Gala.GestureController : Object {
 
     public void cancel_gesture () {
         if (recognizing) {
+            gesture_end (recognizing_backend, previous_percentage, previous_time);
             recognizing_backend.cancel_gesture ();
-            gesture_end (previous_percentage, previous_time);
         }
     }
 }
