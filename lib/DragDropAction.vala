@@ -201,7 +201,6 @@ namespace Gala {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
-                    grab_actor (actor, event.get_device ());
                     clicked = true;
 
                     float x, y;
@@ -210,7 +209,77 @@ namespace Gala {
                     last_x = x;
                     last_y = y;
 
+                    // We didn't start dragging yet, so allow propagation (maybe somebody else wants
+                    // to handle this as well)
+                    return Clutter.EVENT_PROPAGATE;
+
+                case Clutter.EventType.MOTION:
+                case Clutter.EventType.TOUCH_UPDATE:
+                    if (!is_valid_touch_event (event)) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
+                    if (!clicked) {
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
+                    float x, y;
+                    event.get_coords (out x, out y);
+
+#if HAS_MUTTER47
+                    var drag_threshold = actor.context.get_settings ().dnd_drag_threshold;
+#else
+                    var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
+#endif
+                    if (Math.fabsf (last_x - x) < drag_threshold && Math.fabsf (last_y - y) < drag_threshold) {
+                        // Not moved far enough yet, continue waiting and allowing propagation
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
+                    // We have moved enough, start the drag
+                    handle = drag_begin (last_x, last_y);
+                    if (handle == null) {
+                        critical ("No handle has been returned by the started signal, aborting drag.");
+                        return Clutter.EVENT_PROPAGATE;
+                    }
+
+                    clicked = false;
+                    dragging = true;
+
+                    grab_actor (handle, event.get_device ());
+
+                    var source_list = sources.@get (drag_id);
+                    if (source_list != null) {
+                        var dest_list = destinations[drag_id];
+                        foreach (var actor in source_list) {
+                            // Do not unset reactivity on destinations
+                            if (dest_list == null || actor in dest_list) {
+                                continue;
+                            }
+
+                            actor.reactive = false;
+                        }
+                    }
+
                     return Clutter.EVENT_STOP;
+
+                case Clutter.EventType.BUTTON_RELEASE:
+                case Clutter.EventType.TOUCH_END:
+                    float x, y, ex, ey;
+                    event.get_coords (out ex, out ey);
+                    actor.get_transformed_position (out x, out y);
+
+                    // release has happened within bounds of actor
+                    if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
+                        actor_clicked (
+                            event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY,
+                            event.get_source_device ().get_device_type ()
+                        );
+                    }
+
+                    clicked = false;
+
+                    return Clutter.EVENT_PROPAGATE;
 
                 default:
                     break;
@@ -246,7 +315,7 @@ namespace Gala {
             grabbed_actor = null;
         }
 
-        private bool on_event (Clutter.Event event) {
+        private bool on_event (Clutter.Event event) requires (dragging) {
             var device = event.get_device ();
 
             if (grabbed_device != null &&
@@ -269,32 +338,11 @@ namespace Gala {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
-                    if (dragging) {
-                        if (hovered != null) {
-                            finish ();
-                            hovered = null;
-                        } else {
-                            cancel ();
-                        }
-
-                        return Clutter.EVENT_STOP;
-                    }
-
-                    float x, y, ex, ey;
-                    event.get_coords (out ex, out ey);
-                    actor.get_transformed_position (out x, out y);
-
-                    // release has happened within bounds of actor
-                    if (clicked && x < ex && x + actor.width > ex && y < ey && y + actor.height > ey) {
-                        actor_clicked (
-                            event.get_type () == BUTTON_RELEASE ? event.get_button () : Clutter.Button.PRIMARY,
-                            event.get_source_device ().get_device_type ()
-                        );
-                    }
-
-                    if (clicked) {
-                        ungrab_actor ();
-                        clicked = false;
+                    if (hovered != null) {
+                        finish ();
+                        hovered = null;
+                    } else {
+                        cancel ();
                     }
 
                     return Clutter.EVENT_STOP;
@@ -308,89 +356,51 @@ namespace Gala {
                     float x, y;
                     event.get_coords (out x, out y);
 
-                    if (!dragging && clicked) {
-#if HAS_MUTTER47
-                        var drag_threshold = actor.context.get_settings ().dnd_drag_threshold;
-#else
-                        var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
-#endif
-                        if (Math.fabsf (last_x - x) > drag_threshold || Math.fabsf (last_y - y) > drag_threshold) {
-                            handle = drag_begin (last_x, last_y);
-                            if (handle == null) {
-                                ungrab_actor ();
-                                critical ("No handle has been returned by the started signal, aborting drag.");
-                                return Clutter.EVENT_PROPAGATE;
-                            }
+                    handle.x -= last_x - x;
+                    handle.y -= last_y - y;
+                    last_x = x;
+                    last_y = y;
 
-                            clicked = false;
-                            dragging = true;
+                    var stage = actor.get_stage ();
+                    var actor = stage.get_actor_at_pos (NONE, (int) x, (int) y);
+                    DragDropAction action = null;
+                    // if we're allowed to bubble and this actor is not a destination, check its parents
+                    if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
+                        while ((actor = actor.get_parent ()) != stage) {
+                            if ((action = get_drag_drop_action (actor)) != null)
+                                break;
+                        }
+                    }
 
-                            ungrab_actor ();
-                            grab_actor (handle, event.get_device ());
-
-                            var source_list = sources.@get (drag_id);
-                            if (source_list != null) {
-                                var dest_list = destinations[drag_id];
-                                foreach (var actor in source_list) {
-                                    // Do not unset reactivity on destinations
-                                    if (dest_list == null || actor in dest_list) {
-                                        continue;
-                                    }
-
-                                    actor.reactive = false;
-                                }
-                            }
+                    // didn't change, no need to do anything
+                    if (actor == hovered) {
+                        if (hovered != null) {
+                            destination_motion (hovered, x - hovered.x, y - hovered.y);
                         }
                         return Clutter.EVENT_STOP;
+                    }
 
-                    } else if (dragging) {
-                        handle.x -= last_x - x;
-                        handle.y -= last_y - y;
-                        last_x = x;
-                        last_y = y;
-
-                        var stage = actor.get_stage ();
-                        var actor = stage.get_actor_at_pos (NONE, (int) x, (int) y);
-                        DragDropAction action = null;
-                        // if we're allowed to bubble and this actor is not a destination, check its parents
-                        if (actor != null && (action = get_drag_drop_action (actor)) == null && allow_bubbling) {
-                            while ((actor = actor.get_parent ()) != stage) {
-                                if ((action = get_drag_drop_action (actor)) != null)
-                                    break;
-                            }
-                        }
-
-                        // didn't change, no need to do anything
-                        if (actor == hovered) {
-                            if (hovered != null) {
-                                destination_motion (hovered, x - hovered.x, y - hovered.y);
-                            }
-                            return Clutter.EVENT_STOP;
-                        }
-
-                        if (action == null) {
-                            // apparently we left ours if we had one before
-                            if (hovered != null) {
-                                emit_crossed (hovered, false);
-                                hovered = null;
-                            }
-
-                            return Clutter.EVENT_STOP;
-                        }
-
-                        // signal the previous one that we left it
+                    if (action == null) {
+                        // apparently we left ours if we had one before
                         if (hovered != null) {
                             emit_crossed (hovered, false);
+                            hovered = null;
                         }
-
-                        // tell the new one that it is hovered
-                        hovered = actor;
-                        emit_crossed (hovered, true);
 
                         return Clutter.EVENT_STOP;
                     }
 
-                    break;
+                    // signal the previous one that we left it
+                    if (hovered != null) {
+                        emit_crossed (hovered, false);
+                    }
+
+                    // tell the new one that it is hovered
+                    hovered = actor;
+                    emit_crossed (hovered, true);
+
+                    return Clutter.EVENT_STOP;
+
                 default:
                     break;
             }
