@@ -366,10 +366,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title.allocate (window_title_alloc);
     }
 
-    public override bool button_press_event (Clutter.Event event) {
-        return Clutter.EVENT_STOP;
-    }
-
     private void update_hover_widgets () {
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
