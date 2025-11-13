@@ -14,7 +14,8 @@ public class Gala.DBus {
     public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
         wm = _wm;
 
-        Bus.own_name (SESSION, "io.elementary.gala", NONE, null,
+        Bus.own_name (
+            SESSION, "io.elementary.gala", NONE, null,
             (connection, name) => {
                 try {
                     connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
@@ -22,10 +23,11 @@ public class Gala.DBus {
                     warning (e.message);
                 }
             },
-            print_warning
+            on_name_lost
         );
 
-        Bus.own_name (SESSION, "org.pantheon.gala", NONE, null,
+        Bus.own_name (
+            SESSION, "org.pantheon.gala", NONE, null,
             (connection, name) => {
                 if (instance == null) {
                     instance = new DBus ();
@@ -38,10 +40,11 @@ public class Gala.DBus {
                     warning (e.message);
                 }
             },
-            print_warning
+            on_name_lost
         );
 
-        Bus.own_name (SESSION, "org.gnome.Shell", NONE, null,
+        Bus.own_name (
+            SESSION, "org.gnome.Shell", NONE, null,
             (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/Shell", new DBusAccelerator (wm.get_display (), notifications_manager));
@@ -50,15 +53,17 @@ public class Gala.DBus {
                     warning (e.message);
                 }
             },
-            print_warning
+            on_name_lost
         );
 
-        Bus.own_name (SESSION, "org.gnome.Shell.Screenshot", REPLACE,
+        Bus.own_name (
+            SESSION, "org.gnome.Shell.Screenshot", REPLACE, null,
             null,
-            print_warning
+            on_name_lost
         );
 
-        Bus.own_name (SESSION, "org.gnome.SessionManager.EndSessionDialog", NONE, null,
+        Bus.own_name (
+            SESSION, "org.gnome.SessionManager.EndSessionDialog", NONE, null,
             (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
@@ -66,10 +71,11 @@ public class Gala.DBus {
                     warning (e.message);
                 }
             },
-            print_warning
+            on_name_lost
         );
 
-        Bus.own_name (SESSION, "org.gnome.ScreenSaver", REPLACE, null,
+        Bus.own_name (
+            SESSION, "org.gnome.ScreenSaver", REPLACE, null,
             (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/ScreenSaver", wm.screensaver);
@@ -77,11 +83,11 @@ public class Gala.DBus {
                     warning (e.message);
                 }
             },
-            print_warning
+            on_name_lost
         );
     }
 
-    private static void print_warning (GLib.DBusConnection connection, string name) {
+    private static void on_name_lost (GLib.DBusConnection connection, string name) {
         warning ("DBus: Lost name %s", name);
     }
 
