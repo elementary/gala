@@ -33,8 +33,14 @@ public class Gala.PropertyAnimator : Object {
             return;
         }
 
+        var attached_to_stopped = false;
         for (var i = 0; i < properties.length; i++) {
             var property = properties[i];
+
+            if (actor.find_property (property.property) == null) {
+                warning ("PropertyAnimator: Can't find property '%s'", property.property);
+                continue;
+            }
 
             Value actor_current_property = {};
             actor.get_property (property.property, ref actor_current_property);
@@ -50,8 +56,9 @@ public class Gala.PropertyAnimator : Object {
                 )
             };
 
-            if (i == 0) {
+            if (!attached_to_stopped) {
                 transition.stopped.connect (call_on_stopped);
+                attached_to_stopped = true;
             }
 
             actor.add_transition (property.property, transition);

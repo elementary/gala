@@ -7694,7 +7694,7 @@ namespace Clutter {
 	}
 	[CCode (cheader_filename = "clutter/clutter.h", type_cname = "ClutterAnimatableInterface", type_id = "clutter_animatable_get_type ()")]
 	public interface Animatable : GLib.Object {
-		public abstract unowned GLib.ParamSpec find_property (string property_name);
+		public abstract unowned GLib.ParamSpec? find_property (string property_name);
 		public abstract unowned Clutter.Actor get_actor ();
 		public abstract void get_initial_state (string property_name, GLib.Value value);
 		public abstract bool interpolate_value (string property_name, Clutter.Interval interval, double progress, out GLib.Value value);
