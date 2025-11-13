@@ -27,6 +27,41 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.3.0" date="2025-11-05" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+          <li>Improved HiDPI support</li>
+          <li>Improved render performance</li>
+          <li>Reveal dock and panel in sync when starting</li>
+          <li>Improved workspace switch dock animation</li>
+          <li>Picture-in-Picture windows now have rounded corners</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/335">Close button isn't always on top</issue>
+        <issue url="https://github.com/elementary/gala/issues/501">Tiled and maximized widows show different behaviour on wingpanel when in front of fullscreen windows</issue>
+        <issue url="https://github.com/elementary/gala/issues/1385">Urgent notifications can get offset</issue>
+        <issue url="https://github.com/elementary/gala/issues/1998">Blur Behind</issue>
+        <issue url="https://github.com/elementary/gala/issues/2057">Trying to change desktop bg to a color don´t work</issue>
+        <issue url="https://github.com/elementary/gala/issues/2071">Dock overlapping right-click menu on elementary OS 8</issue>
+        <issue url="https://github.com/elementary/gala/issues/2079">Gala app icon shows up in Dock briefly</issue>
+        <issue url="https://github.com/elementary/gala/issues/2333">Wingpanel crashes than reappears in the middle of the screen</issue>
+        <issue url="https://github.com/elementary/gala/issues/2399">Horizontal swipe to switch workspace no longer follows natural scrolling setting</issue>
+        <issue url="https://github.com/elementary/gala/issues/2444">Multitasking view - wrong animation with multiple monitors</issue>
+        <issue url="https://github.com/elementary/gala/issues/2445">Multitasking view - window preview sometimes disappears</issue>
+        <issue url="https://github.com/elementary/gala/issues/2451">Windows get burned onto the screen when "Reduce Motion" is on in Secure Session</issue>
+        <issue url="https://github.com/elementary/gala/issues/2454">Right-click menu in wrong location with 2x DPI setting</issue>
+        <issue url="https://github.com/elementary/gala/issues/2489">Flatpaks don't open upon switching from Secure to Classic: DISPLAY not set</issue>
+        <issue url="https://github.com/elementary/gala/issues/2507">Logs filled with assertion fails / failure messages</issue>
+        <issue url="https://github.com/elementary/gala/issues/2515">Main window is being resized to dialog/child window size after reopen</issue>
+        <issue url="https://github.com/elementary/gala/issues/2530">Freezing minimized windows</issue>
+        <issue url="https://github.com/elementary/dock/issues/479">Dock is shown over fullscreen apps</issue>
+        <issue url="https://github.com/elementary/wingpanel/issues/639">Wingpanel starts at middle of the screen</issue>
+      </issues>
+    </release>
+
     <release version="8.2.5" date="2025-07-09" urgency="medium">
       <description>
         <p>Improvements:</p>

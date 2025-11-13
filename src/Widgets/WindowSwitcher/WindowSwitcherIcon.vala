@@ -8,26 +8,13 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
     private const int WRAPPER_BORDER_RADIUS = 3;
 
     public Meta.Window window { get; construct; }
-
-    private WindowIcon icon;
-    private RoundedCornersEffect rounded_corners_effect;
-
+    public float monitor_scale { get; construct set; }
     public bool selected {
         set {
             if (value) {
-                var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-                background_color = {
-                    (uint8) (accent_color.red * uint8.MAX),
-                    (uint8) (accent_color.green * uint8.MAX),
-                    (uint8) (accent_color.blue * uint8.MAX),
-                    (uint8) (accent_color.alpha * uint8.MAX)
-                };
+                background_color = Drawing.StyleManager.get_instance ().theme_accent_color;
             } else {
-#if HAS_MUTTER47
-                background_color = Cogl.Color.from_4f (0, 0, 0, 0);
-#else
-                background_color = Clutter.Color.alloc ();
-#endif
+                background_color = { 0, 0, 0, 0 };
             }
 
             get_accessible ().notify_state_change (Atk.StateType.SELECTED, value);
@@ -35,34 +22,37 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
         }
     }
 
-    public float scale_factor {
-        set {
-            var margin = Utils.scale_to_int (WindowSwitcher.WRAPPER_PADDING, value);
-            icon.margin_top = margin;
-            icon.margin_right = margin;
-            icon.margin_bottom = margin;
-            icon.margin_left = margin;
-
-            rounded_corners_effect.monitor_scale = value;
-        }
+    public WindowSwitcherIcon (Meta.Window window, float monitor_scale) {
+        Object (window: window, monitor_scale: monitor_scale);
     }
 
-    public WindowSwitcherIcon (Meta.Window window, float scale_factor) {
-        Object (window: window);
-
+    construct {
         layout_manager = new Clutter.BinLayout ();
         reactive = true;
 
-        icon = new WindowIcon (window, Utils.scale_to_int (ICON_SIZE, scale_factor));
-        add_child (icon);
+        reload_icon ();
 
-        rounded_corners_effect = new RoundedCornersEffect (WRAPPER_BORDER_RADIUS, scale_factor);
+        var rounded_corners_effect = new RoundedCornersEffect (WRAPPER_BORDER_RADIUS, monitor_scale);
+        bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
         add_effect (rounded_corners_effect);
 
         get_accessible ().accessible_name = window.title;
         get_accessible ().accessible_role = LIST_ITEM;
         get_accessible ().notify_state_change (Atk.StateType.FOCUSABLE, true);
 
-        this.scale_factor = scale_factor;
+        notify["monitor-scale"].connect (reload_icon);
+    }
+
+    private void reload_icon () {
+        remove_all_children ();
+
+        var margin = Utils.scale_to_int (WindowSwitcher.WRAPPER_PADDING, monitor_scale);
+        var icon = new WindowIcon (window, Utils.scale_to_int (ICON_SIZE, monitor_scale)) {
+            margin_top = margin,
+            margin_right = margin,
+            margin_bottom = margin,
+            margin_left = margin
+        };
+        add_child (icon);
     }
 }

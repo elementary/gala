@@ -13,10 +13,10 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private const int MIN_OFFSET = 64;
     private const double GESTURE_STEP = 0.1;
 
+    public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
     public bool opened { get; private set; default = false; }
-
-    public Clutter.Actor? actor { get { return this; } }
+    public float monitor_scale { get; private set; default = 1.0f; }
 
     private GestureController gesture_controller;
     private int modifier_mask;
@@ -49,8 +49,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     }
 
     private double previous_progress = 0d;
-
-    private float scaling_factor = 1.0f;
 
     public WindowSwitcher (WindowManager wm) {
         Object (wm: wm);
@@ -95,37 +93,31 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             orientation = VERTICAL
         };
 
-        shadow_effect = new ShadowEffect ("window-switcher", scaling_factor) {
+        notify["monitor-scale"].connect (scale);
+        scale ();
+
+        shadow_effect = new ShadowEffect ("window-switcher", monitor_scale) {
             border_radius = 10,
             shadow_opacity = 100
         };
+        bind_property ("monitor-scale", shadow_effect, "monitor-scale");
         add_effect (shadow_effect);
 
 
-        blur_effect = new BackgroundBlurEffect (40, 9, scaling_factor);
+        blur_effect = new BackgroundBlurEffect (40, 9, monitor_scale);
+        bind_property ("monitor-scale", blur_effect, "monitor-scale");
         add_effect (blur_effect);
-
-        scale ();
 
         container.button_release_event.connect (container_mouse_release);
 
         // Redraw the components if the colour scheme changes.
         style_manager.notify["prefers-color-scheme"].connect (content.invalidate);
 
-        unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (scale);
-
         notify["opacity"].connect (() => visible = opacity != 0);
     }
 
     private void scale () {
-        unowned var display = wm.get_display ();
-        scaling_factor = display.get_monitor_scale (display.get_current_monitor ());
-
-        shadow_effect.monitor_scale = scaling_factor;
-        blur_effect.monitor_scale = scaling_factor;
-
-        var margin = Utils.scale_to_int (WRAPPER_PADDING, scaling_factor);
+        var margin = Utils.scale_to_int (WRAPPER_PADDING, monitor_scale);
 
         container.margin_left = margin;
         container.margin_right = margin;
@@ -150,7 +142,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.get_preferred_size (null, null, out container_nat_width, null);
 
         var max_width = float.min (
-            geom.width - Utils.scale_to_int (MIN_OFFSET * 2, scaling_factor), // Don't overflow the monitor
+            geom.width - Utils.scale_to_int (MIN_OFFSET * 2, monitor_scale), // Don't overflow the monitor
             container_nat_width // Ellipsize the label if it's longer than the icons
         );
 
@@ -170,8 +162,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-        background_color.alpha = 0.6f;
-
 #if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
 #else
@@ -186,28 +176,28 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         ctx.set_operator (Cairo.Operator.SOURCE);
 
-        var stroke_width = Utils.scale_to_int (1, scaling_factor);
+        var stroke_width = Utils.scale_to_int (1, monitor_scale);
         Drawing.Utilities.cairo_rounded_rectangle (
             ctx,
             stroke_width / 2.0, stroke_width / 2.0,
             width - stroke_width, height - stroke_width,
-            Utils.scale_to_int (9, scaling_factor)
+            Utils.scale_to_int (9, monitor_scale)
         );
 
         ctx.set_source_rgba (
-            background_color.red,
-            background_color.green,
-            background_color.blue,
-            background_color.alpha
+            background_color.red / 255.0,
+            background_color.green / 255.0,
+            background_color.blue / 255.0,
+            0.6
         );
         ctx.fill_preserve ();
 
         ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
-            border_color.red,
-            border_color.green,
-            border_color.blue,
-            border_color.alpha
+            border_color.red / 255.0,
+            border_color.green / 255.0,
+            border_color.blue / 255.0,
+            border_color.alpha / 255.0
         );
         ctx.stroke ();
         ctx.restore ();
@@ -216,14 +206,14 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             ctx, stroke_width * 1.5, stroke_width * 1.5,
             width - stroke_width * 3,
             height - stroke_width * 3,
-            Utils.scale_to_int (8, scaling_factor)
+            Utils.scale_to_int (8, monitor_scale)
         );
 
         ctx.set_line_width (stroke_width);
         ctx.set_source_rgba (
-            highlight_color.red,
-            highlight_color.green,
-            highlight_color.blue,
+            highlight_color.red / 255.0,
+            highlight_color.green / 255.0,
+            highlight_color.blue / 255.0,
             0.3
         );
         ctx.stroke ();
@@ -336,6 +326,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
+        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
             return false;
@@ -343,7 +335,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
         unowned var current_window = display.get_tab_current (Meta.TabList.NORMAL, workspace);
         foreach (unowned var window in windows) {
-            var icon = new WindowSwitcherIcon (window, scaling_factor);
+            var icon = new WindowSwitcherIcon (window, monitor_scale);
+            bind_property ("monitor-scale", icon, "monitor-scale");
             add_icon (icon);
 
             if (window == current_window) {
@@ -357,6 +350,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private bool collect_current_windows (Meta.Display display, Meta.Workspace? workspace) {
         container.remove_all_children ();
         select_icon (null);
+
+        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
@@ -372,7 +367,8 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         var app = window_tracker.get_app_for_window (current_window);
         foreach (unowned var window in windows) {
             if (window_tracker.get_app_for_window (window) == app) {
-                var icon = new WindowSwitcherIcon (window, scaling_factor);
+                var icon = new WindowSwitcherIcon (window, monitor_scale);
+                bind_property ("monitor-scale", icon, "monitor-scale");
                 add_icon (icon);
 
                 if (window == current_window) {

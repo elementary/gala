@@ -42,8 +42,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public bool active {
         set {
-            active_shape.update_color ();
-
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
@@ -127,18 +125,29 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        active_shape = new ActiveShape (monitor_scale) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale", active_shape, "monitor-scale");
 
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }
         };
 
-        window_title = new Tooltip ();
+        window_title = new Tooltip (monitor_scale);
+        bind_property ("monitor-scale", window_title, "monitor-scale");
+
+        close_button = new Gala.CloseButton (monitor_scale) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale", close_button, "monitor-scale");
+        close_button.triggered.connect (close_window);
+        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
 
         add_child (active_shape);
         add_child (clone_container);
         add_child (window_title);
+        add_child (close_button);
 
         notify["monitor-scale"].connect (reallocate);
         reallocate ();
@@ -163,19 +172,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void reallocate () {
-        close_button = new Gala.CloseButton (monitor_scale) {
-            opacity = 0
-        };
-        close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
-
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
             visible = !overview_mode
         };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
 
-        add_child (close_button);
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
@@ -308,7 +310,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
+        var clone_scale_factor = outer_rect.width != 0 ? width / outer_rect.width : 1f;
 
         // Compensate for invisible borders of the texture
         float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
@@ -324,12 +326,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         unowned var display = wm.get_display ();
 
         clone.set_scale (clone_scale_factor, clone_scale_factor);
-
-        float clone_width, clone_height;
-        clone.get_preferred_size (null, null, out clone_width, out clone_height);
-
-        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
-        clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -362,11 +358,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
 
-        float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
-        float window_title_height, window_title_nat_width;
-        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+        float window_title_min_width, window_title_nat_width, window_title_height;
+        window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);
 
-        var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
+        float window_title_max_width = float.max (window_title_min_width, box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
+
+        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
         float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
@@ -500,6 +497,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void destination_crossed (Clutter.Actor destination, bool hovered) {
+#if !OLD_ICON_GROUPS
         if (!(destination is Meta.WindowActor)) {
             return;
         }
@@ -509,6 +507,55 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             WindowDragProvider.get_instance ().notify_leave ();
         }
+#else
+        var icon_group = destination as IconGroup;
+        var insert_thumb = destination as WorkspaceInsertThumb;
+
+        // if we have don't dynamic workspace, we don't allow inserting
+        if (icon_group == null && insert_thumb == null
+            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
+                return;
+        }
+
+        // for an icon group, we only do animations if there is an actual movement possible
+        if (icon_group != null
+            && icon_group.workspace == window.get_workspace ()
+            && window.is_on_primary_monitor ()) {
+                return;
+        }
+
+        var scale = hovered ? 0.4 : 1.0;
+        var opacity = hovered ? 0 : 255;
+        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
+        duration = Utils.get_animation_duration (duration);
+
+        window_icon.save_easing_state ();
+
+        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
+        window_icon.set_easing_duration (duration);
+        window_icon.set_scale (scale, scale);
+        window_icon.set_opacity (opacity);
+
+        window_icon.restore_easing_state ();
+
+        if (insert_thumb != null) {
+            insert_thumb.set_window_thumb (window);
+        }
+
+        if (icon_group != null) {
+            if (hovered) {
+                icon_group.add_window (window, false, true);
+            } else {
+                icon_group.remove_window (window, false);
+            }
+        }
+
+#if HAS_MUTTER48
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE : Meta.Cursor.NO_DROP);
+#else
+        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE : Meta.Cursor.DND_IN_DRAG);
+#endif
+#endif
     }
 
     private void destination_motion (Clutter.Actor destination, float x, float y) {
@@ -622,20 +669,31 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     private class ActiveShape : Clutter.Actor {
         private const int BORDER_RADIUS = 16;
-        private const double COLOR_OPACITY = 0.8;
+        private const uint8 COLOR_OPACITY = 204;
 
-        construct {
-            add_effect (new RoundedCornersEffect (BORDER_RADIUS, 1.0f));
+        public float monitor_scale { get; construct set; }
+
+        public ActiveShape (float monitor_scale) {
+            Object (monitor_scale: monitor_scale);
         }
 
-        public void update_color () {
-            var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-            background_color = {
-                (uint8) (accent_color.red * uint8.MAX),
-                (uint8) (accent_color.green * uint8.MAX),
-                (uint8) (accent_color.blue * uint8.MAX),
-                (uint8) (COLOR_OPACITY * uint8.MAX)
-            };
+        construct {
+            var rounded_corners_effect = new RoundedCornersEffect (BORDER_RADIUS, monitor_scale);
+            bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
+            add_effect (rounded_corners_effect);
+
+            unowned var style_manager = Drawing.StyleManager.get_instance ();
+            style_manager.bind_property ("theme-accent-color", this, "background-color", SYNC_CREATE, (binding, from_value, ref to_value) => {
+#if !HAS_MUTTER47
+                var new_color = (Clutter.Color) from_value;
+#else
+                var new_color = (Cogl.Color) from_value;
+#endif
+                new_color.alpha = COLOR_OPACITY;
+
+                to_value.set_boxed (&new_color);
+                return true;
+            });
         }
     }
 }

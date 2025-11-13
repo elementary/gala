@@ -49,6 +49,8 @@ namespace Gala {
          */
         public Clutter.Actor shell_group { get; private set; }
 
+        private Clutter.Actor menu_group { get; set; }
+
         /**
          * {@inheritDoc}
          */
@@ -110,7 +112,6 @@ namespace Gala {
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
-        private GLib.Settings new_behavior_settings;
 
         construct {
 #if !HAS_MUTTER48
@@ -119,7 +120,6 @@ namespace Gala {
 #endif
 
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
-            new_behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
             //Make it start watching the settings daemon bus
             Drawing.StyleManager.get_instance ();
@@ -223,6 +223,7 @@ namespace Gala {
              * +-- window switcher
              * +-- window overview
              * +-- shell group
+             * +-- menu group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
@@ -290,6 +291,9 @@ namespace Gala {
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();
             ui_group.add_child (shell_group);
+
+            menu_group = new Clutter.Actor ();
+            ui_group.add_child (menu_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -368,7 +372,7 @@ namespace Gala {
             unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
             monitor_manager.monitors_changed.connect (update_ui_group_size);
 
-            hot_corner_manager = new HotCornerManager (this, behavior_settings, new_behavior_settings);
+            hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 
@@ -951,18 +955,13 @@ namespace Gala {
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
             if (tile_preview == null) {
-                tile_preview = new Clutter.Actor ();
-                var rgba = Drawing.StyleManager.get_instance ().theme_accent_color;
-                tile_preview.background_color = {
-                    (uint8)(255.0 * rgba.red),
-                    (uint8)(255.0 * rgba.green),
-                    (uint8)(255.0 * rgba.blue),
-                    (uint8)(255.0 * rgba.alpha)
+                tile_preview = new Clutter.Actor () {
+                    background_color = Drawing.StyleManager.get_instance ().theme_accent_color,
+                    opacity = 0
                 };
-                tile_preview.opacity = 0U;
 
                 window_group.add_child (tile_preview);
-            } else if (tile_preview.is_visible ()) {
+            } else {
                 float width, height, x, y;
                 tile_preview.get_position (out x, out y);
                 tile_preview.get_size (out width, out height);
@@ -1017,6 +1016,20 @@ namespace Gala {
 
             if (NotificationStack.is_notification (window)) {
                 notification_stack.show_notification (actor);
+            }
+
+            // Workaround for X11 bug: https://github.com/elementary/gala/issues/2071
+            if (window.window_type == MENU ||
+                window.window_type == DROPDOWN_MENU ||
+                window.window_type == POPUP_MENU ||
+                window.window_type == TOOLTIP
+            ) {
+                InternalUtils.clutter_actor_reparent (actor, menu_group);
+            }
+
+            // Workaround for X11 bug: https://github.com/elementary/dock/issues/479
+            if (!Meta.Util.is_wayland_compositor () && window.window_type == DND) {
+                InternalUtils.clutter_actor_reparent (actor, get_display ().get_compositor ().get_feedback_group ());
             }
         }
 

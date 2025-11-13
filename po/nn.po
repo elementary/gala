@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-06-30 17:54+0000\n"
+"POT-Creation-Date: 2025-11-05 20:49+0000\n"
 "PO-Revision-Date: 2023-02-07 16:25+0000\n"
 "Last-Translator: Martin Myrvold <myrvold.martin@gmail.com>\n"
 "Language-Team: Norwegian Nynorsk <https://l10n.elementary.io/projects/"
@@ -20,23 +20,23 @@ msgstr ""
 "X-Generator: Weblate 4.14.2\n"
 "X-Launchpad-Export-Date: 2017-04-19 06:26+0000\n"
 
-#: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr ""
 
-#: daemon/DBus.vala:218 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr ""
 
-#: daemon/DBus.vala:219 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
@@ -110,99 +110,125 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:85
-#: data/gala.metainfo.xml.in:99 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:176
-#: data/gala.metainfo.xml.in:191 data/gala.metainfo.xml.in:208
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:265
-#: data/gala.metainfo.xml.in:290 data/gala.metainfo.xml.in:306
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
+#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
+#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
+#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
 msgid "Improvements:"
 msgstr "Forbetringar:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:87
-#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:178
-#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:212
-#: data/gala.metainfo.xml.in:228 data/gala.metainfo.xml.in:271
-#: data/gala.metainfo.xml.in:293 data/gala.metainfo.xml.in:308
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
+#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
+#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
+#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
 msgid "Updated translations"
 msgstr "Oppdatert oversetning"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:35
+msgid "Improved HiDPI support"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:36
+#, fuzzy
+#| msgid "Improve window shadows for legacy apps"
+msgid "Improved render performance"
+msgstr "Forbetra skuggar rundt vindauge for gamle appar"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Reveal dock and panel in sync when starting"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:38
+#, fuzzy
+#| msgid "Duration of the workspace switch animation"
+msgid "Improved workspace switch dock animation"
+msgstr "Lengd på animasjon ved byte av arbeidsområde"
+
+#: data/gala.metainfo.xml.in:39
+msgid "Picture-in-Picture windows now have rounded corners"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:149
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:150
 msgid "Remove scaling effect from menus"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:151
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:182
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:183
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:184
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Fiksa feilen der nokon opplevde ein kræsj når eit tok skjermbilete"
 
-#: data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:213
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "Forbetra skuggar rundt vindauge for gamle appar"
 
-#: data/gala.metainfo.xml.in:210
+#: data/gala.metainfo.xml.in:257
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "Fiksa feilen der nokon opplevde ein kræsj når eit tok skjermbilete"
 
-#: data/gala.metainfo.xml.in:211
+#: data/gala.metainfo.xml.in:258
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Fiksa feilen med plassering av varslingar etter endring av DPI"
 
-#: data/gala.metainfo.xml.in:226
+#: data/gala.metainfo.xml.in:273
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Multitasking visning"
 
-#: data/gala.metainfo.xml.in:227
+#: data/gala.metainfo.xml.in:274
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:267
+#: data/gala.metainfo.xml.in:314
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:268
+#: data/gala.metainfo.xml.in:315
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:269
+#: data/gala.metainfo.xml.in:316
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:270
+#: data/gala.metainfo.xml.in:317
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:292
+#: data/gala.metainfo.xml.in:339
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
@@ -272,61 +298,61 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:192
+#: src/DesktopIntegration.vala:200
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:102
+#: src/ScreenshotManager.vala:103
 #, fuzzy, c-format
 #| msgid "Screenshots"
 msgid "Screenshot from %s"
 msgstr "Skjermbilete"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:167
+#: src/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr ""
 
-#: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
+#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
 #, fuzzy
 #| msgid "Screenshots"
 msgid "Screenshot taken"
 msgstr "Skjermbilete"
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:461
+#: src/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "Skjermbilete"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:78
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1799
+#: src/WindowManager.vala:1739
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Endringane vil bli automatisk stilt tilbake etter %i sekund."
 msgstr[1] "Endringane vil bli automatisk stilt tilbake etter %i sekundar."
 
-#: src/WindowManager.vala:1806
+#: src/WindowManager.vala:1746
 msgid "Keep new display settings?"
 msgstr "Vil du behalda dei nye innstillingane for skjermen?"
 
-#: src/WindowManager.vala:1810
+#: src/WindowManager.vala:1750
 msgid "Keep Settings"
 msgstr "Behald innstillingar"
 
-#: src/WindowManager.vala:1811
+#: src/WindowManager.vala:1751
 msgid "Use Previous Settings"
 msgstr "Bruk dei forrige innstillingane"
 
@@ -609,9 +635,6 @@ msgstr "Bruk dei forrige innstillingane"
 
 #~ msgid "Duration of the minimize animation"
 #~ msgstr "Lengd på animasjon ved minimering"
-
-#~ msgid "Duration of the workspace switch animation"
-#~ msgstr "Lengd på animasjon ved byte av arbeidsområde"
 
 #~ msgid "Duration of the menu mapping animation"
 #~ msgstr "Lengd på animasjon ved kartlegging av meny"

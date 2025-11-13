@@ -9,14 +9,25 @@ namespace Gala.Drawing {
     * A class containing an RGBA color and methods for more powerful color manipulation.
     */
     public class Color : GLib.Object {
-        public const Gdk.RGBA LIGHT_BACKGROUND = { (250f / 255f), (250f / 255f), (250f / 255f), 1};
-        public const Gdk.RGBA DARK_BACKGROUND = { (51 / 255f), (51 / 255f), (51 / 255f), 1};
-        public const Gdk.RGBA LIGHT_BORDER = { 0, 0, 0, 0.2f};
-        public const Gdk.RGBA DARK_BORDER = { 0, 0, 0, 0.75f};
-        public const Gdk.RGBA LIGHT_HIGHLIGHT = { 255, 255, 255, 1};
-        public const Gdk.RGBA DARK_HIGHLIGHT = { 255, 255, 255, 0.05f};
-        public const Gdk.RGBA TOOLTIP_BACKGROUND = { 0, 0, 0, 1};
-        public const Gdk.RGBA TOOLTIP_TEXT_COLOR = { 1, 1, 1, 1};
+#if !HAS_MUTTER47
+        public const Clutter.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
+        public const Clutter.Color DARK_BACKGROUND = { 51, 51, 51, 255};
+        public const Clutter.Color LIGHT_BORDER = { 0, 0, 0, 51};
+        public const Clutter.Color DARK_BORDER = { 0, 0, 0, 191};
+        public const Clutter.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
+        public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
+        public const Clutter.Color TOOLTIP_BACKGROUND = { 0, 0, 0, 255};
+        public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+#else
+        public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
+        public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255};
+        public const Cogl.Color LIGHT_BORDER = { 0, 0, 0, 51};
+        public const Cogl.Color DARK_BORDER = { 0, 0, 0, 191};
+        public const Cogl.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
+        public const Cogl.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
+        public const Cogl.Color TOOLTIP_BACKGROUND = { 0, 0, 0, 255};
+        public const Cogl.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+#endif
 
         /**
         * The value of the red channel, with 0 being the lowest value and 1.0 being the greatest value.
@@ -94,15 +105,6 @@ namespace Gala.Drawing {
         }
 
         /**
-        * Constructs a new {@link Gala.Drawing.Color} from a {@link Gdk.RGBA}.
-        *
-        * @param color the {@link Gdk.RGBA}
-        */
-        public Color.from_rgba (Gdk.RGBA color) {
-            set_from_rgba (color);
-        }
-
-        /**
         * Constructs a new {@link Gala.Drawing.Color} from a string.
         *
         * The string can be either one of:
@@ -112,14 +114,20 @@ namespace Gala.Drawing {
         * * A RGB color in the form “rgb(r,g,b)” (In this case the color will have full opacity)
         * * A RGBA color in the form “rgba(r,g,b,a)”
         *
-        * For more details on formatting and how this function works see {@link Gdk.RGBA.parse}
+        * For more details on formatting and how this function works see {@link Clutter.Color.from_string}
         *
         * @param color the string specifying the color
         */
         public Color.from_string (string color) {
-            Gdk.RGBA rgba = Gdk.RGBA ();
-            rgba.parse (color);
-            set_from_rgba (rgba);
+#if !HAS_MUTTER47
+            var parsed_color = Clutter.Color.from_string (color);
+#else
+            var parsed_color = Cogl.Color.from_string (color);
+#endif
+            R = parsed_color.red / 255.0;
+            G = parsed_color.green / 255.0;
+            B = parsed_color.blue / 255.0;
+            A = parsed_color.alpha / 255.0;
         }
 
         /**
@@ -508,13 +516,17 @@ namespace Gala.Drawing {
         * Note: that this string representation may lose some precision, since r, g and b are represented
         * as 8-bit integers. If this is a concern, you should use a different representation.
         *
-        * This returns the same string as a {@link Gdk.RGBA} would return in {@link Gdk.RGBA.to_string}
+        * This returns the same string as a {@link Clutter.Color} would return in {@link Clutter.Color.to_string}
         *
         * @return the text string
         */
         public string to_string () {
-            Gdk.RGBA rgba = {(float)R, (float)G, (float)B, (float)A};
-            return rgba.to_string ();
+#if !HAS_MUTTER47
+            Clutter.Color color = { (uint8) (R * 255), (uint8) (G * 255), (uint8) (B * 255), (uint8) (A * 255) };
+#else
+            Cogl.Color color = { (uint8) (R * 255), (uint8) (G * 255), (uint8) (B * 255), (uint8) (A * 255) };
+#endif
+            return color.to_string ();
         }
 
         /**
@@ -545,13 +557,6 @@ namespace Gala.Drawing {
             uint8 alpha = (uint8)(A * uint8.MAX);
 
             return (alpha << 24) | (red << 16) | (green << 8) | blue;
-        }
-
-        private void set_from_rgba (Gdk.RGBA color) {
-            R = color.red;
-            G = color.green;
-            B = color.blue;
-            A = color.alpha;
         }
     }
 }

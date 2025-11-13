@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-06-30 17:54+0000\n"
-"PO-Revision-Date: 2025-10-08 05:55+0000\n"
+"POT-Creation-Date: 2025-11-05 20:49+0000\n"
+"PO-Revision-Date: 2025-10-30 06:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
 "he/>\n"
@@ -15,23 +15,23 @@ msgstr ""
 "X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
-#: daemon/DBus.vala:84 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "החלפת טפט…"
 
-#: daemon/DBus.vala:88 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "הגדרות תצוגה…"
 
-#: daemon/DBus.vala:94 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "הגדרות מערכת…"
 
-#: daemon/DBus.vala:218 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "פתיחת הגדרות המערכת נכשלה"
 
-#: daemon/DBus.vala:219 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "חובה להתקין מנגנון שמטפל בכתובות מהתבנית „settings://‎”."
 
@@ -101,91 +101,113 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr "elementary בע״מ"
+msgstr "elementary בע״מ."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:47
-#: data/gala.metainfo.xml.in:73 data/gala.metainfo.xml.in:85
-#: data/gala.metainfo.xml.in:99 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:163 data/gala.metainfo.xml.in:176
-#: data/gala.metainfo.xml.in:191 data/gala.metainfo.xml.in:208
-#: data/gala.metainfo.xml.in:224 data/gala.metainfo.xml.in:265
-#: data/gala.metainfo.xml.in:290 data/gala.metainfo.xml.in:306
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
+#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
+#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
+#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
+#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
+#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
+#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
 msgid "Improvements:"
 msgstr "שיפורים:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:49
-#: data/gala.metainfo.xml.in:75 data/gala.metainfo.xml.in:87
-#: data/gala.metainfo.xml.in:101 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:165 data/gala.metainfo.xml.in:178
-#: data/gala.metainfo.xml.in:193 data/gala.metainfo.xml.in:212
-#: data/gala.metainfo.xml.in:228 data/gala.metainfo.xml.in:271
-#: data/gala.metainfo.xml.in:293 data/gala.metainfo.xml.in:308
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
+#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
+#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
+#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
 msgid "Updated translations"
 msgstr "התרגומים עודכנו"
 
-#: data/gala.metainfo.xml.in:102
+#: data/gala.metainfo.xml.in:35
+msgid "Improved HiDPI support"
+msgstr "תמיכה משופרת ב־HiDPI"
+
+#: data/gala.metainfo.xml.in:36
+msgid "Improved render performance"
+msgstr "ביצועי התיצוג השתפרו"
+
+#: data/gala.metainfo.xml.in:37
+msgid "Reveal dock and panel in sync when starting"
+msgstr "המעגן והלוח נחשפים בצורה מתואמת עם ההפעלה"
+
+#: data/gala.metainfo.xml.in:38
+msgid "Improved workspace switch dock animation"
+msgstr "ההנפשה במעגן להחלפת סביבת עבודה השתפרה"
+
+#: data/gala.metainfo.xml.in:39
+msgid "Picture-in-Picture windows now have rounded corners"
+msgstr "לחלונות תמונה בתוך תמונה יש כעת פינות מעוגלות"
+
+#: data/gala.metainfo.xml.in:149
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "מצב החלון נשמר לפני מצב שינה וכיבוי"
 
-#: data/gala.metainfo.xml.in:103
+#: data/gala.metainfo.xml.in:150
 msgid "Remove scaling effect from menus"
 msgstr "הסרת אפקט התאמת קנה מידה מהתפריטים"
 
-#: data/gala.metainfo.xml.in:104
+#: data/gala.metainfo.xml.in:151
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "יש להחליק למעלה כדי לסגור חלונות בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:182
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "תוקנה קריסה שנגרמה כשחלון מעוגן חוסל"
 
-#: data/gala.metainfo.xml.in:136
+#: data/gala.metainfo.xml.in:183
 msgid "Added interactive screenshot shortcut"
 msgstr "נוסף קיצור דרך לצילום מסך אינטראקטיבי"
 
-#: data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:184
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "תוקנה קריסה עקב שימוש בקיצורי דרך של ריצוף"
 
-#: data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:213
 msgid "Improved shadows performance"
 msgstr "ביצועי הצלליות השתפרו"
 
-#: data/gala.metainfo.xml.in:210
+#: data/gala.metainfo.xml.in:257
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "תוקנה קריסה שיכלה לקרות בעת העברת חלונות בין סביבות עבודה"
 
-#: data/gala.metainfo.xml.in:211
+#: data/gala.metainfo.xml.in:258
 msgid "Fix notification animation when entering multitasking view"
 msgstr "תוקנה הנפשת ההתראות בכניסה לתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:226
+#: data/gala.metainfo.xml.in:273
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "שיפור ניווט המקלדת בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:227
+#: data/gala.metainfo.xml.in:274
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "החלפת צבע הלוח יחד עם מעבר תמונת הרקע"
 
-#: data/gala.metainfo.xml.in:267
+#: data/gala.metainfo.xml.in:314
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr "החלפת טפט או שינה מכבדים את האפשרות „צמצום תנועה”"
 
-#: data/gala.metainfo.xml.in:268
+#: data/gala.metainfo.xml.in:315
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
-#: data/gala.metainfo.xml.in:269
+#: data/gala.metainfo.xml.in:316
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "תוקנה תקלה שמחוות בתצוגת ריבוי משימות מפסיקות לעבוד"
 
-#: data/gala.metainfo.xml.in:270
+#: data/gala.metainfo.xml.in:317
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "שיפור התנהגות מרחבי עבודה דינמיים עם ריבוי צגים"
 
-#: data/gala.metainfo.xml.in:292
+#: data/gala.metainfo.xml.in:339
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "שיפור הטיפול בקיצור הדרך להעברה למרחב עבודה"
 
@@ -257,58 +279,58 @@ msgstr "לאפשר"
 msgid "Deny"
 msgstr "לסרב"
 
-#: src/DesktopIntegration.vala:192
+#: src/DesktopIntegration.vala:200
 msgid "Window has already focus"
 msgstr "החלון כבר ממוקד"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:102
+#: src/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ־%s"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:167
+#: src/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr "הצגה ב־%s"
 
-#: src/ScreenshotManager.vala:174 src/ScreenshotManager.vala:553
+#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
 msgid "Screenshot taken"
 msgstr "המסך צולם"
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr "צילום המסך נשמר ללוח הגזירים"
 
-#: src/ScreenshotManager.vala:175
+#: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr "צילום המסך נשמר לתיקיית צילומי המסך"
 
-#: src/ScreenshotManager.vala:461
+#: src/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:81
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:78
 msgid "Window switcher"
 msgstr "בורר חלונות"
 
-#: src/WindowManager.vala:1799
+#: src/WindowManager.vala:1739
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "השינויים יוחזרו לקדמותם אוטומטית לאחר שנייה."
 msgstr[1] "השינויים יוחזרו לקדמותם אוטומטית לאחר %i שניות."
 
-#: src/WindowManager.vala:1806
+#: src/WindowManager.vala:1746
 msgid "Keep new display settings?"
 msgstr "לשמור את הגדרות התצוגה החדשות?"
 
-#: src/WindowManager.vala:1810
+#: src/WindowManager.vala:1750
 msgid "Keep Settings"
 msgstr "לשמור את ההגדרות"
 
-#: src/WindowManager.vala:1811
+#: src/WindowManager.vala:1751
 msgid "Use Previous Settings"
 msgstr "להשתמש בהגדרות הקודמות"
 
@@ -665,9 +687,6 @@ msgstr "להשתמש בהגדרות הקודמות"
 
 #~ msgid "Duration of the minimize animation"
 #~ msgstr "משך הנפשת המזעור"
-
-#~ msgid "Duration of the workspace switch animation"
-#~ msgstr "משך הנפשת החלפת סביבת עבודה"
 
 #~ msgid "Duration of the menu mapping animation"
 #~ msgstr "משך הנפשת מיפוי תפריט"
