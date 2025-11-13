@@ -15,6 +15,7 @@ executable(
     gala_daemon_sources,
     gala_common_enums,
     config_header,
+    gala_resources,
     dependencies: [granite6_dep, hdy_dep],
     install: true,
 )

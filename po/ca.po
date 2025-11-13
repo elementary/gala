@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-10-28 21:49+0000\n"
-"PO-Revision-Date: 2025-06-05 07:55+0000\n"
+"POT-Creation-Date: 2025-11-05 20:49+0000\n"
+"PO-Revision-Date: 2025-10-31 09:55+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ca/>\n"
@@ -108,102 +108,98 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:65
-#: data/gala.metainfo.xml.in:77 data/gala.metainfo.xml.in:92
-#: data/gala.metainfo.xml.in:118 data/gala.metainfo.xml.in:130
-#: data/gala.metainfo.xml.in:144 data/gala.metainfo.xml.in:177
-#: data/gala.metainfo.xml.in:208 data/gala.metainfo.xml.in:221
-#: data/gala.metainfo.xml.in:236 data/gala.metainfo.xml.in:253
-#: data/gala.metainfo.xml.in:269 data/gala.metainfo.xml.in:310
-#: data/gala.metainfo.xml.in:335 data/gala.metainfo.xml.in:351
-msgid "Improvements:"
-msgstr "Millores:"
-
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
 #: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
 #: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
 #: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
 #: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
-#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:257
-#: data/gala.metainfo.xml.in:273 data/gala.metainfo.xml.in:316
-#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:353
+#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
+#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
+#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
+msgid "Improvements:"
+msgstr "Millores:"
+
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
+#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
+#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
+#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
+#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
+#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
+#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
 msgid "Updated translations"
 msgstr "Traduccions actualitzades"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Suport per a HiDPI millorat"
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Rendiment de les ombres millorat"
+msgstr "Rendiment de renderització millorat"
 
 #: data/gala.metainfo.xml.in:37
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Revelació de l'acoblador i el plafó sincronitzats a l'inici"
 
 #: data/gala.metainfo.xml.in:38
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Durada de l'animació del canvi d'espai de treball"
+msgstr "Animació millorada de l'acoblador per canviar l'espai de treball"
 
 #: data/gala.metainfo.xml.in:39
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Les finestres d'imatge dins d'imatge ara tenen cantonades arrodonides."
 
-#: data/gala.metainfo.xml.in:147
+#: data/gala.metainfo.xml.in:149
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "L'estat de la finestra ara es desa en suspensió i aturat"
 
-#: data/gala.metainfo.xml.in:148
+#: data/gala.metainfo.xml.in:150
 msgid "Remove scaling effect from menus"
 msgstr "Suprimeix l'efecte d'escala dels menús"
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:151
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 "Feu lliscar el dit amunt per tancar les finestres a la vista de multitasca"
 
-#: data/gala.metainfo.xml.in:180
+#: data/gala.metainfo.xml.in:182
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 "S'ha solucionat una fallada rara de quan es matava una finestra de "
 "l'acoblador."
 
-#: data/gala.metainfo.xml.in:181
+#: data/gala.metainfo.xml.in:183
 msgid "Added interactive screenshot shortcut"
 msgstr "S'ha afegit una drecera interactiva de captura de pantalla."
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:184
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Correcció de l'error de quan s'usaven les dreceres de mosaic"
 
-#: data/gala.metainfo.xml.in:211
+#: data/gala.metainfo.xml.in:213
 msgid "Improved shadows performance"
 msgstr "Rendiment de les ombres millorat"
 
-#: data/gala.metainfo.xml.in:255
+#: data/gala.metainfo.xml.in:257
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Solució d'un error potencial en moure finestres entre espais de treball"
 
-#: data/gala.metainfo.xml.in:256
+#: data/gala.metainfo.xml.in:258
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Correcció de l'animació de notificació quan entreu a la vista multitasca"
 
-#: data/gala.metainfo.xml.in:271
+#: data/gala.metainfo.xml.in:273
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Millora de la navegació amb el teclat a la vista multitasca"
 
-#: data/gala.metainfo.xml.in:272
+#: data/gala.metainfo.xml.in:274
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Canvia el color del plafó alhora que la transició del fons de pantalla"
 
-#: data/gala.metainfo.xml.in:312
+#: data/gala.metainfo.xml.in:314
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -211,23 +207,23 @@ msgstr ""
 "Canviar el fons de pantalla o l'opció de dormir respecta l'opció \"Redueix "
 "el moviment\"."
 
-#: data/gala.metainfo.xml.in:313
+#: data/gala.metainfo.xml.in:315
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Useu els punters d'arrossegar i deixar anar adequats quan moveu finestres"
 
-#: data/gala.metainfo.xml.in:314
+#: data/gala.metainfo.xml.in:316
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Solució del problema que els gestos de la vista de multitasca poden deixar "
 "de funcionar"
 
-#: data/gala.metainfo.xml.in:315
+#: data/gala.metainfo.xml.in:317
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Millora del comportament dinàmic dels espais de treball amb diversos monitors"
 
-#: data/gala.metainfo.xml.in:337
+#: data/gala.metainfo.xml.in:339
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Millora del maneig de la drecera de desplaçament a l'espai de treball"
 
@@ -333,26 +329,26 @@ msgstr "Captura de pantalla desada a la carpeta de captures de pantalla"
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:80
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:78
 msgid "Window switcher"
 msgstr "Canviador de finestres"
 
-#: src/WindowManager.vala:1719
+#: src/WindowManager.vala:1739
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:1726
+#: src/WindowManager.vala:1746
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1750
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:1731
+#: src/WindowManager.vala:1751
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 
