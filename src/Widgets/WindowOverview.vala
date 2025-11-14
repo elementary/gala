@@ -120,10 +120,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             model.items_changed.connect (on_items_changed);
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
-                padding_top = TOP_GAP,
-                padding_left = BORDER,
-                padding_right = BORDER,
-                padding_bottom = BOTTOM_GAP,
+                area = { BORDER, TOP_GAP, geometry.width - 2 * BORDER, geometry.height - TOP_GAP - BOTTOM_GAP },
                 width = geometry.width,
                 height = geometry.height,
                 x = geometry.x,

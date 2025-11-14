@@ -23,12 +23,13 @@ public class Gala.WorkspaceRow : ActorTarget {
         set_allocation (allocation);
 
         double progress = get_current_progress (SWITCH_WORKSPACE);
+        var monitor_width = display.get_monitor_geometry (display.get_primary_monitor ()).width;
         int index = 0;
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
             float preferred_width;
             child.get_preferred_width (-1, null, out preferred_width);
 
-            var child_x = (float) Math.round ((progress + index) * (preferred_width + WORKSPACE_GAP));
+            var child_x = (float) Math.round ((progress + index) * preferred_width + (monitor_width - preferred_width) / 2);
 
             child.allocate_preferred_size (child_x, 0);
 
