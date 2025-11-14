@@ -32,7 +32,6 @@ public class Gala.BlurManager : Object {
 
     public WindowManagerGala wm { get; construct; }
 
-    private bool framebuffer_is_logical = false;
     private GLib.HashTable<Meta.Window, BlurData?> blurred_windows = new GLib.HashTable<Meta.Window, BlurData?> (null, null);
 
     private BlurManager (WindowManagerGala wm) {
@@ -40,14 +39,6 @@ public class Gala.BlurManager : Object {
     }
 
     construct {
-        var experimental_features = new Settings ("org.gnome.mutter").get_strv ("experimental-features");
-        for (var i = 0; i < experimental_features.length; i++) {
-            if (experimental_features[i] == "scale-monitor-framebuffer") {
-                framebuffer_is_logical = true;
-                break;
-            }
-        }
-
         wm.get_display ().window_created.connect ((window) => {
             window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
             parse_mutter_hints (window);
@@ -83,7 +74,7 @@ public class Gala.BlurManager : Object {
         var x_shadow_size = frame_rect.x - buffer_rect.x;
         var y_shadow_size = frame_rect.y - buffer_rect.y;
 
-        var monitor_scale = framebuffer_is_logical ? 1.0f : window.display.get_monitor_scale (window.get_monitor ());
+        var monitor_scale = Utils.get_framebuffer_is_logical () ? 1.0f : window.display.get_monitor_scale (window.get_monitor ());
         var inverse_monitor_scale = 1.0f / monitor_scale;
 
         blur_data.actor.set_position (
