@@ -56,11 +56,12 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        if (state == IGNORED) {
-            if (event.get_gesture_phase () == END || event.get_gesture_phase () == CANCEL) {
-                reset ();
-            }
+        if (state != ONGOING && (event.get_gesture_phase () == END || event.get_gesture_phase () == CANCEL)) {
+            reset ();
+            return Clutter.EVENT_PROPAGATE;
+        }
 
+        if (state == IGNORED) {
             return Clutter.EVENT_PROPAGATE;
         }
 
