@@ -43,7 +43,11 @@ public class Gala.Tooltip : Clutter.Actor {
     }
 
     private static bool transform_monitor_scale_to_margin (Binding binding, Value from_value, ref Value to_value) {
-        to_value.set_float (Utils.scale_to_int (TEXT_MARGIN, from_value.get_float ()));
+        to_value.set_float (
+            Utils.get_framebuffer_is_logical ()
+            ? TEXT_MARGIN
+            : Utils.scale_to_int (TEXT_MARGIN, from_value.get_float ())
+        );
         return true;
     }
 }
