@@ -273,7 +273,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || !has_pointer || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
