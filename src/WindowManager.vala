@@ -1285,6 +1285,7 @@ namespace Gala {
 
             // Notifications initial animation is handled by the notification stack
             if (NotificationStack.is_notification (window) || !Meta.Prefs.get_gnome_animations ()) {
+                dim_parent_window (window);
                 map_completed (actor);
                 return;
             }
