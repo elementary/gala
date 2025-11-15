@@ -486,5 +486,24 @@ namespace Gala {
         public static int calculate_button_size (float monitor_scale) {
             return Utils.scale_to_int (BUTTON_SIZE, monitor_scale);
         }
+
+        private static bool? framebuffer_is_logical = null;
+        public static bool get_framebuffer_is_logical () {
+            if (framebuffer_is_logical != null) {
+                return framebuffer_is_logical;
+            }
+
+            framebuffer_is_logical = false;
+
+            var experimental_features = new Settings ("org.gnome.mutter").get_strv ("experimental-features");
+            for (var i = 0; i < experimental_features.length; i++) {
+                if (experimental_features[i] == "scale-monitor-framebuffer") {
+                    framebuffer_is_logical = true;
+                    break;
+                }
+            }
+
+            return framebuffer_is_logical;
+        }
     }
 }

@@ -72,7 +72,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Clone? drag_handle = null;
 
     private ulong check_confirm_dialog_cb = 0;
-    private bool in_slot_animation = false;
 
     private Clutter.Actor clone_container;
     private Gala.CloseButton close_button;
@@ -142,7 +141,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
         bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
+        close_button.notify["has-pointer"].connect (update_hover_widgets);
 
         add_child (active_shape);
         add_child (clone_container);
@@ -157,7 +156,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
 
-        notify["has-pointer"].connect (() => update_hover_widgets ());
+        notify["has-pointer"].connect (update_hover_widgets);
+        notify["animating"].connect (update_hover_widgets);
     }
 
     ~WindowClone () {
@@ -272,12 +272,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
     }
 
-    public override void start_progress (GestureAction action) {
-        update_hover_widgets (true);
-    }
-
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
+        if (action != CUSTOM || !has_pointer || slot == null || !Meta.Prefs.get_gnome_animations ()) {
             return;
         }
 
@@ -298,8 +294,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void end_progress (GestureAction action) {
-        update_hover_widgets (false);
-
         if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
@@ -310,7 +304,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
+        var clone_scale_factor = outer_rect.width != 0 ? width / outer_rect.width : 1f;
 
         // Compensate for invisible borders of the texture
         float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
@@ -326,12 +320,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         unowned var display = wm.get_display ();
 
         clone.set_scale (clone_scale_factor, clone_scale_factor);
-
-        float clone_width, clone_height;
-        clone.get_preferred_size (null, null, out clone_width, out clone_height);
-
-        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
-        clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -364,11 +352,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
         var monitor_scale = display.get_monitor_scale (monitor_index);
 
-        float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
-        float window_title_height, window_title_nat_width;
-        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+        float window_title_min_width, window_title_nat_width, window_title_height;
+        window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);
 
-        var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
+        float window_title_max_width = float.max (window_title_min_width, box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
+
+        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
         float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
@@ -381,14 +370,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         return Clutter.EVENT_STOP;
     }
 
-    private void update_hover_widgets (bool? animating = null) {
-        if (animating != null) {
-            in_slot_animation = animating;
-        }
-
+    private void update_hover_widgets () {
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = (has_pointer || close_button.has_pointer) && !in_slot_animation;
+        var show = (has_pointer || close_button.has_pointer) && !animating;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);

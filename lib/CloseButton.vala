@@ -79,7 +79,7 @@ public class Gala.CloseButton : Clutter.Actor {
     }
 
     public override bool button_press_event (Clutter.Event e) {
-        var estimated_duration = (uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2);
+        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2));
 
         pixbuf_actor.save_easing_state ();
         pixbuf_actor.set_easing_duration (estimated_duration);
@@ -111,7 +111,7 @@ public class Gala.CloseButton : Clutter.Actor {
     }
 
     private void reset_scale () {
-        var estimated_duration = (uint) (ANIMATION_DURATION * (1.0 - scale_x) / 0.2);
+        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (1.0 - scale_x) / 0.2));
 
         pixbuf_actor.save_easing_state ();
         pixbuf_actor.set_easing_duration (estimated_duration);
