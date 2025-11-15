@@ -232,7 +232,7 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var monitor = display.get_monitor_geometry (primary);
 
-        var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
+        var scale = (float) (monitor.height - (Utils.get_framebuffer_is_logical () ? TOP_OFFSET + BOTTOM_OFFSET : Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale))) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
         background.set_pivot_point (0.5f, pivot_y);
 
@@ -243,9 +243,17 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
+        window_container.padding_top = (
+            Utils.get_framebuffer_is_logical ()
+            ? TOP_OFFSET
+            : Utils.scale_to_int (TOP_OFFSET, monitor_scale)
+        );
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        window_container.padding_bottom = (
+            Utils.get_framebuffer_is_logical ()
+            ? BOTTOM_OFFSET
+            : Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale)
+        );
     }
 
 #if OLD_ICON_GROUPS
