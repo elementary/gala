@@ -136,12 +136,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
 
-        close_button = new Gala.CloseButton (monitor_scale) {
-            opacity = 0
-        };
+        close_button = new Gala.CloseButton (monitor_scale);
         bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (update_hover_widgets);
 
         add_child (active_shape);
         add_child (clone_container);
@@ -155,9 +152,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
-
-        notify["has-pointer"].connect (update_hover_widgets);
-        notify["animating"].connect (update_hover_widgets);
     }
 
     ~WindowClone () {
@@ -270,6 +264,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
+
+        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
@@ -368,18 +364,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     public override bool button_press_event (Clutter.Event event) {
         return Clutter.EVENT_STOP;
-    }
-
-    private void update_hover_widgets () {
-        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
-
-        var show = (has_pointer || close_button.has_pointer) && !animating;
-
-        close_button.save_easing_state ();
-        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (duration);
-        close_button.opacity = show ? 255 : 0;
-        close_button.restore_easing_state ();
     }
 
     /**
