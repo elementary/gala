@@ -63,6 +63,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, MULTITASKING_VIEW);
         multitasking_gesture_controller.enable_touchpad (wm.stage);
+        multitasking_gesture_controller.enable_touchscreen (wm.stage);
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
@@ -74,6 +75,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             follow_natural_scroll = true,
         };
         workspaces_gesture_controller.enable_touchpad (wm.stage);
+        workspaces_gesture_controller.enable_touchscreen (wm.stage);
         workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
         add_gesture_controller (workspaces_gesture_controller);
 
@@ -252,6 +254,14 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         // Not really a kill (we let the animation finish)
         // but since we only use clones that's ok
         workspaces_gesture_controller.cancel_gesture ();
+    }
+
+    public override float get_travel_distance (GestureAction for_action) {
+        switch (for_action) {
+            case MULTITASKING_VIEW: return primary_monitor_container.get_height () * 0.5f;
+            case SWITCH_WORKSPACE: return workspaces.get_first_child ().get_width ();
+            default: return 0;
+        }
     }
 
     public override void start_progress (GestureAction action) {
