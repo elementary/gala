@@ -127,6 +127,10 @@ public class Gala.WindowStateSaver : GLib.Object {
                 }
             }
 
+            // this is a fix for #2552 and #2526.
+            // window.move_resize_frame (false, ...) should constrain the window to the monitor bounds
+            // but mutter's constraint system can drop some constraints when it can't satisfy every single one of them.
+            // Instead we manually constrain the window based on its visible area.
             if (validate_last_window_position (window.display, { last_x, last_y, last_width, last_height })) {
                 window.move_resize_frame (true, last_x, last_y, last_width, last_height);
             }
