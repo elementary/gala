@@ -130,8 +130,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
         clone_container = new Clutter.Actor () {
+            reactive = true,
             pivot_point = { 0.5f, 0.5f }
         };
+        clone_container.notify["has-pointer"].connect (update_hover_widgets);
 
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
@@ -156,7 +158,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
 
-        notify["has-pointer"].connect (update_hover_widgets);
         notify["animating"].connect (update_hover_widgets);
     }
 
@@ -373,7 +374,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private void update_hover_widgets () {
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
-        var show = (has_pointer || close_button.has_pointer) && !animating;
+        var show = (clone_container.has_pointer || close_button.has_pointer) && !animating;
 
         close_button.save_easing_state ();
         close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
