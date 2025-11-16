@@ -239,9 +239,9 @@ public class Gala.WorkspaceClone : ActorTarget {
         var initial_width = monitor.width;
         var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width, true));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale, true));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale, true));
 
         window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
