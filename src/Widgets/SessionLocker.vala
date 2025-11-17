@@ -298,7 +298,7 @@ public class Gala.SessionLocker : Clutter.Actor {
 
         var session_path = login_manager.get_session (session_id);
 
-        return Bus.get_proxy_sync<LoginSessionManager> (SYSTEM, "org.freedesktop.login1", session_path);;
+        return Bus.get_proxy_sync<LoginSessionManager> (SYSTEM, "org.freedesktop.login1", session_path);
     }
 
     public void @lock (bool animate) {
