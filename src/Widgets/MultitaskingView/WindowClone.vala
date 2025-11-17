@@ -363,6 +363,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title.allocate (window_title_alloc);
     }
 
+    public override bool key_press_event (Clutter.Event event) {
+        if (event.get_key_symbol () == Clutter.Key.Return || event.get_key_symbol () == Clutter.Key.KP_Enter) {
+            selected ();
+            return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    }
+
     public override bool button_press_event (Clutter.Event event) {
         return Clutter.EVENT_STOP;
     }
