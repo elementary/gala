@@ -118,6 +118,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         });
 
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
+
+        wm.stage.key_press_event.connect (on_key_press_event);
     }
 
     /**
@@ -202,6 +204,18 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         for (int i = 0; i < manager.get_n_workspaces (); i++) {
             add_workspace (i);
         }
+    }
+
+    private bool on_key_press_event (Clutter.Event event) {
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Escape:
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                close ();
+                return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
     }
 
     /**
