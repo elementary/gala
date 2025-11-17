@@ -236,7 +236,7 @@ namespace Gala {
                 Clutter.BindCoordinate.ALL, 0));
             stage.insert_child_below (system_background.background_actor, null);
 
-            ui_group = new Clutter.Actor ();
+            ui_group = new Focusable ();
             update_ui_group_size ();
             stage.add_child (ui_group);
 
@@ -311,6 +311,9 @@ namespace Gala {
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
             screensaver.active_changed.connect (update_input_area);
+
+            var focus_controller = new FocusController ((Focusable) ui_group);
+            stage.add_action (focus_controller);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
