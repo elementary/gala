@@ -372,6 +372,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title.allocate (window_title_alloc);
     }
 
+    public override bool key_press_event (Clutter.Event event) {
+        if (event.get_key_symbol () == Clutter.Key.Return || event.get_key_symbol () == Clutter.Key.KP_Enter) {
+            selected ();
+            return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    }
+
     /**
      * Send the window the delete signal and listen for new windows to be added
      * to the window's workspace, in which case we check if the new window is a
