@@ -36,6 +36,11 @@ public class Gala.WorkspaceRow : ActorTarget {
         }
     }
 
+    public override bool move_focus (FocusDirection direction) {
+        var focusable = (Focusable) get_child_at_index ((int) (-get_current_commit (SWITCH_WORKSPACE)));
+        return focusable.focus (direction);
+    }
+
     public override void update_progress (GestureAction action, double to) {
         if (action == SWITCH_WORKSPACE) {
             queue_relayout ();
