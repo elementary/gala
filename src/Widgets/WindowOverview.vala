@@ -136,7 +136,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
                 y = geometry.y,
             };
             window_clone_container.window_selected.connect (thumb_selected);
-            window_clone_container.requested_close.connect (() => close ());
 
             add_child (window_clone_container);
         }
