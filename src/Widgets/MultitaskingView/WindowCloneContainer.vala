@@ -23,12 +23,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
     private bool opened = false;
 
-    /**
-     * The window that is currently selected via keyboard shortcuts.
-     * It is not necessarily the same as the active window.
-     */
-    private unowned WindowClone? current_window = null;
-
     public WindowCloneContainer (
         WindowManager wm, WindowListModel windows, float monitor_scale,
         WindowClone.Mode window_clone_mode = MULTITASKING_VIEW
@@ -67,16 +61,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
             insert_child_at_index (clone, i);
         }
 
-        // Make sure we release the reference on the window
-        if (current_window != null && current_window.window in to_remove) {
-            select_next_window (RIGHT, false);
-
-            // There is no next window so select nothing
-            if (current_window.window in to_remove) {
-                current_window = null;
-            }
-        }
-
         // Don't reflow if only the sorting changed
         if (to_remove.size () > 0 || added != removed) {
             reflow (false);
@@ -87,14 +71,10 @@ public class Gala.WindowCloneContainer : ActorTarget {
         if (!opened) {
             opened = true;
 
-            if (current_window != null) {
-                current_window.active = false;
-            }
-
             unowned var focus_window = wm.get_display ().focus_window;
             foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
                 if (clone.window == focus_window) {
-                    current_window = clone;
+                    clone.grab_key_focus ();
                     break;
                 }
             }
@@ -153,152 +133,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
         foreach (var tilable in calculate_grid_placement (area, windows)) {
             tilable.clone.take_slot (tilable.rect, !view_toggle);
         }
-    }
-
-    /**
-     * Collect key events, mainly for redirecting them to the WindowCloneContainers to
-     * select the active window.
-     */
-    public override bool key_press_event (Clutter.Event event) {
-        if (!opened) {
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        switch (event.get_key_symbol ()) {
-            case Clutter.Key.Escape:
-                requested_close ();
-                break;
-            case Clutter.Key.Down:
-                select_next_window (Meta.MotionDirection.DOWN, true);
-                break;
-            case Clutter.Key.Up:
-                select_next_window (Meta.MotionDirection.UP, true);
-                break;
-            case Clutter.Key.Left:
-                select_next_window (Meta.MotionDirection.LEFT, true);
-                break;
-            case Clutter.Key.Right:
-                select_next_window (Meta.MotionDirection.RIGHT, true);
-                break;
-            case Clutter.Key.Return:
-            case Clutter.Key.KP_Enter:
-                if (current_window == null) {
-                    requested_close ();
-                } else {
-                    window_selected (current_window.window);
-                }
-                break;
-        }
-
-        return Clutter.EVENT_STOP;
-    }
-
-    /**
-     * Look for the next window in a direction and make this window the new current_window.
-     * Used for keyboard navigation.
-     *
-     * @param direction   The MetaMotionDirection in which to search for windows for.
-     * @param user_action Whether we must select a window and, if failed, play a bell sound.
-     */
-    public void select_next_window (Meta.MotionDirection direction, bool user_action) {
-        if (get_n_children () == 0) {
-            return;
-        }
-
-        WindowClone? closest = null;
-
-        if (current_window == null) {
-            closest = (WindowClone) get_child_at_index (0);
-        } else {
-            var current_rect = current_window.slot;
-
-            foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-                if (clone == current_window) {
-                    continue;
-                }
-
-                var window_rect = clone.slot;
-
-                if (window_rect == null) {
-                    continue;
-                }
-
-                if (direction == LEFT) {
-                    if (window_rect.x > current_rect.x) {
-                        continue;
-                    }
-
-                    // test for vertical intersection
-                    if (window_rect.y + window_rect.height > current_rect.y
-                        && window_rect.y < current_rect.y + current_rect.height) {
-
-                        if (closest == null || closest.slot.x < window_rect.x) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == RIGHT) {
-                    if (window_rect.x < current_rect.x) {
-                        continue;
-                    }
-
-                    // test for vertical intersection
-                    if (window_rect.y + window_rect.height > current_rect.y
-                        && window_rect.y < current_rect.y + current_rect.height) {
-
-                        if (closest == null || closest.slot.x > window_rect.x) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == UP) {
-                    if (window_rect.y > current_rect.y) {
-                        continue;
-                    }
-
-                    // test for horizontal intersection
-                    if (window_rect.x + window_rect.width > current_rect.x
-                        && window_rect.x < current_rect.x + current_rect.width) {
-
-                        if (closest == null || closest.slot.y < window_rect.y) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == DOWN) {
-                    if (window_rect.y < current_rect.y) {
-                        continue;
-                    }
-
-                    // test for horizontal intersection
-                    if (window_rect.x + window_rect.width > current_rect.x
-                        && window_rect.x < current_rect.x + current_rect.width) {
-
-                        if (closest == null || closest.slot.y > window_rect.y) {
-                            closest = clone;
-                        }
-                    }
-                } else {
-                    warning ("Invalid direction");
-                    break;
-                }
-            }
-        }
-
-        if (closest == null) {
-            if (current_window != null && user_action) {
-                InternalUtils.bell_notify (wm.get_display ());
-                current_window.active = true;
-            }
-            return;
-        }
-
-        if (current_window != null) {
-            current_window.active = false;
-        }
-
-        if (user_action) {
-            closest.active = true;
-        }
-
-        current_window = closest;
     }
 
     // Code ported from KWin present windows effect
