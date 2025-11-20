@@ -9,7 +9,6 @@
  */
 public class Gala.WindowCloneContainer : ActorTarget {
     public signal void window_selected (Meta.Window window);
-    public signal void requested_close ();
 
     public int padding_top { get; set; default = 12; }
     public int padding_left { get; set; default = 12; }
