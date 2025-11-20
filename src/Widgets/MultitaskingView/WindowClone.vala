@@ -42,19 +42,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public Mtk.Rectangle? slot { get; private set; default = null; }
 
-    /**
-     * When active fades a white border around the window in. Used for the visually
-     * indicating the WindowCloneContainer's current_window.
-     */
-    public bool active {
-        set {
-            active_shape.save_easing_state ();
-            active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
-            active_shape.opacity = value ? 255 : 0;
-            active_shape.restore_easing_state ();
-        }
-    }
-
     public Mode mode { get; construct; }
     public float monitor_scale { get; construct set; }
 
@@ -98,6 +85,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     construct {
         reactive = true;
+        can_focus = true;
+
+        notify["has-visible-focus"].connect (on_visible_focus_changed);
 
         gesture_controller = new GestureController (CUSTOM);
         gesture_controller.add_trigger (new SwipeTrigger (this, VERTICAL));
@@ -177,6 +167,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.disconnect (update_targets);
 
         finish_drag ();
+    }
+
+    private void on_visible_focus_changed () {
+        active_shape.save_easing_state ();
+        active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
+        active_shape.opacity = has_visible_focus ? 255 : 0;
+        active_shape.restore_easing_state ();
     }
 
     private void reallocate () {
