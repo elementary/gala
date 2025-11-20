@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 8.2.3\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-19 19:33+0000\n"
+"POT-Creation-Date: 2025-11-20 18:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -103,31 +103,31 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr ""
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:50
-#: data/gala.metainfo.xml.in:85 data/gala.metainfo.xml.in:97
-#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:138
-#: data/gala.metainfo.xml.in:150 data/gala.metainfo.xml.in:164
-#: data/gala.metainfo.xml.in:197 data/gala.metainfo.xml.in:228
-#: data/gala.metainfo.xml.in:241 data/gala.metainfo.xml.in:256
-#: data/gala.metainfo.xml.in:273 data/gala.metainfo.xml.in:289
-#: data/gala.metainfo.xml.in:330 data/gala.metainfo.xml.in:355
-#: data/gala.metainfo.xml.in:371
-msgid "Improvements:"
-msgstr ""
-
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
 #: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
 #: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
 #: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
 #: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
-#: data/gala.metainfo.xml.in:277 data/gala.metainfo.xml.in:293
-#: data/gala.metainfo.xml.in:336 data/gala.metainfo.xml.in:358
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:291
+#: data/gala.metainfo.xml.in:332 data/gala.metainfo.xml.in:357
 #: data/gala.metainfo.xml.in:373
+msgid "Improvements:"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:54
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:154 data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:201 data/gala.metainfo.xml.in:232
+#: data/gala.metainfo.xml.in:245 data/gala.metainfo.xml.in:260
+#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:295
+#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:360
+#: data/gala.metainfo.xml.in:375
 msgid "Updated translations"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:53
+#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
 msgstr ""
 
@@ -135,85 +135,85 @@ msgstr ""
 msgid "Improve Reduced Motion behavior"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:54
+#: data/gala.metainfo.xml.in:56
 msgid "Improved render performance"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:58
 msgid "Improved workspace switch dock animation"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:167
+#: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:170
 msgid "Remove scaling effect from menus"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:169
+#: data/gala.metainfo.xml.in:171
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:200
+#: data/gala.metainfo.xml.in:202
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:201
+#: data/gala.metainfo.xml.in:203
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:204
 msgid "Fixed crash when using tiling shortcuts"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:231
+#: data/gala.metainfo.xml.in:233
 msgid "Improved shadows performance"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:275
+#: data/gala.metainfo.xml.in:277
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:276
+#: data/gala.metainfo.xml.in:278
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:291
+#: data/gala.metainfo.xml.in:293
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:292
+#: data/gala.metainfo.xml.in:294
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:332
+#: data/gala.metainfo.xml.in:334
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:333
+#: data/gala.metainfo.xml.in:335
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:334
+#: data/gala.metainfo.xml.in:336
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:335
+#: data/gala.metainfo.xml.in:337
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:357
+#: data/gala.metainfo.xml.in:359
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
