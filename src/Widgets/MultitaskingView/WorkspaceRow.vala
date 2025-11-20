@@ -42,6 +42,11 @@ public class Gala.WorkspaceRow : ActorTarget {
         }
     }
 
+    public override bool move_focus (FocusDirection direction) {
+        var focusable = (Focusable) get_child_at_index ((int) (-get_current_commit (SWITCH_WORKSPACE)));
+        return focusable.focus (direction);
+    }
+
     private void update_order () {
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
             unowned var workspace_clone = (WorkspaceClone) child;
