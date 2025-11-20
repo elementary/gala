@@ -144,7 +144,6 @@ public class Gala.WorkspaceClone : ActorTarget {
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect (on_window_selected);
-        window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
         var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
