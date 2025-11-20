@@ -82,6 +82,7 @@ public class Gala.WindowStateSaver : GLib.Object {
 
         if (app_id.has_prefix ("window:") || // if window failed to be identified, don't remember it
             window.window_type != Meta.WindowType.NORMAL ||
+            window.get_transient_for () != null ||
             window.skip_taskbar ||
             !window.resizeable ||
             !window.allows_move ()

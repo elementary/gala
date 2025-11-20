@@ -28,8 +28,10 @@ config_header = configure_file (
     configuration: conf
 )
 
+glib_version_required = '2.78'
+
 add_project_arguments([
-        '--target-glib=2.44',
+        '--target-glib=' + glib_version_required,
         '--hide-internal',
         '--enable-deprecated',
         '--vapidir=' + vapi_dir,
@@ -53,8 +55,6 @@ add_project_arguments([
 
 
 # Dependencies
-glib_version_required = '2.74.0'
-
 atk_bridge_dep = dependency('atk-bridge-2.0')
 gdk_pixbuf_def = dependency ('gdk-pixbuf-2.0')
 gtk4_dep = dependency('gtk4')

@@ -222,6 +222,10 @@ public class Gala.HideTracker : Object {
             behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
         ) {
             trigger_show ();
+            // This handles the case that the user triggered the barrier but never hovered
+            // the panel e.g. when triggering the barrier at a point where the dock doesnt
+            // reach. In that case once the pointer is moved it'll recheck the hovered state.
+            hovered = true;
         }
     }
 }
