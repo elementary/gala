@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-19 19:33+0000\n"
-"PO-Revision-Date: 2025-10-30 06:55+0000\n"
+"PO-Revision-Date: 2025-11-20 18:22+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/hu/>\n"
@@ -140,7 +140,7 @@ msgstr "Javított HiDPI-támogatás"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Javított csökkentett mozgásos viselkedés"
 
 #: data/gala.metainfo.xml.in:54
 msgid "Improved render performance"
