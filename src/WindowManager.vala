@@ -975,24 +975,20 @@ namespace Gala {
             unowned Meta.WindowActor window_actor = window.get_compositor_private () as Meta.WindowActor;
             window_group.set_child_below_sibling (tile_preview, window_actor);
 
-            var duration = AnimationDuration.SNAP / 2U;
+            var duration = Utils.get_animation_duration (AnimationDuration.SNAP / 2U);
 
             var rect = window.get_frame_rect ();
             tile_preview.set_position (rect.x, rect.y);
             tile_preview.set_size (rect.width, rect.height);
             tile_preview.show ();
 
-            if (Meta.Prefs.get_gnome_animations ()) {
-                tile_preview.save_easing_state ();
-                tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-                tile_preview.set_easing_duration (duration);
-                tile_preview.opacity = 255U;
-                tile_preview.set_position (tile_rect.x, tile_rect.y);
-                tile_preview.set_size (tile_rect.width, tile_rect.height);
-                tile_preview.restore_easing_state ();
-            } else {
-                tile_preview.opacity = 255U;
-            }
+            tile_preview.save_easing_state ();
+            tile_preview.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            tile_preview.set_easing_duration (duration);
+            tile_preview.opacity = 255U;
+            tile_preview.set_position (tile_rect.x, tile_rect.y);
+            tile_preview.set_size (tile_rect.width, tile_rect.height);
+            tile_preview.restore_easing_state ();
         }
 
         public override void hide_tile_preview () {
@@ -1289,6 +1285,7 @@ namespace Gala {
 
             // Notifications initial animation is handled by the notification stack
             if (NotificationStack.is_notification (window) || !Meta.Prefs.get_gnome_animations ()) {
+                dim_parent_window (window);
                 map_completed (actor);
                 return;
             }

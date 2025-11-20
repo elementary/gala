@@ -72,7 +72,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Clone? drag_handle = null;
 
     private ulong check_confirm_dialog_cb = 0;
-    private bool in_slot_animation = false;
 
     private Clutter.Actor clone_container;
     private Gala.CloseButton close_button;
@@ -142,7 +141,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
         bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
 
         add_child (active_shape);
         add_child (clone_container);
@@ -156,8 +154,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
-
-        notify["has-pointer"].connect (() => update_hover_widgets ());
     }
 
     ~WindowClone () {
@@ -259,36 +255,32 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
-    }
 
-    public override void start_progress (GestureAction action) {
-        update_hover_widgets (true);
+        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint), 0u, 255u));
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
-            return;
+        if (action == CUSTOM && slot != null && Meta.Prefs.get_gnome_animations ()) {
+            var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
+            var target_opacity = (uint) (255 * (1 - progress));
+
+            clone_container.translation_y = target_translation_y;
+            clone_container.opacity = target_opacity;
+
+            window_icon.translation_y = target_translation_y;
+            window_icon.opacity = target_opacity;
+
+            window_title.translation_y = target_translation_y;
+            window_title.opacity = target_opacity;
+
+            close_button.translation_y = target_translation_y;
+            close_button.opacity = target_opacity;
+        } else if (action == MULTITASKING_VIEW) {
+            close_button.reactive = progress == 1;
         }
-
-        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
-        var target_opacity = (uint) (255 * (1 - progress));
-
-        clone_container.translation_y = target_translation_y;
-        clone_container.opacity = target_opacity;
-
-        window_icon.translation_y = target_translation_y;
-        window_icon.opacity = target_opacity;
-
-        window_title.translation_y = target_translation_y;
-        window_title.opacity = target_opacity;
-
-        close_button.translation_y = target_translation_y;
-        close_button.opacity = target_opacity;
     }
 
     public override void end_progress (GestureAction action) {
-        update_hover_widgets (false);
-
         if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
             close_window (Meta.CURRENT_TIME);
         }
@@ -359,26 +351,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
-    }
-
-    public override bool button_press_event (Clutter.Event event) {
-        return Clutter.EVENT_STOP;
-    }
-
-    private void update_hover_widgets (bool? animating = null) {
-        if (animating != null) {
-            in_slot_animation = animating;
-        }
-
-        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
-
-        var show = (has_pointer || close_button.has_pointer) && !in_slot_animation;
-
-        close_button.save_easing_state ();
-        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (duration);
-        close_button.opacity = show ? 255 : 0;
-        close_button.restore_easing_state ();
     }
 
     /**

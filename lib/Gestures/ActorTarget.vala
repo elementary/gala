@@ -84,6 +84,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
         switch (update_type) {
             case START:
                 ongoing_animations++;
+                notify_property ("animating");
                 start_progress (action);
                 break;
             case UPDATE:
@@ -94,6 +95,7 @@ public class Gala.ActorTarget : Clutter.Actor, GestureTarget {
                 break;
             case END:
                 ongoing_animations--;
+                notify_property ("animating");
                 end_progress (action);
                 break;
         }

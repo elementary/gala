@@ -15,66 +15,80 @@ public class Gala.DBus {
         wm = _wm;
 
         Bus.own_name (
-            SESSION, "io.elementary.gala", NONE,
-            (connection) => {
+            SESSION, "io.elementary.gala", NONE, null,
+            (connection, name) => {
                 try {
                     connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
                 } catch (Error e) {
                     warning (e.message);
                 }
             },
-            () => {},
-            () => critical ("Could not acquire name")
+            on_name_lost
         );
 
-        Bus.own_name (BusType.SESSION, "org.pantheon.gala", BusNameOwnerFlags.NONE,
-            (connection) => {
-                if (instance == null)
+        Bus.own_name (
+            SESSION, "org.pantheon.gala", NONE, null,
+            (connection, name) => {
+                if (instance == null) {
                     instance = new DBus ();
+                }
 
                 try {
                     connection.register_object ("/org/pantheon/gala", instance);
-                } catch (Error e) { warning (e.message); }
-
-                try {
                     connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
-                } catch (Error e) { warning (e.message); }
+                } catch (Error e) {
+                    warning (e.message);
+                }
             },
-            () => {},
-            () => warning ("Could not acquire name\n") );
+            on_name_lost
+        );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.Shell", BusNameOwnerFlags.NONE,
-            (connection) => {
+        Bus.own_name (
+            SESSION, "org.gnome.Shell", NONE, null,
+            (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/Shell", new DBusAccelerator (wm.get_display (), notifications_manager));
                     connection.register_object ("/org/gnome/Shell/Screenshot", screenshot_manager);
-                } catch (Error e) { warning (e.message); }
+                } catch (Error e) {
+                    warning (e.message);
+                }
             },
-            () => {},
-            () => critical ("Could not acquire name") );
+            on_name_lost
+        );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.Shell.Screenshot", BusNameOwnerFlags.REPLACE,
-            () => {},
-            () => {},
-            () => critical ("Could not acquire name") );
+        Bus.own_name (
+            SESSION, "org.gnome.Shell.Screenshot", REPLACE, null,
+            null,
+            on_name_lost
+        );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.SessionManager.EndSessionDialog", BusNameOwnerFlags.NONE,
-            (connection) => {
+        Bus.own_name (
+            SESSION, "org.gnome.SessionManager.EndSessionDialog", NONE, null,
+            (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/SessionManager/EndSessionDialog", SessionManager.init ());
-                } catch (Error e) { warning (e.message); }
+                } catch (Error e) {
+                    warning (e.message);
+                }
             },
-            () => {},
-            () => critical ("Could not acquire name") );
+            on_name_lost
+        );
 
-        Bus.own_name (BusType.SESSION, "org.gnome.ScreenSaver", BusNameOwnerFlags.REPLACE,
-            (connection) => {
+        Bus.own_name (
+            SESSION, "org.gnome.ScreenSaver", REPLACE, null,
+            (connection, name) => {
                 try {
                     connection.register_object ("/org/gnome/ScreenSaver", wm.screensaver);
-                } catch (Error e) { warning (e.message); }
+                } catch (Error e) {
+                    warning (e.message);
+                }
             },
-            () => {},
-            () => critical ("Could not acquire ScreenSaver bus") );
+            on_name_lost
+        );
+    }
+
+    private static void on_name_lost (GLib.DBusConnection connection, string name) {
+        warning ("DBus: Lost name %s", name);
     }
 
     public void perform_action (ActionType type) throws DBusError, IOError {
