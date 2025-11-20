@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-05 20:49+0000\n"
+"POT-Creation-Date: 2025-11-19 19:33+0000\n"
 "PO-Revision-Date: 2025-10-30 06:55+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -109,102 +109,108 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
-#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
-#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
-#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
-#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
-#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:50
+#: data/gala.metainfo.xml.in:85 data/gala.metainfo.xml.in:97
+#: data/gala.metainfo.xml.in:112 data/gala.metainfo.xml.in:138
+#: data/gala.metainfo.xml.in:150 data/gala.metainfo.xml.in:164
+#: data/gala.metainfo.xml.in:197 data/gala.metainfo.xml.in:228
+#: data/gala.metainfo.xml.in:241 data/gala.metainfo.xml.in:256
+#: data/gala.metainfo.xml.in:273 data/gala.metainfo.xml.in:289
+#: data/gala.metainfo.xml.in:330 data/gala.metainfo.xml.in:355
+#: data/gala.metainfo.xml.in:371
 msgid "Improvements:"
 msgstr "Améliorations :"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
-#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
-#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
-#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
-#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
+#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
+#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
+#: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:277 data/gala.metainfo.xml.in:293
+#: data/gala.metainfo.xml.in:336 data/gala.metainfo.xml.in:358
+#: data/gala.metainfo.xml.in:373
 msgid "Updated translations"
 msgstr "Mise à jour des traductions"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:53
 msgid "Improved HiDPI support"
 msgstr "Amélioration de la prise en charge HiDPI"
 
 #: data/gala.metainfo.xml.in:36
+msgid "Improve Reduced Motion behavior"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:54
 msgid "Improved render performance"
 msgstr "Amélioration des performances de rendu"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:55
 msgid "Reveal dock and panel in sync when starting"
 msgstr "Affichage du dock et du panneau de façon synchrone au démarrage"
 
-#: data/gala.metainfo.xml.in:38
+#: data/gala.metainfo.xml.in:56
 msgid "Improved workspace switch dock animation"
 msgstr "Amélioration de l'animation du dock au changement d'espace de travail"
 
-#: data/gala.metainfo.xml.in:39
+#: data/gala.metainfo.xml.in:57
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr "Les fenêtres Picture-in-Picture ont désormais des coins arrondis"
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:167
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 "L'état de la fenêtre est désormais enregistré lors de la mise en veille et "
 "de l'arrêt"
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:168
 msgid "Remove scaling effect from menus"
 msgstr "Retrait de l'effet d'échelle dans les menus"
 
-#: data/gala.metainfo.xml.in:151
+#: data/gala.metainfo.xml.in:169
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "Balayez vers le haut pour fermer les fenêtres dans la vue multitâche"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:200
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 "Correction d'un rare plantage lors de la destruction d'une fenêtre de dock"
 
-#: data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:201
 msgid "Added interactive screenshot shortcut"
 msgstr "Ajout d'un raccourci interactif pour les captures d'écran"
 
-#: data/gala.metainfo.xml.in:184
+#: data/gala.metainfo.xml.in:202
 msgid "Fixed crash when using tiling shortcuts"
 msgstr ""
 "Correction d'un plantage lors de l'utilisation des raccourcis de tuilage"
 
-#: data/gala.metainfo.xml.in:213
+#: data/gala.metainfo.xml.in:231
 msgid "Improved shadows performance"
 msgstr "Amélioration des performances des ombres"
 
-#: data/gala.metainfo.xml.in:257
+#: data/gala.metainfo.xml.in:275
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Correction d'un plantage potentiel lors du déplacement de fenêtres entre "
 "espaces de travail"
 
-#: data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:276
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "Correction de l'animation des notifications en entrant dans la vue multitâche"
 
-#: data/gala.metainfo.xml.in:273
+#: data/gala.metainfo.xml.in:291
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Amélioration de la navigation au clavier dans la vue multitâche"
 
-#: data/gala.metainfo.xml.in:274
+#: data/gala.metainfo.xml.in:292
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 "Met à jour la couleur du panneau en même temps que la transition du fond "
 "d'écran"
 
-#: data/gala.metainfo.xml.in:314
+#: data/gala.metainfo.xml.in:332
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -212,24 +218,24 @@ msgstr ""
 "Le changement du fond d'écran ou la mise en veille respectent l'option "
 "« Réduire le mouvement »"
 
-#: data/gala.metainfo.xml.in:315
+#: data/gala.metainfo.xml.in:333
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Utilisation des pointeurs de glisser-déposer lors du déplacement des fenêtres"
 
-#: data/gala.metainfo.xml.in:316
+#: data/gala.metainfo.xml.in:334
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Correction d'un problème où les gestes dans la vue multitâche peuvent cesser "
 "de fonctionner"
 
-#: data/gala.metainfo.xml.in:317
+#: data/gala.metainfo.xml.in:335
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 "Amélioration du comportement des espaces de travail dynamiques sur plusieurs "
 "écrans"
 
-#: data/gala.metainfo.xml.in:339
+#: data/gala.metainfo.xml.in:357
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Amélioration de la gestion du raccourci « déplacer vers l'espace de travail »"
@@ -304,7 +310,7 @@ msgstr "Autoriser"
 msgid "Deny"
 msgstr "Refuser"
 
-#: src/DesktopIntegration.vala:200
+#: src/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr "La fenêtre est déjà au premier plan"
 
@@ -340,7 +346,7 @@ msgstr "Captures d'écran"
 msgid "Window switcher"
 msgstr "Sélecteur de fenêtre"
 
-#: src/WindowManager.vala:1739
+#: src/WindowManager.vala:1736
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -348,15 +354,15 @@ msgstr[0] "Les modifications seront automatiquement annulées après %i seconde.
 msgstr[1] ""
 "Les modifications seront automatiquement annulées après %i secondes."
 
-#: src/WindowManager.vala:1746
+#: src/WindowManager.vala:1743
 msgid "Keep new display settings?"
 msgstr "Conserver les nouveaux paramètres d'affichage ?"
 
-#: src/WindowManager.vala:1750
+#: src/WindowManager.vala:1747
 msgid "Keep Settings"
 msgstr "Conserver les paramètres"
 
-#: src/WindowManager.vala:1751
+#: src/WindowManager.vala:1748
 msgid "Use Previous Settings"
 msgstr "Utiliser les paramètres précédents"
 
