@@ -364,10 +364,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title.allocate (window_title_alloc);
     }
 
-    public override bool button_press_event (Clutter.Event event) {
-        return Clutter.EVENT_STOP;
-    }
-
     /**
      * Send the window the delete signal and listen for new windows to be added
      * to the window's workspace, in which case we check if the new window is a

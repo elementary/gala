@@ -27,6 +27,26 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.3.1" date="2025-11-18" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+          <li>Improved HiDPI support</li>
+          <li>Improve Reduced Motion behavior</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2526">Windows positoined outside the viewport</issue>
+        <issue url="https://github.com/elementary/gala/issues/2552">Windows placed in undisplayed area</issue>
+        <issue url="https://github.com/elementary/gala/issues/2620">Reduce Motion breaks multitouch gestures: no live feedback, “teleporting” transitions</issue>
+        <issue url="https://github.com/elementary/gala/issues/2627">Dialogs get restored at unreasonable sizes</issue>
+        <issue url="https://github.com/elementary/gala/issues/2630">The Dock does not hide when any app window is maximized</issue>
+        <issue url="https://github.com/elementary/gala/issues/2633">Three finger swipes in different directions sometimes collide</issue>
+        <issue url="https://github.com/elementary/gala/issues/2638">Additional "Reduce Motion" Side Effect</issue>
+      </issues>
+    </release>
+
     <release version="8.3.0" date="2025-11-05" urgency="medium">
       <description>
         <p>Improvements:</p>
