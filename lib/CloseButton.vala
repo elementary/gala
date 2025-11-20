@@ -13,7 +13,7 @@ public class Gala.CloseButton : Clutter.Actor {
 
     // used to avoid changing hitbox of the button
     private Clutter.Actor pixbuf_actor;
-    private bool is_pressed = false;
+    private Clutter.ClickAction click_action;
 
     static construct {
         close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
@@ -31,8 +31,28 @@ public class Gala.CloseButton : Clutter.Actor {
         };
         add_child (pixbuf_actor);
 
+        click_action = new Clutter.ClickAction ();
+        add_action (click_action);
+        click_action.clicked.connect (on_clicked);
+        click_action.notify["pressed"].connect (on_pressed_changed);
+
         load_pixbuf ();
         notify["monitor-scale"].connect (load_pixbuf);
+    }
+
+    private void on_clicked () {
+        triggered (Meta.CURRENT_TIME);
+    }
+
+    private void on_pressed_changed () {
+        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2));
+        var scale = click_action.pressed ? 0.8 : 1.0;
+
+        pixbuf_actor.save_easing_state ();
+        pixbuf_actor.set_easing_duration (estimated_duration);
+        pixbuf_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT);
+        pixbuf_actor.set_scale (scale, scale);
+        pixbuf_actor.restore_easing_state ();
     }
 
     private void load_pixbuf () {
@@ -76,47 +96,5 @@ public class Gala.CloseButton : Clutter.Actor {
         var size = Utils.calculate_button_size (monitor_scale);
         pixbuf_actor.set_size (size, size);
         pixbuf_actor.background_color = { 255, 0, 0, 255 };
-    }
-
-    public override bool button_press_event (Clutter.Event e) {
-        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2));
-
-        pixbuf_actor.save_easing_state ();
-        pixbuf_actor.set_easing_duration (estimated_duration);
-        pixbuf_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT);
-        pixbuf_actor.set_scale (0.8, 0.8);
-        pixbuf_actor.restore_easing_state ();
-
-        is_pressed = true;
-
-        return Clutter.EVENT_STOP;
-    }
-
-    public override bool button_release_event (Clutter.Event e) {
-        reset_scale ();
-
-        if (is_pressed) {
-            triggered (e.get_time ());
-            is_pressed = false;
-        }
-
-        return Clutter.EVENT_STOP;
-    }
-
-    public override bool leave_event (Clutter.Event event) {
-        reset_scale ();
-        is_pressed = false;
-
-        return Clutter.EVENT_PROPAGATE;
-    }
-
-    private void reset_scale () {
-        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (1.0 - scale_x) / 0.2));
-
-        pixbuf_actor.save_easing_state ();
-        pixbuf_actor.set_easing_duration (estimated_duration);
-        pixbuf_actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT);
-        pixbuf_actor.set_scale (1.0, 1.0);
-        pixbuf_actor.restore_easing_state ();
     }
 }
