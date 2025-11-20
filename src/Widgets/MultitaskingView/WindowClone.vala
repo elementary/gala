@@ -602,6 +602,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         close_button.visible = true;
         window_title.visible = true;
+
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
 
         if (duration > 0) {
