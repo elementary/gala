@@ -226,11 +226,22 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     /**
-     * Sets the window slot.
+     * Animate the window to the given slot
      */
-    public void take_slot (Mtk.Rectangle rect) {
+    public void take_slot (Mtk.Rectangle rect, bool animate) {
         slot = rect;
+
+        if (animate) {
+            save_easing_state ();
+            set_easing_duration (Utils.get_animation_duration (MultitaskingView.ANIMATION_DURATION));
+            set_easing_mode (EASE_OUT_QUAD);
+        }
+
         update_targets ();
+
+        if (animate) {
+            restore_easing_state ();
+        }
     }
 
     private void update_targets () {
