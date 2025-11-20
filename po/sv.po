@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-19 19:33+0000\n"
-"PO-Revision-Date: 2025-10-30 06:55+0000\n"
+"PO-Revision-Date: 2025-11-20 18:22+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "sv/>\n"
@@ -139,7 +139,7 @@ msgstr "Förbättrat HiDPI-stöd"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Förbättra beteendet vid reducerad rörelse"
 
 #: data/gala.metainfo.xml.in:54
 msgid "Improved render performance"
