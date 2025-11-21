@@ -55,10 +55,9 @@ public class Gala.WindowCloneContainer : ActorTarget {
             WindowClone? clone = to_remove.take (window);
 
             if (clone == null) {
-                clone = new WindowClone (wm, window, monitor_scale, overview_mode);
+                clone = new WindowClone (wm, window, overview_mode);
                 clone.selected.connect ((_clone) => window_selected (_clone.window));
                 clone.request_reposition.connect (() => reflow (false));
-                bind_property ("monitor-scale", clone, "monitor-scale");
             }
 
             insert_child_at_index (clone, i);
