@@ -271,7 +271,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action == CUSTOM && slot != null && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && slot != null) {
             var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
             var target_opacity = (uint) (255 * (1 - progress));
 
@@ -292,7 +292,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public override void end_progress (GestureAction action) {
-        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5) {
             close_window (Meta.CURRENT_TIME);
         }
     }
