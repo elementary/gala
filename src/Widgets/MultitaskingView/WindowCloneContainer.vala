@@ -18,7 +18,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
     public WindowManager wm { get; construct; }
     public WindowListModel windows { get; construct; }
-    public float monitor_scale { get; construct set; }
     public bool overview_mode { get; construct; }
 
     private bool opened = false;
@@ -29,8 +28,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, WindowListModel windows, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (WindowManager wm, WindowListModel windows, bool overview_mode = false) {
+        Object (wm: wm, windows: windows, overview_mode: overview_mode);
     }
 
     construct {
@@ -394,7 +393,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
         // see how many windows we have on the last row
         int left_over = (int) window_count - columns * (rows - 1);
 
-        var button_size = Utils.calculate_button_size (monitor_scale);
+        var button_size = Utils.BUTTON_SIZE;
 
         for (int slot = 0; slot < columns * rows; slot++) {
             var window = taken_slots[slot];

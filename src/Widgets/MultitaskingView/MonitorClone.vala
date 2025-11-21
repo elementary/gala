@@ -35,10 +35,9 @@ public class Gala.MonitorClone : ActorTarget {
 
         var windows = new WindowListModel (display, STACKING, true, monitor);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale);
+        window_container = new WindowCloneContainer (wm, windows);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));
         window_container.window_selected.connect ((w) => { window_selected (w); });
-        bind_property ("monitor-scale", window_container, "monitor-scale");
 
         add_child (background);
         add_child (window_container);

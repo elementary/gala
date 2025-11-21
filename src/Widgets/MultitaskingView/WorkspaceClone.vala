@@ -146,13 +146,12 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
+        window_container = new WindowCloneContainer (wm, windows) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect ((window) => window_selected (window));
         window_container.requested_close.connect (() => activate (true));
-        bind_property ("monitor-scale", window_container, "monitor-scale");
 
 #if OLD_ICON_GROUPS
         icon_group = new IconGroup (display, workspace, monitor_scale);
