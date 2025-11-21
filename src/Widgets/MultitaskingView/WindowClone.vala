@@ -50,7 +50,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     public bool overview_mode { get; construct; }
-    public float monitor_scale { get; construct set; }
 
     [CCode (notify = false)]
     public uint8 shadow_opacity {
@@ -81,11 +80,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, bool overview_mode = false) {
         Object (
             wm: wm,
             window: window,
-            monitor_scale: monitor_scale,
             overview_mode: overview_mode
         );
     }
@@ -124,22 +122,19 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape (monitor_scale) {
+        active_shape = new ActiveShape () {
             opacity = 0
         };
-        bind_property ("monitor-scale", active_shape, "monitor-scale");
 
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }
         };
 
-        window_title = new Tooltip (monitor_scale);
-        bind_property ("monitor-scale", window_title, "monitor-scale");
+        window_title = new Tooltip ();
 
-        close_button = new Gala.CloseButton (monitor_scale) {
+        close_button = new Gala.CloseButton () {
             opacity = 0
         };
-        bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
 
         add_child (active_shape);
@@ -147,7 +142,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_child (window_title);
         add_child (close_button);
 
-        notify["monitor-scale"].connect (reallocate);
         reallocate ();
 
         InternalUtils.wait_for_window_actor (window, load_clone);
@@ -168,7 +162,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void reallocate () {
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE) {
             visible = !overview_mode
         };
         window_icon.opacity = 0;
@@ -204,7 +198,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         if (window.fullscreen || window.maximized_horizontally && window.maximized_vertically) {
             if (shadow_effect == null) {
-                shadow_effect = new ShadowEffect ("window", monitor_scale);
+                shadow_effect = new ShadowEffect ("window", 1.0f);
                 shadow_opacity = 0;
                 clone.add_effect_with_name ("shadow", shadow_effect);
             }
@@ -272,7 +266,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     public override void update_progress (Gala.GestureAction action, double progress) {
         if (action == CUSTOM && slot != null) {
-            var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
+            var target_translation_y = (float) (-CLOSE_TRANSLATION * progress);
             var target_opacity = (uint) (255 * (1 - progress));
 
             clone_container.translation_y = target_translation_y;
@@ -315,8 +309,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             return;
         }
 
-        unowned var display = wm.get_display ();
-
         clone.set_scale (clone_scale_factor, clone_scale_factor);
 
         Clutter.ActorBox shape_alloc = {
@@ -346,19 +338,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var window_icon_alloc = InternalUtils.actor_box_from_rect (window_icon_x, window_icon_y, window_icon_width, window_icon_height);
         window_icon.allocate (window_icon_alloc);
 
-        var rect = get_transformed_extents ();
-        var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
-        var monitor_scale = display.get_monitor_scale (monitor_index);
-
         float window_title_min_width, window_title_nat_width, window_title_height;
         window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);
 
-        float window_title_max_width = float.max (window_title_min_width, box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
+        float window_title_max_width = float.max (window_title_min_width, box.get_width () - TITLE_MAX_WIDTH_MARGIN);
 
         var window_title_width = float.min (window_title_nat_width, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
-        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
+        float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - 18;
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
@@ -643,15 +631,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         private const int BORDER_RADIUS = 16;
         private const uint8 COLOR_OPACITY = 204;
 
-        public float monitor_scale { get; construct set; }
-
-        public ActiveShape (float monitor_scale) {
-            Object (monitor_scale: monitor_scale);
-        }
-
         construct {
-            var rounded_corners_effect = new RoundedCornersEffect (BORDER_RADIUS, monitor_scale);
-            bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
+            var rounded_corners_effect = new RoundedCornersEffect (BORDER_RADIUS, 1.0f);
             add_effect (rounded_corners_effect);
 
             unowned var style_manager = Drawing.StyleManager.get_instance ();

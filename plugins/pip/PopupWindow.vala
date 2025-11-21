@@ -97,7 +97,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         set_position (x_position, y_position);
 
-        close_button = new Gala.CloseButton (scale) {
+        close_button = new Gala.CloseButton () {
             opacity = 0
         };
         // TODO: Check if close button should be on the right

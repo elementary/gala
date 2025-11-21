@@ -9,18 +9,12 @@ public class Gala.CloseButton : Clutter.Actor {
 
     public signal void triggered (uint32 timestamp);
 
-    public float monitor_scale { get; construct set; }
-
     // used to avoid changing hitbox of the button
     private Clutter.Actor pixbuf_actor;
     private Clutter.ClickAction click_action;
 
     static construct {
         close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-    }
-
-    public CloseButton (float monitor_scale) {
-        Object (monitor_scale: monitor_scale);
     }
 
     construct {
@@ -37,7 +31,6 @@ public class Gala.CloseButton : Clutter.Actor {
         click_action.notify["pressed"].connect (on_pressed_changed);
 
         load_pixbuf ();
-        notify["monitor-scale"].connect (load_pixbuf);
     }
 
     private void on_clicked () {
@@ -56,7 +49,7 @@ public class Gala.CloseButton : Clutter.Actor {
     }
 
     private void load_pixbuf () {
-        var pixbuf = get_close_button_pixbuf (monitor_scale);
+        var pixbuf = get_close_button_pixbuf ();
         if (pixbuf != null) {
             var image = new Gala.Image.from_pixbuf (pixbuf);
             pixbuf_actor.set_content (image);
@@ -67,8 +60,8 @@ public class Gala.CloseButton : Clutter.Actor {
         }
     }
 
-    private static Gdk.Pixbuf? get_close_button_pixbuf (float monitor_scale) {
-        var height = Utils.calculate_button_size (monitor_scale);
+    private static Gdk.Pixbuf? get_close_button_pixbuf () {
+        var height = Utils.BUTTON_SIZE;
 
         if (close_pixbufs[height] == null) {
             try {
@@ -93,7 +86,7 @@ public class Gala.CloseButton : Clutter.Actor {
         // works as good as some weird fallback-image-failed-to-load pixbuf
         critical ("Could not create close button");
 
-        var size = Utils.calculate_button_size (monitor_scale);
+        var size = Utils.BUTTON_SIZE;
         pixbuf_actor.set_size (size, size);
         pixbuf_actor.background_color = { 255, 0, 0, 255 };
     }
