@@ -166,7 +166,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void reallocate () {
-        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
+        window_icon = new WindowIcon (window, WINDOW_ICON_SIZE) {
             visible = !overview_mode
         };
         window_icon.opacity = 0;
