@@ -11,7 +11,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int WRAPPER_PADDING = 12;
 
     private const int MIN_OFFSET = 64;
-    private const double GESTURE_STEP = 0.1;
+    private const double GESTURE_STEP = 0.2;
 
     public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }

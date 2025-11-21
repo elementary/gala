@@ -31,10 +31,17 @@ public class Gala.PropertyTarget : Object, GestureTarget {
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
-        if (target == null || update_type != UPDATE || action != this.action) {
+        if (target == null || action != this.action) {
             return;
         }
 
-        target.set_property (property, interval.compute (progress));
+        if (update_type == START && target is Clutter.Actor) {
+            unowned var target_actor = (Clutter.Actor) target;
+
+            // We need to stop any transitions as they may interfere with the gesture
+            target_actor.remove_transition (property);
+        } else if (update_type == UPDATE) {
+            target.set_property (property, interval.compute (progress));
+        }
     }
 }
