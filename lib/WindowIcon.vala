@@ -39,14 +39,19 @@ public class Gala.WindowIcon : Clutter.Actor {
         window.notify["gtk-application-id"].connect (reload_icon);
 
         reload_icon ();
+        resource_scale_changed.connect (reload_icon);
     }
 
     private void reload_icon () {
-        width = icon_size * scale;
-        height = icon_size * scale;
+        var actor_size = icon_size * scale;
 
-        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
-        var image = new Gala.Image.from_pixbuf (pixbuf);
+        width = actor_size;
+        height = actor_size;
+
+        var pixbuf_size = (int) Math.ceilf (actor_size * get_resource_scale ());
+
+        var pixbuf = Gala.Utils.get_icon_for_window (window, pixbuf_size, 1);
+        var image = new Gala.Image.from_pixbuf_with_size (actor_size, actor_size, pixbuf);
         set_content (image);
     }
 }
