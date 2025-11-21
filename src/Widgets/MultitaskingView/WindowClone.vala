@@ -136,10 +136,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
 
-        close_button = new Gala.CloseButton (monitor_scale) {
+        close_button = new Gala.CloseButton () {
             opacity = 0
         };
-        bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
 
         add_child (active_shape);
