@@ -41,8 +41,10 @@
         <issue url="https://github.com/elementary/gala/issues/2526">Windows positoined outside the viewport</issue>
         <issue url="https://github.com/elementary/gala/issues/2552">Windows placed in undisplayed area</issue>
         <issue url="https://github.com/elementary/gala/issues/2620">Reduce Motion breaks multitouch gestures: no live feedback, “teleporting” transitions</issue>
+        <issue url="https://github.com/elementary/gala/issues/2624">Chrome window moves at the start of entering the multitasking view with non-standard text size</issue>
         <issue url="https://github.com/elementary/gala/issues/2627">Dialogs get restored at unreasonable sizes</issue>
         <issue url="https://github.com/elementary/gala/issues/2630">The Dock does not hide when any app window is maximized</issue>
+        <issue url="https://github.com/elementary/gala/issues/2632">Windows switcher gesture overshoot</issue>
         <issue url="https://github.com/elementary/gala/issues/2633">Three finger swipes in different directions sometimes collide</issue>
         <issue url="https://github.com/elementary/gala/issues/2638">Additional "Reduce Motion" Side Effect</issue>
       </issues>
