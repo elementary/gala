@@ -326,7 +326,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
-        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+        monitor_scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
@@ -351,7 +351,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
-        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+        monitor_scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
