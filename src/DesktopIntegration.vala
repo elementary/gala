@@ -220,7 +220,7 @@ public class Gala.DesktopIntegration : GLib.Object {
         transition.set_to_value (0);
         transition.set_key_frames ( { 0.5, -0.5 } );
 
-        var offset = Utils.scale_to_int (15, display.get_monitor_scale (window.get_monitor ()));
+        var offset = Utils.scale_to_int (15, Utils.get_ui_scaling_factor (display, window.get_monitor ()));
         transition.set_values ( { -offset, offset });
 
         transition.stopped.connect (() => {

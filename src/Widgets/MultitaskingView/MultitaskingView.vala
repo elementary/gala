@@ -78,7 +78,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         add_gesture_controller (workspaces_gesture_controller);
 
 #if OLD_ICON_GROUPS
-        icon_groups = new IconGroupContainer (display.get_monitor_scale (display.get_primary_monitor ()));
+        icon_groups = new IconGroupContainer (Utils.get_ui_scaling_factor (display, display.get_primary_monitor ()));
 #endif
 
         update_blurred_bg ();
@@ -151,7 +151,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
 
         var primary_geometry = display.get_monitor_geometry (primary);
-        var scale = display.get_monitor_scale (primary);
+        var scale = Utils.get_ui_scaling_factor (display, primary);
 #if OLD_ICON_GROUPS
         icon_groups.scale_factor = scale;
 #endif
@@ -272,7 +272,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             modal_proxy.allow_actions ({ MULTITASKING_VIEW, SWITCH_WORKSPACE, ZOOM });
 
 #if OLD_ICON_GROUPS
-            var scale = display.get_monitor_scale (display.get_primary_monitor ());
+            var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
             icon_groups.force_reposition ();
             icon_groups.y = primary_monitor_container.height - Utils.scale_to_int (WorkspaceClone.BOTTOM_OFFSET - 20, scale);
             reposition_icon_groups (false);
@@ -363,7 +363,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             icon_groups.set_easing_duration (200);
         }
 
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
         // make sure the active workspace's icongroup is always visible
         var icon_groups_width = icon_groups.calculate_total_width ();
         if (icon_groups_width > primary_monitor_container.width) {
@@ -380,7 +380,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private void add_workspace (int num) {
         unowned var manager = display.get_workspace_manager ();
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
 
         var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
         workspaces.insert_child_at_index (workspace, num);

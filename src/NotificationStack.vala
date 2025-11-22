@@ -95,7 +95,7 @@ public class Gala.NotificationStack : Object {
 
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
-        var scale = display.get_monitor_scale (primary);
+        var scale = Utils.get_ui_scaling_factor (display, primary);
 
         int notification_x_pos = area.x + area.width - window_rect.width;
         if (Clutter.get_default_text_direction () == Clutter.TextDirection.RTL) {
@@ -110,7 +110,7 @@ public class Gala.NotificationStack : Object {
         var primary = display.get_primary_monitor ();
         var area = display.get_workspace_manager ().get_active_workspace ().get_work_area_for_monitor (primary);
 
-        var scale = display.get_monitor_scale (primary);
+        var scale = Utils.get_ui_scaling_factor (display, primary);
         stack_width = Utils.scale_to_int (WIDTH + MARGIN, scale);
 
         stack_y = area.y;
@@ -119,7 +119,7 @@ public class Gala.NotificationStack : Object {
     }
 
     private void update_positions (float add_y = 0.0f) {
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
 
         var y = stack_y + TOP_OFFSET + add_y + Utils.scale_to_int (ADDITIONAL_MARGIN, scale);
         var i = notifications.size;

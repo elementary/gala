@@ -42,7 +42,7 @@ public class Gala.HotCornerManager : Object {
 
         var primary = display.get_primary_monitor ();
         var geometry = display.get_monitor_geometry (primary);
-        var scale = display.get_monitor_scale (primary);
+        var scale = Utils.get_ui_scaling_factor (display, primary);
 
         remove_all_hot_corners ();
         add_hotcorner (geometry.x, geometry.y, scale, HotCorner.POSITION_TOP_LEFT);

@@ -348,7 +348,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
-        var monitor_scale = display.get_monitor_scale (monitor_index);
+        var monitor_scale = Utils.get_ui_scaling_factor (display, monitor_index);
 
         float window_title_min_width, window_title_nat_width, window_title_height;
         window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);

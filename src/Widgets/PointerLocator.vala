@@ -145,7 +145,7 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
         Graphene.Point coords = {};
         tracker.get_pointer (out coords, null);
 
-        update_surface (display.get_monitor_scale (display.get_current_monitor ()));
+        update_surface (Utils.get_ui_scaling_factor (display, display.get_current_monitor ()));
 
         x = coords.x - (width / 2);
         y = coords.y - (width / 2);

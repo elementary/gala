@@ -293,7 +293,7 @@ namespace Gala {
          *
          * @param workspace The workspace on which to count the windows
          * @param exclude a window to not count
-         * 
+         *
          */
         public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;
@@ -348,16 +348,6 @@ namespace Gala {
             };
 
             return container;
-        }
-
-        /**
-         * DEPRECATED: When used with Mutter 44, this will always return 1.
-         * Get the scaling factor for the monitor you are drawing to with
-         * `Meta.Display.get_monitor_scale` instead
-         */
-        [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
-        public static int get_ui_scaling_factor () {
-            return 1;
         }
 
         /**
@@ -504,6 +494,14 @@ namespace Gala {
             }
 
             return framebuffer_is_logical;
+        }
+
+        public static float get_ui_scaling_factor (Meta.Display display, int monitor_index) {
+            if (get_framebuffer_is_logical ()) {
+                return 1.0f;
+            } else {
+                return display.get_monitor_scale (monitor_index);
+            }
         }
     }
 }

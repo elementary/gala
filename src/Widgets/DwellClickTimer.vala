@@ -62,7 +62,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         seat.set_pointer_a11y_dwell_click_type (Clutter.PointerA11yDwellClickType.PRIMARY);
 
         seat.ptr_a11y_timeout_started.connect ((device, type, timeout) => {
-            var scale = display.get_monitor_scale (display.get_current_monitor ());
+            var scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
             update_cursor_size (scale);
 
 #if HAS_MUTTER48
