@@ -3,7 +3,39 @@
  * Copyright 2025 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+#if !HAS_MUTTER46
+public class Gala.Image : Clutter.Image, Clutter.Content {
+    private int width;
+    private int height;
 
+    public Image.from_pixbuf_with_size (int width, int height, Gdk.Pixbuf pixbuf) {
+        Object ();
+
+        this.width = width;
+        this.height = height;
+
+        Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+        try {
+            set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+        } catch (Error e) {}
+    }
+
+    public Image.from_pixbuf (Gdk.Pixbuf pixbuf) {
+        Object ();
+
+        Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
+        try {
+            set_data (pixbuf.get_pixels (), pixel_format, pixbuf.width, pixbuf.height, pixbuf.rowstride);
+        } catch (Error e) {}
+    }
+
+    public override bool get_preferred_size (out float width, out float height) {
+        width = this.width;
+        height = this.height;
+        return true;
+    }
+}
+#else
 public class Gala.Image : GLib.Object, Clutter.Content {
     Gdk.Pixbuf? pixbuf;
     Cogl.Texture? texture;
@@ -69,3 +101,4 @@ public class Gala.Image : GLib.Object, Clutter.Content {
     public void invalidate_size () {
     }
 }
+#endif
