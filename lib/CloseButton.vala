@@ -27,7 +27,7 @@ public class Gala.CloseButton : Clutter.Actor {
         reactive = true;
 
         pixbuf_actor = new Clutter.Actor () {
-            pivot_point = { 0.5f, 0.5f }
+            pivot_point = { 0.5f, 0.5f },
         };
         add_child (pixbuf_actor);
 
@@ -38,6 +38,7 @@ public class Gala.CloseButton : Clutter.Actor {
 
         load_pixbuf ();
         notify["monitor-scale"].connect (load_pixbuf);
+        resource_scale_changed.connect (load_pixbuf);
     }
 
     private void on_clicked () {
@@ -58,17 +59,18 @@ public class Gala.CloseButton : Clutter.Actor {
     private void load_pixbuf () {
         var pixbuf = get_close_button_pixbuf (monitor_scale);
         if (pixbuf != null) {
-            var image = new Gala.Image.from_pixbuf (pixbuf);
+            var size = Utils.calculate_button_size (monitor_scale);
+
+            var image = new Gala.Image.from_pixbuf_with_size (size, size, pixbuf);
             pixbuf_actor.set_content (image);
-            pixbuf_actor.set_size (pixbuf.width, pixbuf.height);
-            set_size (pixbuf.width, pixbuf.height);
+            pixbuf_actor.set_size (size, size);
         } else {
             create_error_texture ();
         }
     }
 
-    private static Gdk.Pixbuf? get_close_button_pixbuf (float monitor_scale) {
-        var height = Utils.calculate_button_size (monitor_scale);
+    private Gdk.Pixbuf? get_close_button_pixbuf (float monitor_scale) {
+        var height = (int) Math.ceilf (Utils.calculate_button_size (monitor_scale) * get_resource_scale ());
 
         if (close_pixbufs[height] == null) {
             try {
