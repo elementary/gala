@@ -52,6 +52,12 @@ namespace Gala {
         private Clutter.Actor menu_group { get; set; }
 
         /**
+         * The group that contains all WindowActors that are system modal.
+         * See {@link ShellClientsManager.is_system_modal_window}.
+         */
+        public ModalGroup modal_group { get; private set; }
+
+        /**
          * {@inheritDoc}
          */
         public Meta.BackgroundGroup background_group { get; protected set; }
@@ -224,6 +230,7 @@ namespace Gala {
              * +-- window overview
              * +-- shell group
              * +-- menu group
+             * +-- modal group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
@@ -294,6 +301,10 @@ namespace Gala {
 
             menu_group = new Clutter.Actor ();
             ui_group.add_child (menu_group);
+
+            modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
+            modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
+            ui_group.add_child (modal_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1006,6 +1017,12 @@ namespace Gala {
 
         private void check_shell_window (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
+
+            if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
+                InternalUtils.clutter_actor_reparent (actor, modal_group);
+                return;
+            }
+
             if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, shell_group);
             }

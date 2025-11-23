@@ -6,9 +6,17 @@
  */
 
 public class Gala.ExtendedBehaviorWindow : ShellWindow {
+    public bool modal { get; private set; default = false; }
+    public bool dim { get; private set; default = false; }
+
     public ExtendedBehaviorWindow (Meta.Window window) {
         var target = new PropertyTarget (CUSTOM, window.get_compositor_private (), "opacity", typeof (uint), 255u, 0u);
         Object (window: window, hide_target: target);
+    }
+
+    public void make_modal (bool dim) {
+        modal = true;
+        this.dim = dim;
     }
 
     protected override void get_window_position (Mtk.Rectangle window_rect, out int x, out int y) {
