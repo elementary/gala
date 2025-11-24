@@ -161,7 +161,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         foreach (unowned var child in workspaces.get_children ()) {
             unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.monitor_scale = scale;
             workspace_clone.update_size (primary_geometry);
         }
     }
@@ -380,9 +379,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private void add_workspace (int num) {
         unowned var manager = display.get_workspace_manager ();
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
-
-        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
+        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num));
         workspaces.insert_child_at_index (workspace, num);
 #if OLD_ICON_GROUPS
         icon_groups.add_group (workspace.icon_group);

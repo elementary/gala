@@ -32,7 +32,7 @@ private class Gala.FramedBackground : BackgroundManager {
 #endif
         pipeline = new Cogl.Pipeline (ctx);
 
-        add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
+        add_effect (new ShadowEffect ("workspace", 1.0f));
 
         reactive = true;
     }
@@ -120,7 +120,6 @@ public class Gala.WorkspaceClone : ActorTarget {
 
     public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
-    public float monitor_scale { get; construct set; }
 
 #if OLD_ICON_GROUPS
     public IconGroup icon_group { get; private set; }
@@ -131,8 +130,8 @@ public class Gala.WorkspaceClone : ActorTarget {
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
-    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
-        Object (wm: wm, workspace: workspace, monitor_scale: monitor_scale);
+    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace) {
+        Object (wm: wm, workspace: workspace);
     }
 
     construct {
@@ -146,18 +145,16 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
+        window_container = new WindowCloneContainer (wm, windows) {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect ((window) => window_selected (window));
         window_container.requested_close.connect (() => activate (true));
-        bind_property ("monitor-scale", window_container, "monitor-scale");
 
 #if OLD_ICON_GROUPS
-        icon_group = new IconGroup (display, workspace, monitor_scale);
+        icon_group = new IconGroup (display, workspace, 1.0f);
         icon_group.selected.connect (() => activate (true));
-        bind_property ("monitor-scale", icon_group, "scale-factor");
 
         var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         icon_group.add_action (icons_drop_action);
@@ -193,7 +190,6 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
-        notify["monitor-scale"].connect (update_targets);
         update_targets ();
     }
 
@@ -232,8 +228,8 @@ public class Gala.WorkspaceClone : ActorTarget {
 
         var monitor = display.get_monitor_geometry (primary);
 
-        var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
-        var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
+        var scale = (float)(monitor.height - (TOP_OFFSET + BOTTOM_OFFSET)) / monitor.height;
+        var pivot_y = TOP_OFFSET / (monitor.height - monitor.height * scale);
         background.set_pivot_point (0.5f, pivot_y);
 
         var initial_width = monitor.width;
@@ -243,9 +239,9 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
+        window_container.padding_top = TOP_OFFSET;
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        window_container.padding_bottom = BOTTOM_OFFSET;
     }
 
 #if OLD_ICON_GROUPS

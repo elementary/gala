@@ -17,7 +17,7 @@
 
 namespace Gala {
     public class Utils {
-        private const int BUTTON_SIZE = 36;
+        public const int BUTTON_SIZE = 36;
 
         private struct CachedIcon {
             public Gdk.Pixbuf icon;
@@ -293,7 +293,7 @@ namespace Gala {
          *
          * @param workspace The workspace on which to count the windows
          * @param exclude a window to not count
-         * 
+         *
          */
         public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;

@@ -16,7 +16,6 @@ public class Gala.MonitorClone : ActorTarget {
 
     public WindowManager wm { get; construct; }
     public int monitor { get; construct; }
-    public float monitor_scale { get; construct set; }
 
     private WindowCloneContainer window_container;
     private BackgroundManager background;
@@ -35,10 +34,9 @@ public class Gala.MonitorClone : ActorTarget {
 
         var windows = new WindowListModel (display, STACKING, true, monitor);
 
-        window_container = new WindowCloneContainer (wm, windows, monitor_scale);
+        window_container = new WindowCloneContainer (wm, windows);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));
         window_container.window_selected.connect ((w) => { window_selected (w); });
-        bind_property ("monitor-scale", window_container, "monitor-scale");
 
         add_child (background);
         add_child (window_container);
@@ -57,7 +55,5 @@ public class Gala.MonitorClone : ActorTarget {
 
         set_position (monitor_geometry.x, monitor_geometry.y);
         set_size (monitor_geometry.width, monitor_geometry.height);
-
-        monitor_scale = display.get_monitor_scale (monitor);
     }
 }
