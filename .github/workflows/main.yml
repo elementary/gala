@@ -27,7 +27,7 @@ jobs:
       image: ghcr.io/elementary/docker:${{ matrix.version }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Dependencies
       run: |
         apt update
@@ -50,7 +50,7 @@ jobs:
       image: fedora:latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Install Dependencies
         run: |
           dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite-devel meson valac valadoc
@@ -73,7 +73,7 @@ jobs:
           zypper addrepo https://download.opensuse.org/repositories/X11:Pantheon/15.6/X11:Pantheon.repo
           zypper --gpg-auto-import-keys refresh
           zypper --non-interactive install tar git desktop-file-utils gsettings-desktop-schemas-devel libatk-1_0-0 clutter-devel libgee-devel glib2-devel libgnome-desktop-4-devel granite6-devel granite-devel gtk3-devel gtk4-devel libhandy-devel mutter-devel sqlite3-devel meson vala valadoc gcc
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Build
         env:
           DESTDIR: out
@@ -88,7 +88,7 @@ jobs:
       image: valalang/lint
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Lint
       run: |
         io.elementary.vala-lint -d daemon
