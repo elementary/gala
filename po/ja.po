@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-20 18:22+0000\n"
-"PO-Revision-Date: 2025-08-30 22:55+0000\n"
+"PO-Revision-Date: 2025-11-25 12:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -135,31 +135,27 @@ msgstr "翻訳の更新"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "HiDPI への対応を改善"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "“視覚効果を減らす”設定時の挙動を改善"
 
 #: data/gala.metainfo.xml.in:56
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "影のパフォーマンスを改善"
+msgstr "描画のパフォーマンスを改善"
 
 #: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "起動時にドックとパネルを同時に表示するように修正"
 
 #: data/gala.metainfo.xml.in:58
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "ワークスペースの切り替え時のアニメーションの長さ"
+msgstr "ドックのワークスペース切り替えアニメーションを改善"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "ピクチャーインピクチャーウィンドウに角丸を追加"
 
 #: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"

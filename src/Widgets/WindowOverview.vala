@@ -113,7 +113,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var geometry = display.get_monitor_geometry (i);
-            var scale = display.get_monitor_scale (i);
+            var scale = Utils.get_ui_scaling_factor (display, i);
 
             var custom_filter = new Gtk.CustomFilter (window_filter_func);
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
