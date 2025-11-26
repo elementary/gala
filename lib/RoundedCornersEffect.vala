@@ -72,14 +72,11 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
     }
 
     private void update_clip_radius () requires (actor != null) {
-        var resource_scale = actor.get_resource_scale ();
-        set_uniform_value ("clip_radius", Utils.scale_to_int (clip_radius, monitor_scale / resource_scale));
+        set_uniform_value ("clip_radius", Utils.scale_to_int (clip_radius, monitor_scale));
     }
 
     private void update_actor_size () requires (actor != null) {
-        var resource_scale = actor.get_resource_scale ();
         var actor_box = actor.get_allocation_box ();
-        actor_box.scale (1.0f / resource_scale);
         Clutter.ActorBox.clamp_to_pixel (ref actor_box);
 
         float[] actor_size = {
