@@ -19,17 +19,9 @@ namespace Gala {
     public class Utils {
         public const int BUTTON_SIZE = 36;
 
-        private struct CachedIcon {
-            public Gdk.Pixbuf icon;
-            public int icon_size;
-            public int scale;
-        }
-
         private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
 
-        private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
-        private static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
 
         private static AppCache app_cache;
 
@@ -40,27 +32,24 @@ namespace Gala {
                 theme_name = "elementary"
             };
 
-            icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
-            unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
 
             app_cache = new AppCache ();
             app_cache.changed.connect (() => {
-                icon_cache.clear ();
                 window_to_desktop_cache.clear ();
             });
         }
 
-        public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int icon_size, int scale) {
+        public static GLib.Icon get_icon_for_window (Meta.Window window) {
             var transient_for = window.get_transient_for ();
             if (transient_for != null) {
-                return get_icon_for_window (transient_for, icon_size, scale);
+                return get_icon_for_window (transient_for);
             }
 
             GLib.DesktopAppInfo? desktop_app = null;
             desktop_app = window_to_desktop_cache[window];
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     return icon;
                 }
@@ -71,7 +60,7 @@ namespace Gala {
             var wm_instance = window.get_wm_class_instance ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_instance);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -81,7 +70,7 @@ namespace Gala {
             var wm_class = window.get_wm_class ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_class);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -90,7 +79,7 @@ namespace Gala {
 
             desktop_app = lookup_desktop_wmclass (wm_instance);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -99,7 +88,7 @@ namespace Gala {
 
             desktop_app = lookup_desktop_wmclass (wm_class);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -108,7 +97,7 @@ namespace Gala {
 
             desktop_app = get_app_from_id (sandbox_id);
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -118,7 +107,7 @@ namespace Gala {
             var gapplication_id = window.get_gtk_application_id ();
             desktop_app = get_app_from_id (gapplication_id);
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -144,7 +133,7 @@ namespace Gala {
                     });
 
                     if (desktop_app != null) {
-                        var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                         if (icon != null) {
                             window_to_desktop_cache[window] = desktop_app;
                             return icon;
@@ -153,34 +142,9 @@ namespace Gala {
                 }
             }
 
-            // Haven't been able to get an icon for the window at this point, look to see
-            // if we've already cached "application-default-icon" at this size
-            foreach (var icon in unknown_icon_cache) {
-                if (icon.icon_size == icon_size && icon.scale == scale) {
-                    return icon.icon;
-                }
-            }
-
-            // Construct a new "application-default-icon" and store it in the cache
-            try {
-                var icon_paintable = icon_theme.lookup_icon (
-                    "application-default-icon",
-                    null,
-                    icon_size,
-                    scale,
-                    Gtk.TextDirection.NONE,
-                    0
-                );
-
-                var pixbuf = new Gdk.Pixbuf.from_file (icon_paintable.get_file ().get_path ());
-
-                unknown_icon_cache.add (CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                return pixbuf;
-            } catch (Error e) {
-                var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
-                icon.fill (0x00000000);
-                return icon;
-            }
+            // Haven't been able to get an icon for the window at this point,
+            // return a default icon
+            return new ThemedIcon ("application-default-icon");
         }
 
         private static bool check_app_prefix (GLib.DesktopAppInfo app, string? sandbox_id) {
@@ -200,7 +164,6 @@ namespace Gala {
         public static void clear_window_cache (Meta.Window window) {
             var desktop = window_to_desktop_cache[window];
             if (desktop != null) {
-                icon_cache.remove_all (desktop);
                 window_to_desktop_cache.unset (window);
             }
         }
@@ -227,52 +190,6 @@ namespace Gala {
 
             var canonicalized = wm_class.ascii_down ().delimit (" ", '-');
             return get_app_from_id (canonicalized);
-        }
-
-        private static Gdk.Pixbuf? get_icon_for_desktop_app_info (GLib.DesktopAppInfo desktop, int icon_size, int scale) {
-            if (icon_cache.contains (desktop)) {
-                foreach (var icon in icon_cache[desktop]) {
-                    if (icon.icon_size == icon_size && icon.scale == scale) {
-                        return icon.icon;
-                    }
-                }
-            }
-
-            var icon = desktop.get_icon ();
-
-            if (icon is GLib.ThemedIcon) {
-                var icon_names = ((GLib.ThemedIcon)icon).get_names ();
-                if (icon_names.length == 0) {
-                    return null;
-                }
-
-                var icon_paintable = icon_theme.lookup_icon (icon_names[0], icon_names[1:], icon_size, scale, NONE, 0);
-
-                var path = icon_paintable.get_file ()?.get_path ();
-                if (path == null) {
-                    return null;
-                }
-
-                try {
-                    var pixbuf = new Gdk.Pixbuf.from_file (path);
-                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                    return pixbuf;
-                } catch (Error e) {
-                    return null;
-                }
-            } else if (icon is GLib.FileIcon) {
-                var file = ((GLib.FileIcon)icon).file;
-                var size_with_scale = icon_size * scale;
-                try {
-                    var pixbuf = new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
-                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                    return pixbuf;
-                } catch (Error e) {
-                    return null;
-                }
-            }
-
-            return null;
         }
 
         /**

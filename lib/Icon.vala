@@ -6,6 +6,34 @@
  */
 
 public class Gala.Icon : Clutter.Actor {
+    private class GIconSource : Object, IconSource {
+        private static Gtk.IconTheme icon_theme = new Gtk.IconTheme () {
+            theme_name = "elementary"
+        };
+
+        public GLib.Icon gicon { get; construct; }
+
+        public GIconSource (GLib.Icon gicon) {
+            Object (gicon: gicon);
+        }
+
+        public string? get_cache_key (int size, float scale) {
+            var gicon_str = gicon.to_string ();
+            return gicon_str != null ? "gicon-%s-%d-%f".printf (gicon_str, size, scale) : null;
+        }
+
+        public Gdk.Pixbuf create_pixbuf (int size, float scale) throws Error {
+            var icon_paintable = icon_theme.lookup_by_gicon (gicon, size, (int) Math.ceilf (scale), NONE, 0);
+
+            var file = icon_paintable?.file;
+            if (file == null) {
+                throw new IOError.FAILED ("Icon paintable has no file");
+            }
+
+            return new Gdk.Pixbuf.from_stream_at_scale (file.read (), -1, get_texture_size (size, scale), true);
+        }
+    }
+
     private class ResourceIconSource : Object, IconSource {
         public string path { get; construct; }
 
@@ -41,6 +69,7 @@ public class Gala.Icon : Clutter.Actor {
     public float monitor_scale { get; construct set; }
 
     public string resource_path { set { source = new ResourceIconSource (value); } }
+    public GLib.Icon gicon { set { source = new GIconSource (value); } }
 
     private IconSource _source;
     private IconSource source {
@@ -49,6 +78,10 @@ public class Gala.Icon : Clutter.Actor {
             _source = value;
             load_pixbuf ();
         }
+    }
+
+    public Icon (int icon_size, float monitor_scale) {
+        Object (icon_size: icon_size, monitor_scale: monitor_scale);
     }
 
     public Icon.from_resource (int icon_size, float monitor_scale, string resource_path) {
