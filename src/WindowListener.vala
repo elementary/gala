@@ -55,6 +55,7 @@ public class Gala.WindowListener : Object {
 
     public signal void window_workspace_changed (Meta.Window window);
     public signal void window_on_all_workspaces_changed (Meta.Window window);
+    public signal void window_type_changed (Meta.Window window);
 
     private Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
@@ -80,6 +81,9 @@ public class Gala.WindowListener : Object {
                 break;
             case "on-all-workspaces":
                 window_on_all_workspaces_changed (window);
+                break;
+            case "window-type":
+                window_type_changed (window);
                 break;
         }
     }

@@ -74,7 +74,7 @@ public class Gala.BlurManager : Object {
         var x_shadow_size = frame_rect.x - buffer_rect.x;
         var y_shadow_size = frame_rect.y - buffer_rect.y;
 
-        var monitor_scale = Utils.get_framebuffer_is_logical () ? 1.0f : window.display.get_monitor_scale (window.get_monitor ());
+        var monitor_scale = Utils.get_ui_scaling_factor (window.display, window.get_monitor ());
         var inverse_monitor_scale = 1.0f / monitor_scale;
 
         blur_data.actor.set_position (

@@ -47,7 +47,7 @@ namespace Gala {
          * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
          * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
          */
-        public Clutter.Actor shell_group { get; private set; }
+        private Clutter.Actor shell_group { get; private set; }
 
         private Clutter.Actor menu_group { get; set; }
 
@@ -398,6 +398,13 @@ namespace Gala {
             display.window_created.connect ((window) =>
                 InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
             );
+
+            WindowListener.get_default ().window_type_changed.connect ((window) => {
+                unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+                if (window_actor != null) {
+                    check_shell_window (window_actor);
+                }
+            });
 
             stage.show ();
 
