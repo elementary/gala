@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-20 18:22+0000\n"
-"PO-Revision-Date: 2025-08-02 18:55+0000\n"
+"PO-Revision-Date: 2025-12-04 10:55+0000\n"
 "Last-Translator: lenify <lenify@tutanota.com>\n"
 "Language-Team: Belarusian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/be/>\n"
@@ -135,29 +135,27 @@ msgstr "Абноўлены пераклады"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Паляпшэнне падтрымкі HiDPI"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Паляпшэнні паводзін пры зменшаным руху"
 
 #: data/gala.metainfo.xml.in:56
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Паляпшэнні прадуктыўнасці ценяў"
+msgstr "Паляпшэнні прадуктыўнасці апрацоўцы"
 
 #: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Сінхранізаваны паказ дока і панэлі пры запуску"
 
 #: data/gala.metainfo.xml.in:58
 msgid "Improved workspace switch dock animation"
-msgstr ""
+msgstr "Паляпшэнні анімацыі дока пры пераключэнні прасторы"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Рэжым «Выява-ў-выяве» цяпер мае скругленыя куты акон"
 
 #: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"
