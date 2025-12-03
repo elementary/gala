@@ -38,6 +38,7 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/450">Dim the background when the authentication dialogue is open</issue>
+        <issue url="https://github.com/elementary/gala/issues/2412">Multitasking View is oversized with fractional scaling</issue>
         <issue url="https://github.com/elementary/gala/issues/2526">Windows positoined outside the viewport</issue>
         <issue url="https://github.com/elementary/gala/issues/2552">Windows placed in undisplayed area</issue>
         <issue url="https://github.com/elementary/gala/issues/2620">Reduce Motion breaks multitouch gestures: no live feedback, “teleporting” transitions</issue>
