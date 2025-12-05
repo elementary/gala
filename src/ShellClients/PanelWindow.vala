@@ -118,10 +118,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     public void request_visible_in_multitasking_view () {
-#if !OLD_ICON_GROUPS
         visible_in_multitasking_view = true;
         actor.add_action (new DragDropAction (DESTINATION, "multitaskingview-window"));
-#endif
     }
 
     public void animate_start () {
