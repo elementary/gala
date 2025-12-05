@@ -6,14 +6,16 @@
 // based on shader from mutter
 
 uniform sampler2D tex;
-uniform float clip_radius;
+uniform int clip_radius;
 uniform vec2 actor_size;
+uniform vec2 offset;
+uniform vec2 full_texture_size;
 
 float rounded_rect_coverage (vec2 p) {
-  float center_left = clip_radius + 1.5;
-  float center_right = actor_size.x - clip_radius - 0.55;
-  float center_x;
+  float center_left = clip_radius;
+  float center_right = actor_size.x - clip_radius;
 
+  float center_x;
   if (p.x < center_left)
     center_x = center_left;
   else if (p.x >= center_right)
@@ -21,10 +23,10 @@ float rounded_rect_coverage (vec2 p) {
   else
     return 1.0;
 
-  float center_top = clip_radius + 1.5;
-  float center_bottom = actor_size.y - clip_radius - 0.55;
-  float center_y;
+  float center_top = clip_radius;
+  float center_bottom = actor_size.y - clip_radius;
 
+  float center_y;
   if (p.y < center_top)
     center_y = center_top;
   else if (p.y > center_bottom)
@@ -42,7 +44,7 @@ float rounded_rect_coverage (vec2 p) {
 
   // Fully inside the circle
   float inner_radius = clip_radius - 0.5;
-  if (dist_squared <= (inner_radius * inner_radius))
+  if (dist_squared < (inner_radius * inner_radius))
     return 1.0;
 
   // Only pixels on the edge of the curve need expensive antialiasing
@@ -50,10 +52,18 @@ float rounded_rect_coverage (vec2 p) {
 }
 
 void main () {
+  vec2 texture_coord = cogl_tex_coord0_in.xy * full_texture_size;
+  if (texture_coord.x < offset.x || texture_coord.x > offset.x + actor_size.x ||
+      texture_coord.y < offset.y || texture_coord.y > offset.y + actor_size.y
+  ) {
+      cogl_color_out = vec4 (0, 0, 0, 0);
+      return;
+  }
+
+  texture_coord.x -= offset.x;
+  texture_coord.y -= offset.y;
+
   vec4 sample = texture2D (tex, cogl_tex_coord0_in.xy);
-
-  vec2 texture_coord = cogl_tex_coord0_in.xy * actor_size;
   float res = rounded_rect_coverage (texture_coord);
-
   cogl_color_out = sample * cogl_color_in * res;
 }
