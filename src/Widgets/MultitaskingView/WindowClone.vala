@@ -505,7 +505,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
                 did_move = true;
             }
 
-            var workspace = ((WorkspaceClone) destination.get_parent ()).workspace;
+            var workspace = ((WorkspaceClone) destination.get_parent ().get_parent ()).workspace;
             if (workspace != window.get_workspace ()) {
                 window.change_workspace (workspace);
                 did_move = true;
