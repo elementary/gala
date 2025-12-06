@@ -74,7 +74,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     private bool is_eligible_window (Meta.Window window) {
-        if (window.is_override_redirect ()) {
+        if (window.is_override_redirect () || !Utils.get_window_is_normal (window.find_root_ancestor ())) {
             return false;
         }
 
