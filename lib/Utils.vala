@@ -25,13 +25,7 @@ namespace Gala {
 
         private static AppCache app_cache;
 
-        private static Gtk.IconTheme icon_theme;
-
         static construct {
-            icon_theme = new Gtk.IconTheme () {
-                theme_name = "elementary"
-            };
-
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
 
             app_cache = new AppCache ();
