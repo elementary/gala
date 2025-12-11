@@ -5,7 +5,6 @@
 
 public class Gala.CloseButton : Clutter.Actor {
     private const uint ANIMATION_DURATION = 100;
-    private static Gee.HashMap<int, Gdk.Pixbuf?> close_pixbufs;
 
     public signal void triggered (uint32 timestamp);
 
@@ -13,10 +12,6 @@ public class Gala.CloseButton : Clutter.Actor {
 
     private Icon icon;
     private Clutter.ClickAction click_action;
-
-    static construct {
-        close_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-    }
 
     public CloseButton (float monitor_scale) {
         Object (monitor_scale: monitor_scale);
