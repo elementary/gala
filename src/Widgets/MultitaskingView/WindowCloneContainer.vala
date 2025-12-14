@@ -11,10 +11,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public signal void window_selected (Meta.Window window);
     public signal void requested_close ();
 
-    public int padding_top { get; set; default = 12; }
-    public int padding_left { get; set; default = 12; }
-    public int padding_right { get; set; default = 12; }
-    public int padding_bottom { get; set; default = 12; }
+    public Mtk.Rectangle area { get; set; }
 
     public WindowManager wm { get; construct; }
     public WindowListModel windows { get; construct; }
@@ -139,13 +136,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
             var seq_b = ((WindowClone) b.clone).window.get_stable_sequence ();
             return (int) (seq_b - seq_a);
         });
-
-        Mtk.Rectangle area = {
-            padding_left,
-            padding_top,
-            (int) width - padding_left - padding_right,
-            (int) height - padding_top - padding_bottom
-        };
 
         foreach (var tilable in calculate_grid_placement (area, windows)) {
             tilable.clone.take_slot (tilable.rect, !view_toggle);
