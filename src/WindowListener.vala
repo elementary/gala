@@ -56,6 +56,14 @@ public class Gala.WindowListener : Object {
     public signal void window_workspace_changed (Meta.Window window);
     public signal void window_on_all_workspaces_changed (Meta.Window window);
     public signal void window_type_changed (Meta.Window window);
+    public signal void window_maximized_changed (Meta.Window window) {
+        WindowGeometry window_geometry = {};
+        window_geometry.inner = window.get_frame_rect ();
+        window_geometry.outer = window.get_buffer_rect ();
+
+        unmaximized_state_geometry.@set (window, window_geometry);
+    }
+    public signal void window_fullscreen_changed (Meta.Window window);
 
     private Gee.HashMap<Meta.Window, WindowGeometry?> unmaximized_state_geometry;
 
@@ -69,6 +77,7 @@ public class Gala.WindowListener : Object {
         window.unmanaged.connect (window_removed);
 
         window_maximized_changed (window);
+        window_fullscreen_changed (window);
     }
 
     private void window_notify (Object object, ParamSpec pspec) {
@@ -85,15 +94,10 @@ public class Gala.WindowListener : Object {
             case "window-type":
                 window_type_changed (window);
                 break;
+            case "fullscreen":
+                window_fullscreen_changed (window);
+                break;
         }
-    }
-
-    private void window_maximized_changed (Meta.Window window) {
-        WindowGeometry window_geometry = {};
-        window_geometry.inner = window.get_frame_rect ();
-        window_geometry.outer = window.get_buffer_rect ();
-
-        unmaximized_state_geometry.@set (window, window_geometry);
     }
 
     public WindowGeometry? get_unmaximized_state_geometry (Meta.Window window) {
