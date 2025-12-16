@@ -119,7 +119,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
-            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
+            window_clone_container = new WindowCloneContainer (wm, model, i, scale, true) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -173,7 +173,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
     private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
         // Check removed > added to make sure we only close once when the last window is removed
-        // This avoids an inifinite loop since closing will sort the windows which also triggers this signal
+        // This avoids an infinite loop since closing will sort the windows which also triggers this signal
         if (is_opened () && removed > added && model.get_n_items () == 0) {
             close ();
         }
