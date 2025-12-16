@@ -6,15 +6,19 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
+    [DBus (name = "org.pantheon.gala.daemon")]
+    public interface Daemon: GLib.Object {
+        public signal void window_menu_action_invoked (int action);
+
+        public abstract async void show_window_menu (int display_width, int display_height, int x, int y, DaemonWindowMenuItem[] items) throws Error;
+        public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
+    }
+
     private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
     private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
     private const int SPACING = 12;
 
-    [DBus (name = "org.pantheon.gala.daemon")]
-    public interface Daemon: GLib.Object {
-        public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
-        public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
-    }
+    public signal void window_menu_action_invoked (int action);
 
     public Meta.Display display { get; construct; }
 
@@ -83,6 +87,7 @@ public class Gala.DaemonManager : GLib.Object {
             Bus.get_proxy.begin<Daemon> (BusType.SESSION, DAEMON_DBUS_NAME, DAEMON_DBUS_OBJECT_PATH, 0, null, (obj, res) => {
                 try {
                     daemon_proxy = Bus.get_proxy.end (res);
+                    daemon_proxy.window_menu_action_invoked.connect ((action) => window_menu_action_invoked (action));
                 } catch (Error e) {
                     warning ("Failed to get Menu proxy: %s", e.message);
                 }
@@ -105,7 +110,7 @@ public class Gala.DaemonManager : GLib.Object {
         }
     }
 
-    public async void show_window_menu (WindowFlags flags, int x, int y) {
+    public async void show_window_menu (int x, int y, DaemonWindowMenuItem[] items) {
         if (daemon_proxy == null) {
             return;
         }
@@ -114,7 +119,7 @@ public class Gala.DaemonManager : GLib.Object {
         display.get_size (out width, out height);
 
         try {
-            yield daemon_proxy.show_window_menu (flags, width, height, x, y);
+            yield daemon_proxy.show_window_menu (width, height, x, y, items);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }

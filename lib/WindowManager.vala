@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2014 Tom Beckmann
+//                2025 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,6 +22,17 @@ namespace Gala {
         public const string OVERLAY_ACTION = "overlay-action";
         public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
         public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
+    }
+
+    public delegate void WindowMenuItemCallback (Meta.Window window);
+
+    public struct WindowMenuItem {
+        WindowMenuItemType type;
+        bool sensitive;
+        bool toggle_state;
+        string display_name;
+        string keybinding;
+        WindowMenuItemCallback callback;
     }
 
     /**
