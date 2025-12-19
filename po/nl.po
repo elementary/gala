@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-20 18:22+0000\n"
-"PO-Revision-Date: 2025-04-19 13:20+0000\n"
-"Last-Translator: DutchVipperloid <svenroelof@e.email>\n"
+"PO-Revision-Date: 2025-12-20 18:55+0000\n"
+"Last-Translator: Bas Ernst <bas@ernstgenova.it>\n"
 "Language-Team: Dutch <https://l10n.elementaryos.org/projects/desktop/gala/nl/"
 ">\n"
 "Language: nl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
@@ -135,31 +135,27 @@ msgstr "Bijgewerkte vertalingen"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Verbeterde HiDPI-ondersteuning"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Verbeter het gedrag van Reduced Motion"
 
 #: data/gala.metainfo.xml.in:56
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Verbeterde schaduwen-prestaties"
+msgstr "Verbeterde weergaveprestaties"
 
 #: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Dock en paneel synchroon weergeven bij het opstarten"
 
 #: data/gala.metainfo.xml.in:58
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Duur van de werkbladwisselingsanimatie"
+msgstr "Verbeterde animatie voor schakelen werktuimtedock"
 
 #: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Picture-in-Picture-vensters hebben nu ronde hoeken"
 
 #: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"
@@ -317,10 +313,9 @@ msgstr "Schermafbeelding van %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:168
-#, fuzzy, c-format
-#| msgid "Show in Files"
+#, c-format
 msgid "Show in %s"
-msgstr "Laat zien in Bestanden"
+msgstr "Tonen in %s"
 
 #: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
 msgid "Screenshot taken"
