@@ -9,6 +9,12 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : ActorTarget, RootTarget {
+    public enum Mode {
+        MULTITASKING_VIEW,
+        OVERVIEW,
+        SINGLE_APP_OVERVIEW
+    }
+
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -49,7 +55,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
     }
 
-    public bool overview_mode { get; construct; }
+    public Mode mode { get; construct; }
     public float monitor_scale { get; construct set; }
 
     [CCode (notify = false)]
@@ -81,12 +87,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, Mode mode) {
         Object (
             wm: wm,
             window: window,
             monitor_scale: monitor_scale,
-            overview_mode: overview_mode
+            mode: mode
         );
     }
 
@@ -105,7 +111,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.connect (update_targets);
         window.size_changed.connect (() => request_reposition ());
 
-        if (overview_mode) {
+        if (mode != MULTITASKING_VIEW) {
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
                 actor_clicked (action.get_button ());
@@ -169,7 +175,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private void reallocate () {
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
-            visible = !overview_mode
+            visible = mode != SINGLE_APP_OVERVIEW
         };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
@@ -187,10 +193,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * effect and makes sure the shadow is updated on size changes.
      */
     private void load_clone (Meta.WindowActor actor) {
-        if (overview_mode) {
-            actor.hide ();
-        }
-
         clone = new Clutter.Clone (actor);
         clone_container.add_child (clone);
 
@@ -221,7 +223,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * the current one. To ease their appearance we have to fade them in.
      */
     private bool should_fade () {
-        return (overview_mode
+        return (mode != MULTITASKING_VIEW
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
 

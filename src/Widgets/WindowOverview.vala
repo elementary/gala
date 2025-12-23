@@ -111,6 +111,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
         unowned var display = wm.get_display ();
 
+        var mode = window_ids != null ? WindowClone.Mode.SINGLE_APP_OVERVIEW : WindowClone.Mode.OVERVIEW;
+
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var geometry = display.get_monitor_geometry (i);
             var scale = Utils.get_ui_scaling_factor (display, i);
@@ -119,7 +121,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
-            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
+            window_clone_container = new WindowCloneContainer (wm, model, scale, mode) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
