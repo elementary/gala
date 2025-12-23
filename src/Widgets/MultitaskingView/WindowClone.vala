@@ -469,7 +469,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void destination_crossed (Clutter.Actor destination, bool hovered) {
-#if !OLD_ICON_GROUPS
         if (!(destination is Meta.WindowActor)) {
             return;
         }
@@ -479,55 +478,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             WindowDragProvider.get_instance ().notify_leave ();
         }
-#else
-        var icon_group = destination as IconGroup;
-        var insert_thumb = destination as WorkspaceInsertThumb;
-
-        // if we have don't dynamic workspace, we don't allow inserting
-        if (icon_group == null && insert_thumb == null
-            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
-                return;
-        }
-
-        // for an icon group, we only do animations if there is an actual movement possible
-        if (icon_group != null
-            && icon_group.workspace == window.get_workspace ()
-            && window.is_on_primary_monitor ()) {
-                return;
-        }
-
-        var scale = hovered ? 0.4 : 1.0;
-        var opacity = hovered ? 0 : 255;
-        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = Utils.get_animation_duration (duration);
-
-        window_icon.save_easing_state ();
-
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
-        window_icon.set_scale (scale, scale);
-        window_icon.set_opacity (opacity);
-
-        window_icon.restore_easing_state ();
-
-        if (insert_thumb != null) {
-            insert_thumb.set_window_thumb (window);
-        }
-
-        if (icon_group != null) {
-            if (hovered) {
-                icon_group.add_window (window, false, true);
-            } else {
-                icon_group.remove_window (window, false);
-            }
-        }
-
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE : Meta.Cursor.NO_DROP);
-#else
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE : Meta.Cursor.DND_IN_DRAG);
-#endif
-#endif
     }
 
     private void destination_motion (Clutter.Actor destination, float x, float y) {
