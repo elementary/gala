@@ -261,6 +261,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         if (should_fade ()) {
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+        } else {
+            // When a window should no longer fade (e.g. gets unminimized) make sure we reset the opacity
+            opacity = 255u;
         }
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
