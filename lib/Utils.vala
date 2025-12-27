@@ -19,8 +19,6 @@ namespace Gala {
     public class Utils {
         public const int BUTTON_SIZE = 36;
 
-        private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
-
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
 
         private static AppCache app_cache;
@@ -262,60 +260,16 @@ namespace Gala {
         }
 
         /**
-         * Returns the pixbuf that is used for resize buttons throughout gala at a
-         * size of 36px
-         *
-         * @return the resize button pixbuf or null if it failed to load
-         */
-        public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
-            var height = calculate_button_size (scale);
-
-            if (resize_pixbufs == null) {
-                resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-            }
-
-            if (resize_pixbufs[height] == null) {
-                try {
-                    resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        "/org/pantheon/desktop/gala/buttons/resize.svg",
-                        -1,
-                        height,
-                        true
-                    );
-                } catch (Error e) {
-                    warning (e.message);
-                    return null;
-                }
-            }
-
-            return resize_pixbufs[height];
-        }
-
-        /**
          * Creates a new reactive ClutterActor at 36px with the resize pixbuf
          *
          * @return The resize button actor
          */
-        public static Clutter.Actor create_resize_button (float scale) {
-            var texture = new Clutter.Actor ();
-            var pixbuf = get_resize_button_pixbuf (scale);
-
-            texture.reactive = true;
-
-            if (pixbuf != null) {
-                var image = new Gala.Image.from_pixbuf (pixbuf);
-                texture.set_content (image);
-                texture.set_size (pixbuf.width, pixbuf.height);
-            } else {
-                // we'll just make this red so there's at least something as an
-                // indicator that loading failed. Should never happen and this
-                // works as good as some weird fallback-image-failed-to-load pixbuf
-                var size = calculate_button_size (scale);
-                texture.set_size (size, size);
-                texture.background_color = { 255, 0, 0, 255 };
-            }
-
-            return texture;
+        public static Clutter.Actor create_resize_button (float monitor_scale) {
+            return new Icon.from_resource (
+                BUTTON_SIZE,
+                monitor_scale,
+                "/org/pantheon/desktop/gala/buttons/resize.svg"
+            );
         }
 
         private static HashTable<Meta.Window, X.Rectangle?> regions = new HashTable<Meta.Window, X.Rectangle?> (null, null);
