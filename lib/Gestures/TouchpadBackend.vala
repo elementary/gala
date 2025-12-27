@@ -91,7 +91,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
 
             gesture.type = event.get_type ();
             gesture.fingers = (int) event.get_touchpad_gesture_finger_count ();
-            gesture.performed_on_device_type = event.get_device ().get_device_type ();
+            gesture.performed_on_device_type = event.get_source_device ().get_device_type ();
 
             if (!on_gesture_detected (gesture, event.get_time ())) {
                 if (state == NONE) {
