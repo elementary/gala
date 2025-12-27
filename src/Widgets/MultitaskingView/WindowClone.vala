@@ -112,8 +112,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.size_changed.connect (() => request_reposition ());
 
         if (mode != MULTITASKING_VIEW) {
+#if HAS_MUTTER49
+            var click_action = new Clutter.ClickGesture ();
+            click_action.recognize.connect ((action) => {
+#else
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
+#endif
                 actor_clicked (action.get_button ());
             });
 
