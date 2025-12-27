@@ -246,7 +246,7 @@ namespace Gala {
                     clicked = false;
                     dragging = true;
 
-                    grab_actor (handle, event.get_device ());
+                    grab_actor (handle, event.get_source_device ());
 
                     var source_list = sources.@get (drag_id);
                     if (source_list != null) {
@@ -316,7 +316,7 @@ namespace Gala {
         }
 
         private bool on_event (Clutter.Event event) requires (dragging) {
-            var device = event.get_device ();
+            var device = event.get_source_device ();
 
             if (grabbed_device != null &&
                 device != grabbed_device &&
