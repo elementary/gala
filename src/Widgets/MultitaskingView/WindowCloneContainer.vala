@@ -19,7 +19,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public WindowManager wm { get; construct; }
     public WindowListModel windows { get; construct; }
     public float monitor_scale { get; construct set; }
-    public bool overview_mode { get; construct; }
+    public WindowClone.Mode window_clone_mode { get; construct; }
 
     private bool opened = false;
 
@@ -29,8 +29,11 @@ public class Gala.WindowCloneContainer : ActorTarget {
      */
     private unowned WindowClone? current_window = null;
 
-    public WindowCloneContainer (WindowManager wm, WindowListModel windows, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (
+        WindowManager wm, WindowListModel windows, float monitor_scale,
+        WindowClone.Mode window_clone_mode = MULTITASKING_VIEW
+    ) {
+        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, window_clone_mode: window_clone_mode);
     }
 
     construct {
@@ -55,7 +58,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
             WindowClone? clone = to_remove.take (window);
 
             if (clone == null) {
-                clone = new WindowClone (wm, window, monitor_scale, overview_mode);
+                clone = new WindowClone (wm, window, monitor_scale, window_clone_mode);
                 clone.selected.connect ((_clone) => window_selected (_clone.window));
                 clone.request_reposition.connect (() => reflow (false));
                 bind_property ("monitor-scale", clone, "monitor-scale");
