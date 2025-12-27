@@ -754,8 +754,10 @@ namespace Gala {
                     event.get_type () == TOUCHPAD_HOLD || event.get_type () == TOUCH_BEGIN) {
                     window.begin_grab_op (
                         op,
-                        event.get_device (),
+                        null,
+#if !HAS_MUTTER49
                         event.get_event_sequence (),
+#endif
                         event.get_time ()
 #if HAS_MUTTER46
                         , null
