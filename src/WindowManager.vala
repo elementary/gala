@@ -87,6 +87,8 @@ namespace Gala {
 
         public WindowTracker? window_tracker { get; private set; }
 
+        private WindowMover window_mover;
+
         private FilterManager filter_manager;
 
         private NotificationsManager notifications_manager;
@@ -112,7 +114,6 @@ namespace Gala {
         private Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
-        private GLib.HashTable<Meta.Window, int> ws_assoc = new GLib.HashTable<Meta.Window, int> (direct_hash, direct_equal);
         private Meta.SizeChange? which_change = null;
         private Mtk.Rectangle old_rect_size_change;
         private Clutter.Actor? latest_window_snapshot;
@@ -196,6 +197,7 @@ namespace Gala {
             WindowStateSaver.init (window_tracker);
             window_tracker.init (display);
             WindowAttentionTracker.init (display);
+            window_mover = new WindowMover (display, WindowListener.get_default ());
 
             notification_stack = new NotificationStack (display);
 
@@ -1164,10 +1166,6 @@ namespace Gala {
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             unowned var window = actor.get_meta_window ();
-            if (window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")
-                || window.fullscreen && behavior_settings.get_boolean ("move-fullscreened-workspace")) {
-                move_window_to_next_ws (window);
-            }
 
             kill_window_effects (actor);
 
@@ -1298,11 +1296,6 @@ namespace Gala {
             unowned var window = actor.get_meta_window ();
 
             WindowStateSaver.on_map (window);
-
-            if ((window.maximized_horizontally && behavior_settings.get_boolean ("move-maximized-workspace")) ||
-                (window.fullscreen && window.is_on_primary_monitor () && behavior_settings.get_boolean ("move-fullscreened-workspace"))) {
-                move_window_to_next_ws (window);
-            }
 
             actor.remove_all_transitions ();
             actor.show ();
@@ -1497,7 +1490,6 @@ namespace Gala {
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
             unowned var window = actor.get_meta_window ();
-            move_window_to_old_ws (window);
 
             kill_window_effects (actor);
 
@@ -1571,65 +1563,6 @@ namespace Gala {
                 actor.disconnect (handler_id);
                 unmaximizing.remove (actor);
             });
-        }
-
-        private void move_window_to_next_ws (Meta.Window window) {
-            unowned var win_ws = window.get_workspace ();
-
-            // Do nothing if the current workspace would be empty
-            if (Utils.get_n_windows (win_ws) <= 1) {
-                return;
-            }
-
-            // Do nothing if window is not on primary monitor
-            if (!window.is_on_primary_monitor ()) {
-                return;
-            }
-
-            var old_ws_index = win_ws.index ();
-            var new_ws_index = old_ws_index + 1;
-            InternalUtils.insert_workspace_with_window (new_ws_index, window);
-
-            unowned var display = get_display ();
-            var time = display.get_current_time ();
-            unowned var new_ws = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
-            window.change_workspace (new_ws);
-            new_ws.activate_with_focus (window, time);
-
-            if (!(window in ws_assoc)) {
-                window.unmanaged.connect (move_window_to_old_ws);
-            }
-
-            ws_assoc[window] = old_ws_index;
-        }
-
-        private void move_window_to_old_ws (Meta.Window window) {
-            unowned var win_ws = window.get_workspace ();
-
-            // Do nothing if the current workspace is populated with other windows
-            if (Utils.get_n_windows (win_ws) > 1) {
-                return;
-            }
-
-            if (!ws_assoc.contains (window)) {
-                return;
-            }
-
-            var old_ws_index = ws_assoc.get (window);
-            var new_ws_index = win_ws.index ();
-
-            unowned var display = get_display ();
-            unowned var workspace_manager = display.get_workspace_manager ();
-            if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
-                uint time = display.get_current_time ();
-                unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
-                window.change_workspace (old_ws);
-                old_ws.activate_with_focus (window, time);
-            }
-
-            ws_assoc.remove (window);
-
-            window.unmanaged.disconnect (move_window_to_old_ws);
         }
 
         // Cancel attached animation of an actor and reset it
