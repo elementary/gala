@@ -358,10 +358,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     }
 
     private void on_workspaces_reordered () {
-        if (!visible) {
-            unowned var manager = display.get_workspace_manager ();
-            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
-        }
+        unowned var manager = display.get_workspace_manager ();
+        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
 
     private void on_workspace_switched (int from, int to) {
