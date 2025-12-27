@@ -132,8 +132,13 @@ public class Gala.WorkspaceClone : ActorTarget {
         unowned var display = workspace.get_display ();
         var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
+#if HAS_MUTTER49
+        var background_click_action = new Clutter.ClickAction ();
+        background_click_action.recognize.connect (() => activate (true));
+#else
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
+#endif
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
