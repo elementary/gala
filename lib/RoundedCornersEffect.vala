@@ -124,13 +124,20 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
 
         var width = box.x2 - box.x1;
         var height = box.y2 - box.y1;
-        width = Math.nearbyintf (width);
-        height = Math.nearbyintf (height);
+        width = nearbyint (width);
+        height = nearbyint (height);
 
         box.x2 = Math.ceilf (box.x2 + 0.75f);
         box.y2 = Math.ceilf (box.y2 + 0.75f);
 
         box.x1 = box.x2 - width - 3;
         box.y1 = box.y2 - height - 3;
+    }
+
+    /**
+     * Mutter uses custom nearbyint macro instead of Math.nearbyintf
+     */
+    private int nearbyint (float x) {
+        return (int) ((x) < 0.0f ? (x) - 0.5f : (x) + 0.5f);
     }
 }
