@@ -89,6 +89,8 @@ namespace Gala {
 
         private WindowMover window_mover;
 
+        private AliveChecker alive_checker;
+
         private FilterManager filter_manager;
 
         private NotificationsManager notifications_manager;
@@ -198,6 +200,7 @@ namespace Gala {
             window_tracker.init (display);
             WindowAttentionTracker.init (display);
             window_mover = new WindowMover (display, WindowListener.get_default ());
+            alive_checker = new AliveChecker (display);
 
             notification_stack = new NotificationStack (display);
 
