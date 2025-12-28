@@ -101,8 +101,8 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         set_uniform_value ("full_texture_size", full_texture_size_value);
 
         float[] offset = {
-            Math.ceilf ((actor_box.x1 - effect_box.x1)),
-            Math.ceilf ((actor_box.y1 - effect_box.y1))
+            Math.ceilf (actor_box.x1 - effect_box.x1),
+            Math.ceilf (actor_box.y1 - effect_box.y1)
         };
 
         var offset_value = GLib.Value (typeof (Clutter.ShaderFloat));

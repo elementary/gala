@@ -18,7 +18,7 @@ float rounded_rect_coverage (vec2 p) {
   float center_x;
   if (p.x < center_left)
     center_x = center_left;
-  else if (p.x >= center_right)
+  else if (p.x > center_right)
     center_x = center_right;
   else
     return 1.0;
