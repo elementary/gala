@@ -103,7 +103,7 @@ public class Gala.Background : Object {
 #endif
         if (color == null) {
 #if HAS_MUTTER47
-            color = Cogl.Color.from_string ("black");
+            color = Cogl.Color.from_string ("#000000");
 #else
             color = Clutter.Color.from_string ("black");
 #endif
@@ -122,7 +122,7 @@ public class Gala.Background : Object {
 #endif
             if (second_color == null) {
 #if HAS_MUTTER47
-                second_color = Cogl.Color.from_string ("black");
+                second_color = Cogl.Color.from_string ("#000000");
 #else
                 second_color = Clutter.Color.from_string ("black");
 #endif

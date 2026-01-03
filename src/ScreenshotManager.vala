@@ -244,7 +244,7 @@ public class Gala.ScreenshotManager : Object {
         flash_actor.set_size (width, height);
         flash_actor.set_position (x, y);
 #if HAS_MUTTER47
-        flash_actor.set_background_color (Cogl.Color.from_string ("white"));
+        flash_actor.set_background_color (Cogl.Color.from_string ("#FFFFFF"));
 #elif HAS_MUTTER46
         flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
 #else
