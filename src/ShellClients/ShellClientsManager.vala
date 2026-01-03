@@ -29,6 +29,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
+    private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -244,6 +245,18 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         positioned_windows[window].make_modal (dim);
     }
 
+    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_itself_positioned (window)) {
+        if (monitor_index < 0 || monitor_index > wm.get_display ().get_n_monitors ()) {
+            warning ("Invalid monitor index provided: %d", monitor_index);
+            return;
+        }
+
+        monitor_label_windows[window] = new MonitorLabelWindow (window, monitor_index);
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
@@ -255,7 +268,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
+        return (window in positioned_windows) || (window in panel_windows) ||
+            (window in monitor_label_windows) || NotificationStack.is_notification (window);
     }
 
     public bool is_positioned_window (Meta.Window window) {
@@ -373,6 +387,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
                 case "restore-previous-region":
                     set_restore_previous_x11_region (window);
+                    break;
+
+                case "monitor-label":
+                    int parsed;
+                    if (int.try_parse (val, out parsed)) {
+                        make_monitor_label (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as monitor label", val);
+                    }
                     break;
 
                 default:
