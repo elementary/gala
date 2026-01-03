@@ -29,7 +29,7 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
         });
 
 #if HAS_MUTTER47
-        background_color = Cogl.Color.from_string ("Black");
+        background_color = Cogl.Color.from_string ("#000000");
 #else
         background_color = Clutter.Color.from_string ("Black");
 #endif
