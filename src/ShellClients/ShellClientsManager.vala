@@ -255,7 +255,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
+        return (
+            (window in positioned_windows && positioned_windows[window].modal) ||
+            (window in panel_windows) ||
+            NotificationStack.is_notification (window)
+        );
     }
 
     public bool is_positioned_window (Meta.Window window) {
