@@ -45,13 +45,15 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         );
     }
 
-    construct {
+    public override string get_static_shader_source () {
         try {
             var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/rounded-corners.frag", NONE);
-            set_shader_source ((string) bytes.get_data ());
+            return (string) bytes.get_data ();
         } catch (Error e) {
             critical ("Unable to load rounded-corners.frag: %s", e.message);
         }
+
+        return "";
     }
 
     public override void set_actor (Clutter.Actor? new_actor) {
