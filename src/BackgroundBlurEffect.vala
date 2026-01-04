@@ -39,11 +39,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     construct {
-#if HAS_MUTTER47
-        unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         actor_pipeline = new Cogl.Pipeline (ctx);
         actor_pipeline.set_layer_null_texture (0);
