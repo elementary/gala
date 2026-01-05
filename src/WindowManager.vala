@@ -1028,7 +1028,7 @@ namespace Gala {
             unowned var window = actor.get_meta_window ();
 
             if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, modal_group);
+                InternalUtils.clutter_actor_reparent (actor, modal_group.window_group);
                 return;
             }
 
