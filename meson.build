@@ -47,8 +47,8 @@ add_project_arguments([
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
         '-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
-        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
-        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
+        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
+        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
     ],
     language: 'c',
 )
