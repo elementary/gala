@@ -1036,6 +1036,7 @@ namespace Gala {
                 InternalUtils.clutter_actor_reparent (actor, shell_group);
 
                 // FIXME: workaround for https://github.com/elementary/dock/issues/537
+                actor.set_scale (1.0, 1.0);
                 actor.opacity = 255;
             }
 
