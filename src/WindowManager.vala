@@ -1034,6 +1034,9 @@ namespace Gala {
 
             if (ShellClientsManager.get_instance ().is_shell_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, shell_group);
+
+                // FIXME: workaround for https://github.com/elementary/dock/issues/537
+                actor.opacity = 255;
             }
 
             if (NotificationStack.is_notification (window)) {
