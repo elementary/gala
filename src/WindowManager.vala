@@ -43,7 +43,7 @@ namespace Gala {
 
         /**
          * The group that contains all WindowActors that make shell elements, that is all windows reported as
-         * ShellClientsManager.is_positioned_window.
+         * ShellClientsManager.is_shell_window.
          * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
          * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
          */
@@ -714,7 +714,7 @@ namespace Gala {
             unowned var display = get_display ();
 
             if (!is_modal () || modal_stack.peek_head ().grab != null || display.focus_window == null ||
-                ShellClientsManager.get_instance ().is_positioned_window (display.focus_window)
+                ShellClientsManager.get_instance ().is_shell_window (display.focus_window)
             ) {
                 return;
             }
@@ -1032,7 +1032,7 @@ namespace Gala {
                 return;
             }
 
-            if (ShellClientsManager.get_instance ().is_positioned_window (window)) {
+            if (ShellClientsManager.get_instance ().is_shell_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, shell_group);
             }
 

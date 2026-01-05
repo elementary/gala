@@ -233,7 +233,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         panel_windows[window].request_visible_in_multitasking_view ();
     }
 
-    public void make_centered (Meta.Window window) requires (!is_itself_positioned (window)) {
+    public void make_centered (Meta.Window window) requires (!is_itself_shell_window (window)) {
         positioned_windows[window] = new ExtendedBehaviorWindow (window);
 
         // connect_after so we make sure that any queued move is unqueued
@@ -254,14 +254,26 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    public bool is_itself_positioned (Meta.Window window) {
-        return (window in positioned_windows) || (window in panel_windows) || NotificationStack.is_notification (window);
+    public bool is_itself_shell_window (Meta.Window window) {
+        return (
+            (window in positioned_windows && positioned_windows[window].modal) ||
+            (window in panel_windows) ||
+            NotificationStack.is_notification (window)
+        );
     }
 
-    public bool is_positioned_window (Meta.Window window) {
-        bool positioned = is_itself_positioned (window);
+    /**
+     * Whether the given window is a shell window. A shell window is a window that's
+     * part of the desktop shell itself and should be completely ignored by other components.
+     * It is entirely managed by Gala, always above everything else, and manages hiding
+     * in e.g. multitasking view itself. This also applies to transient windows of shell windows.
+     * Note that even if `false` is returned the window might still be in part managed by gala
+     * e.g. for centered windows.
+     */
+    public bool is_shell_window (Meta.Window window) {
+        bool positioned = is_itself_shell_window (window);
         window.foreach_ancestor ((ancestor) => {
-            if (is_itself_positioned (ancestor)) {
+            if (is_itself_shell_window (ancestor)) {
                 positioned = true;
             }
 
