@@ -115,11 +115,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 #if HAS_MUTTER49
             var click_action = new Clutter.ClickGesture ();
             click_action.recognize.connect ((action) => {
+                actor_clicked (((Clutter.PressGesture)action).get_button ());
 #else
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
-#endif
                 actor_clicked (action.get_button ());
+#endif
             });
 
             add_action (click_action);
