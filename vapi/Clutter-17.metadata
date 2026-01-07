@@ -123,10 +123,6 @@ TouchpadHoldEvent struct=false base_type="Clutter.Event"
 TouchpadPinchEvent struct=false base_type="Clutter.Event"
 TouchpadSwipeEvent struct=false base_type="Clutter.Event"
 
-Focus skip
-KeyFocus skip
-Sprite skip
-
 // Keysyms used to be CLUTTER_X instead of CLUTTER_KEY_X
 *#constant skip
 CURRENT_TIME skip=false

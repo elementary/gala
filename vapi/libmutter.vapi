@@ -715,9 +715,16 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 		protected OrientationManager ();
 		public Meta.Orientation get_orientation ();
+#if HAS_MUTTER49
+		public void inhibit_tracking ();
+		public void uninhibit_tracking ();
+#endif
 		[NoAccessorMethod]
 		public bool has_accelerometer { get; }
 		public signal void orientation_changed ();
+#if HAS_MUTTER49
+		public signal void sensor_active ();
+#endif
 	}
 #endif
 	[CCode (cheader_filename = "meta/meta-plugin.h", type_id = "meta_plugin_get_type ()")]
@@ -939,6 +946,11 @@ namespace Meta {
 		[CCode (has_construct_function = false)]
 #if HAS_MUTTER49
 		protected WaylandClient ();
+#if VALA_0_56_17
+		public pid_t get_pid ();
+#else
+		public int get_pid ();
+#endif
 		public unowned GLib.Subprocess get_subprocess ();
 #else
 		public WaylandClient (Meta.Context context, GLib.SubprocessLauncher launcher) throws GLib.Error;
@@ -991,7 +1003,9 @@ namespace Meta {
 		public void activate_with_workspace (uint32 current_time, Meta.Workspace workspace);
 		public bool allows_move ();
 		public bool allows_resize ();
-#if HAS_MUTTER46
+#if HAS_MUTTER49
+		public bool begin_grab_op (Meta.GrabOp op, Clutter.Sprite? sprite, uint32 timestamp, Graphene.Point? pos_hint);
+#elif HAS_MUTTER46
 		public bool begin_grab_op (Meta.GrabOp op, Clutter.InputDevice? device, Clutter.EventSequence? sequence, uint32 timestamp, Graphene.Point? pos_hint);
 #else
 		public bool begin_grab_op (Meta.GrabOp op, Clutter.InputDevice? device, Clutter.EventSequence? sequence, uint32 timestamp);
@@ -1048,7 +1062,9 @@ namespace Meta {
 		public bool get_icon_geometry (out Mtk.Rectangle rect);
 		public uint64 get_id ();
 		public Meta.StackLayer get_layer ();
-#if !HAS_MUTTER49
+#if HAS_MUTTER49
+		public Meta.MaximizeFlags get_maximize_flags ();
+#else
 		public Meta.MaximizeFlags get_maximized ();
 #endif
 		public int get_monitor ();
@@ -1133,7 +1149,9 @@ namespace Meta {
 		public void set_demands_attention ();
 		public void set_icon_geometry (Mtk.Rectangle? rect);
 #if HAS_MUTTER49
+		public void set_maximize_flags (Meta.MaximizeFlags directions);
 		public void set_type (Meta.WindowType type);
+		public void set_unmaximize_flags (Meta.MaximizeFlags directions);
 		public void show_in_window_list ();
 #endif
 #if !HAS_MUTTER47
@@ -1587,6 +1605,9 @@ namespace Meta {
 #if HAS_MUTTER47
 		SYNC_CURSOR_PRIMARY,
 		DISABLE_DIRECT_SCANOUT,
+#endif
+#if HAS_MUTTER49
+		IGNORE_COLOR_STATE_FOR_DIRECT_SCANOUT,
 #endif
 		OPAQUE_REGION
 	}
@@ -2076,6 +2097,9 @@ namespace Meta {
 		NORMAL,
 		DOCKS,
 		GROUP,
+#if HAS_MUTTER49
+		NORMAL_ALL_MRU,
+#endif
 		NORMAL_ALL
 	}
 	[CCode (cheader_filename = "meta/display.h", cprefix = "META_TAB_SHOW_", type_id = "meta_tab_show_type_get_type ()")]
