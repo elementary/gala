@@ -168,7 +168,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             Mtk.Rectangle stage_view_layout = {};
 
             box_scale_factor = stage_view.get_scale ();
-            stage_view.get_layout (ref stage_view_layout);
+            stage_view.get_layout (stage_view_layout);
 
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
