@@ -133,7 +133,7 @@ public class Gala.WorkspaceClone : ActorTarget {
         var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
 #if HAS_MUTTER49
-        var background_click_action = new Clutter.ClickAction ();
+        var background_click_action = new Clutter.ClickGesture ();
         background_click_action.recognize.connect (() => activate (true));
 #else
         var background_click_action = new Clutter.ClickAction ();
