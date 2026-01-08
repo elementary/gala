@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -15,6 +15,7 @@ public class Gala.HideTracker : Object {
 
     public Meta.Display display { get; construct; }
     public unowned PanelWindow panel { get; construct; }
+    public bool release_barrier_events { get; set; default = false; }
 
     private static GLib.Settings behavior_settings;
 
@@ -207,6 +208,10 @@ public class Gala.HideTracker : Object {
             default:
                 warning ("Barrier side not supported yet");
                 break;
+        }
+
+        if (barrier != null) {
+            bind_property ("release-barrier-events", barrier, "release-events", DEFAULT);
         }
     }
 
