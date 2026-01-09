@@ -107,7 +107,7 @@
 
     <request name="add_blur">
       <description summary="add blur">
-        Tell the window manager to add background blur.
+        Tell the window manager to add background blur. Deprecated.
       </description>
 
       <arg name="left" type="uint"/>
@@ -119,7 +119,7 @@
 
     <request name="remove_blur">
       <description summary="remove blur">
-        Tell the window manager to remove blur that was set in set_blur_region.
+        Tell the window manager to remove blur that was set in set_blur_region. Deprecated.
       </description>
     </request>
   </interface>
@@ -158,6 +158,24 @@
       </description>
 
       <arg name="dim" type="uint" summary="1 to dim, 0 to not dim"/>
+    </request>
+
+    <request name="add_blur">
+      <description summary="add blur">
+        Tell the window manager to add background blur.
+      </description>
+
+      <arg name="left" type="uint"/>
+      <arg name="right" type="uint"/>
+      <arg name="top" type="uint"/>
+      <arg name="bottom" type="uint"/>
+      <arg name="clip_radius" type="uint"/>
+    </request>
+
+    <request name="remove_blur">
+      <description summary="remove blur">
+        Tell the window manager to remove blur that was set in set_blur_region.
+      </description>
     </request>
   </interface>
 </protocol>

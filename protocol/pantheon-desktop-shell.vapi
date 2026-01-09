@@ -62,6 +62,8 @@ namespace Pantheon.Desktop {
         public MakeCentered make_centered;
         public Focus focus;
         public MakeModal make_modal;
+        public AddBlur add_blur;
+        public RemoveBlur remove_blur;
     }
 
     [CCode (has_target = false, has_typedef = false)]
