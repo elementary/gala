@@ -58,6 +58,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
+        add_action (new FocusController (wm.stage));
+
         multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, MULTITASKING_VIEW);
         multitasking_gesture_controller.enable_touchpad (wm.stage);
         add_gesture_controller (multitasking_gesture_controller);
@@ -246,7 +248,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             wm.window_group.hide ();
             wm.top_window_group.hide ();
             show ();
-            grab_key_focus ();
 
             modal_proxy = wm.push_modal (get_stage (), false);
             modal_proxy.set_keybinding_filter (keybinding_filter);
@@ -368,34 +369,16 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
     }
 
-    /**
-     * Collect key events, mainly for redirecting them to the WindowCloneContainers to
-     * select the active window.
-     */
     public override bool key_press_event (Clutter.Event event) {
-        if (!opened) {
-            return Clutter.EVENT_PROPAGATE;
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Escape:
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                close ();
+                return Clutter.EVENT_STOP;
+            default:
+                return Clutter.EVENT_PROPAGATE;
         }
-
-        return get_active_window_clone_container ().key_press_event (event);
-    }
-
-    /**
-     * Finds the active WorkspaceClone
-     *
-     * @return The active WorkspaceClone
-     */
-    private WindowCloneContainer get_active_window_clone_container () {
-        unowned var manager = display.get_workspace_manager ();
-        unowned var active_workspace = manager.get_active_workspace ();
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            if (workspace_clone.workspace == active_workspace) {
-                return workspace_clone.window_container;
-            }
-        }
-
-        assert_not_reached ();
     }
 
     private void window_selected (Meta.Window window) {
