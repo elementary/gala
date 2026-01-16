@@ -32,6 +32,7 @@ gala_lib_sources = files(
     'Gestures/GestureController.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTarget.vala',
+    'Gestures/PanBackend.vala',
     'Gestures/PropertyTarget.vala',
     'Gestures/RootTarget.vala',
     'Gestures/ScrollBackend.vala',
