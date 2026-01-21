@@ -670,7 +670,6 @@ public class Gala.ScreenshotManager : Object {
                 }
 
                 dest_data[pixel_start + 3] = alpha;
-                
             }
         }
 
