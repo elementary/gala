@@ -3,6 +3,7 @@ project('gala',
     version: '8.4.0',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
+	default_options: ['optimization=g'],
 )
 
 gnome = import('gnome')
