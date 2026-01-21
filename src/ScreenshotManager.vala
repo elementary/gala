@@ -506,7 +506,7 @@ public class Gala.ScreenshotManager : Object {
         }
 
         try {
-            var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+            var screenshot = pixbuf_from_surface (image);
             var file = File.new_for_path (used_filename);
             FileIOStream stream;
             if (file.query_exists ()) {
@@ -525,7 +525,7 @@ public class Gala.ScreenshotManager : Object {
     private bool save_image_to_clipboard (Cairo.ImageSurface image, string filename, out string used_filename) {
         used_filename = filename;
 
-        var screenshot = Gdk.pixbuf_get_from_surface (image, 0, 0, image.get_width (), image.get_height ());
+        var screenshot = pixbuf_from_surface (image);
         if (screenshot == null) {
             warning ("Could not save screenshot to clipboard: null pixbuf");
             return false;
@@ -629,7 +629,7 @@ public class Gala.ScreenshotManager : Object {
         cr.set_source_surface (cursor_image, coords.x - image_rect.x, coords.y - image_rect.y);
         cr.paint ();
 
-        return (Cairo.ImageSurface)cr.get_target ();
+        return (Cairo.ImageSurface) cr.get_target ();
     }
 
     private async void wait_stage_repaint () {
@@ -641,5 +641,39 @@ public class Gala.ScreenshotManager : Object {
 
         wm.stage.queue_redraw ();
         yield;
+    }
+
+    private static Gdk.Pixbuf pixbuf_from_surface (Cairo.ImageSurface image) {
+        var width = image.get_width ();
+        var height = image.get_height ();
+
+        var pixbuf = new Gdk.Pixbuf (RGB, true, 8, width, height);
+
+        unowned var src_data = image.get_data ();
+        unowned var dest_data = pixbuf.get_pixels ();
+
+        for (var y = 0; y < height; y++) {
+            var row_start = y * width * 4;
+
+            for (var x = 0; x < width; x++) {
+                var pixel_start = row_start + x * 4;
+                var alpha = src_data[pixel_start + 3];
+
+                if (alpha == 0) {
+                    dest_data[pixel_start + 0] = 0;
+                    dest_data[pixel_start + 1] = 0;
+                    dest_data[pixel_start + 2] = 0;
+                } else {
+                    dest_data[pixel_start + 0] = (src_data[pixel_start + 2] * 255 + alpha / 2) / alpha;
+                    dest_data[pixel_start + 1] = (src_data[pixel_start + 1] * 255 + alpha / 2) / alpha;
+                    dest_data[pixel_start + 2] = (src_data[pixel_start + 0] * 255 + alpha / 2) / alpha;
+                }
+
+                dest_data[pixel_start + 3] = alpha;
+                
+            }
+        }
+
+        return pixbuf;
     }
 }
