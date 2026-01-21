@@ -36,6 +36,7 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/2724">When using wl-copy/wl-paste (wl-clipboard) the dock shows up although Terminal is maximized</issue>
         <issue url="https://github.com/elementary/gala/issues/2657">Window icons missing in the Show All Windows overview</issue>
         <issue url="https://github.com/elementary/gala/issues/2675">Blur behind modal shell protocol</issue>
         <issue url="https://github.com/elementary/gala/issues/2676">Window selection from dock overview doesn't focus the chosen window</issue>
