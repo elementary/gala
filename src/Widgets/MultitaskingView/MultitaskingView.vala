@@ -445,7 +445,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         switch (binding.get_name ()) {
             case "screenshot":
+            case "area-screenshot":
+            case "interactive-screenshot":
             case "screenshot-clip":
+            case "area-screenshot-clip":
                 return false;
             default:
                 break;
