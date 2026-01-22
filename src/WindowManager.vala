@@ -785,6 +785,10 @@ namespace Gala {
 
             switch (type) {
                 case ActionType.SHOW_MULTITASKING_VIEW:
+                    if (filter_action (MULTITASKING_VIEW)) {
+                        break;
+                    }
+
                     if (multitasking_view.is_opened ())
                         multitasking_view.close ();
                     else
@@ -847,9 +851,17 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     switch_to_next_workspace (Meta.MotionDirection.LEFT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     switch_to_next_workspace (Meta.MotionDirection.RIGHT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
@@ -872,7 +884,7 @@ namespace Gala {
                     launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
-                    if (window_overview == null) {
+                    if (window_overview == null || filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
@@ -884,7 +896,7 @@ namespace Gala {
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
-                    if (window_overview == null) {
+                    if (window_overview == null || filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
@@ -895,11 +907,19 @@ namespace Gala {
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     unowned var manager = display.get_workspace_manager ();
                     unowned var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
+                    if (filter_action (SCREENSHOT_WINDOW)) {
+                        break;
+                    }
+
                     screenshot_manager.handle_screenshot_current_window_shortcut.begin (false);
                     break;
                 default:
@@ -1650,6 +1670,10 @@ namespace Gala {
                 case Meta.KeyBindingAction.SWITCH_GROUP:
                 case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                     return filter_action (SWITCH_WINDOWS);
+                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                    return filter_action (LOCATE_POINTER);
+                case Meta.KeyBindingAction.NONE:
+                    return filter_action (MEDIA_KEYS);
                 default:
                     break;
             }
@@ -1665,24 +1689,26 @@ namespace Gala {
                     return filter_action (ZOOM);
                 case "toggle-multitasking-view":
                     return filter_action (MULTITASKING_VIEW);
+                case "expose-all-windows":
+                    return filter_action (WINDOW_OVERVIEW);
+                case "screenshot":
+                case "screenshot-clip":
+                case "interactive-screenshot":
+                    return filter_action (SCREENSHOT);
+                case "area-screenshot":
+                case "area-screenshot-clip":
+                    return filter_action (SCREENSHOT_AREA);
+                case "window-screenshot":
+                case "window-screenshot-clip":
+                    return filter_action (SCREENSHOT_WINDOW);
                 default:
                     break;
             }
 
-            var modal_proxy = modal_stack.peek_head ();
-            if (modal_proxy == null) {
-                return false;
-            }
-
-            unowned var filter = modal_proxy.get_keybinding_filter ();
-            if (filter == null) {
-                return false;
-            }
-
-            return filter (binding);
+            return false;
         }
 
-        public bool filter_action (GestureAction action) {
+        public bool filter_action (ModalActions action) {
             if (!is_modal ()) {
                 return false;
             }

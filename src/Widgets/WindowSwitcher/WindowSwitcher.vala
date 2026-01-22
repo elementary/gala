@@ -443,21 +443,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private void push_modal () {
         modal_proxy = wm.push_modal (get_stage (), true);
-        modal_proxy.allow_actions ({ SWITCH_WINDOWS });
-        modal_proxy.set_keybinding_filter ((binding) => {
-            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
-
-            switch (action) {
-                case Meta.KeyBindingAction.NONE:
-                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                    return false;
-                default:
-                    break;
-            }
-
-            return true;
-        });
-
+        modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
     }
 
     private void close_switcher (uint32 time, bool cancel = false) {
