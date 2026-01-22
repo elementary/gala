@@ -3,9 +3,9 @@ project('gala',
     version: '8.4.0',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
-	default_options: [
-		'buildtype=debugoptimized',
-	],
+    default_options: [
+        'buildtype=debugoptimized',
+    ],
 )
 
 gnome = import('gnome')
