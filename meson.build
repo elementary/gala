@@ -41,9 +41,9 @@ add_project_arguments([
         '-Wno-discarded-qualifiers',
         '-Wno-incompatible-pointer-types',
         '-Wno-unused',
-		'-Wno-address',
-		'-Wno-duplicate-decl-specifier',
-		'-Wno-deprecated-declarations',
+        '-Wno-address',
+        '-Wno-duplicate-decl-specifier',
+        '-Wno-deprecated-declarations',
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
