@@ -160,6 +160,11 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
 
         switch (binding.get_name ()) {
             case "expose-all-windows":
+            case "screenshot":
+            case "area-screenshot":
+            case "interactive-screenshot":
+            case "screenshot-clip":
+            case "area-screenshot-clip":
                 return false;
             default:
                 break;
