@@ -44,6 +44,21 @@ namespace Gala {
         N_ACTIONS
     }
 
+    public ModalActions gesture_action_to_modal_action (GestureAction gesture_action) {
+        switch (gesture_action) {
+            case SWITCH_WORKSPACE:
+                return SWITCH_WORKSPACE;
+            case SWITCH_WINDOWS:
+                return SWITCH_WINDOWS;
+            case MULTITASKING_VIEW:
+                return MULTITASKING_VIEW;
+            case ZOOM:
+                return ZOOM;
+            default:
+                return NONE;
+        }
+    }
+
     private class Gesture {
         public const float INVALID_COORD = float.MAX;
 

@@ -106,8 +106,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this, true);
-        modal_proxy.set_keybinding_filter (keybinding_filter);
-        modal_proxy.allow_actions ({ ZOOM });
+        modal_proxy.allow_actions (WINDOW_OVERVIEW | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
 
         unowned var display = wm.get_display ();
 
@@ -145,27 +144,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         }
 
         gesture_controller.goto (1);
-    }
-
-    private bool keybinding_filter (Meta.KeyBinding binding) {
-        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
-
-        switch (action) {
-            case Meta.KeyBindingAction.NONE:
-            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                return false;
-            default:
-                break;
-        }
-
-        switch (binding.get_name ()) {
-            case "expose-all-windows":
-                return false;
-            default:
-                break;
-        }
-
-        return true;
     }
 
     private bool window_filter_func (Object obj) requires (obj is Meta.Window) {
