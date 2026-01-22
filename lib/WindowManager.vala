@@ -33,7 +33,9 @@ namespace Gala {
      * to end your modal mode again with {@link WindowManager.pop_modal}
      */
     public class ModalProxy : Object {
-        public Clutter.Grab? grab { get; set; }
+        public Clutter.Actor actor { get; construct; }
+        public bool should_grab { get; construct; }
+        public Clutter.Grab? grab { get; construct set; }
 
         private GestureAction[] allowed_actions;
 
@@ -52,7 +54,8 @@ namespace Gala {
             _keybinding_filter = filter;
         }
 
-        public ModalProxy () {
+        public ModalProxy (Clutter.Actor actor, bool should_grab, Clutter.Grab? grab) {
+            Object (actor: actor, should_grab: should_grab, grab: grab);
         }
 
         /**

@@ -641,13 +641,14 @@ namespace Gala {
          * {@inheritDoc}
          */
         public ModalProxy push_modal (Clutter.Actor actor, bool grab) {
-            var proxy = new ModalProxy ();
+            var current_proxy = modal_stack.peek_head ();
+            if (current_proxy.grab != null) {
+                current_proxy.grab.dismiss ();
+            }
+
+            var proxy = new ModalProxy (actor, grab, grab ? stage.grab (actor) : null);
 
             modal_stack.offer_head (proxy);
-
-            if (grab) {
-                proxy.grab = stage.grab (actor);
-            }
 
             on_focus_window_changed ();
 
@@ -680,6 +681,11 @@ namespace Gala {
             }
 
             on_focus_window_changed ();
+
+            var new_active_proxy = modal_stack.peek_head ();
+            if (new_active_proxy.should_grab) {
+                new_active_proxy.grab = stage.grab (new_active_proxy.actor);
+            }
 
             if (is_modal ()) {
                 return;
