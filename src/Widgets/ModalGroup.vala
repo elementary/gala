@@ -70,6 +70,7 @@ public class Gala.ModalGroup : Clutter.Actor {
 
             visible = true;
             modal_proxy = wm.push_modal (this, false);
+            modal_proxy.allow_actions ({ ZOOM });
         }
 
         if (dimmed.size == 1) {
