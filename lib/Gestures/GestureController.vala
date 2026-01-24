@@ -157,7 +157,7 @@ public class Gala.GestureController : Object {
 
         var recognized_action = GestureSettings.get_action (gesture, out _action_info);
         recognizing = (
-            recognized_action == action && !wm.filter_action (gesture_action_to_modal_action (recognized_action)) ||
+            recognized_action == action && !wm.filter_action (recognized_action.to_modal_action ()) ||
             backend == scroll_backend && recognized_action == NONE
         );
 

@@ -39,11 +39,6 @@ namespace Gala {
     }
 
     /**
-     * Function that should return true if the given shortcut should be blocked.
-     */
-    public delegate bool KeybindingFilter (Meta.KeyBinding binding);
-
-    /**
      * A minimal class mostly used to identify your call to {@link WindowManager.push_modal} and used
      * to end your modal mode again with {@link WindowManager.pop_modal}
      */

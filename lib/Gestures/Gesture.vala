@@ -41,21 +41,21 @@ namespace Gala {
         MULTITASKING_VIEW,
         ZOOM,
         CUSTOM,
-        N_ACTIONS
-    }
+        N_ACTIONS;
 
-    public ModalActions gesture_action_to_modal_action (GestureAction gesture_action) {
-        switch (gesture_action) {
-            case SWITCH_WORKSPACE:
-                return SWITCH_WORKSPACE;
-            case SWITCH_WINDOWS:
-                return SWITCH_WINDOWS;
-            case MULTITASKING_VIEW:
-                return MULTITASKING_VIEW;
-            case ZOOM:
-                return ZOOM;
-            default:
-                return NONE;
+        public ModalActions to_modal_action () {
+            switch (this) {
+                case SWITCH_WORKSPACE:
+                    return ModalActions.SWITCH_WORKSPACE;
+                case SWITCH_WINDOWS:
+                    return ModalActions.SWITCH_WINDOWS;
+                case MULTITASKING_VIEW:
+                    return ModalActions.MULTITASKING_VIEW;
+                case ZOOM:
+                    return ModalActions.ZOOM;
+                default:
+                    return ModalActions.NONE;
+            }
         }
     }
 
