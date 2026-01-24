@@ -909,7 +909,7 @@ namespace Gala {
         }
 
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
-            if (menu == APP) {
+            if (menu != WM) {
                 warning ("Unsupported window menu type");
                 return;
             }
