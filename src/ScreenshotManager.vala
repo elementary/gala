@@ -329,33 +329,96 @@ public class Gala.ScreenshotManager : Object {
             throw new DBusError.FAILED ("Cannot find active window");
         }
 
-        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        Meta.Window[] transients = {};
+        window.foreach_transient ((transient) => {
+            if (transient.window_type == MENU ||
+                transient.window_type == DROPDOWN_MENU ||
+                transient.window_type == POPUP_MENU ||
+                transient.window_type == TOOLTIP ||
+                transient.window_type == OVERRIDE_OTHER
+            ) {
+                transients += transient;
+            }
 
-        var rect = window.get_buffer_rect ();
-        if (!include_frame) {
-            rect = window.get_frame_rect ();
+            return true;
+        });
+
+        var main_rect = include_frame ? window.get_buffer_rect () : window.get_frame_rect ();
+        var full_rect = main_rect;
+        foreach (unowned var transient in transients) {
+            var transient_rect = include_frame ? transient.get_buffer_rect () : transient.get_frame_rect ();
+
+            var previous_x2 = full_rect.x + full_rect.width;
+            var previous_y2 = full_rect.y + full_rect.height;
+
+            var transient_x2 = transient_rect.x + transient_rect.width;
+            var transient_y2 = transient_rect.y + transient_rect.height;
+
+            var new_x2 = int.max (previous_x2, transient_x2);
+            var new_y2 = int.max (previous_y2, transient_y2);
+
+            full_rect.x = int.min (full_rect.x, transient_rect.x);
+            full_rect.y = int.min (full_rect.y, transient_rect.y);
+            full_rect.width = new_x2 - full_rect.x;
+            full_rect.height = new_y2 - full_rect.y;
         }
 
-        Mtk.Rectangle clip = { rect.x - (int) window_actor.x, rect.y - (int) window_actor.y, rect.width, rect.height };
-        var image = (Cairo.ImageSurface) window_actor.get_image (clip);
+        unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        var resource_scale = window_actor.get_resource_scale ();
+
+        Mtk.Rectangle main_clip = { main_rect.x - (int) window_actor.x, main_rect.y - (int) window_actor.y, main_rect.width, main_rect.height };
+        var window_image = (Cairo.ImageSurface) window_actor.get_image (main_clip);
+
+        var image = new Cairo.ImageSurface (
+            ARGB32,
+            Utils.scale_to_int (main_rect.width, resource_scale),
+            Utils.scale_to_int (main_rect.height, resource_scale)
+        );
+
+        var cairo_context = new Cairo.Context (image);
+        cairo_context.set_operator (OVER);
+        cairo_context.set_source_surface (
+            window_image,
+            Utils.scale_to_int (main_rect.x - full_rect.x, resource_scale),
+            Utils.scale_to_int (main_rect.y - full_rect.y, resource_scale)
+        );
+        cairo_context.paint ();
+
+        foreach (unowned var transient in transients) {
+            var transient_rect = include_frame ? transient.get_buffer_rect () : transient.get_frame_rect ();
+            unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
+            Mtk.Rectangle transient_clip = {
+                transient_rect.x - (int) transient_actor.x,
+                transient_rect.y - (int) transient_actor.y,
+                transient_rect.width,
+                transient_rect.height
+            };
+            var transient_image = (Cairo.ImageSurface) transient_actor.get_image (transient_clip);
+
+            cairo_context.set_source_surface (
+                transient_image,
+                Utils.scale_to_int (transient_rect.x - full_rect.x, resource_scale),
+                Utils.scale_to_int (transient_rect.y - full_rect.y, resource_scale)
+            );
+            cairo_context.paint ();
+        }
+
         if (include_cursor) {
             if (window.get_client_type () == Meta.WindowClientType.WAYLAND) {
-                float resource_scale = window_actor.get_resource_scale ();
-
                 image.set_device_scale (resource_scale, resource_scale);
             }
 
-            composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
+            composite_stage_cursor (image, { full_rect.x, full_rect.y, full_rect.width, full_rect.height });
         }
 
         unconceal_text ();
 
         if (flash) {
-            flash_area (rect.x, rect.y, rect.width, rect.height);
+            flash_area (full_rect.x, full_rect.y, full_rect.width, full_rect.height);
         }
 
         unowned var display = wm.get_display ();
-        var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (rect));
+        var scale = display.get_monitor_scale (display.get_monitor_index_for_rect (full_rect));
 
         success = yield save_image (image, filename, scale, out filename_used);
 
