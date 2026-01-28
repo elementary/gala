@@ -328,6 +328,13 @@ namespace Gala {
         }
 
         public static inline bool get_window_is_normal (Meta.Window window) {
+            // Some utilities like wl-copy/wl-paste create a 1x1 window to get access to clipboard
+            // Filter them as well
+            var buffer_rect = window.get_buffer_rect ();
+            if (buffer_rect.width <= 1 || buffer_rect.height <= 1) {
+                return false;
+            }
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
                 case Meta.WindowType.DIALOG:
