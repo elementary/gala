@@ -89,6 +89,7 @@ public class Gala.GestureController : Object {
 
     private ToucheggBackend? touchegg_backend;
     private TouchpadBackend? touchpad_backend;
+    private PanBackend? pan_backend;
     private ScrollBackend? scroll_backend;
 
     private GestureBackend? recognizing_backend;
@@ -134,12 +135,25 @@ public class Gala.GestureController : Object {
         touchegg_backend.on_end.connect (gesture_end);
     }
 
+    public void enable_touchscreen (Clutter.Actor actor) {
+        pan_backend = new PanBackend (wm, actor);
+        pan_backend.request_travel_distance.connect (on_request_travel_distance);
+        pan_backend.on_gesture_detected.connect (gesture_detected);
+        pan_backend.on_begin.connect (gesture_begin);
+        pan_backend.on_update.connect (gesture_update);
+        pan_backend.on_end.connect (gesture_end);
+    }
+
     public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
         scroll_backend = new ScrollBackend (actor, orientation, new GestureSettings ());
         scroll_backend.on_gesture_detected.connect (gesture_detected);
         scroll_backend.on_begin.connect (gesture_begin);
         scroll_backend.on_update.connect (gesture_update);
         scroll_backend.on_end.connect (gesture_end);
+    }
+
+    private float on_request_travel_distance () {
+        return target.get_travel_distance (action);
     }
 
     private void prepare () {
@@ -180,8 +194,8 @@ public class Gala.GestureController : Object {
         return recognizing;
     }
 
-    private void gesture_begin (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_begin (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -192,8 +206,8 @@ public class Gala.GestureController : Object {
         previous_time = elapsed_time;
     }
 
-    private void gesture_update (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_update (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -217,8 +231,8 @@ public class Gala.GestureController : Object {
         previous_delta = updated_delta;
     }
 
-    private void gesture_end (double percentage, uint64 elapsed_time) {
-        if (!recognizing) {
+    private void gesture_end (GestureBackend backend, double percentage, uint64 elapsed_time) {
+        if (!recognizing || backend != recognizing_backend) {
             return;
         }
 
@@ -313,8 +327,8 @@ public class Gala.GestureController : Object {
 
     public void cancel_gesture () {
         if (recognizing) {
+            gesture_end (recognizing_backend, previous_percentage, previous_time);
             recognizing_backend.cancel_gesture ();
-            gesture_end (previous_percentage, previous_time);
         }
     }
 }
