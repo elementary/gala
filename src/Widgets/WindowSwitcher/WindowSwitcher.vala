@@ -443,7 +443,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private void push_modal () {
         modal_proxy = wm.push_modal (get_stage (), true);
-        modal_proxy.allow_actions (SWITCH_WINDOWS);
+        modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
     }
 
     private void close_switcher (uint32 time, bool cancel = false) {
