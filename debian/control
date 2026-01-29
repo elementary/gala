@@ -59,7 +59,7 @@ Package: libgala-dev
 Architecture: any
 Section: libdevel
 Depends: libgala0 (= ${binary:Version}),
-         libgdk-pixbuf2.0-dev,
+         libgdk-pixbuf-2.0-dev,
          libglib2.0-dev (>= 2.44),
          libmutter-17-dev | libmutter-16-dev | libmutter-15-dev | libmutter-14-dev | libmutter-13-dev,
          ${misc:Depends}
