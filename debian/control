@@ -20,6 +20,7 @@ Build-Depends: debhelper (>= 10.5.1),
                libmutter-17-dev | libmutter-16-dev | libmutter-15-dev | libmutter-14-dev | libmutter-13-dev,
                libsqlite3-dev,
                libxml2-utils,
+               systemd-dev,
                meson (>= 0.59.0),
                valac (>= 0.28.0)
 Standards-Version: 4.1.1
