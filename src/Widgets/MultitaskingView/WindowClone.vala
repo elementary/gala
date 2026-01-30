@@ -99,8 +99,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CUSTOM, wm);
-        gesture_controller.enable_scroll (this, VERTICAL);
+        gesture_controller = new GestureController (CUSTOM);
+        gesture_controller.add_trigger (new SwipeTrigger (this, VERTICAL));
         add_gesture_controller (gesture_controller);
 
         window.unmanaged.connect (unmanaged);

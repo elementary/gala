@@ -25,11 +25,6 @@
  * the gestures.
  */
 public class Gala.GestureController : Object {
-    public enum Group {
-        NONE,
-        MULTITASKING_VIEW,
-    }
-
     /**
      * When a gesture ends with a velocity greater than this constant, the action is not cancelled,
      * even if the animation threshold has not been reached.
@@ -42,8 +37,6 @@ public class Gala.GestureController : Object {
     private const double MAX_VELOCITY = 0.01;
 
     public GestureAction action { get; construct; }
-    public WindowManager wm { get; construct; }
-    public Group group { get; construct; }
 
     private unowned RootTarget? _target;
     public RootTarget target {
@@ -53,9 +46,6 @@ public class Gala.GestureController : Object {
             _target.propagate (UPDATE, action, progress);
         }
     }
-
-    private Variant? _action_info;
-    public Variant? action_info { get { return _action_info; } }
 
     public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
@@ -87,9 +77,8 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
-    private ToucheggBackend? touchegg_backend;
-    private TouchpadBackend? touchpad_backend;
-    private ScrollBackend? scroll_backend;
+    private Gee.List<GestureBackend> backends;
+    private Gee.List<GestureTrigger> triggers;
 
     private GestureBackend? recognizing_backend;
     private double gesture_progress;
@@ -101,8 +90,13 @@ public class Gala.GestureController : Object {
 
     private SpringTimeline? timeline;
 
-    public GestureController (GestureAction action, WindowManager wm, Group group = NONE) {
-        Object (action: action, wm: wm, group: group);
+    public GestureController (GestureAction action) {
+        Object (action: action);
+    }
+
+    construct {
+        backends = new Gee.ArrayList<GestureBackend> ();
+        triggers = new Gee.ArrayList<GestureTrigger> ();
     }
 
     /**
@@ -118,28 +112,17 @@ public class Gala.GestureController : Object {
         unref ();
     }
 
-    public void enable_touchpad (Clutter.Actor actor) {
-        if (Meta.Util.is_wayland_compositor ()) {
-            touchpad_backend = new TouchpadBackend (actor, group);
-            touchpad_backend.on_gesture_detected.connect (gesture_detected);
-            touchpad_backend.on_begin.connect (gesture_begin);
-            touchpad_backend.on_update.connect (gesture_update);
-            touchpad_backend.on_end.connect (gesture_end);
-        }
-
-        touchegg_backend = ToucheggBackend.get_default (); // Will automatically filter events on wayland
-        touchegg_backend.on_gesture_detected.connect (gesture_detected);
-        touchegg_backend.on_begin.connect (gesture_begin);
-        touchegg_backend.on_update.connect (gesture_update);
-        touchegg_backend.on_end.connect (gesture_end);
+    public void add_trigger (GestureTrigger trigger) {
+        triggers.add (trigger);
+        trigger.enable_backends (this);
     }
 
-    public void enable_scroll (Clutter.Actor actor, Clutter.Orientation orientation) {
-        scroll_backend = new ScrollBackend (actor, orientation, new GestureSettings ());
-        scroll_backend.on_gesture_detected.connect (gesture_detected);
-        scroll_backend.on_begin.connect (gesture_begin);
-        scroll_backend.on_update.connect (gesture_update);
-        scroll_backend.on_end.connect (gesture_end);
+    internal void enable_backend (GestureBackend backend) {
+        backend.on_gesture_detected.connect (gesture_detected);
+        backend.on_begin.connect (gesture_begin);
+        backend.on_update.connect (gesture_update);
+        backend.on_end.connect (gesture_end);
+        backends.add (backend);
     }
 
     private void prepare () {
@@ -155,11 +138,12 @@ public class Gala.GestureController : Object {
             return false;
         }
 
-        var recognized_action = GestureSettings.get_action (gesture, out _action_info);
-        recognizing = (
-            recognized_action == action && !wm.filter_action (recognized_action.to_modal_action ()) ||
-            backend == scroll_backend && recognized_action == NONE
-        );
+        foreach (var trigger in triggers) {
+            if (trigger.triggers (gesture)) {
+                recognizing = true;
+                break;
+            }
+        }
 
         if (recognizing) {
             if (gesture.direction == UP || gesture.direction == RIGHT || gesture.direction == OUT) {
@@ -290,7 +274,6 @@ public class Gala.GestureController : Object {
     private void finished (bool is_finished = true) requires (is_finished) {
         target.propagate (END, action, progress);
         timeline = null;
-        _action_info = null;
     }
 
     /**
