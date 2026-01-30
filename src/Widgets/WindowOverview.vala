@@ -29,7 +29,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     construct {
         visible = false;
         reactive = true;
-        gesture_controller = new GestureController (MULTITASKING_VIEW, wm) {
+        gesture_controller = new GestureController (MULTITASKING_VIEW) {
             enabled = false
         };
         add_gesture_controller (gesture_controller);

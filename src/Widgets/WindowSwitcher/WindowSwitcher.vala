@@ -56,12 +56,12 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, wm) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
-        gesture_controller.enable_touchpad (wm.stage);
+        gesture_controller.add_trigger (new GlobalTrigger (SWITCH_WINDOWS, wm));
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
         add_gesture_controller (gesture_controller);
 
