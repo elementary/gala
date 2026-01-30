@@ -28,9 +28,6 @@ gala_lib_sources = files(
     'Utils.vala',
     'WindowIcon.vala',
     'WindowManager.vala',
-    'Focusable/Focusable.vala',
-    'Focusable/FocusController.vala',
-    'Focusable/FocusUtils.vala',
     'Gestures/ActorTarget.vala',
     'Gestures/Gesture.vala',
     'Gestures/GestureBackend.vala',
@@ -46,7 +43,10 @@ gala_lib_sources = files(
     'Gestures/SwipeTrigger.vala',
     'Gestures/ToucheggBackend.vala',
     'Gestures/TouchpadBackend.vala',
-    'Gestures/WorkspaceHideTracker.vala'
+    'Gestures/WorkspaceHideTracker.vala',
+    'Widget/FocusController.vala',
+    'Widget/FocusUtils.vala',
+    'Widget/Widget.vala',
 ) + gala_common_enums
 
 gala_resources = gnome.compile_resources(

@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : ActorTarget, RootTarget {
+public class Gala.WindowClone : Widget, RootTarget {
     public enum Mode {
         MULTITASKING_VIEW,
         OVERVIEW,
