@@ -20,7 +20,7 @@
  * preparing the wm, opening the components and holds containers for
  * the icon groups, the WorkspaceClones and the MonitorClones.
  */
-public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableComponent {
+public class Gala.MultitaskingView : Widget, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
     private GestureController workspaces_gesture_controller;
@@ -35,7 +35,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private List<MonitorClone> window_containers_monitors;
 
-    private ActorTarget workspaces;
+    private Widget workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
     private BackgroundManager? blurred_bg = null;
@@ -84,7 +84,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         // Create a child container that will be sized to fit the primary monitor, to contain the "main"
         // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
         // stage as it contains MonitorClones for each monitor.
-        primary_monitor_container = new ActorTarget ();
+        primary_monitor_container = new Widget ();
         primary_monitor_container.add_child (workspaces);
         add_child (primary_monitor_container);
 

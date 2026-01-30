@@ -28,16 +28,16 @@ public enum Gala.FocusDirection {
 }
 
 namespace Gala.FocusUtils {
-    public void filter_children_for_direction (Gee.List<Focusable> children, Clutter.Actor focus_actor, FocusDirection direction) {
-        Focusable? focus_child = null;
+    public void filter_children_for_direction (Gee.List<Widget> children, Clutter.Actor focus_actor, FocusDirection direction) {
+        Widget? focus_child = null;
         foreach (var child in children) {
             if (focus_actor in child) {
-                focus_child = (Focusable) child;
+                focus_child = (Widget) child;
                 break;
             }
         }
 
-        var to_retain = new Gee.LinkedList<Focusable> ();
+        var to_retain = new Gee.LinkedList<Widget> ();
         to_retain.add_all_iterator (children.filter ((c) => {
             if (focus_child == null || c == focus_child) {
                 return true;
@@ -67,7 +67,7 @@ namespace Gala.FocusUtils {
         return {(int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height};
     }
 
-    public void sort_children_for_direction (Gee.List<Focusable> children, FocusDirection direction) {
+    public void sort_children_for_direction (Gee.List<Widget> children, FocusDirection direction) {
         children.sort ((a, b) => {
             if (direction == UP && a.y + a.height > b.y + b.height ||
                 direction == DOWN && a.y < b.y ||

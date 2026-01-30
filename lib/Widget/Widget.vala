@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.Focusable : Clutter.Actor {
+public class Gala.Widget : ActorTarget {
     public bool can_focus { get; set; default = false; }
     public bool has_visible_focus { get; private set; default = false; }
 
@@ -18,9 +18,9 @@ public class Gala.Focusable : Clutter.Actor {
         has_visible_focus = has_key_focus () && get_root ().get_qdata<bool> (FocusController.focus_visible_quark);
     }
 
-    private Focusable get_root () {
+    private Widget get_root () {
         var parent = get_parent ();
-        if (parent is Focusable) {
+        if (parent is Widget) {
             return parent.get_root ();
         }
 
@@ -41,7 +41,7 @@ public class Gala.Focusable : Clutter.Actor {
 
         // A child of us (or subchild) has focus, try to move it to the next one.
         // If that doesn't work and we are moving backwards focus us
-        if (focus_actor != null && focus_actor is Focusable && focus_actor in this) {
+        if (focus_actor != null && focus_actor is Widget && focus_actor in this) {
             if (move_focus (direction)) {
                 return true;
             }
@@ -80,7 +80,7 @@ public class Gala.Focusable : Clutter.Actor {
     }
 
     protected virtual bool move_focus (FocusDirection direction) {
-        var children = get_focusable_children ();
+        var children = get_widget_children ();
 
         FocusUtils.filter_children_for_direction (children, get_stage ().key_focus, direction);
         FocusUtils.sort_children_for_direction (children, direction);
@@ -94,13 +94,13 @@ public class Gala.Focusable : Clutter.Actor {
         return false;
     }
 
-    private Gee.List<Focusable> get_focusable_children () {
-        var focusable_children = new Gee.ArrayList<Focusable> ();
+    private Gee.List<Widget> get_widget_children () {
+        var widget_children = new Gee.ArrayList<Widget> ();
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
-            if (child is Focusable && child.visible) {
-                focusable_children.add ((Focusable) child);
+            if (child is Widget && child.visible) {
+                widget_children.add ((Widget) child);
             }
         }
-        return focusable_children;
+        return widget_children;
     }
 }

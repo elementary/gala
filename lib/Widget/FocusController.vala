@@ -17,7 +17,7 @@ public class Gala.FocusController : Clutter.Action {
     }
 
     construct {
-        // In the case the key focus moves out of our focusable tree by some other means
+        // In the case the key focus moves out of our widget tree by some other means
         // make sure we can recapture it
         stage.key_press_event.connect (check_focus);
     }
@@ -27,7 +27,7 @@ public class Gala.FocusController : Clutter.Action {
     }
 
     private bool check_focus (Clutter.Event event) requires (
-        actor is Focusable && !(actor.get_parent () is Focusable) // Make sure we are only attached to root focusables
+        actor is Widget && !(actor.get_parent () is Widget) // Make sure we are only attached to root widgets
     ) {
         var direction = FocusDirection.get_for_event (event);
 
@@ -35,7 +35,7 @@ public class Gala.FocusController : Clutter.Action {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        if (!((Focusable) actor).focus (direction)) {
+        if (!((Widget) actor).focus (direction)) {
 #if HAS_MUTTER47
             stage.context.get_backend ().get_default_seat ().bell_notify ();
 #else
@@ -68,6 +68,6 @@ public class Gala.FocusController : Clutter.Action {
 
     private void set_focus_visible (bool visible) {
         actor.set_qdata (focus_visible_quark, visible);
-        (stage.key_focus as Focusable)?.focus_changed ();
+        (stage.key_focus as Widget)?.focus_changed ();
     }
 }
