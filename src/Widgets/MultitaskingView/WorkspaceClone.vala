@@ -91,7 +91,7 @@ private class Gala.FramedBackground : BackgroundManager {
  * The latter is not added to the WorkspaceClone itself though but to a container
  * of the MultitaskingView.
  */
-public class Gala.WorkspaceClone : ActorTarget {
+public class Gala.WorkspaceClone : Widget {
     /**
      * The offset of the scaled background to the bottom of the monitor bounds
      */

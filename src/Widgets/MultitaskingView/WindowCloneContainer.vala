@@ -7,7 +7,7 @@
 /**
  * Container which controls the layout of a set of WindowClones.
  */
-public class Gala.WindowCloneContainer : ActorTarget {
+public class Gala.WindowCloneContainer : Widget {
     public signal void window_selected (Meta.Window window);
 
     public int padding_top { get; set; default = 12; }
