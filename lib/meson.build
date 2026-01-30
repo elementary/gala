@@ -21,9 +21,6 @@ gala_lib_sources = files(
     'Effects/BackgroundBlurEffect.vala',
     'Effects/RoundedCornersEffect.vala',
     'Effects/ShadowEffect.vala',
-    'Focusable/Focusable.vala',
-    'Focusable/FocusController.vala',
-    'Focusable/FocusUtils.vala',
     'Gestures/Backends/GestureBackend.vala',
     'Gestures/Backends/ToucheggBackend.vala',
     'Gestures/Backends/TouchpadBackend.vala',
@@ -43,9 +40,12 @@ gala_lib_sources = files(
     'Widgets/AbstractSwitcher.vala',
     'Widgets/CanvasActor.vala',
     'Widgets/CloseButton.vala',
+    'Widgets/FocusController.vala',
+    'Widgets/FocusUtils.vala',
     'Widgets/Icon.vala',
     'Widgets/Image.vala',
     'Widgets/Text.vala',
+    'Widgets/Widget.vala',
     'Widgets/WindowIcon.vala'
 ) + gala_common_enums
 
