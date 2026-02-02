@@ -41,7 +41,22 @@ namespace Gala {
         MULTITASKING_VIEW,
         ZOOM,
         CUSTOM,
-        N_ACTIONS
+        N_ACTIONS;
+
+        public ModalActions to_modal_action () {
+            switch (this) {
+                case SWITCH_WORKSPACE:
+                    return ModalActions.SWITCH_WORKSPACE;
+                case SWITCH_WINDOWS:
+                    return ModalActions.SWITCH_WINDOWS;
+                case MULTITASKING_VIEW:
+                    return ModalActions.MULTITASKING_VIEW;
+                case ZOOM:
+                    return ModalActions.ZOOM;
+                default:
+                    return ModalActions.NONE;
+            }
+        }
     }
 
     private class Gesture {
