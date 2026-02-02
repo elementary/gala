@@ -103,6 +103,7 @@ namespace Gala {
         private Clutter.Actor? tile_preview;
 
         private DaemonManager daemon_manager;
+        private WindowAnimationsManager window_animations_manager;
 
         private NotificationStack notification_stack;
 
@@ -136,6 +137,7 @@ namespace Gala {
             ShellClientsManager.init (this);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
+            window_animations_manager = new WindowAnimationsManager (this);
 
             show_stage ();
 
