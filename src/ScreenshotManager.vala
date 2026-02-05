@@ -345,7 +345,7 @@ public class Gala.ScreenshotManager : Object {
                 image.set_device_scale (resource_scale, resource_scale);
             }
 
-            image = composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
+            composite_stage_cursor (image, { rect.x, rect.y, rect.width, rect.height });
         }
 
         unconceal_text ();
@@ -592,7 +592,7 @@ public class Gala.ScreenshotManager : Object {
         return image;
     }
 
-    private Cairo.ImageSurface composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
+    private void composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
 #if HAS_MUTTER48
         unowned var cursor_tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
 #else
@@ -603,12 +603,12 @@ public class Gala.ScreenshotManager : Object {
 
         var region = new Cairo.Region.rectangle (image_rect);
         if (!region.contains_point ((int) coords.x, (int) coords.y)) {
-            return image;
+            return;
         }
 
-        unowned Cogl.Texture texture = cursor_tracker.get_sprite ();
+        unowned Cogl.Texture? texture = cursor_tracker.get_sprite ();
         if (texture == null) {
-            return image;
+            return;
         }
 
         int width = (int)texture.get_width ();
@@ -618,18 +618,10 @@ public class Gala.ScreenshotManager : Object {
         texture.get_data (Cogl.PixelFormat.RGBA_8888, 0, data);
 
         var cursor_image = new Cairo.ImageSurface.for_data (data, Cairo.Format.ARGB32, width, height, width * 4);
-        var target = new Cairo.ImageSurface (Cairo.Format.ARGB32, image_rect.width, image_rect.height);
-
-        var cr = new Cairo.Context (target);
-        cr.set_operator (Cairo.Operator.OVER);
-        cr.set_source_surface (image, 0, 0);
-        cr.paint ();
-
+        var cr = new Cairo.Context (image);
         cr.set_operator (Cairo.Operator.OVER);
         cr.set_source_surface (cursor_image, coords.x - image_rect.x, coords.y - image_rect.y);
         cr.paint ();
-
-        return (Cairo.ImageSurface)cr.get_target ();
     }
 
     private async void wait_stage_repaint () {

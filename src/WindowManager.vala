@@ -909,70 +909,68 @@ namespace Gala {
         }
 
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
-            switch (menu) {
-                case Meta.WindowMenuType.WM:
-                    if (NotificationStack.is_notification (window)) {
-                        return;
-                    }
+            if (menu != WM) {
+                warning ("Unsupported window menu type");
+                return;
+            }
 
-                    WindowFlags flags = WindowFlags.NONE;
-                    if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_HIDE;
+            if (!Utils.get_window_is_normal (window) || NotificationStack.is_notification (window)) {
+                return;
+            }
 
-                    if (window.can_maximize ())
-                        flags |= WindowFlags.CAN_MAXIMIZE;
+            WindowFlags flags = WindowFlags.NONE;
+            if (window.can_minimize ())
+                flags |= WindowFlags.CAN_HIDE;
+
+            if (window.can_maximize ())
+                flags |= WindowFlags.CAN_MAXIMIZE;
 
 #if HAS_MUTTER49
-                    if (window.is_maximized ())
-                        flags |= WindowFlags.IS_MAXIMIZED;
+            if (window.is_maximized ())
+                flags |= WindowFlags.IS_MAXIMIZED;
 
-                    if (window.maximized_vertically && !window.maximized_horizontally)
-                        flags |= WindowFlags.IS_TILED;
+            if (window.maximized_vertically && !window.maximized_horizontally)
+                flags |= WindowFlags.IS_TILED;
 #else
-                    var maximize_flags = window.get_maximized ();
-                    if (maximize_flags > 0) {
-                        flags |= WindowFlags.IS_MAXIMIZED;
+            var maximize_flags = window.get_maximized ();
+            if (maximize_flags > 0) {
+                flags |= WindowFlags.IS_MAXIMIZED;
 
-                        if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                            flags |= WindowFlags.IS_TILED;
-                        }
-                    }
+                if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
+                    flags |= WindowFlags.IS_TILED;
+                }
+            }
 #endif
 
-                    if (window.allows_move ())
-                        flags |= WindowFlags.ALLOWS_MOVE;
+            if (window.allows_move ())
+                flags |= WindowFlags.ALLOWS_MOVE;
 
-                    if (window.allows_resize ())
-                        flags |= WindowFlags.ALLOWS_RESIZE;
+            if (window.allows_resize ())
+                flags |= WindowFlags.ALLOWS_RESIZE;
 
-                    if (window.is_above ())
-                        flags |= WindowFlags.ALWAYS_ON_TOP;
+            if (window.is_above ())
+                flags |= WindowFlags.ALWAYS_ON_TOP;
 
-                    if (window.on_all_workspaces)
-                        flags |= WindowFlags.ON_ALL_WORKSPACES;
+            if (window.on_all_workspaces)
+                flags |= WindowFlags.ON_ALL_WORKSPACES;
 
-                    if (window.can_close ())
-                        flags |= WindowFlags.CAN_CLOSE;
+            if (window.can_close ())
+                flags |= WindowFlags.CAN_CLOSE;
 
-                    unowned var workspace = window.get_workspace ();
-                    if (workspace != null) {
-                        unowned var manager = window.display.get_workspace_manager ();
-                        var workspace_index = workspace.workspace_index;
-                        if (workspace_index != 0) {
-                            flags |= WindowFlags.ALLOWS_MOVE_LEFT;
-                        }
+            unowned var workspace = window.get_workspace ();
+            if (workspace != null) {
+                unowned var manager = window.display.get_workspace_manager ();
+                var workspace_index = workspace.workspace_index;
+                if (workspace_index != 0) {
+                    flags |= WindowFlags.ALLOWS_MOVE_LEFT;
+                }
 
-                        if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
-                            flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
-                        }
-                    }
-
-                    daemon_manager.show_window_menu.begin (flags, x, y);
-                    break;
-                case Meta.WindowMenuType.APP:
-                    // FIXME we don't have any sort of app menus
-                    break;
+                if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
+                    flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
+                }
             }
+
+            daemon_manager.show_window_menu.begin (flags, x, y);
         }
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
@@ -1652,6 +1650,10 @@ namespace Gala {
                 case Meta.KeyBindingAction.SWITCH_GROUP:
                 case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                     return filter_action (SWITCH_WINDOWS);
+                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                    return filter_action (LOCATE_POINTER);
+                case Meta.KeyBindingAction.NONE:
+                    return filter_action (MEDIA_KEYS);
                 default:
                     break;
             }
@@ -1667,24 +1669,26 @@ namespace Gala {
                     return filter_action (ZOOM);
                 case "toggle-multitasking-view":
                     return filter_action (MULTITASKING_VIEW);
+                case "expose-all-windows":
+                    return filter_action (WINDOW_OVERVIEW);
+                case "screenshot":
+                case "screenshot-clip":
+                case "interactive-screenshot":
+                    return filter_action (SCREENSHOT);
+                case "area-screenshot":
+                case "area-screenshot-clip":
+                    return filter_action (SCREENSHOT_AREA);
+                case "window-screenshot":
+                case "window-screenshot-clip":
+                    return filter_action (SCREENSHOT_WINDOW);
                 default:
                     break;
             }
 
-            var modal_proxy = modal_stack.peek_head ();
-            if (modal_proxy == null) {
-                return false;
-            }
-
-            unowned var filter = modal_proxy.get_keybinding_filter ();
-            if (filter == null) {
-                return false;
-            }
-
-            return filter (binding);
+            return false;
         }
 
-        public bool filter_action (GestureAction action) {
+        public bool filter_action (ModalActions action) {
             if (!is_modal ()) {
                 return false;
             }

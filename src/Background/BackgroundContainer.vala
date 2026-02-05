@@ -26,6 +26,8 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
             if (event.get_button () == Clutter.Button.SECONDARY) {
                 show_background_menu ((int)x, (int)y);
             }
+
+            return Source.CONTINUE;
         });
 
 #if HAS_MUTTER47
