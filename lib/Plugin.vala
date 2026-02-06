@@ -18,8 +18,7 @@
 namespace Gala {
     public enum PluginFunction {
         ADDITION,
-        WINDOW_SWITCHER,
-        WINDOW_OVERVIEW
+        WINDOW_SWITCHER
     }
 
     public enum LoadPriority {
