@@ -225,7 +225,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         }
 
         var new_index = (int) Math.round (progress / GESTURE_STEP);
-        var is_step = (previous_icon_index - new_index).abs () >= 1;
+        var is_step = new_index != previous_icon_index;
 
         previous_icon_index = new_index;
 
