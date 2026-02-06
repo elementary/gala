@@ -37,6 +37,7 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/2746">6th and 13th key press of Alt+Tab have a bug</issue>
+        <issue url="https://github.com/elementary/gala/issues/2742">Screenshot inaccurately represents Dock background appearance</issue>
         <issue url="https://github.com/elementary/gala/issues/2657">Window icons missing in the Show All Windows overview</issue>
         <issue url="https://github.com/elementary/gala/issues/2675">Blur behind modal shell protocol</issue>
         <issue url="https://github.com/elementary/gala/issues/2676">Window selection from dock overview doesn't focus the chosen window</issue>
