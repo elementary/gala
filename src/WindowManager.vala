@@ -77,7 +77,7 @@ namespace Gala {
 
         private WindowSwitcher? window_switcher = null;
 
-        public ActivatableComponent? window_overview { get; private set; }
+        public WindowOverview window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -290,12 +290,8 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
             }
 
-            if (plugin_manager.window_overview_provider == null
-                || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
-            ) {
-                window_overview = new WindowOverview (this);
-                ui_group.add_child ((Clutter.Actor) window_overview);
-            }
+            window_overview = new WindowOverview (this);
+            ui_group.add_child (window_overview);
 
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();
@@ -884,7 +880,7 @@ namespace Gala {
                     launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
-                    if (window_overview == null || filter_action (WINDOW_OVERVIEW)) {
+                    if (filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
@@ -896,7 +892,7 @@ namespace Gala {
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
-                    if (window_overview == null || filter_action (WINDOW_OVERVIEW)) {
+                    if (filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
