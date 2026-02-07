@@ -7148,7 +7148,9 @@ namespace Clutter {
 	public sealed class Settings : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Settings ();
+#if HAS_MUTTER49
 		[Version (deprecated = true)]
+#endif
 		public static unowned Clutter.Settings get_default ();
 		[NoAccessorMethod]
 		public int dnd_drag_threshold { get; set; }
