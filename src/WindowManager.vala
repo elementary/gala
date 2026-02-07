@@ -1757,7 +1757,7 @@ namespace Gala {
 
 #if !HAS_MUTTER48
         public override unowned Meta.PluginInfo? plugin_info () {
-            return { "Gala", Config.VERSION, "Gala Developers", "GPLv3", "A nice elementary window manager" };
+            return null;
         }
 #endif
     }
