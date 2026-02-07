@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent {
+public class Gala.WindowOverview : Widget, RootTarget, ActivatableComponent {
     private const int BORDER = 10;
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
@@ -18,7 +18,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private ModalProxy modal_proxy;
     // the workspaces which we expose right now
     private List<Meta.Workspace> workspaces;
-    private WindowCloneContainer window_clone_container;
 
     private uint64[]? window_ids = null;
 
@@ -33,15 +32,20 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             enabled = false
         };
         add_gesture_controller (gesture_controller);
+
+        add_action (new FocusController (wm.stage));
     }
 
-
     public override bool key_press_event (Clutter.Event event) {
-        if (!is_opened ()) {
-            return Clutter.EVENT_PROPAGATE;
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Escape:
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                close ();
+                return Clutter.EVENT_STOP;
+            default:
+                return Clutter.EVENT_PROPAGATE;
         }
-
-        return window_clone_container.key_press_event (event);
     }
 
     public override bool button_release_event (Clutter.Event event) {
@@ -120,7 +124,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
-            window_clone_container = new WindowCloneContainer (wm, model, scale, mode) {
+            var window_clone_container = new WindowCloneContainer (wm, model, scale, mode) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -131,7 +135,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
                 y = geometry.y,
             };
             window_clone_container.window_selected.connect (thumb_selected);
-            window_clone_container.requested_close.connect (() => close ());
 
             add_child (window_clone_container);
         }

@@ -91,7 +91,7 @@ private class Gala.FramedBackground : BackgroundManager {
  * The latter is not added to the WorkspaceClone itself though but to a container
  * of the MultitaskingView.
  */
-public class Gala.WorkspaceClone : ActorTarget {
+public class Gala.WorkspaceClone : Widget {
     /**
      * The offset of the scaled background to the bottom of the monitor bounds
      */
@@ -149,7 +149,6 @@ public class Gala.WorkspaceClone : ActorTarget {
             height = monitor_geometry.height,
         };
         window_container.window_selected.connect ((window) => window_selected (window));
-        window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
         var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
