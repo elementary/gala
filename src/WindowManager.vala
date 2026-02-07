@@ -1750,11 +1750,5 @@ namespace Gala {
         public override Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window) {
             return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
         }
-
-#if !HAS_MUTTER48
-        public override unowned Meta.PluginInfo? plugin_info () {
-            return { "Gala", Config.VERSION, "Gala Developers", "GPLv3", "A nice elementary window manager" };
-        }
-#endif
     }
 }
