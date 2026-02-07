@@ -33,6 +33,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int round_actor_size_location;
 
     private int frame_counter = 0;
+    private float last_box_scale_factor = 1.0f;
 
     public BackgroundBlurEffect (float blur_radius, float clip_radius, float monitor_scale) {
         Object (blur_radius: blur_radius, clip_radius: clip_radius, monitor_scale: monitor_scale);
@@ -168,6 +169,8 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             Mtk.Rectangle stage_view_layout = {};
 
             box_scale_factor = stage_view.get_scale ();
+            last_box_scale_factor = box_scale_factor;
+
 #if HAS_MUTTER49
             stage_view.get_layout (stage_view_layout);
 #else
@@ -177,9 +180,10 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
         } else {
-            /* If we're drawing off stage, just assume scale = 1, this won't work
-             * with stage-view scaling though.
+            /* We're drawing off stage, e.g. during a screenshot.
+             * Use last_box_scale_factor as it's probably the most accurate one.
              */
+            box_scale_factor = last_box_scale_factor;
         }
 
         source_actor_box.set_origin (origin_x, origin_y);
