@@ -140,7 +140,7 @@ namespace Gala.Drawing {
         *
         * If you would like to deserialize the A, R, G and B values from the integer without
         * creating a new instance of {@link Gala.Drawing.Color}, you can use the available
-        * //*_from_int// static method collection such as {@link Gala.Drawing.Color.alpha_from_int}.
+        * *_from_int static method collection such as {@link Gala.Drawing.Color.alpha_from_int}.
         *
         * @param color the integer specifying the color
         */
