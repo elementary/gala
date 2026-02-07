@@ -11,8 +11,6 @@ private interface Gala.GestureBackend : Object {
     public signal void on_update (double percentage, uint64 time);
     public signal void on_end (double percentage, uint64 time);
 
-    public virtual void prepare_gesture_handling () { }
-
     /**
      * The gesture should be cancelled. The implementation should stop emitting
      * signals and reset any internal state. In particular it should not emit on_end.
