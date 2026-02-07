@@ -42,6 +42,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private GLib.Settings gala_behavior_settings;
     private Drawing.StyleManager style_manager;
+    private GlobalTrigger workspaces_trigger;
 
     public MultitaskingView (WindowManagerGala wm) {
         Object (wm: wm);
@@ -58,20 +59,22 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, MULTITASKING_VIEW);
-        multitasking_gesture_controller.enable_touchpad (wm.stage);
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW);
+        multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
         workspaces = new WorkspaceRow (display);
 
-        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm, MULTITASKING_VIEW) {
+        workspaces_trigger = new GlobalTrigger (SWITCH_WORKSPACE, wm);
+
+        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE) {
             overshoot_upper_clamp = 0.1,
             follow_natural_scroll = true,
         };
-        workspaces_gesture_controller.enable_touchpad (wm.stage);
-        workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
+        workspaces_gesture_controller.add_trigger (workspaces_trigger);
+        workspaces_gesture_controller.add_trigger (new SwipeTrigger (this, HORIZONTAL));
         add_gesture_controller (workspaces_gesture_controller);
 
         update_blurred_bg ();
@@ -259,8 +262,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
             var mru_window = InternalUtils.get_mru_window (display.get_workspace_manager ().get_active_workspace ());
 
-            if (workspaces_gesture_controller.action_info != null
-                && (bool) workspaces_gesture_controller.action_info
+            if (workspaces_trigger.action_info != null
+                && (bool) workspaces_trigger.action_info
                 && mru_window != null
             ) {
                 var moving = mru_window;

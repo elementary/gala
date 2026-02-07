@@ -33,10 +33,10 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         display.add_keybinding ("zoom-in", schema, NONE, zoom_in);
         display.add_keybinding ("zoom-out", schema, NONE, zoom_out);
 
-        gesture_controller = new GestureController (ZOOM, wm) {
+        gesture_controller = new GestureController (ZOOM) {
             snap = false
         };
-        gesture_controller.enable_touchpad (wm.stage);
+        gesture_controller.add_trigger (new GlobalTrigger (ZOOM, wm));
         add_gesture_controller (gesture_controller);
 
         behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
