@@ -9,6 +9,12 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : ActorTarget, RootTarget {
+    public enum Mode {
+        MULTITASKING_VIEW,
+        OVERVIEW,
+        SINGLE_APP_OVERVIEW
+    }
+
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -49,7 +55,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
     }
 
-    public bool overview_mode { get; construct; }
+    public Mode mode { get; construct; }
     public float monitor_scale { get; construct set; }
 
     [CCode (notify = false)]
@@ -81,12 +87,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, Mode mode) {
         Object (
             wm: wm,
             window: window,
             monitor_scale: monitor_scale,
-            overview_mode: overview_mode
+            mode: mode
         );
     }
 
@@ -105,10 +111,16 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.connect (update_targets);
         window.size_changed.connect (() => request_reposition ());
 
-        if (overview_mode) {
+        if (mode != MULTITASKING_VIEW) {
+#if HAS_MUTTER49
+            var click_action = new Clutter.ClickGesture ();
+            click_action.recognize.connect ((action) => {
+                actor_clicked (((Clutter.PressGesture)action).get_button ());
+#else
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
                 actor_clicked (action.get_button ());
+#endif
             });
 
             add_action (click_action);
@@ -141,7 +153,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
         bind_property ("monitor-scale", close_button, "monitor-scale");
         close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (update_hover_widgets);
 
         add_child (active_shape);
         add_child (clone_container);
@@ -155,9 +166,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
-
-        notify["has-pointer"].connect (update_hover_widgets);
-        notify["animating"].connect (update_hover_widgets);
     }
 
     ~WindowClone () {
@@ -173,7 +181,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private void reallocate () {
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
-            visible = !overview_mode
+            visible = mode != SINGLE_APP_OVERVIEW
         };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
@@ -191,10 +199,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * effect and makes sure the shadow is updated on size changes.
      */
     private void load_clone (Meta.WindowActor actor) {
-        if (overview_mode) {
-            actor.hide ();
-        }
-
         clone = new Clutter.Clone (actor);
         clone_container.add_child (clone);
 
@@ -225,7 +229,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * the current one. To ease their appearance we have to fade them in.
      */
     private bool should_fade () {
-        return (overview_mode
+        return (mode != MULTITASKING_VIEW
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
 
@@ -265,36 +269,41 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         if (should_fade ()) {
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+        } else {
+            // When a window should no longer fade (e.g. gets unminimized) make sure we reset the opacity
+            opacity = 255u;
         }
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
+
+        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint), 0u, 255u));
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || !has_pointer || slot == null || !Meta.Prefs.get_gnome_animations ()) {
-            return;
+        if (action == CUSTOM && slot != null) {
+            var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
+            var target_opacity = (uint) (255 * (1 - progress));
+
+            clone_container.translation_y = target_translation_y;
+            clone_container.opacity = target_opacity;
+
+            window_icon.translation_y = target_translation_y;
+            window_icon.opacity = target_opacity;
+
+            window_title.translation_y = target_translation_y;
+            window_title.opacity = target_opacity;
+
+            close_button.translation_y = target_translation_y;
+            close_button.opacity = target_opacity;
+        } else if (action == MULTITASKING_VIEW) {
+            close_button.reactive = progress == 1;
         }
-
-        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
-        var target_opacity = (uint) (255 * (1 - progress));
-
-        clone_container.translation_y = target_translation_y;
-        clone_container.opacity = target_opacity;
-
-        window_icon.translation_y = target_translation_y;
-        window_icon.opacity = target_opacity;
-
-        window_title.translation_y = target_translation_y;
-        window_title.opacity = target_opacity;
-
-        close_button.translation_y = target_translation_y;
-        close_button.opacity = target_opacity;
     }
 
     public override void end_progress (GestureAction action) {
-        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -350,7 +359,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
-        var monitor_scale = display.get_monitor_scale (monitor_index);
+        var monitor_scale = Utils.get_ui_scaling_factor (display, monitor_index);
 
         float window_title_min_width, window_title_nat_width, window_title_height;
         window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);
@@ -364,22 +373,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
-    }
-
-    public override bool button_press_event (Clutter.Event event) {
-        return Clutter.EVENT_STOP;
-    }
-
-    private void update_hover_widgets () {
-        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
-
-        var show = (has_pointer || close_button.has_pointer) && !animating;
-
-        close_button.save_easing_state ();
-        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (duration);
-        close_button.opacity = show ? 255 : 0;
-        close_button.restore_easing_state ();
     }
 
     /**
@@ -487,7 +480,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void destination_crossed (Clutter.Actor destination, bool hovered) {
-#if !OLD_ICON_GROUPS
         if (!(destination is Meta.WindowActor)) {
             return;
         }
@@ -497,55 +489,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         } else {
             WindowDragProvider.get_instance ().notify_leave ();
         }
-#else
-        var icon_group = destination as IconGroup;
-        var insert_thumb = destination as WorkspaceInsertThumb;
-
-        // if we have don't dynamic workspace, we don't allow inserting
-        if (icon_group == null && insert_thumb == null
-            || (insert_thumb != null && !Meta.Prefs.get_dynamic_workspaces ())) {
-                return;
-        }
-
-        // for an icon group, we only do animations if there is an actual movement possible
-        if (icon_group != null
-            && icon_group.workspace == window.get_workspace ()
-            && window.is_on_primary_monitor ()) {
-                return;
-        }
-
-        var scale = hovered ? 0.4 : 1.0;
-        var opacity = hovered ? 0 : 255;
-        uint duration = hovered && insert_thumb != null ? insert_thumb.delay : 100;
-        duration = Utils.get_animation_duration (duration);
-
-        window_icon.save_easing_state ();
-
-        window_icon.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        window_icon.set_easing_duration (duration);
-        window_icon.set_scale (scale, scale);
-        window_icon.set_opacity (opacity);
-
-        window_icon.restore_easing_state ();
-
-        if (insert_thumb != null) {
-            insert_thumb.set_window_thumb (window);
-        }
-
-        if (icon_group != null) {
-            if (hovered) {
-                icon_group.add_window (window, false, true);
-            } else {
-                icon_group.remove_window (window, false);
-            }
-        }
-
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.MOVE : Meta.Cursor.NO_DROP);
-#else
-        wm.get_display ().set_cursor (hovered ? Meta.Cursor.DND_MOVE : Meta.Cursor.DND_IN_DRAG);
-#endif
-#endif
     }
 
     private void destination_motion (Clutter.Actor destination, float x, float y) {

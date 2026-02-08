@@ -58,6 +58,6 @@ public class Gala.MonitorClone : ActorTarget {
         set_position (monitor_geometry.x, monitor_geometry.y);
         set_size (monitor_geometry.width, monitor_geometry.height);
 
-        monitor_scale = display.get_monitor_scale (monitor);
+        monitor_scale = Utils.get_ui_scaling_factor (display, monitor);
     }
 }

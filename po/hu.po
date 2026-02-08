@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-05 20:49+0000\n"
-"PO-Revision-Date: 2025-10-30 06:55+0000\n"
+"POT-Creation-Date: 2025-11-20 18:22+0000\n"
+"PO-Revision-Date: 2025-11-20 18:22+0000\n"
 "Last-Translator: TomiOhl <ohlslager.tom@gmail.com>\n"
 "Language-Team: Hungarian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/hu/>\n"
@@ -110,96 +110,102 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
-#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
-#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
-#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
-#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
-#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
+#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
+#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
+#: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:291
+#: data/gala.metainfo.xml.in:332 data/gala.metainfo.xml.in:357
+#: data/gala.metainfo.xml.in:373
 msgid "Improvements:"
 msgstr "Fejlesztések:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
-#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
-#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
-#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
-#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:54
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:154 data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:201 data/gala.metainfo.xml.in:232
+#: data/gala.metainfo.xml.in:245 data/gala.metainfo.xml.in:260
+#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:295
+#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:360
+#: data/gala.metainfo.xml.in:375
 msgid "Updated translations"
 msgstr "Frissített fordítások"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
 msgstr "Javított HiDPI-támogatás"
 
 #: data/gala.metainfo.xml.in:36
+msgid "Improve Reduced Motion behavior"
+msgstr "Javított csökkentett mozgásos viselkedés"
+
+#: data/gala.metainfo.xml.in:56
 msgid "Improved render performance"
 msgstr "Leképezési teljesítmény javítva"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
 msgstr "A dokk és a panel szinkronban jelenik meg indulás után"
 
-#: data/gala.metainfo.xml.in:38
+#: data/gala.metainfo.xml.in:58
 msgid "Improved workspace switch dock animation"
 msgstr "Szebben animált dokk munkaterület-váltáskor"
 
-#: data/gala.metainfo.xml.in:39
+#: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr "A kép a képben ablakok lekerekített sarkakat kaptak"
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "Az ablakok állapota mentve lesz kikapcsoláskor"
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:170
 msgid "Remove scaling effect from menus"
 msgstr "Méretezési effektus eltávolítva a menükből"
 
-#: data/gala.metainfo.xml.in:151
+#: data/gala.metainfo.xml.in:171
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "Ablakok bezárása felfelé csúsztatással a többfeladatos nézetben"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:202
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "Ritka összeomlás javítva dokk ablak leállításakor"
 
-#: data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:203
 msgid "Added interactive screenshot shortcut"
 msgstr "Gyorsparancs interaktív képernyőképhez"
 
-#: data/gala.metainfo.xml.in:184
+#: data/gala.metainfo.xml.in:204
 msgid "Fixed crash when using tiling shortcuts"
 msgstr ""
 "Összeomlás javítva ablakok felosztásával kapcsolatos gyorsparancsok "
 "használatakor"
 
-#: data/gala.metainfo.xml.in:213
+#: data/gala.metainfo.xml.in:233
 msgid "Improved shadows performance"
 msgstr "Árnyékok teljesítménye javítva"
 
-#: data/gala.metainfo.xml.in:257
+#: data/gala.metainfo.xml.in:277
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Egy esetleges összeomlás javítva videók munkaterületek közti mozgatásakor"
 
-#: data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:278
 msgid "Fix notification animation when entering multitasking view"
 msgstr "Értesítési felület megnyitása utáni értesítéshelyzet javítva"
 
-#: data/gala.metainfo.xml.in:273
+#: data/gala.metainfo.xml.in:293
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Billentyűzettel való navigáció javítva többfeladatos nézetben"
 
-#: data/gala.metainfo.xml.in:274
+#: data/gala.metainfo.xml.in:294
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Az állapotsor színének frissítése a háttérkép átmenetével egyidőben"
 
-#: data/gala.metainfo.xml.in:314
+#: data/gala.metainfo.xml.in:334
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -207,21 +213,21 @@ msgstr ""
 "A háttérkép cseréje vagy az alvó módba váltás tiszteletben tartja a "
 "\"Kevesebb mozgás\" beállítást"
 
-#: data/gala.metainfo.xml.in:315
+#: data/gala.metainfo.xml.in:335
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "A megfelelő mutatók használata ablakok mozgatásakor"
 
-#: data/gala.metainfo.xml.in:316
+#: data/gala.metainfo.xml.in:336
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Egy hiba javítása, aminek következtében a többfeladatos nézetben nem "
 "működtek a gesztusok"
 
-#: data/gala.metainfo.xml.in:317
+#: data/gala.metainfo.xml.in:337
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "A dinamikus munkaterületek viselkedésének javítása több monitorral"
 
-#: data/gala.metainfo.xml.in:339
+#: data/gala.metainfo.xml.in:359
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 "Az áthelyezés munkaterületre funkció kezelhetőségének javítása után két "
@@ -296,7 +302,7 @@ msgstr "Engedélyezés"
 msgid "Deny"
 msgstr "Elutasítás"
 
-#: src/DesktopIntegration.vala:200
+#: src/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr "Az ablak már fókuszban van"
 
@@ -332,22 +338,22 @@ msgstr "Képernyőképek"
 msgid "Window switcher"
 msgstr "Ablakváltó"
 
-#: src/WindowManager.vala:1739
+#: src/WindowManager.vala:1736
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "A változások automatikusan visszaállnak %i másodperc múlva."
 msgstr[1] "A változások automatikusan visszaállnak %i másodperc múlva."
 
-#: src/WindowManager.vala:1746
+#: src/WindowManager.vala:1743
 msgid "Keep new display settings?"
 msgstr "Új kijelzőbeállítások megtartása?"
 
-#: src/WindowManager.vala:1750
+#: src/WindowManager.vala:1747
 msgid "Keep Settings"
 msgstr "Beállítások megtartása"
 
-#: src/WindowManager.vala:1751
+#: src/WindowManager.vala:1748
 msgid "Use Previous Settings"
 msgstr "Előző beállítások visszaállítása"
 

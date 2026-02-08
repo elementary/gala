@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-05 20:49+0000\n"
+"POT-Creation-Date: 2025-11-20 18:22+0000\n"
 "PO-Revision-Date: 2025-10-30 06:55+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -103,111 +103,117 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary בע״מ."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:67
-#: data/gala.metainfo.xml.in:79 data/gala.metainfo.xml.in:94
-#: data/gala.metainfo.xml.in:120 data/gala.metainfo.xml.in:132
-#: data/gala.metainfo.xml.in:146 data/gala.metainfo.xml.in:179
-#: data/gala.metainfo.xml.in:210 data/gala.metainfo.xml.in:223
-#: data/gala.metainfo.xml.in:238 data/gala.metainfo.xml.in:255
-#: data/gala.metainfo.xml.in:271 data/gala.metainfo.xml.in:312
-#: data/gala.metainfo.xml.in:337 data/gala.metainfo.xml.in:353
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:52
+#: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
+#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
+#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
+#: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
+#: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:291
+#: data/gala.metainfo.xml.in:332 data/gala.metainfo.xml.in:357
+#: data/gala.metainfo.xml.in:373
 msgid "Improvements:"
 msgstr "שיפורים:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:69
-#: data/gala.metainfo.xml.in:81 data/gala.metainfo.xml.in:96
-#: data/gala.metainfo.xml.in:122 data/gala.metainfo.xml.in:134
-#: data/gala.metainfo.xml.in:148 data/gala.metainfo.xml.in:181
-#: data/gala.metainfo.xml.in:212 data/gala.metainfo.xml.in:225
-#: data/gala.metainfo.xml.in:240 data/gala.metainfo.xml.in:259
-#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:318
-#: data/gala.metainfo.xml.in:340 data/gala.metainfo.xml.in:355
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:54
+#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:101
+#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:142
+#: data/gala.metainfo.xml.in:154 data/gala.metainfo.xml.in:168
+#: data/gala.metainfo.xml.in:201 data/gala.metainfo.xml.in:232
+#: data/gala.metainfo.xml.in:245 data/gala.metainfo.xml.in:260
+#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:295
+#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:360
+#: data/gala.metainfo.xml.in:375
 msgid "Updated translations"
 msgstr "התרגומים עודכנו"
 
-#: data/gala.metainfo.xml.in:35
+#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
 msgid "Improved HiDPI support"
 msgstr "תמיכה משופרת ב־HiDPI"
 
 #: data/gala.metainfo.xml.in:36
+msgid "Improve Reduced Motion behavior"
+msgstr ""
+
+#: data/gala.metainfo.xml.in:56
 msgid "Improved render performance"
 msgstr "ביצועי התיצוג השתפרו"
 
-#: data/gala.metainfo.xml.in:37
+#: data/gala.metainfo.xml.in:57
 msgid "Reveal dock and panel in sync when starting"
 msgstr "המעגן והלוח נחשפים בצורה מתואמת עם ההפעלה"
 
-#: data/gala.metainfo.xml.in:38
+#: data/gala.metainfo.xml.in:58
 msgid "Improved workspace switch dock animation"
 msgstr "ההנפשה במעגן להחלפת סביבת עבודה השתפרה"
 
-#: data/gala.metainfo.xml.in:39
+#: data/gala.metainfo.xml.in:59
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr "לחלונות תמונה בתוך תמונה יש כעת פינות מעוגלות"
 
-#: data/gala.metainfo.xml.in:149
+#: data/gala.metainfo.xml.in:169
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "מצב החלון נשמר לפני מצב שינה וכיבוי"
 
-#: data/gala.metainfo.xml.in:150
+#: data/gala.metainfo.xml.in:170
 msgid "Remove scaling effect from menus"
 msgstr "הסרת אפקט התאמת קנה מידה מהתפריטים"
 
-#: data/gala.metainfo.xml.in:151
+#: data/gala.metainfo.xml.in:171
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "יש להחליק למעלה כדי לסגור חלונות בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:182
+#: data/gala.metainfo.xml.in:202
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "תוקנה קריסה שנגרמה כשחלון מעוגן חוסל"
 
-#: data/gala.metainfo.xml.in:183
+#: data/gala.metainfo.xml.in:203
 msgid "Added interactive screenshot shortcut"
 msgstr "נוסף קיצור דרך לצילום מסך אינטראקטיבי"
 
-#: data/gala.metainfo.xml.in:184
+#: data/gala.metainfo.xml.in:204
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "תוקנה קריסה עקב שימוש בקיצורי דרך של ריצוף"
 
-#: data/gala.metainfo.xml.in:213
+#: data/gala.metainfo.xml.in:233
 msgid "Improved shadows performance"
 msgstr "ביצועי הצלליות השתפרו"
 
-#: data/gala.metainfo.xml.in:257
+#: data/gala.metainfo.xml.in:277
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "תוקנה קריסה שיכלה לקרות בעת העברת חלונות בין סביבות עבודה"
 
-#: data/gala.metainfo.xml.in:258
+#: data/gala.metainfo.xml.in:278
 msgid "Fix notification animation when entering multitasking view"
 msgstr "תוקנה הנפשת ההתראות בכניסה לתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:273
+#: data/gala.metainfo.xml.in:293
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "שיפור ניווט המקלדת בתצוגת ריבוי משימות"
 
-#: data/gala.metainfo.xml.in:274
+#: data/gala.metainfo.xml.in:294
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "החלפת צבע הלוח יחד עם מעבר תמונת הרקע"
 
-#: data/gala.metainfo.xml.in:314
+#: data/gala.metainfo.xml.in:334
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr "החלפת טפט או שינה מכבדים את האפשרות „צמצום תנועה”"
 
-#: data/gala.metainfo.xml.in:315
+#: data/gala.metainfo.xml.in:335
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr "להשתמש בחיצי הגרירה בעת הזזת חלונות"
 
-#: data/gala.metainfo.xml.in:316
+#: data/gala.metainfo.xml.in:336
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr "תוקנה תקלה שמחוות בתצוגת ריבוי משימות מפסיקות לעבוד"
 
-#: data/gala.metainfo.xml.in:317
+#: data/gala.metainfo.xml.in:337
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "שיפור התנהגות מרחבי עבודה דינמיים עם ריבוי צגים"
 
-#: data/gala.metainfo.xml.in:339
+#: data/gala.metainfo.xml.in:359
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "שיפור הטיפול בקיצור הדרך להעברה למרחב עבודה"
 
@@ -279,7 +285,7 @@ msgstr "לאפשר"
 msgid "Deny"
 msgstr "לסרב"
 
-#: src/DesktopIntegration.vala:200
+#: src/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr "החלון כבר ממוקד"
 
@@ -315,22 +321,22 @@ msgstr "צילומי מסך"
 msgid "Window switcher"
 msgstr "בורר חלונות"
 
-#: src/WindowManager.vala:1739
+#: src/WindowManager.vala:1736
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "השינויים יוחזרו לקדמותם אוטומטית לאחר שנייה."
 msgstr[1] "השינויים יוחזרו לקדמותם אוטומטית לאחר %i שניות."
 
-#: src/WindowManager.vala:1746
+#: src/WindowManager.vala:1743
 msgid "Keep new display settings?"
 msgstr "לשמור את הגדרות התצוגה החדשות?"
 
-#: src/WindowManager.vala:1750
+#: src/WindowManager.vala:1747
 msgid "Keep Settings"
 msgstr "לשמור את ההגדרות"
 
-#: src/WindowManager.vala:1751
+#: src/WindowManager.vala:1748
 msgid "Use Previous Settings"
 msgstr "להשתמש בהגדרות הקודמות"
 

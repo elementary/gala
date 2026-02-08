@@ -1,8 +1,11 @@
 project('gala',
     'vala',
-    version: '8.3.0',
+    version: '8.4.0',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
+    default_options: [
+        'buildtype=debugoptimized',
+    ],
 )
 
 gnome = import('gnome')
@@ -28,10 +31,11 @@ config_header = configure_file (
     configuration: conf
 )
 
+glib_version_required = '2.78'
+
 add_project_arguments([
-        '--target-glib=2.44',
+        '--target-glib=' + glib_version_required,
         '--hide-internal',
-        '--enable-deprecated',
         '--vapidir=' + vapi_dir,
     ],
     language: 'vala',
@@ -40,21 +44,22 @@ add_project_arguments([
         '-Wno-discarded-qualifiers',
         '-Wno-incompatible-pointer-types',
         '-Wno-unused',
+        '-Wno-address',
+        '-Wno-duplicate-decl-specifier',
+        '-Wno-deprecated-declarations',
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
         '-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
-        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
-        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
+        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
+        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
     ],
     language: 'c',
 )
 
 
 # Dependencies
-glib_version_required = '2.74.0'
-
 atk_bridge_dep = dependency('atk-bridge-2.0')
 gdk_pixbuf_def = dependency ('gdk-pixbuf-2.0')
 gtk4_dep = dependency('gtk4')
@@ -146,10 +151,6 @@ mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
 
 if get_option('systemd')
     vala_flags += ['--define', 'WITH_SYSTEMD']
-endif
-
-if get_option('old-icon-groups')
-	vala_flags += ['--define', 'OLD_ICON_GROUPS']
 endif
 
 if vala.version().version_compare('>= 0.56.17')

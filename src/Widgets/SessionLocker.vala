@@ -121,7 +121,7 @@ public class Gala.SessionLocker : Clutter.Actor {
         });
 
 #if HAS_MUTTER47
-        background_color = Cogl.Color.from_string ("black");
+        background_color = Cogl.Color.from_string ("#000000");
 #else
         background_color = Clutter.Color.from_string ("black");
 #endif
@@ -286,17 +286,19 @@ public class Gala.SessionLocker : Clutter.Actor {
                 return null;
             }
 
-            session_id = login_user_manager.display.session;
+            var login_display = login_user_manager.display;
+            session_id = login_display.session;
+            debug ("Acquired user %s", login_display.objectpath);
         }
 
         if (session_id == null) {
+            critical ("Couldn't get user session, lock and suspend will be broken");
             return null;
         }
 
         var session_path = login_manager.get_session (session_id);
-        LoginSessionManager? session = Bus.get_proxy_sync (BusType.SYSTEM, "org.freedesktop.login1", session_path);
 
-        return session;
+        return Bus.get_proxy_sync<LoginSessionManager> (SYSTEM, "org.freedesktop.login1", session_path);
     }
 
     public void @lock (bool animate) {

@@ -32,7 +32,7 @@ private class Gala.FramedBackground : BackgroundManager {
 #endif
         pipeline = new Cogl.Pipeline (ctx);
 
-        add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
+        add_effect (new ShadowEffect ("workspace", Utils.get_ui_scaling_factor (display, display.get_primary_monitor ())));
 
         reactive = true;
     }
@@ -95,11 +95,7 @@ public class Gala.WorkspaceClone : ActorTarget {
     /**
      * The offset of the scaled background to the bottom of the monitor bounds
      */
-#if OLD_ICON_GROUPS
-    public const int BOTTOM_OFFSET = 100;
-#else
     private const int BOTTOM_OFFSET = 100;
-#endif
 
     /**
      * The offset of the scaled background to the top of the monitor bounds
@@ -122,9 +118,6 @@ public class Gala.WorkspaceClone : ActorTarget {
     public Meta.Workspace workspace { get; construct; }
     public float monitor_scale { get; construct set; }
 
-#if OLD_ICON_GROUPS
-    public IconGroup icon_group { get; private set; }
-#endif
     public WindowCloneContainer window_container { get; private set; }
 
     private BackgroundManager background;
@@ -139,8 +132,13 @@ public class Gala.WorkspaceClone : ActorTarget {
         unowned var display = workspace.get_display ();
         var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
+#if HAS_MUTTER49
+        var background_click_action = new Clutter.ClickGesture ();
+        background_click_action.recognize.connect (() => activate (true));
+#else
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
+#endif
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
@@ -153,15 +151,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         window_container.window_selected.connect ((window) => window_selected (window));
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
-
-#if OLD_ICON_GROUPS
-        icon_group = new IconGroup (display, workspace, monitor_scale);
-        icon_group.selected.connect (() => activate (true));
-        bind_property ("monitor-scale", icon_group, "scale-factor");
-
-        var icons_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-        icon_group.add_action (icons_drop_action);
-#endif
 
         var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
         background.add_action (background_drop_action);
@@ -186,11 +175,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         add_child (background);
         add_child (window_container);
 
-#if OLD_ICON_GROUPS
-        on_items_changed (windows, 0, 0, windows.get_n_items ());
-        windows.items_changed.connect (on_items_changed);
-#endif
-
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
         notify["monitor-scale"].connect (update_targets);
@@ -200,9 +184,6 @@ public class Gala.WorkspaceClone : ActorTarget {
     ~WorkspaceClone () {
         background.destroy ();
         window_container.destroy ();
-#if OLD_ICON_GROUPS
-        icon_group.destroy ();
-#endif
     }
 
     public void update_size (Mtk.Rectangle monitor_geometry) {
@@ -211,16 +192,6 @@ public class Gala.WorkspaceClone : ActorTarget {
             background.set_size (window_container.width, window_container.height);
         }
     }
-
-#if OLD_ICON_GROUPS
-    private void on_items_changed (ListModel windows, uint position, uint removed, uint added) {
-        icon_group.remove_all_windows ();
-
-        for (var i = 0; i < windows.get_n_items (); i++) {
-            icon_group.add_window ((Meta.Window) windows.get_item (i));
-        }
-    }
-#endif
 
     private void update_targets () {
         remove_all_targets ();
@@ -247,14 +218,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
         window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
     }
-
-#if OLD_ICON_GROUPS
-    public override void update_progress (GestureAction action, double progress) {
-        if (action == SWITCH_WORKSPACE) {
-            icon_group.backdrop_opacity = 1 - (float) (workspace.index () + progress).abs ().clamp (0, 1);
-        }
-    }
-#endif
 
     private void activate (bool close_view) {
         if (close_view && workspace.active) {

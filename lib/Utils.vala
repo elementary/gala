@@ -17,50 +17,31 @@
 
 namespace Gala {
     public class Utils {
-        private const int BUTTON_SIZE = 36;
+        public const int BUTTON_SIZE = 36;
 
-        private struct CachedIcon {
-            public Gdk.Pixbuf icon;
-            public int icon_size;
-            public int scale;
-        }
-
-        private static Gee.HashMap<int, Gdk.Pixbuf?>? resize_pixbufs = null;
-
-        private static Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> icon_cache;
         private static Gee.HashMap<Meta.Window, DesktopAppInfo> window_to_desktop_cache;
-        private static Gee.ArrayList<CachedIcon?> unknown_icon_cache;
 
         private static AppCache app_cache;
 
-        private static Gtk.IconTheme icon_theme;
-
         static construct {
-            icon_theme = new Gtk.IconTheme () {
-                theme_name = "elementary"
-            };
-
-            icon_cache = new Gee.HashMultiMap<DesktopAppInfo, CachedIcon?> ();
             window_to_desktop_cache = new Gee.HashMap<Meta.Window, DesktopAppInfo> ();
-            unknown_icon_cache = new Gee.ArrayList<CachedIcon?> ();
 
             app_cache = new AppCache ();
             app_cache.changed.connect (() => {
-                icon_cache.clear ();
                 window_to_desktop_cache.clear ();
             });
         }
 
-        public static Gdk.Pixbuf get_icon_for_window (Meta.Window window, int icon_size, int scale) {
+        public static GLib.Icon get_icon_for_window (Meta.Window window) {
             var transient_for = window.get_transient_for ();
             if (transient_for != null) {
-                return get_icon_for_window (transient_for, icon_size, scale);
+                return get_icon_for_window (transient_for);
             }
 
             GLib.DesktopAppInfo? desktop_app = null;
             desktop_app = window_to_desktop_cache[window];
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     return icon;
                 }
@@ -71,7 +52,7 @@ namespace Gala {
             var wm_instance = window.get_wm_class_instance ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_instance);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -81,7 +62,7 @@ namespace Gala {
             var wm_class = window.get_wm_class ();
             desktop_app = app_cache.lookup_startup_wmclass (wm_class);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -90,7 +71,7 @@ namespace Gala {
 
             desktop_app = lookup_desktop_wmclass (wm_instance);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -99,7 +80,7 @@ namespace Gala {
 
             desktop_app = lookup_desktop_wmclass (wm_class);
             if (desktop_app != null && check_app_prefix (desktop_app, sandbox_id)) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -108,7 +89,7 @@ namespace Gala {
 
             desktop_app = get_app_from_id (sandbox_id);
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -118,7 +99,7 @@ namespace Gala {
             var gapplication_id = window.get_gtk_application_id ();
             desktop_app = get_app_from_id (gapplication_id);
             if (desktop_app != null) {
-                var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                 if (icon != null) {
                     window_to_desktop_cache[window] = desktop_app;
                     return icon;
@@ -144,7 +125,7 @@ namespace Gala {
                     });
 
                     if (desktop_app != null) {
-                        var icon = get_icon_for_desktop_app_info (desktop_app, icon_size, scale);
+                var icon = desktop_app.get_icon ();
                         if (icon != null) {
                             window_to_desktop_cache[window] = desktop_app;
                             return icon;
@@ -153,34 +134,9 @@ namespace Gala {
                 }
             }
 
-            // Haven't been able to get an icon for the window at this point, look to see
-            // if we've already cached "application-default-icon" at this size
-            foreach (var icon in unknown_icon_cache) {
-                if (icon.icon_size == icon_size && icon.scale == scale) {
-                    return icon.icon;
-                }
-            }
-
-            // Construct a new "application-default-icon" and store it in the cache
-            try {
-                var icon_paintable = icon_theme.lookup_icon (
-                    "application-default-icon",
-                    null,
-                    icon_size,
-                    scale,
-                    Gtk.TextDirection.NONE,
-                    0
-                );
-
-                var pixbuf = new Gdk.Pixbuf.from_file (icon_paintable.get_file ().get_path ());
-
-                unknown_icon_cache.add (CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                return pixbuf;
-            } catch (Error e) {
-                var icon = new Gdk.Pixbuf (Gdk.Colorspace.RGB, true, 8, icon_size * scale, icon_size * scale);
-                icon.fill (0x00000000);
-                return icon;
-            }
+            // Haven't been able to get an icon for the window at this point,
+            // return a default icon
+            return new ThemedIcon ("application-default-icon");
         }
 
         private static bool check_app_prefix (GLib.DesktopAppInfo app, string? sandbox_id) {
@@ -200,7 +156,6 @@ namespace Gala {
         public static void clear_window_cache (Meta.Window window) {
             var desktop = window_to_desktop_cache[window];
             if (desktop != null) {
-                icon_cache.remove_all (desktop);
                 window_to_desktop_cache.unset (window);
             }
         }
@@ -229,52 +184,6 @@ namespace Gala {
             return get_app_from_id (canonicalized);
         }
 
-        private static Gdk.Pixbuf? get_icon_for_desktop_app_info (GLib.DesktopAppInfo desktop, int icon_size, int scale) {
-            if (icon_cache.contains (desktop)) {
-                foreach (var icon in icon_cache[desktop]) {
-                    if (icon.icon_size == icon_size && icon.scale == scale) {
-                        return icon.icon;
-                    }
-                }
-            }
-
-            var icon = desktop.get_icon ();
-
-            if (icon is GLib.ThemedIcon) {
-                var icon_names = ((GLib.ThemedIcon)icon).get_names ();
-                if (icon_names.length == 0) {
-                    return null;
-                }
-
-                var icon_paintable = icon_theme.lookup_icon (icon_names[0], icon_names[1:], icon_size, scale, NONE, 0);
-
-                var path = icon_paintable.get_file ()?.get_path ();
-                if (path == null) {
-                    return null;
-                }
-
-                try {
-                    var pixbuf = new Gdk.Pixbuf.from_file (path);
-                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                    return pixbuf;
-                } catch (Error e) {
-                    return null;
-                }
-            } else if (icon is GLib.FileIcon) {
-                var file = ((GLib.FileIcon)icon).file;
-                var size_with_scale = icon_size * scale;
-                try {
-                    var pixbuf = new Gdk.Pixbuf.from_stream_at_scale (file.read (), size_with_scale, size_with_scale, true);
-                    icon_cache.@set (desktop, CachedIcon () { icon = pixbuf, icon_size = icon_size, scale = scale });
-                    return pixbuf;
-                } catch (Error e) {
-                    return null;
-                }
-            }
-
-            return null;
-        }
-
         /**
          * Multiplies an integer by a floating scaling factor, and then
          * returns the result rounded to the nearest integer
@@ -293,7 +202,7 @@ namespace Gala {
          *
          * @param workspace The workspace on which to count the windows
          * @param exclude a window to not count
-         * 
+         *
          */
         public static uint get_n_windows (Meta.Workspace workspace, bool on_primary = false, Meta.Window? exclude = null) {
             var n = 0;
@@ -351,70 +260,16 @@ namespace Gala {
         }
 
         /**
-         * DEPRECATED: When used with Mutter 44, this will always return 1.
-         * Get the scaling factor for the monitor you are drawing to with
-         * `Meta.Display.get_monitor_scale` instead
-         */
-        [Version (deprecated = true, deprecated_since = "7.0.3", replacement = "Meta.Display.get_monitor_scale")]
-        public static int get_ui_scaling_factor () {
-            return 1;
-        }
-
-        /**
-         * Returns the pixbuf that is used for resize buttons throughout gala at a
-         * size of 36px
-         *
-         * @return the resize button pixbuf or null if it failed to load
-         */
-        public static Gdk.Pixbuf? get_resize_button_pixbuf (float scale) {
-            var height = calculate_button_size (scale);
-
-            if (resize_pixbufs == null) {
-                resize_pixbufs = new Gee.HashMap<int, Gdk.Pixbuf?> ();
-            }
-
-            if (resize_pixbufs[height] == null) {
-                try {
-                    resize_pixbufs[height] = new Gdk.Pixbuf.from_resource_at_scale (
-                        "/org/pantheon/desktop/gala/buttons/resize.svg",
-                        -1,
-                        height,
-                        true
-                    );
-                } catch (Error e) {
-                    warning (e.message);
-                    return null;
-                }
-            }
-
-            return resize_pixbufs[height];
-        }
-
-        /**
          * Creates a new reactive ClutterActor at 36px with the resize pixbuf
          *
          * @return The resize button actor
          */
-        public static Clutter.Actor create_resize_button (float scale) {
-            var texture = new Clutter.Actor ();
-            var pixbuf = get_resize_button_pixbuf (scale);
-
-            texture.reactive = true;
-
-            if (pixbuf != null) {
-                var image = new Gala.Image.from_pixbuf (pixbuf);
-                texture.set_content (image);
-                texture.set_size (pixbuf.width, pixbuf.height);
-            } else {
-                // we'll just make this red so there's at least something as an
-                // indicator that loading failed. Should never happen and this
-                // works as good as some weird fallback-image-failed-to-load pixbuf
-                var size = calculate_button_size (scale);
-                texture.set_size (size, size);
-                texture.background_color = { 255, 0, 0, 255 };
-            }
-
-            return texture;
+        public static Clutter.Actor create_resize_button (float monitor_scale) {
+            return new Icon.from_resource (
+                BUTTON_SIZE,
+                monitor_scale,
+                "/org/pantheon/desktop/gala/buttons/resize.svg"
+            );
         }
 
         private static HashTable<Meta.Window, X.Rectangle?> regions = new HashTable<Meta.Window, X.Rectangle?> (null, null);
@@ -504,6 +359,14 @@ namespace Gala {
             }
 
             return framebuffer_is_logical;
+        }
+
+        public static float get_ui_scaling_factor (Meta.Display display, int monitor_index) {
+            if (get_framebuffer_is_logical ()) {
+                return 1.0f;
+            } else {
+                return display.get_monitor_scale (monitor_index);
+            }
         }
     }
 }

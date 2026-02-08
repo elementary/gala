@@ -195,18 +195,21 @@ public class Gala.DesktopIntegration : GLib.Object {
             return;
         }
 
-        notifying = true;
-
-        wm.get_display ().get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+        unowned var display = wm.get_display ();
 
 #if HAS_MUTTER49
-        if (window.is_maximized ()) {
+        if (window.is_maximized () || !Meta.Prefs.get_gnome_animations ()) {
 #else
-        if (window.get_maximized () == BOTH) {
+        if (window.get_maximized () == BOTH || !Meta.Prefs.get_gnome_animations ()) {
 #endif
-            notifying = false;
+            // If user has "Flash screen" enabled, make sure to respect it when shake animation is not played
+            InternalUtils.bell_notify (display);
             return;
         }
+
+        display.get_sound_player ().play_from_theme ("bell", _("Window has already focus"), null);
+
+        notifying = true;
 
         var transition = new Clutter.KeyframeTransition ("translation-x") {
             repeat_count = 5,
@@ -217,7 +220,7 @@ public class Gala.DesktopIntegration : GLib.Object {
         transition.set_to_value (0);
         transition.set_key_frames ( { 0.5, -0.5 } );
 
-        var offset = Utils.scale_to_int (15, wm.get_display ().get_monitor_scale (window.get_monitor ()));
+        var offset = Utils.scale_to_int (15, Utils.get_ui_scaling_factor (display, window.get_monitor ()));
         transition.set_values ( { -offset, offset });
 
         transition.stopped.connect (() => {
@@ -230,19 +233,15 @@ public class Gala.DesktopIntegration : GLib.Object {
         });
 
 #if HAS_MUTTER48
-        wm.get_display ().get_compositor ().disable_unredirect ();
+        display.get_compositor ().disable_unredirect ();
 #else
-        wm.get_display ().disable_unredirect ();
+        display.disable_unredirect ();
 #endif
 
         ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
-        if (wm.window_overview == null) {
-            throw new IOError.FAILED ("Window overview not provided by window manager");
-        }
-
         App app;
         if ((app = AppSystem.get_default ().lookup_app (app_id)) == null) {
             throw new IOError.NOT_FOUND ("App not found");

@@ -21,6 +21,7 @@ gala_bin_sources = files(
     'WindowListener.vala',
     'WindowListModel.vala',
     'WindowManager.vala',
+    'WindowMover.vala',
     'WindowStateSaver.vala',
     'WindowTracker.vala',
     'WorkspaceManager.vala',
@@ -60,6 +61,7 @@ gala_bin_sources = files(
     'Widgets/MultitaskingView/WindowCloneContainer.vala',
     'Widgets/MultitaskingView/WorkspaceClone.vala',
     'Widgets/MultitaskingView/WorkspaceRow.vala',
+    'Widgets/ModalGroup.vala',
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
     'Widgets/SessionLocker.vala',
@@ -68,15 +70,6 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
 )
-
-if get_option('old-icon-groups')
-    gala_bin_sources += [
-        'Widgets/MultitaskingView/IconGroups/IconGroup.vala',
-        'Widgets/MultitaskingView/IconGroups/IconGroupContainer.vala',
-        'Widgets/MultitaskingView/IconGroups/WindowIconActor.vala',
-        'Widgets/MultitaskingView/IconGroups/WorkspaceInsertThumb.vala'
-    ]
-endif
 
 gala_bin = executable(
     'gala',

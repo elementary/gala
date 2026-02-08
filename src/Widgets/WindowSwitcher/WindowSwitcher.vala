@@ -11,7 +11,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     public const int WRAPPER_PADDING = 12;
 
     private const int MIN_OFFSET = 64;
-    private const double GESTURE_STEP = 0.1;
+    private const double GESTURE_STEP = 0.2;
 
     public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
@@ -26,6 +26,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private Gala.Text caption;
     private ShadowEffect shadow_effect;
     private BackgroundBlurEffect blur_effect;
+    private int previous_icon_index = 0;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -47,8 +48,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             caption.text = current_window != null ? current_window.title : "n/a";
         }
     }
-
-    private double previous_progress = 0d;
 
     public WindowSwitcher (WindowManager wm) {
         Object (wm: wm);
@@ -225,16 +224,17 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             return;
         }
 
-        var is_step = ((int) (previous_progress / GESTURE_STEP) - (int) (progress / GESTURE_STEP)).abs () >= 1;
+        var new_index = (int) Math.round (progress / GESTURE_STEP);
+        var is_step = new_index != previous_icon_index;
 
-        previous_progress = progress;
+        previous_icon_index = new_index;
 
         if (container.get_n_children () == 1 && current_icon != null && is_step) {
             InternalUtils.bell_notify (wm.get_display ());
             return;
         }
 
-        var current_index = (int) (progress / GESTURE_STEP) % container.get_n_children ();
+        var current_index = new_index % container.get_n_children ();
 
         if (current_index < 0) {
             current_index = container.get_n_children () + current_index;
@@ -326,7 +326,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
-        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+        monitor_scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
@@ -351,7 +351,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         container.remove_all_children ();
         select_icon (null);
 
-        monitor_scale = display.get_monitor_scale (display.get_current_monitor ());
+        monitor_scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
 
         var windows = display.get_tab_list (Meta.TabList.NORMAL, workspace);
         if (windows == null) {
@@ -443,21 +443,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private void push_modal () {
         modal_proxy = wm.push_modal (get_stage (), true);
-        modal_proxy.allow_actions ({ SWITCH_WINDOWS });
-        modal_proxy.set_keybinding_filter ((binding) => {
-            var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
-
-            switch (action) {
-                case Meta.KeyBindingAction.NONE:
-                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                    return false;
-                default:
-                    break;
-            }
-
-            return true;
-        });
-
+        modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
     }
 
     private void close_switcher (uint32 time, bool cancel = false) {
