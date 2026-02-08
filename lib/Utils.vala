@@ -368,5 +368,42 @@ namespace Gala {
                 return display.get_monitor_scale (monitor_index);
             }
         }
+
+        /**
+         * Returns the most recently used "normal" window (as gotten via {@link get_window_is_normal}) in the given workspace.
+         * If there is a not normal but more recent window (e.g. a menu/tooltip) any_window will be set to that window otherwise
+         * it will be set to the same window that is returned.
+         */
+        public static Meta.Window? get_mru_window (Meta.Workspace workspace, out Meta.Window? any_window = null) {
+            any_window = null;
+
+            var list = workspace.list_windows ();
+
+            if (list.is_empty ()) {
+                return null;
+            }
+
+            list.sort ((a, b) => {
+                return (int) b.get_user_time () - (int) a.get_user_time ();
+            });
+
+            foreach (var window in list) {
+                if (window.find_root_ancestor ().window_type == DOCK) {
+                    continue;
+                }
+
+                if (any_window == null) {
+                    any_window = window;
+                }
+
+                if (!get_window_is_normal (window)) {
+                    continue;
+                }
+
+                return window;
+            }
+
+            return null;
+        }
     }
 }

@@ -126,7 +126,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
         on_allocation_changed ();
 
         unowned var window = window_actor.get_meta_window ();
-        window.unmanaged.connect (on_close_click_clicked);
+        window.unmanaging.connect (on_close_click_clicked);
 
         wm.add_multitasking_view_target (this);
 
@@ -135,24 +135,20 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
         };
         add_gesture_controller (gesture_controller);
 
-        workspace_hide_tracker = new WorkspaceHideTracker (display, this);
-        workspace_hide_tracker.compute_progress.connect (calculate_progress);
+        workspace_hide_tracker = new WorkspaceHideTracker (display, calculate_should_hide);
         workspace_hide_tracker.switching_workspace_progress_updated.connect ((value) => gesture_controller.progress = value);
         workspace_hide_tracker.window_state_changed_progress_updated.connect (gesture_controller.goto);
 
         property_target = new PropertyTarget (CUSTOM, this, "opacity", typeof (uint), 255u, 0u);
     }
 
-    public override void propagate (UpdateType update_type, GestureAction action, double progress) {
-        warning ("%s %s %f", update_type.to_string (), action.to_string (), progress);
-
-        workspace_hide_tracker.propagate (update_type, action, progress);
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
+        workspace_hide_tracker.update (update_type, action, progress);
 
         if (action != CUSTOM || update_type == COMMIT) {
             return;
         }
 
-        //  warning ("Setting progress to %f", progress);
         property_target.propagate (UPDATE, CUSTOM, progress);
 
         reactive = update_type == END;
@@ -314,14 +310,13 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
         });
     }
 
-    private double calculate_progress (Meta.Workspace workspace) {
+    private bool calculate_should_hide (Meta.Workspace workspace) {
         unowned var window = window_actor.get_meta_window ();
 
-        if (window.has_focus () && window.get_workspace () == workspace) {
-            return 1.0;
-        } else {
-            return 0.0;
-        }
+        Meta.Window? normal_mru_window, any_mru_window;
+        normal_mru_window = Utils.get_mru_window (workspace, out any_mru_window);
+
+        return (window == normal_mru_window || window == any_mru_window) && window.get_workspace () == workspace;
     }
 
     private void update_size () {

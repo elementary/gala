@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 elementary, Inc. (https://elementary.io)
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -32,7 +32,7 @@ public class Gala.HideTracker : Object {
 
     private uint hide_timeout_id = 0;
 
-    public HideTracker (Meta.Display display, ShellWindow panel) {
+    public HideTracker (Meta.Display display, PanelWindow panel) {
         Object (display: display, panel: panel);
     }
 
