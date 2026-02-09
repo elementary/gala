@@ -15,16 +15,17 @@ public class Gala.Widget : ActorTarget {
     }
 
     internal void focus_changed () {
-        has_visible_focus = has_key_focus () && get_root ().get_qdata<bool> (FocusController.focus_visible_quark);
+        has_visible_focus = has_key_focus () && get_root ().focus_visible;
     }
 
-    private Widget get_root () {
-        var parent = get_parent ();
-        if (parent is Widget) {
-            return parent.get_root ();
+    private Root? get_root () {
+        for (Clutter.Actor? actor = this; actor is Widget; actor = actor.get_parent ()) {
+            if (actor is Root) {
+                return (Root) actor;
+            }
         }
 
-        return this;
+        return null;
     }
 
     public bool focus (FocusDirection direction) {
