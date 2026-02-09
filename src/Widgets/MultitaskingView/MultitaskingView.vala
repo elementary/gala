@@ -20,7 +20,7 @@
  * preparing the wm, opening the components and holds containers for
  * the icon groups, the WorkspaceClones and the MonitorClones.
  */
-public class Gala.MultitaskingView : Widget, RootTarget, ActivatableComponent {
+public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
     private GestureController workspaces_gesture_controller;
@@ -58,8 +58,6 @@ public class Gala.MultitaskingView : Widget, RootTarget, ActivatableComponent {
 
         opened = false;
         display = wm.get_display ();
-
-        add_action (new FocusController (wm.stage));
 
         multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW);
         multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));

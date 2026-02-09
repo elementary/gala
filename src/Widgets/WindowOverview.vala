@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowOverview : Widget, RootTarget, ActivatableComponent {
+public class Gala.WindowOverview : Root, RootTarget, ActivatableComponent {
     private const int BORDER = 10;
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
@@ -32,8 +32,6 @@ public class Gala.WindowOverview : Widget, RootTarget, ActivatableComponent {
             enabled = false
         };
         add_gesture_controller (gesture_controller);
-
-        add_action (new FocusController (wm.stage));
     }
 
     public override bool key_press_event (Clutter.Event event) {
@@ -44,7 +42,7 @@ public class Gala.WindowOverview : Widget, RootTarget, ActivatableComponent {
                 close ();
                 return Clutter.EVENT_STOP;
             default:
-                return Clutter.EVENT_PROPAGATE;
+                return base.key_press_event (event);
         }
     }
 

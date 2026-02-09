@@ -42,8 +42,8 @@ gala_lib_sources = files(
     'Gestures/ToucheggBackend.vala',
     'Gestures/TouchpadBackend.vala',
     'Gestures/WorkspaceHideTracker.vala',
-    'Widget/FocusController.vala',
     'Widget/FocusUtils.vala',
+    'Widget/Root.vala',
     'Widget/Widget.vala',
 ) + gala_common_enums
 
