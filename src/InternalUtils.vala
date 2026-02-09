@@ -227,5 +227,53 @@ namespace Gala {
 
             return null;
         }
+
+        public static Clutter.Transition build_transition (Clutter.Actor actor, uint duration, Clutter.AnimationMode mode, ...) {
+            var group = new Clutter.TransitionGroup () {
+                duration = Utils.get_animation_duration (duration),
+                progress_mode = mode,
+            };
+
+            var list = va_list ();
+
+            for (var prop = list.arg<string?> (); prop != null; prop = list.arg<string?> ()) {
+                var value = list.arg<Value?> ();
+
+                if (value == null) {
+                    break;
+                }
+
+                group.add_transition (build_property_transition (actor, prop, value));
+            }
+
+            return group;
+        }
+
+        private static Clutter.Transition build_property_transition (Clutter.Actor actor, string name, Value value) {
+            Value initial = {};
+            actor.get_property (name, ref initial);
+
+            var interval = new Clutter.Interval (initial.type ()) {
+                initial = initial,
+                final = value,
+            };
+
+            return new Clutter.PropertyTransition (name) {
+                interval = interval,
+            };
+        }
+
+        public static async void ease_actor (Clutter.Actor actor, Clutter.Transition transition) {
+            if (transition.duration == 0) {
+                actor.add_transition (Uuid.string_random (), transition);
+                return;
+            }
+
+            transition.stopped.connect (() => Idle.add_once (() => ease_actor.callback ()));
+
+            actor.add_transition (Uuid.string_random (), transition);
+
+            yield;
+        }
     }
 }

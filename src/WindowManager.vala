@@ -1312,6 +1312,26 @@ namespace Gala {
             }
         }
 
+        private async void animate_unminimize (Meta.WindowActor actor) {
+            unminimizing.add (actor);
+
+            actor.set_pivot_point (0.5f, 1.0f);
+            actor.set_scale (0.01f, 0.1f);
+            actor.opacity = 0U;
+
+            var transition = InternalUtils.build_transition (
+                actor, AnimationDuration.HIDE, EASE_OUT_EXPO,
+                "scale-x", 1.0f,
+                "scale-y", 1.0f,
+                "opacity", 255U
+            );
+
+            yield InternalUtils.ease_actor (actor, transition);
+
+            unminimizing.remove (actor);
+            unminimize_completed (actor);
+        }
+
         public override void map (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
