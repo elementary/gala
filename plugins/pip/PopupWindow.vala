@@ -198,7 +198,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
-#if HAS_MUTTER48
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.MOVE);
+#elif HAS_MUTTER48
         display.set_cursor (Meta.Cursor.MOVE);
 #else
         display.set_cursor (Meta.Cursor.DND_IN_DRAG);
@@ -210,7 +212,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private bool on_resize_button_press (Clutter.Event event) {
@@ -228,7 +234,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.SE_RESIZE);
+#else
         display.set_cursor (Meta.Cursor.SE_RESIZE);
+#endif
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -289,7 +299,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         update_screen_position ();
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private void on_allocation_changed () {
