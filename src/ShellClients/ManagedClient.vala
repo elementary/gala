@@ -25,7 +25,11 @@ public class Gala.ManagedClient : Object {
     }
 
     construct {
+#if HAS_MUTTER50
+        if (true) {
+#else
         if (Meta.Util.is_wayland_compositor ()) {
+#endif
             start_wayland.begin ();
 
             display.window_created.connect ((window) => {
