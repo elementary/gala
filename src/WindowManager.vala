@@ -157,7 +157,11 @@ namespace Gala {
             display.notify["focus-window"].connect (on_focus_window_changed);
 
 #if WITH_SYSTEMD
+#if HAS_MUTTER50
+            if (true) {
+#else
             if (Meta.Util.is_wayland_compositor ()) {
+#endif
                 display.init_xserver.connect ((task) => {
                     start_x11_services.begin (task);
                     return true;
@@ -1069,10 +1073,12 @@ namespace Gala {
                 InternalUtils.clutter_actor_reparent (actor, menu_group);
             }
 
+#if !HAS_MUTTER50
             // Workaround for X11 bug: https://github.com/elementary/dock/issues/479
             if (!Meta.Util.is_wayland_compositor () && window.window_type == DND) {
                 InternalUtils.clutter_actor_reparent (actor, get_display ().get_compositor ().get_feedback_group ());
             }
+#endif
         }
 
         /*
