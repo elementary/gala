@@ -464,7 +464,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.visible = false;
         window_title.visible = false;
 
-#if HAS_MUTTER48
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.MOVE);
+#elif HAS_MUTTER48
         wm.get_display ().set_cursor (Meta.Cursor.MOVE);
 #else
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
@@ -505,7 +507,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         active_shape.show ();
 
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
 
         bool did_move = false;
 
@@ -564,7 +570,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.visible = true;
         window_title.visible = true;
 
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
 
         if (duration > 0) {
             ulong handler = 0;
