@@ -171,8 +171,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             box_scale_factor = stage_view.get_scale ();
             last_box_scale_factor = box_scale_factor;
 
-#if HAS_MUTTER49
-            stage_view.get_layout (stage_view_layout);
+            stage_view.get_layout (ref stage_view_layout);
 
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
