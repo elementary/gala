@@ -8,6 +8,7 @@ lib_test_sources = files(
 
 tests = [
     'PropertyTargetTest',
+    'SetupTest',
 ]
 
 foreach test : tests
@@ -20,5 +21,5 @@ foreach test : tests
         install: false,
     )
 
-    test(test, test_executable, suite: ['Gala', 'Gala/lib'])
+    test(test, test_executable, suite: ['Gala', 'Gala/lib'], env : ['XDG_RUNTIME_DIR=/run/user/1000'])
 endforeach
