@@ -20,7 +20,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
 
     private GestureController gesture_controller;
     private int modifier_mask;
-    private Gala.ModalProxy modal_proxy = null;
+    private Gala.ModalProxy? modal_proxy;
     private Drawing.StyleManager style_manager;
     private Clutter.Actor container;
     private Gala.Text caption;
@@ -428,10 +428,13 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         }
 
         opened = show;
-        if (show) {
-            push_modal ();
-        } else {
+        if (show && modal_proxy == null) {
+            modal_proxy = wm.push_modal (get_stage (), true);
+            modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
+        } else if (modal_proxy != null) {
             wm.pop_modal (modal_proxy);
+            modal_proxy = null;
+
             get_stage ().set_key_focus (null);
         }
 
@@ -439,11 +442,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         set_easing_duration (Utils.get_animation_duration (AnimationDuration.HIDE));
         opacity = show ? 255 : 0;
         restore_easing_state ();
-    }
-
-    private void push_modal () {
-        modal_proxy = wm.push_modal (get_stage (), true);
-        modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
     }
 
     private void close_switcher (uint32 time, bool cancel = false) {
