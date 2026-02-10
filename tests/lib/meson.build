@@ -21,5 +21,5 @@ foreach test : tests
         install: false,
     )
 
-    test(test, test_executable, suite: ['Gala', 'Gala/lib'], env : ['XDG_RUNTIME_DIR=/run/user/1000'])
+    test(test, test_executable, suite: ['Gala', 'Gala/lib'])
 endforeach
