@@ -26,6 +26,7 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     private Gala.Text caption;
     private ShadowEffect shadow_effect;
     private BackgroundBlurEffect blur_effect;
+    private int previous_icon_index = 0;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -48,8 +49,6 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
         }
     }
 
-    private double previous_progress = 0d;
-
     public WindowSwitcher (WindowManager wm) {
         Object (wm: wm);
     }
@@ -57,12 +56,12 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
     construct {
         style_manager = Drawing.StyleManager.get_instance ();
 
-        gesture_controller = new GestureController (SWITCH_WINDOWS, wm) {
+        gesture_controller = new GestureController (SWITCH_WINDOWS) {
             overshoot_upper_clamp = int.MAX,
             overshoot_lower_clamp = int.MIN,
             snap = false
         };
-        gesture_controller.enable_touchpad (wm.stage);
+        gesture_controller.add_trigger (new GlobalTrigger (SWITCH_WINDOWS, wm));
         gesture_controller.notify["recognizing"].connect (recognizing_changed);
         add_gesture_controller (gesture_controller);
 
@@ -225,16 +224,17 @@ public class Gala.WindowSwitcher : CanvasActor, GestureTarget, RootTarget {
             return;
         }
 
-        var is_step = ((int) (previous_progress / GESTURE_STEP) - (int) (progress / GESTURE_STEP)).abs () >= 1;
+        var new_index = (int) Math.round (progress / GESTURE_STEP);
+        var is_step = new_index != previous_icon_index;
 
-        previous_progress = progress;
+        previous_icon_index = new_index;
 
         if (container.get_n_children () == 1 && current_icon != null && is_step) {
             InternalUtils.bell_notify (wm.get_display ());
             return;
         }
 
-        var current_index = (int) (progress / GESTURE_STEP) % container.get_n_children ();
+        var current_index = new_index % container.get_n_children ();
 
         if (current_index < 0) {
             current_index = container.get_n_children () + current_index;
