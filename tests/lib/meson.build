@@ -8,6 +8,7 @@ lib_test_sources = files(
 
 tests = [
     'PropertyTargetTest',
+    'SetupTest',
 ]
 
 foreach test : tests
