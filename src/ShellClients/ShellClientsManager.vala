@@ -39,12 +39,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         start_clients.begin ();
 
+#if !HAS_MUTTER50
         if (!Meta.Util.is_wayland_compositor ()) {
             wm.get_display ().window_created.connect ((window) => {
                 window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
                 parse_mutter_hints (window);
             });
         }
+#endif
 
         Timeout.add_seconds_once (5, on_failsafe_timeout);
     }
@@ -90,6 +92,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         foreach (var group in key_file.get_groups ()) {
+#if !HAS_MUTTER50
             if (!Meta.Util.is_wayland_compositor ()) {
                 try {
                     if (!key_file.get_boolean (group, "launch-on-x")) {
@@ -99,6 +102,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                     warning ("Failed to check whether client should be launched on x, assuming yes: %s", e.message);
                 }
             }
+#endif
 
             try {
                 var args = key_file.get_string_list (group, "args");
@@ -126,7 +130,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
 #else
+#if HAS_MUTTER50
+        if (true) {
+#else
         if (Meta.Util.is_wayland_compositor ()) {
+#endif
             make_dock_wayland (window);
         } else {
             make_dock_x11 (window);
@@ -304,6 +312,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return is_itself_system_modal (window) && positioned_windows[window].dim;
     }
 
+#if !HAS_MUTTER50
     //X11 only
     private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
@@ -398,6 +407,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     requires (window in panel_windows) {
         panel_windows[window].restore_previous_x11_region = true;
     }
+#endif
 
     public Mtk.Rectangle? get_shell_client_rect () {
         foreach (var client in panel_windows.get_values ()) {

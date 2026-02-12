@@ -18,6 +18,9 @@ namespace Gala {
          * set the area where clutter can receive events
          **/
         public static void set_input_area (Meta.Display display, InputArea area) {
+#if HAS_MUTTER50
+            return;
+#else
             if (Meta.Util.is_wayland_compositor ()) {
                 return;
             }
@@ -83,6 +86,7 @@ namespace Gala {
 #else
             var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
             x11display.set_stage_input_region (xregion);
+#endif
 #endif
         }
 
@@ -186,9 +190,13 @@ namespace Gala {
         }
 
         public static bool get_x11_in_fullscreen (Meta.Display display) {
+#if HAS_MUTTER50
+            return false;
+#else
             var primary_monitor = display.get_primary_monitor ();
             var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
             return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
+#endif
         }
 
         /**
