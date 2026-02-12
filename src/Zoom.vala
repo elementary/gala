@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 elementary, Inc. (https://elementary.io)
+ * Copyright 2022-2026 elementary, Inc. (https://elementary.io)
  * Copyright 2013 Tom Beckmann
  * Copyright 2013 Rico Tzschichholz
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -9,13 +9,12 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
     private const float MIN_ZOOM = 1.0f;
     private const float MAX_ZOOM = 10.0f;
     private const float SHORTCUT_DELTA = 0.5f;
-    private const uint MOUSE_POLL_TIME = 50;
 
     public WindowManager wm { get; construct; }
 
     public Clutter.Actor? actor { get { return wm.ui_group; } }
 
-    private uint mouse_poll_timer = 0;
+    private uint mouse_poll_later = 0;
     private float current_zoom = MIN_ZOOM;
     private ulong wins_handler_id = 0UL;
 
@@ -26,7 +25,9 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
     public Zoom (WindowManager wm) {
         Object (wm: wm);
+    }
 
+    construct {
         unowned var display = wm.get_display ();
         var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
 
@@ -48,21 +49,6 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 #else
         display.get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
 #endif
-    }
-
-    ~Zoom () {
-        if (wm == null) {
-            return;
-        }
-
-        unowned var display = wm.get_display ();
-        display.remove_keybinding ("zoom-in");
-        display.remove_keybinding ("zoom-out");
-
-        if (mouse_poll_timer > 0) {
-            Source.remove (mouse_poll_timer);
-            mouse_poll_timer = 0;
-        }
     }
 
     private void zoom_in (Meta.Display display, Meta.Window? window,
@@ -149,23 +135,16 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
     private void update_ui () {
         unowned var wins = wm.ui_group;
-        // Add timer to poll current mouse position to reposition window-group
+        // Add meta later to poll current mouse position to reposition window-group
         // to show requested zoomed area
-        if (mouse_poll_timer == 0) {
+        if (mouse_poll_later == 0) {
             wins.pivot_point = compute_new_pivot_point ();
 
-            mouse_poll_timer = Timeout.add (MOUSE_POLL_TIME, () => {
-                var new_pivot = compute_new_pivot_point ();
-                if (wins.pivot_point.equal (new_pivot)) {
-                    return true;
-                }
+            unowned var laters = wm.get_display ().get_compositor ().get_laters ();
+            mouse_poll_later = laters.add (BEFORE_REDRAW, () => {
+                wins.pivot_point = compute_new_pivot_point ();
 
-                wins.save_easing_state ();
-                wins.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                wins.set_easing_duration (MOUSE_POLL_TIME);
-                wins.pivot_point = new_pivot;
-                wins.restore_easing_state ();
-                return true;
+                return Source.CONTINUE;
             });
         }
 
@@ -177,9 +156,10 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
         if (current_zoom <= MIN_ZOOM) {
             current_zoom = MIN_ZOOM;
 
-            if (mouse_poll_timer > 0) {
-                Source.remove (mouse_poll_timer);
-                mouse_poll_timer = 0;
+            if (mouse_poll_later > 0) {
+                unowned var laters = wm.get_display ().get_compositor ().get_laters ();
+                laters.remove (mouse_poll_later);
+                mouse_poll_later = 0;
             }
 
             wins.set_scale (MIN_ZOOM, MIN_ZOOM);
