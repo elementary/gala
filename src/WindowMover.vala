@@ -15,6 +15,7 @@ public class Gala.WindowMover : Object {
 
     private Settings behavior_settings;
     private HashTable<Meta.Window, int> old_workspaces;
+    private HashTable<Meta.Window, uint> pending_fullscreen_sources;
 
     public WindowMover (Meta.Display display, WindowListener window_listener) {
         Object (display: display, window_listener: window_listener);
@@ -23,6 +24,7 @@ public class Gala.WindowMover : Object {
     construct {
         behavior_settings = new Settings ("io.elementary.desktop.wm.behavior");
         old_workspaces = new HashTable<Meta.Window, int> (null, null);
+        pending_fullscreen_sources = new HashTable<Meta.Window, uint> (null, null);
 
         window_listener.window_maximized_changed.connect (on_window_maximized_changed);
         window_listener.window_fullscreen_changed.connect (on_window_fullscreen_changed);
@@ -45,19 +47,45 @@ public class Gala.WindowMover : Object {
             return;
         }
 
-        if (window.fullscreen) {
-            move_window_to_next_ws (window, false);
-        } else {
-            move_window_to_old_ws (window, false);
+        cancel_pending_fullscreen_move (window);
+
+        var source_id = Idle.add (() => {
+            pending_fullscreen_sources.remove (window);
+
+            if (window.fullscreen) {
+                move_window_to_next_ws (window, false);
+            } else {
+                move_window_to_old_ws (window, false);
+            }
+
+            return Source.REMOVE;
+        });
+
+        pending_fullscreen_sources[window] = source_id;
+    }
+
+    private void cancel_pending_fullscreen_move (Meta.Window window) {
+        if (!pending_fullscreen_sources.contains (window)) {
+            return;
         }
+
+        var source_id = pending_fullscreen_sources.get (window);
+
+        Source.remove (source_id);
+        pending_fullscreen_sources.remove (window);
     }
 
     private uint get_activation_time (Meta.Window window) {
         var user_time = window.get_user_time ();
-        return user_time != 0 ? user_time : display.get_current_time ();
+        if (user_time != 0) {
+            return user_time;
+        }
+
+        return display.get_current_time_roundtrip ();
     }
 
     private void on_window_unmanaged (Meta.Window window) {
+        cancel_pending_fullscreen_move (window);
         move_window_to_old_ws (window);
     }
 
