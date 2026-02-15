@@ -46,13 +46,22 @@ public class Gala.WindowMover : Object {
         }
 
         if (window.fullscreen) {
-            move_window_to_next_ws (window);
+            move_window_to_next_ws (window, false);
         } else {
-            move_window_to_old_ws (window);
+            move_window_to_old_ws (window, false);
         }
     }
 
-    private void move_window_to_next_ws (Meta.Window window) {
+    private uint get_activation_time (Meta.Window window) {
+        var user_time = window.get_user_time ();
+        return user_time != 0 ? user_time : display.get_current_time ();
+    }
+
+    private void on_window_unmanaged (Meta.Window window) {
+        move_window_to_old_ws (window);
+    }
+
+    private void move_window_to_next_ws (Meta.Window window, bool focus_window = true) {
         unowned var win_ws = window.get_workspace ();
 
         // Do nothing if the current workspace would be empty
@@ -70,17 +79,21 @@ public class Gala.WindowMover : Object {
         InternalUtils.insert_workspace_with_window (new_ws_index, window);
 
         var new_ws = display.get_workspace_manager ().get_workspace_by_index (new_ws_index);
-        var time = display.get_current_time ();
-        new_ws.activate_with_focus (window, time);
+        var time = get_activation_time (window);
+        if (focus_window) {
+            new_ws.activate_with_focus (window, time);
+        } else {
+            new_ws.activate (time);
+        }
 
         if (!(window in old_workspaces)) {
-            window.unmanaged.connect (move_window_to_old_ws);
+            window.unmanaged.connect (on_window_unmanaged);
         }
 
         old_workspaces[window] = old_ws_index;
     }
 
-    private void move_window_to_old_ws (Meta.Window window) {
+    private void move_window_to_old_ws (Meta.Window window, bool focus_window = true) {
         unowned var win_ws = window.get_workspace ();
 
         // Do nothing if the current workspace is populated with other windows
@@ -97,14 +110,18 @@ public class Gala.WindowMover : Object {
 
         unowned var workspace_manager = display.get_workspace_manager ();
         if (new_ws_index != old_ws_index && old_ws_index < workspace_manager.get_n_workspaces ()) {
-            uint time = display.get_current_time ();
+            uint time = get_activation_time (window);
             unowned var old_ws = workspace_manager.get_workspace_by_index (old_ws_index);
             window.change_workspace (old_ws);
-            old_ws.activate_with_focus (window, time);
+            if (focus_window) {
+                old_ws.activate_with_focus (window, time);
+            } else {
+                old_ws.activate (time);
+            }
         }
 
         old_workspaces.remove (window);
 
-        window.unmanaged.disconnect (move_window_to_old_ws);
+        window.unmanaged.disconnect (on_window_unmanaged);
     }
 }
