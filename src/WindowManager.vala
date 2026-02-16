@@ -795,17 +795,18 @@ namespace Gala {
                         break;
 
 #if HAS_MUTTER49
-                    if (current.is_maximized ()) {
+                    if (current.maximized_horizontally) {
                         current.unmaximize ();
                     } else {
                         current.maximize ();
                     }
 #else
-                    var maximize_flags = current.get_maximized ();
-                    if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
-                        current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
-                    else
-                        current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
+                    if (current.maximized_horizontally) {
+                        current.unmaximize (Meta.MaximizeFlags.BOTH);
+
+                    } else {
+                        current.maximize (Meta.MaximizeFlags.BOTH);
+                    }
 #endif
                     break;
                 case ActionType.HIDE_CURRENT:
@@ -918,6 +919,27 @@ namespace Gala {
 
                     screenshot_manager.handle_screenshot_current_window_shortcut.begin (false);
                     break;
+                case ActionType.TILE_LEFT:
+                    if (current == null) {
+                        break;
+                    }
+
+                    meta_window_tile (current, MetaTileMode.TILE_LEFT);
+                    break;
+                case ActionType.TILE_RIGHT:
+                    if (current == null) {
+                        break;
+                    }
+
+                    meta_window_tile (current, MetaTileMode.TILE_RIGHT);
+                    break;
+                case ActionType.UNTILE:
+                    if (current == null) {
+                        break;
+                    }
+
+                    meta_window_untile (current);
+                    break;
                 default:
                     warning ("Trying to run unknown action");
                     break;
@@ -941,22 +963,11 @@ namespace Gala {
             if (window.can_maximize ())
                 flags |= WindowFlags.CAN_MAXIMIZE;
 
-#if HAS_MUTTER49
-            if (window.is_maximized ())
+            if (window.maximized_horizontally)
                 flags |= WindowFlags.IS_MAXIMIZED;
 
             if (window.maximized_vertically && !window.maximized_horizontally)
                 flags |= WindowFlags.IS_TILED;
-#else
-            var maximize_flags = window.get_maximized ();
-            if (maximize_flags > 0) {
-                flags |= WindowFlags.IS_MAXIMIZED;
-
-                if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                    flags |= WindowFlags.IS_TILED;
-                }
-            }
-#endif
 
             if (window.allows_move ())
                 flags |= WindowFlags.ALLOWS_MOVE;

@@ -6,6 +6,7 @@
 public class Gala.Daemon.WindowMenu : Gtk.Popover {
     private static GLib.Settings gala_keybind_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
+    private static GLib.Settings mutter_keybindings_settings = new GLib.Settings ("org.gnome.mutter.keybindings");
 
     public signal void perform_action (Gala.ActionType type) {
         popdown ();
@@ -14,6 +15,8 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
     private Granite.AccelLabel always_on_top_accellabel;
     private Granite.AccelLabel close_accellabel;
     private Granite.AccelLabel minimize_accellabel;
+    private Granite.AccelLabel tile_left_accellabel;
+    private Granite.AccelLabel tile_right_accellabel;
     private Granite.AccelLabel move_accellabel;
     private Granite.AccelLabel move_left_accellabel;
     private Granite.AccelLabel move_right_accellabel;
@@ -22,6 +25,9 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
     private Granite.AccelLabel screenshot_accellabel;
     private Gtk.Button minimize;
     private Gtk.Button maximize;
+    private Gtk.Button untile;
+    private Gtk.Button tile_left;
+    private Gtk.Button tile_right;
     private Gtk.Button move;
     private Gtk.Button resize;
     private Gtk.CheckButton always_on_top;
@@ -49,6 +55,34 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         maximize.add_css_class (Granite.STYLE_CLASS_MENUITEM);
         maximize.clicked.connect (() => {
             perform_action (Gala.ActionType.MAXIMIZE_CURRENT);
+        });
+
+        untile = new Gtk.Button () {
+            child = new Granite.AccelLabel (_("Untile"))
+        };
+        untile.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        untile.clicked.connect (() => {
+            perform_action (Gala.ActionType.UNTILE);
+        });
+
+        tile_left_accellabel = new Granite.AccelLabel (_("Tile Left"));
+
+        tile_left = new Gtk.Button () {
+            child = tile_left_accellabel
+        };
+        tile_left.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        tile_left.clicked.connect (() => {
+            perform_action (Gala.ActionType.TILE_LEFT);
+        });
+
+        tile_right_accellabel = new Granite.AccelLabel (_("Tile Right"));
+
+        tile_right = new Gtk.Button () {
+            child = tile_right_accellabel
+        };
+        tile_right.add_css_class (Granite.STYLE_CLASS_MENUITEM);
+        tile_right.clicked.connect (() => {
+            perform_action (Gala.ActionType.TILE_RIGHT);
         });
 
         move_accellabel = new Granite.AccelLabel (_("Move"));
@@ -142,6 +176,9 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         box.append (move);
         box.append (resize);
         box.append (maximize);
+        box.append (untile);
+        box.append (tile_left);
+        box.append (tile_right);
         box.append (new Gtk.Separator (HORIZONTAL));
         box.append (minimize);
         box.append (close);
@@ -162,18 +199,22 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
 
         maximize.visible = Gala.WindowFlags.CAN_MAXIMIZE in flags;
         if (maximize.visible) {
-            unowned string maximize_label;
-            if (Gala.WindowFlags.IS_MAXIMIZED in flags) {
-                maximize_label = (Gala.WindowFlags.IS_TILED in flags) ? _("Untile") : _("Unmaximize");
-            } else {
-                maximize_label = _("Maximize");
-            }
-
-            maximize.get_child ().destroy ();
             maximize.child = new Granite.AccelLabel (
-                maximize_label,
+                Gala.WindowFlags.IS_MAXIMIZED in flags ? _("Unmaximize") : _("Maximize"),
                 keybind_settings.get_strv ("toggle-maximized")[0]
             );
+        }
+
+        untile.visible = Gala.WindowFlags.IS_TILED in flags;
+
+        tile_left.visible = !(Gala.WindowFlags.IS_TILED in flags);
+        if (tile_left.visible) {
+            tile_left_accellabel.accel_string = mutter_keybindings_settings.get_strv ("toggle-tiled-left")[0];
+        }
+
+        tile_right.visible = !(Gala.WindowFlags.IS_TILED in flags);
+        if (tile_right.visible) {
+            tile_right_accellabel.accel_string = mutter_keybindings_settings.get_strv ("toggle-tiled-right")[0];
         }
 
         move.visible = Gala.WindowFlags.ALLOWS_MOVE in flags;

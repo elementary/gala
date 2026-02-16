@@ -26,7 +26,10 @@ namespace Gala {
         MOVE_CURRENT_WORKSPACE_LEFT,
         MOVE_CURRENT_WORKSPACE_RIGHT,
         CLOSE_CURRENT,
-        SCREENSHOT_CURRENT
+        SCREENSHOT_CURRENT,
+        TILE_LEFT,
+        TILE_RIGHT,
+        UNTILE,
     }
 
     [Flags]
