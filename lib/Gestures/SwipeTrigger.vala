@@ -20,8 +20,8 @@ public class Gala.SwipeTrigger : Object, GestureTrigger {
 
     internal bool triggers (Gesture gesture) {
         return (
-            gesture.fingers == 1 && gesture.performed_on_device_type == TOUCHSCREEN_DEVICE ||
-            gesture.fingers == 2 && gesture.performed_on_device_type == TOUCHPAD_DEVICE
+            gesture.fingers == 1 && gesture.performed_on_device_type == TOUCHSCREEN_DEVICE && gesture.type == TOUCHPAD_SWIPE ||
+            gesture.fingers == 2 && gesture.performed_on_device_type == TOUCHPAD_DEVICE && gesture.type == SCROLL
         );
     }
 
