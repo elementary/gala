@@ -18,10 +18,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int texture_width;
     private int texture_height;
 
-    private Cogl.Framebuffer actor_framebuffer;
-    private Cogl.Pipeline actor_pipeline;
-    private Cogl.Texture actor_texture;
-
     private Cogl.Framebuffer background_framebuffer;
     private Cogl.Pipeline background_pipeline;
     private Cogl.Texture background_texture;
@@ -41,11 +37,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
     construct {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-
-        actor_pipeline = new Cogl.Pipeline (ctx);
-        actor_pipeline.set_layer_null_texture (0);
-        actor_pipeline.set_layer_filters (0, Cogl.PipelineFilter.LINEAR, Cogl.PipelineFilter.LINEAR);
-        actor_pipeline.set_layer_wrap_mode (0, Cogl.PipelineWrapMode.CLAMP_TO_EDGE);
 
         background_pipeline = new Cogl.Pipeline (ctx);
         background_pipeline.set_layer_null_texture (0);
@@ -227,45 +218,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         framebuffer.set_projection_matrix (projection);
     }
 
-    private bool update_actor_fbo (int width, int height, float downscale_factor) {
-        if (
-            texture_width == width &&
-            texture_height == height &&
-            this.downscale_factor == downscale_factor &&
-            actor_framebuffer != null
-        ) {
-            return true;
-        }
-
-#if HAS_MUTTER47
-        unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
-
-        var new_width = (int) Math.floorf (width / downscale_factor);
-        var new_height = (int) Math.floorf (height / downscale_factor);
-
-#if HAS_MUTTER46
-        actor_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
-#else
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
-        try {
-            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
-        } catch (Error e) {
-            critical ("BackgroundBlurEffect: Couldn't create actor_texture: %s", e.message);
-            return false;
-        }
-#endif
-
-        actor_pipeline.set_layer_texture (0, actor_texture);
-        actor_framebuffer = new Cogl.Offscreen.with_texture (actor_texture);
-
-        setup_projection_matrix (actor_framebuffer, new_width, new_height);
-
-        return true;
-    }
-
     private bool update_rounded_fbo (int width, int height, float downscale_factor) {
         if (
             texture_width == width &&
@@ -351,7 +303,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         var downscale_factor = calculate_downscale_factor (width, height, real_blur_radius);
 
-        var updated = update_actor_fbo (width, height, downscale_factor) && update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
+        var updated = update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
 
         texture_width = width;
         texture_height = height;
