@@ -75,7 +75,11 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 #endif
         }
 
+#if HAS_MUTTER50
+        if (false) {
+#else
         if (!Meta.Util.is_wayland_compositor ()) {
+#endif
             if (window_actor.visible) {
                 Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
             } else {

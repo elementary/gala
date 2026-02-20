@@ -487,7 +487,11 @@ namespace Gala {
             var type = event.get_type ();
 
             return (
+#if HAS_MUTTER50
+                true ||
+#else
                 Meta.Util.is_wayland_compositor () ||
+#endif
                 type != Clutter.EventType.TOUCH_BEGIN &&
                 type != Clutter.EventType.TOUCH_CANCEL &&
                 type != Clutter.EventType.TOUCH_END &&
