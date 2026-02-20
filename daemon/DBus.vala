@@ -79,8 +79,6 @@ public class Gala.Daemon.DBus : GLib.Object {
         background_menu.insert_action_group (BG_MENU_ACTION_GROUP_PREFIX, action_group);
 
         window_menu = new WindowMenu ();
-        window_menu.set_parent (window.child);
-        window_menu.closed.connect (window.close);
         window_menu.perform_action.connect ((type) => {
             Idle.add (() => {
                 perform_action (type);
@@ -118,9 +116,10 @@ public class Gala.Daemon.DBus : GLib.Object {
     }
 
     public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
+        window_menu = new WindowMenu ();
         window_menu.update (flags);
 
-        show_menu (window_menu, display_width, display_height, x, y);
+        window_menu.present ();
     }
 
     public void show_desktop_menu (int display_width, int display_height, int x, int y) throws DBusError, IOError {

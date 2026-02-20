@@ -16,6 +16,6 @@ executable(
     gala_common_enums,
     config_header,
     gala_resources,
-    dependencies: [gtk4_dep, granite7_dep],
+    dependencies: [gtk4_dep, granite7_dep, dependency('pantheon-wayland-1')],
     install: true
 )
