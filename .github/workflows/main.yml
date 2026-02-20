@@ -22,7 +22,7 @@ jobs:
           - version: unstable
             mutter_pkg: libmutter-14-dev
           - version: development-target
-            mutter_pkg: libmutter-15-dev
+            mutter_pkg: libmutter-17-dev
     container:
       image: ghcr.io/elementary/docker:${{ matrix.version }}
 
