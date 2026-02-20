@@ -18,8 +18,11 @@ public class Gala.DaemonManager : GLib.Object {
 
     public Meta.Display display { get; construct; }
 
-    private ManagedClient client;
+    public ManagedClient client;
     private Daemon? daemon_proxy = null;
+
+    private int current_x = 0;
+    private int current_y = 0;
 
     public DaemonManager (Meta.Display display) {
         Object (display: display);
@@ -71,6 +74,11 @@ public class Gala.DaemonManager : GLib.Object {
                 window.make_above ();
                 window.stick ();
                 break;
+
+            case "WINDOWMENU":
+                window.move_frame (false, current_x, current_y);
+                window.stick ();
+                break;
         }
     }
 
@@ -109,6 +117,9 @@ public class Gala.DaemonManager : GLib.Object {
         if (daemon_proxy == null) {
             return;
         }
+
+        current_x = x;
+        current_y = y;
 
         int width, height;
         display.get_size (out width, out height);

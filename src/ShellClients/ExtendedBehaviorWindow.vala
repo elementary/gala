@@ -6,6 +6,7 @@
  */
 
 public class Gala.ExtendedBehaviorWindow : ShellWindow {
+    public bool centered { get; set; default = false; }
     public bool modal { get; private set; default = false; }
     public bool dim { get; private set; default = false; }
 
@@ -20,6 +21,12 @@ public class Gala.ExtendedBehaviorWindow : ShellWindow {
     }
 
     protected override void get_window_position (Mtk.Rectangle window_rect, out int x, out int y) {
+        if (!centered) {
+            x = window_rect.x;
+            y = window_rect.y;
+            return;
+        }
+
         var monitor_rect = window.display.get_monitor_geometry (window.get_monitor ());
 
         x = monitor_rect.x + (monitor_rect.width - window_rect.width) / 2;

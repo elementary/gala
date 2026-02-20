@@ -21,6 +21,7 @@ public class Gala.ModalGroup : Clutter.Actor {
 
     private Clutter.Actor background;
     private Gee.Set<Clutter.Actor> dimmed;
+    private Gee.List<Clutter.Actor> not_dimmed;
     private ModalProxy? modal_proxy = null;
 
     public ModalGroup (WindowManager wm, ShellClientsManager shell_clients) {
@@ -36,6 +37,7 @@ public class Gala.ModalGroup : Clutter.Actor {
             background_color = { 0, 0, 0, 125 },
             x_expand = true,
             y_expand = true,
+            opacity = 0,
         };
         background.add_effect (new BackgroundBlurEffect (10, 0, 1));
 
@@ -48,6 +50,7 @@ public class Gala.ModalGroup : Clutter.Actor {
         add_child (window_group);
 
         dimmed = new Gee.HashSet<Clutter.Actor> ();
+        not_dimmed = new Gee.ArrayList<Clutter.Actor> ();
 
         visible = false;
         reactive = true;
@@ -58,11 +61,18 @@ public class Gala.ModalGroup : Clutter.Actor {
         window_group.actor_added.connect (on_child_added);
         window_group.actor_removed.connect (on_child_removed);
 #endif
+
+        button_press_event.connect ((event) => {
+            dismiss_not_dimmed (event.get_time ());
+            return Clutter.EVENT_STOP;
+        });
     }
 
     private void on_child_added (Clutter.Actor child) {
         if (child is Meta.WindowActor && shell_clients.is_system_modal_dimmed (child.meta_window)) {
             dimmed.add (child);
+        } else {
+            not_dimmed.add (child);
         }
 
         if (window_group.get_n_children () == 1) {
@@ -83,6 +93,7 @@ public class Gala.ModalGroup : Clutter.Actor {
 
     private void on_child_removed (Clutter.Actor child) {
         dimmed.remove (child);
+        not_dimmed.remove (child);
 
         if (dimmed.size == 0) {
             background.save_easing_state ();
@@ -100,6 +111,14 @@ public class Gala.ModalGroup : Clutter.Actor {
                 transition.completed.connect (() => visible = false);
             } else {
                 visible = false;
+            }
+        }
+    }
+
+    private void dismiss_not_dimmed (uint32 time) {
+        foreach (var actor in not_dimmed) {
+            if (actor is Meta.WindowActor) {
+                actor.meta_window.delete (time);
             }
         }
     }

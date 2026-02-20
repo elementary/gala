@@ -66,6 +66,7 @@ gala_bin_sources = files(
     'Widgets/PointerLocator.vala',
     'Widgets/SessionLocker.vala',
     'Widgets/SelectionArea.vala',
+    'Widgets/WindowMenu.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',

@@ -3,12 +3,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.Daemon.WindowMenu : Gtk.Popover {
+public class Gala.Daemon.WindowMenu : Gtk.Window, PantheonWayland.ExtendedBehavior {
+    private class Contents : Granite.Bin {
+        class construct {
+            set_css_name ("contents");
+        }
+    }
+
     private static GLib.Settings gala_keybind_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
 
     public signal void perform_action (Gala.ActionType type) {
-        popdown ();
+        ((Gtk.Window) this).close ();
     }
 
     private Granite.AccelLabel always_on_top_accellabel;
@@ -33,6 +39,10 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
 
     private ulong always_on_top_sid = 0U;
     private ulong on_visible_workspace_sid = 0U;
+
+    class construct {
+        set_css_name ("popover");
+    }
 
     construct {
         minimize_accellabel = new Granite.AccelLabel (_("Hide"));
@@ -131,7 +141,10 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
             perform_action (Gala.ActionType.CLOSE_CURRENT);
         });
 
-        var box = new Gtk.Box (VERTICAL, 0);
+        var box = new Gtk.Box (VERTICAL, 0) {
+            margin_top = 3,
+            margin_bottom = 3,
+        };
         box.append (screenshot);
         box.append (new Gtk.Separator (HORIZONTAL));
         box.append (always_on_top);
@@ -146,12 +159,23 @@ public class Gala.Daemon.WindowMenu : Gtk.Popover {
         box.append (minimize);
         box.append (close);
 
-        child = box;
-        halign = START;
-        position = BOTTOM;
-        autohide = false;
-        has_arrow = false;
-        add_css_class (Granite.STYLE_CLASS_MENU);
+        // Needed for css nodes
+        var contents = new Contents () {
+            child = box
+        };
+
+        child = contents;
+        title = "WINDOWMENU";
+        resizable = false;
+        titlebar = new Gtk.Grid () {
+            visible = false
+        };
+        add_css_class ("menu");
+
+        child.realize.connect (() => {
+            connect_to_shell ();
+            make_modal (false);
+        });
     }
 
     public void update (Gala.WindowFlags flags) {

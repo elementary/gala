@@ -236,11 +236,17 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     public void make_centered (Meta.Window window) requires (!is_itself_shell_window (window)) {
         positioned_windows[window] = new ExtendedBehaviorWindow (window);
 
+        positioned_windows[window].centered = true;
+
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void make_modal (Meta.Window window, bool dim) requires (window in positioned_windows) {
+    public void make_modal (Meta.Window window, bool dim) {
+        if (!(window in positioned_windows)) {
+            positioned_windows[window] = new ExtendedBehaviorWindow (window);
+        }
+
         positioned_windows[window].make_modal (dim);
     }
 
