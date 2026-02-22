@@ -148,12 +148,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
         primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.monitor_scale = scale;
-            workspace_clone.update_size (primary_geometry);
-        }
     }
 
     private void update_brightness_effect () {
@@ -323,9 +317,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private void add_workspace (int num) {
         unowned var manager = display.get_workspace_manager ();
-        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
 
-        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
+        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num));
         workspaces.insert_child_at_index (workspace, num);
 
         workspace.window_selected.connect (window_selected);
