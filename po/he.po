@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2025-11-20 18:22+0000\n"
-"PO-Revision-Date: 2025-10-30 06:55+0000\n"
+"PO-Revision-Date: 2026-02-22 18:33+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <https://l10n.elementaryos.org/projects/desktop/gala/"
 "he/>\n"
@@ -133,7 +133,7 @@ msgstr "תמיכה משופרת ב־HiDPI"
 
 #: data/gala.metainfo.xml.in:36
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "שיפור התנהגות תנועה מופחתת"
 
 #: data/gala.metainfo.xml.in:56
 msgid "Improved render performance"
