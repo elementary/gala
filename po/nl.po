@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-20 18:22+0000\n"
+"POT-Creation-Date: 2026-02-22 18:33+0000\n"
 "PO-Revision-Date: 2025-12-20 18:55+0000\n"
 "Last-Translator: Bas Ernst <bas@ernstgenova.it>\n"
 "Language-Team: Dutch <https://l10n.elementaryos.org/projects/desktop/gala/nl/"
@@ -90,17 +90,25 @@ msgid "Maximize"
 msgstr "Maximaliseren"
 
 #: data/gala.metainfo.xml.in:11
-msgid "Multitasking &amp; Window Management"
+#, fuzzy
+#| msgid "Multitasking &amp; Window Management"
+msgid "Multitasking & Window Management"
 msgstr "Multitasken &amp; Venster Management"
 
 #: data/gala.metainfo.xml.in:12
-msgid "A window &amp; compositing manager for Pantheon"
+#, fuzzy
+#| msgid "A window &amp; compositing manager for Pantheon"
+msgid "A window & compositing manager for Pantheon"
 msgstr "Een venster &amp; schermindeling manager voor Pantheon"
 
 #: data/gala.metainfo.xml.in:14
+#, fuzzy
+#| msgid ""
+#| "A window &amp; compositing manager based on libmutter and designed by "
+#| "elementary for use with Pantheon."
 msgid ""
-"A window &amp; compositing manager based on libmutter and designed by "
-"elementary for use with Pantheon."
+"A window & compositing manager based on libmutter and designed by elementary "
+"for use with Pantheon."
 msgstr ""
 "A venster &amp; schermindeling manager gebaseerd op libmutter and en "
 "ontwikkeld door elementary voor gebruik met Pantheon."
@@ -109,103 +117,106 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
-#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
-#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
-#: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
-#: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
-#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:291
-#: data/gala.metainfo.xml.in:332 data/gala.metainfo.xml.in:357
-#: data/gala.metainfo.xml.in:373
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:64 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:123 data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:150 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:188 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:235 data/gala.metainfo.xml.in:266
+#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:294
+#: data/gala.metainfo.xml.in:311 data/gala.metainfo.xml.in:327
+#: data/gala.metainfo.xml.in:368 data/gala.metainfo.xml.in:393
+#: data/gala.metainfo.xml.in:409
 msgid "Improvements:"
 msgstr "Verbeteringen:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:54
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:101
-#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:142
-#: data/gala.metainfo.xml.in:154 data/gala.metainfo.xml.in:168
-#: data/gala.metainfo.xml.in:201 data/gala.metainfo.xml.in:232
-#: data/gala.metainfo.xml.in:245 data/gala.metainfo.xml.in:260
-#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:295
-#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:360
-#: data/gala.metainfo.xml.in:375
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:125 data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:178
+#: data/gala.metainfo.xml.in:190 data/gala.metainfo.xml.in:204
+#: data/gala.metainfo.xml.in:237 data/gala.metainfo.xml.in:268
+#: data/gala.metainfo.xml.in:281 data/gala.metainfo.xml.in:296
+#: data/gala.metainfo.xml.in:315 data/gala.metainfo.xml.in:331
+#: data/gala.metainfo.xml.in:374 data/gala.metainfo.xml.in:396
+#: data/gala.metainfo.xml.in:411
 msgid "Updated translations"
 msgstr "Bijgewerkte vertalingen"
 
-#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:47 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:91
 msgid "Improved HiDPI support"
 msgstr "Verbeterde HiDPI-ondersteuning"
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:68
 msgid "Improve Reduced Motion behavior"
 msgstr "Verbeter het gedrag van Reduced Motion"
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:92
 msgid "Improved render performance"
 msgstr "Verbeterde weergaveprestaties"
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:93
 msgid "Reveal dock and panel in sync when starting"
 msgstr "Dock en paneel synchroon weergeven bij het opstarten"
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:94
 msgid "Improved workspace switch dock animation"
 msgstr "Verbeterde animatie voor schakelen werktuimtedock"
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:95
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr "Picture-in-Picture-vensters hebben nu ronde hoeken"
 
-#: data/gala.metainfo.xml.in:169
+#: data/gala.metainfo.xml.in:205
 msgid "Window state is now saved on sleep and shutdown"
 msgstr "Vensterstaat wordt nu opgeslagen bij slaapstand en afsluiten"
 
-#: data/gala.metainfo.xml.in:170
+#: data/gala.metainfo.xml.in:206
 msgid "Remove scaling effect from menus"
 msgstr "Verwijder schaling-effect van menus"
 
-#: data/gala.metainfo.xml.in:171
+#: data/gala.metainfo.xml.in:207
 msgid "Swipe up to close windows in Multitasking View"
 msgstr "Veeg omhoog om vensters te sluiten in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:238
 msgid "Fixed rare crash when a dock window was killed"
 msgstr "Verhelpt een zeldzame crash wanneer een dock venster was beëindigd"
 
-#: data/gala.metainfo.xml.in:203
+#: data/gala.metainfo.xml.in:239
 msgid "Added interactive screenshot shortcut"
 msgstr "Interactieve schermafdruk snelkoppeling toegevoegd"
 
-#: data/gala.metainfo.xml.in:204
+#: data/gala.metainfo.xml.in:240
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "Een crash verholpen bij het gebruiken van tegelen-snelkoppelingen"
 
-#: data/gala.metainfo.xml.in:233
+#: data/gala.metainfo.xml.in:269
 msgid "Improved shadows performance"
 msgstr "Verbeterde schaduwen-prestaties"
 
-#: data/gala.metainfo.xml.in:277
+#: data/gala.metainfo.xml.in:313
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
 "Een mogelijke crash verholpen wanneer vensters worden bewogen tussen "
 "werkruimtes"
 
-#: data/gala.metainfo.xml.in:278
+#: data/gala.metainfo.xml.in:314
 msgid "Fix notification animation when entering multitasking view"
 msgstr ""
 "De notificatie animatie verholpen wanneer multitaskingweergave wordt "
 "opgeroepen"
 
-#: data/gala.metainfo.xml.in:293
+#: data/gala.metainfo.xml.in:329
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "Verbeter toetsenbordnavigatie in multitasking-weergave"
 
-#: data/gala.metainfo.xml.in:294
+#: data/gala.metainfo.xml.in:330
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr "Verander paneelkleur tegelijk met achtergrondovergang"
 
-#: data/gala.metainfo.xml.in:334
+#: data/gala.metainfo.xml.in:370
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
@@ -213,39 +224,39 @@ msgstr ""
 "De bureaubladachtergrond veranderen of schakelen naar de slaapstand "
 "respecteert de \"Beperk bewegende elementen\" optie"
 
-#: data/gala.metainfo.xml.in:335
+#: data/gala.metainfo.xml.in:371
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 "Gebruik passende klikken-en-slepen aanwijzers wanneer vensters versleept "
 "worden"
 
-#: data/gala.metainfo.xml.in:336
+#: data/gala.metainfo.xml.in:372
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 "Verbeter de fout wanneer gebaren in de multitasking weergave niet meer werken"
 
-#: data/gala.metainfo.xml.in:337
+#: data/gala.metainfo.xml.in:373
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr "Verbeter dynamische werkruimtes gedrag met meerdere schermen"
 
-#: data/gala.metainfo.xml.in:359
+#: data/gala.metainfo.xml.in:395
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Verbeter omgaan met verplaats-naar-werkruimte sneltoets"
 
-#: data/gala-multitaskingview.desktop.in:4
-#: data/gala-multitaskingview.desktop.in:6
+#: data/gala-multitaskingview.desktop.in:3
+#: data/gala-multitaskingview.desktop.in:5
 msgid "Multitasking View"
 msgstr "Multitasking weergave"
 
-#: data/gala-multitaskingview.desktop.in:5
+#: data/gala-multitaskingview.desktop.in:4
 msgid "View all open windows and workspaces"
 msgstr "Toon alle open vensters en werkbladen"
 
-#: data/gala-other.desktop.in:4
+#: data/gala-other.desktop.in:3
 msgid "Other"
 msgstr "Andere"
 
-#: data/gala-other.desktop.in:5
+#: data/gala-other.desktop.in:4
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr ""
 "Een reserve desktopbestand voor notificaties van verouderde applicaties."
@@ -333,26 +344,26 @@ msgstr "Schermafdruk is opgeslagen naar de schermafbeeldingen-map"
 msgid "Screenshots"
 msgstr "Schermafbeeldingen"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:78
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr "Vensterwisselaar"
 
-#: src/WindowManager.vala:1736
+#: src/WindowManager.vala:1719
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Wijzigingen worden na %i seconde automatisch teruggedraaid."
 msgstr[1] "Wijzigingen worden na %i seconden automatisch teruggedraaid."
 
-#: src/WindowManager.vala:1743
+#: src/WindowManager.vala:1726
 msgid "Keep new display settings?"
 msgstr "Nieuwe weergave-instellingen bewaren?"
 
-#: src/WindowManager.vala:1747
+#: src/WindowManager.vala:1730
 msgid "Keep Settings"
 msgstr "Instellingen behouden"
 
-#: src/WindowManager.vala:1748
+#: src/WindowManager.vala:1731
 msgid "Use Previous Settings"
 msgstr "Vorige instellingen gebruiken"
 
