@@ -124,12 +124,13 @@ public class Gala.WorkspaceClone : ActorTarget {
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
-    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace, float monitor_scale) {
-        Object (wm: wm, workspace: workspace, monitor_scale: monitor_scale);
+    public WorkspaceClone (WindowManager wm, Meta.Workspace workspace) {
+        Object (wm: wm, workspace: workspace);
     }
 
     construct {
         unowned var display = workspace.get_display ();
+        monitor_scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
         var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
 #if HAS_MUTTER49
@@ -186,13 +187,6 @@ public class Gala.WorkspaceClone : ActorTarget {
         window_container.destroy ();
     }
 
-    public void update_size (Mtk.Rectangle monitor_geometry) {
-        if (window_container.width != monitor_geometry.width || window_container.height != monitor_geometry.height) {
-            window_container.set_size (monitor_geometry.width, monitor_geometry.height);
-            background.set_size (window_container.width, window_container.height);
-        }
-    }
-
     private void update_targets () {
         remove_all_targets ();
 
@@ -202,6 +196,11 @@ public class Gala.WorkspaceClone : ActorTarget {
         windows.monitor_filter = primary;
 
         var monitor = display.get_monitor_geometry (primary);
+
+        window_container.set_size (monitor.width, monitor.height);
+        background.set_size (monitor.width, monitor.height);
+
+        monitor_scale = Utils.get_ui_scaling_factor (display, primary);
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
