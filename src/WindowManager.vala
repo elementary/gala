@@ -1405,68 +1405,45 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.opacity = 0;
-                destroy_completed (actor);
+            animate_destroy.begin (actor);
+        }
 
-                if (window.window_type == Meta.WindowType.NORMAL) {
-                    Utils.clear_window_cache (window);
-                }
+        private async void animate_destroy (Meta.WindowActor actor) {
+            var window = actor.meta_window;
 
-                return;
-            }
+            destroying.add (actor);
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.CLOSE;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.show ();
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
+                    var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
+                    builder.add_property ("scale-x", 0.8);
+                    builder.add_property ("scale-y", 0.8);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                        Utils.clear_window_cache (window);
-                    });
+                    Utils.clear_window_cache (window);
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
+                    builder.add_property ("scale-x", 1.05);
+                    builder.add_property ("scale-y", 1.05);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    destroy_completed (actor);
                     break;
             }
+
+            destroying.remove (actor);
+            destroy_completed (actor);
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1571,10 +1548,9 @@ namespace Gala {
                 unminimize_completed (actor);
             if (end_animation (ref minimizing, actor))
                 minimize_completed (actor);
-            if (end_animation (ref destroying, actor))
-                destroy_completed (actor);
 
             end_animation (ref mapping, actor);
+            end_animation (ref destroying, actor);
             end_animation (ref unmaximizing, actor);
             end_animation (ref maximizing, actor);
         }
