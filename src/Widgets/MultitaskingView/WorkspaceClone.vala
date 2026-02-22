@@ -108,12 +108,6 @@ public class Gala.WorkspaceClone : ActorTarget {
      */
     private const int HOVER_ACTIVATE_DELAY = 400;
 
-    /**
-     * A window has been selected, the MultitaskingView should consider activating
-     * and closing the view.
-     */
-    public signal void window_selected (Meta.Window window);
-
     public WindowManager wm { get; construct; }
     public Meta.Workspace workspace { get; construct; }
     public float monitor_scale { get; construct set; }
@@ -149,7 +143,7 @@ public class Gala.WorkspaceClone : ActorTarget {
             width = monitor_geometry.width,
             height = monitor_geometry.height,
         };
-        window_container.window_selected.connect ((window) => window_selected (window));
+        window_container.window_selected.connect (on_window_selected);
         window_container.requested_close.connect (() => activate (true));
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
@@ -223,6 +217,16 @@ public class Gala.WorkspaceClone : ActorTarget {
             wm.perform_action (SHOW_MULTITASKING_VIEW);
         } else {
             workspace.activate (Meta.CURRENT_TIME);
+        }
+    }
+
+    private void on_window_selected (Meta.Window window) {
+        if (workspace.active) {
+            /* First activate then close to make sure the stacking is correct while animating closed */
+            window.activate (wm.get_display ().get_current_time ());
+            wm.perform_action (SHOW_MULTITASKING_VIEW);
+        } else {
+            window.activate (wm.get_display ().get_current_time ());
         }
     }
 }
