@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-02-22 18:33+0000\n"
-"PO-Revision-Date: 2026-01-19 15:55+0000\n"
+"PO-Revision-Date: 2026-02-24 09:55+0000\n"
 "Last-Translator: Nathan <bonnemainsnathan@gmail.com>\n"
 "Language-Team: French <https://l10n.elementaryos.org/projects/desktop/gala/"
 "fr/>\n"
@@ -90,22 +90,14 @@ msgid "Maximize"
 msgstr "Maximiser"
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
 msgstr "Multitâche et gestion des fenêtres"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
 msgstr "Un gestionnaire de fenêtres et de positionnement pour Panthéon"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
