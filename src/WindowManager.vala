@@ -71,10 +71,6 @@ namespace Gala {
 
         private SystemBackground system_background;
 
-#if !HAS_MUTTER48
-        private Meta.PluginInfo info;
-#endif
-
         private WindowSwitcher? window_switcher = null;
 
         public WindowOverview window_overview { get; private set; }
@@ -121,11 +117,6 @@ namespace Gala {
         private GLib.Settings behavior_settings;
 
         construct {
-#if !HAS_MUTTER48
-            info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
-                license = "GPLv3", description = "A nice elementary window manager"};
-#endif
-
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
             //Make it start watching the settings daemon bus
@@ -1759,11 +1750,5 @@ namespace Gala {
         public override Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window) {
             return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
         }
-
-#if !HAS_MUTTER48
-        public override unowned Meta.PluginInfo? plugin_info () {
-            return info;
-        }
-#endif
     }
 }
