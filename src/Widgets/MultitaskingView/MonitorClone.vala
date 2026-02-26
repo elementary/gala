@@ -11,7 +11,7 @@
  * as the WindowGroup is hidden while the view is active. Only used when
  * workspaces-only-on-primary is set to true.
  */
-public class Gala.MonitorClone : ActorTarget {
+public class Gala.MonitorClone : Widget {
     public signal void window_selected (Meta.Window window);
 
     public WindowManager wm { get; construct; }

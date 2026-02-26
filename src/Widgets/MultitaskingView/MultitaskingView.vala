@@ -20,7 +20,7 @@
  * preparing the wm, opening the components and holds containers for
  * the icon groups, the WorkspaceClones and the MonitorClones.
  */
-public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableComponent {
+public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
     public const int ANIMATION_DURATION = 250;
 
     private GestureController workspaces_gesture_controller;
@@ -35,7 +35,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private List<MonitorClone> window_containers_monitors;
 
-    private ActorTarget workspaces;
+    private Widget workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
     private BackgroundManager? blurred_bg = null;
@@ -82,7 +82,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         // Create a child container that will be sized to fit the primary monitor, to contain the "main"
         // multitasking view UI. The Clutter.Actor of this class has to be allowed to grow to the size of the
         // stage as it contains MonitorClones for each monitor.
-        primary_monitor_container = new ActorTarget ();
+        primary_monitor_container = new Widget ();
         primary_monitor_container.add_child (workspaces);
         add_child (primary_monitor_container);
 
@@ -249,7 +249,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             wm.window_group.hide ();
             wm.top_window_group.hide ();
             show ();
-            grab_key_focus ();
 
             modal_proxy = wm.push_modal (get_stage (), false);
             modal_proxy.allow_actions (MULTITASKING_VIEW | SWITCH_WORKSPACE | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
@@ -370,34 +369,16 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
     }
 
-    /**
-     * Collect key events, mainly for redirecting them to the WindowCloneContainers to
-     * select the active window.
-     */
     public override bool key_press_event (Clutter.Event event) {
-        if (!opened) {
-            return Clutter.EVENT_PROPAGATE;
+        switch (event.get_key_symbol ()) {
+            case Clutter.Key.Escape:
+            case Clutter.Key.Return:
+            case Clutter.Key.KP_Enter:
+                close ();
+                return Clutter.EVENT_STOP;
+            default:
+                return Clutter.EVENT_PROPAGATE;
         }
-
-        return get_active_window_clone_container ().key_press_event (event);
-    }
-
-    /**
-     * Finds the active WorkspaceClone
-     *
-     * @return The active WorkspaceClone
-     */
-    private WindowCloneContainer get_active_window_clone_container () {
-        unowned var manager = display.get_workspace_manager ();
-        unowned var active_workspace = manager.get_active_workspace ();
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            if (workspace_clone.workspace == active_workspace) {
-                return workspace_clone.window_container;
-            }
-        }
-
-        assert_not_reached ();
     }
 
     private void window_selected (Meta.Window window) {

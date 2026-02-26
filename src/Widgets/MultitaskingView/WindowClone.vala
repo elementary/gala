@@ -8,7 +8,7 @@
  * A container for a clone of the texture of a MetaWindow, a WindowIcon, a Tooltip with the title,
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
-public class Gala.WindowClone : ActorTarget, RootTarget {
+public class Gala.WindowClone : Widget, RootTarget {
     public enum Mode {
         MULTITASKING_VIEW,
         OVERVIEW,
@@ -41,19 +41,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * The currently assigned slot of the window in the tiling layout. May be null.
      */
     public Mtk.Rectangle? slot { get; private set; default = null; }
-
-    /**
-     * When active fades a white border around the window in. Used for the visually
-     * indicating the WindowCloneContainer's current_window.
-     */
-    public bool active {
-        set {
-            active_shape.save_easing_state ();
-            active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
-            active_shape.opacity = value ? 255 : 0;
-            active_shape.restore_easing_state ();
-        }
-    }
 
     public Mode mode { get; construct; }
     public float monitor_scale { get; construct set; }
@@ -98,6 +85,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     construct {
         reactive = true;
+        can_focus = true;
+
+        notify["has-visible-focus"].connect (on_visible_focus_changed);
 
         gesture_controller = new GestureController (CUSTOM);
         gesture_controller.add_trigger (new SwipeTrigger (this, VERTICAL));
@@ -177,6 +167,13 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.disconnect (update_targets);
 
         finish_drag ();
+    }
+
+    private void on_visible_focus_changed () {
+        active_shape.save_easing_state ();
+        active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
+        active_shape.opacity = has_visible_focus ? 255 : 0;
+        active_shape.restore_easing_state ();
     }
 
     private void reallocate () {
@@ -373,6 +370,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
+    }
+
+    public override bool key_press_event (Clutter.Event event) {
+        if (event.get_key_symbol () == Clutter.Key.Return || event.get_key_symbol () == Clutter.Key.KP_Enter) {
+            selected ();
+            return Clutter.EVENT_STOP;
+        }
+
+        return Clutter.EVENT_PROPAGATE;
     }
 
     /**
