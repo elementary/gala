@@ -117,7 +117,11 @@ public class Gala.WorkspaceManager : Object {
         foreach (var actor in window_actors) {
             var win = actor.meta_window;
 
-            if (win == null || win.on_all_workspaces || win.get_workspace () == null) {
+            if (win == null ||
+                win.on_all_workspaces ||
+                win.get_workspace () == null ||
+                !Utils.get_window_and_ancestors_normal (win)
+            ) {
                 continue;
             }
 

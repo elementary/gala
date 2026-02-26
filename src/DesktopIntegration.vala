@@ -74,19 +74,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     private bool is_eligible_window (Meta.Window window) {
-        if (window.is_override_redirect ()) {
-            return false;
-        }
-
-        switch (window.get_window_type ()) {
-            case Meta.WindowType.NORMAL:
-            case Meta.WindowType.DIALOG:
-            case Meta.WindowType.MODAL_DIALOG:
-            case Meta.WindowType.UTILITY:
-                return true;
-            default:
-                return false;
-        }
+        return !window.is_override_redirect () && Utils.get_window_and_ancestors_normal (window);
     }
 
     public Window[] get_windows () throws GLib.DBusError, GLib.IOError {
