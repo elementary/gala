@@ -36,6 +36,7 @@
       </description>
       <issues>
         <issue url="https://github.com/elementary/gala/issues/2767">Pinch gestures are switching between workspaces instead of zooming</issue>
+        <issue url="https://github.com/elementary/dock/issues/530">Dock background blinks when Greyscale filter is enabled</issue>
       </issues>
     </release>
 
