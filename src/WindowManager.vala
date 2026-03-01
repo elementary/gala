@@ -106,6 +106,8 @@ namespace Gala {
 
         private NotificationStack notification_stack;
 
+        private InputMethod input_method;
+
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -136,6 +138,10 @@ namespace Gala {
             ShellClientsManager.init (this);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
+
+            input_method = new InputMethod (get_display ());
+            Clutter.get_default_backend ().set_input_method (input_method);
+            ShellClientsManager.get_instance ().im = input_method;
 
             show_stage ();
 

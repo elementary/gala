@@ -21,6 +21,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public WindowManager wm { get; construct; }
+    public InputMethod im { get; set; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -29,6 +30,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
+    private IBusCandidateWindow? ibus_candidate_window = null;
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -244,6 +246,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         positioned_windows[window].make_modal (dim);
     }
 
+    public void make_ibus_candidate_window (Meta.Window window) requires (ibus_candidate_window == null) {
+        ibus_candidate_window = new IBusCandidateWindow (im, window);
+
+        window.unmanaged.connect_after (() => ibus_candidate_window = null);
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
@@ -258,7 +266,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return (
             (window in positioned_windows && positioned_windows[window].modal) ||
             (window in panel_windows) ||
-            NotificationStack.is_notification (window)
+            NotificationStack.is_notification (window) ||
+            window == ibus_candidate_window?.window
         );
     }
 

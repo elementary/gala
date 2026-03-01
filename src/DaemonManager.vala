@@ -32,6 +32,7 @@ public class Gala.DaemonManager : GLib.Object {
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
+            client.wayland_client.make_dock (window);
             window.shown.connect (handle_daemon_window);
         });
     }
@@ -70,6 +71,10 @@ public class Gala.DaemonManager : GLib.Object {
                 window.move_frame (false, 0, 0);
                 window.make_above ();
                 window.stick ();
+                break;
+
+            case "IBUS_CANDIDATE":
+                ShellClientsManager.get_instance ().make_ibus_candidate_window (window);
                 break;
         }
     }
