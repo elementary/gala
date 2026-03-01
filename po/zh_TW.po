@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-02-22 18:33+0000\n"
-"PO-Revision-Date: 2025-11-30 18:55+0000\n"
+"PO-Revision-Date: 2026-03-02 01:51+0000\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://"
 "l10n.elementaryos.org/projects/desktop/gala/zh_TW/>\n"
@@ -89,27 +89,18 @@ msgid "Maximize"
 msgstr "最大化"
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
 msgstr "多工作業和視窗管理"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
 msgstr "Pantheon 的視窗與合成管理器"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
-msgstr ""
-"設計給 elementary 與 Pantheon 一同使用的視窗與合成管理器，基於 libmutter。"
+msgstr "設計給 elementary 與 Pantheon 一同使用的視窗與合成管理器，基於 libmutter。"
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
