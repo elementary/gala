@@ -3,10 +3,12 @@ gala_common_enums = files(
 )
 
 gala_lib_sources = files(
+    'AbstractSwitcher.vala',
     'ActivatableComponent.vala',
     'App.vala',
     'AppCache.vala',
     'AppSystem.vala',
+    'BackgroundBlurEffect.vala',
     'BackgroundManager.vala',
     'CanvasActor.vala',
     'CloseButton.vala',
