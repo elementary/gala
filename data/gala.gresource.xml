@@ -24,6 +24,7 @@
     <file compressed="true">shaders/colorblindness-correction.frag</file>
     <file compressed="true">shaders/monochrome.frag</file>
     <file compressed="true">shaders/rounded-corners.frag</file>
+    <file compressed="true">shaders/tv-effect.frag</file>
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala-daemon">
     <file compressed="true">gala-daemon.css</file>
