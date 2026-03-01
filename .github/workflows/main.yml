@@ -22,7 +22,7 @@ jobs:
           - version: unstable
             mutter_pkg: libmutter-14-dev
           - version: development-target
-            mutter_pkg: libmutter-17-dev
+            mutter_pkg: libmutter-18-dev
     container:
       image: ghcr.io/elementary/docker:${{ matrix.version }}
 
@@ -31,7 +31,7 @@ jobs:
     - name: Install Dependencies
       run: |
         apt update
-        apt install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-4-dev libgnome-bg-4-dev libgranite-dev libgtk-3-dev ${{ matrix.mutter_pkg }} libsqlite3-dev meson valac valadoc
+        apt install -y gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libclutter-1.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-4-dev libgnome-bg-4-dev libgranite-dev libgtk-3-dev ${{ matrix.mutter_pkg }} libsqlite3-dev meson systemd-dev valac valadoc
     - name: Build
       env:
         DESTDIR: out
