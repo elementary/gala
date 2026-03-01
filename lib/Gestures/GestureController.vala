@@ -294,6 +294,18 @@ public class Gala.GestureController : Object {
         finish ((to > progress ? 1 : -1) * 1, to);
     }
 
+    public void jump (double to) {
+        if (timeline != null) {
+            target?.propagate (END, action, timeline.value_to);
+            timeline = null;
+        }
+
+        var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+
+        target?.propagate (COMMIT, action, clamped_to);
+        progress = clamped_to;
+    }
+
     public void cancel_gesture () {
         if (recognizing) {
             recognizing_backend.cancel_gesture ();
