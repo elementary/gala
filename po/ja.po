@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-02-22 18:33+0000\n"
-"PO-Revision-Date: 2025-11-25 12:55+0000\n"
+"PO-Revision-Date: 2026-03-02 01:51+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -90,27 +90,18 @@ msgid "Maximize"
 msgstr "最大化"
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
 msgstr "マルチタスクとウィンドウ管理"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
 msgstr "Pantheon 向けのコンポジット型ウィンドウマネージャー"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
-msgstr ""
-"libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が "
+msgstr "libmutter ベースのコンポジット型ウィンドウマネージャーです。elementary が "
 "Pantheon 向けにデザインしました。"
 
 #: data/gala.metainfo.xml.in:24
