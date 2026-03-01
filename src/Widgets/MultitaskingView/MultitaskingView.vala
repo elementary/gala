@@ -92,6 +92,7 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
         add_child (StaticWindowContainer.get_instance (display));
 
         unowned var manager = display.get_workspace_manager ();
+        manager.workspace_added.connect (sync_active_workspace);
         manager.workspace_removed.connect (sync_active_workspace);
         manager.workspaces_reordered.connect (sync_active_workspace);
         manager.workspace_switched.connect (on_workspace_switched);
@@ -302,8 +303,12 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
     }
 
     private void sync_active_workspace () {
-        unowned var manager = display.get_workspace_manager ();
-        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+        if (workspaces_gesture_controller.recognizing) {
+            return;
+        }
+
+        var target = -display.get_workspace_manager ().get_active_workspace_index ();
+        workspaces_gesture_controller.jump (target);
     }
 
     private void on_workspace_switched (int from, int to) {
