@@ -81,6 +81,7 @@ gala_bin_base_sources = files(
     'Widgets/PointerLocator.vala',
     'Widgets/SessionLocker.vala',
     'Widgets/SelectionArea.vala',
+    'Widgets/WindowMaximizer.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
