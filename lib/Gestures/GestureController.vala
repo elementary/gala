@@ -254,14 +254,14 @@ public class Gala.GestureController : Object {
     private void finish (double velocity, double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
 
-        target.propagate (COMMIT, action, clamped_to);
-
         if (progress == to) {
+            target.propagate (COMMIT, action, clamped_to);
             finished ();
             return;
         }
 
         if (!Meta.Prefs.get_gnome_animations ()) {
+            target.propagate (COMMIT, action, clamped_to);
             progress = clamped_to;
             finished ();
             return;
@@ -272,6 +272,8 @@ public class Gala.GestureController : Object {
         spring.stopped.connect_after (finished);
 
         timeline = spring;
+
+        target.propagate (COMMIT, action, clamped_to);
     }
 
     private void finished (bool is_finished = true) requires (is_finished) {
