@@ -77,6 +77,8 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
+    private bool running = false;
+
     private Gee.List<GestureBackend> backends;
     private Gee.List<GestureTrigger> triggers;
 
@@ -126,11 +128,12 @@ public class Gala.GestureController : Object {
     }
 
     private void prepare () {
-        if (timeline != null) {
-            timeline = null;
-        } else {
+        if (!running) {
             target.propagate (START, action, progress);
+            running = true;
         }
+
+        timeline = null;
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -272,7 +275,9 @@ public class Gala.GestureController : Object {
     }
 
     private void finished (bool is_finished = true) requires (is_finished) {
+        assert (running);
         target.propagate (END, action, progress);
+        running = false;
         timeline = null;
     }
 
