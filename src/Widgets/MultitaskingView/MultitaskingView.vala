@@ -59,7 +59,10 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW);
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW) {
+            overshoot_upper_clamp = 1.1,
+            overshoot_lower_clamp = -0.1,
+        };
         multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));
         add_gesture_controller (multitasking_gesture_controller);
 
