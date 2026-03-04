@@ -61,8 +61,8 @@ public class Gala.GestureController : Object {
     public double progress {
         get { return _progress; }
         set {
-            _progress = value;
-            target?.propagate (UPDATE, action, value);
+            _progress = value.clamp (overshoot_lower_clamp, overshoot_upper_clamp);
+            target?.propagate (UPDATE, action, _progress);
         }
     }
 
