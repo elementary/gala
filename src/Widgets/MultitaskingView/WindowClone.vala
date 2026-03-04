@@ -274,11 +274,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             opacity = 255u;
         }
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint), 0u, 255u));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
