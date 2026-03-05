@@ -29,7 +29,6 @@ Homepage: https://github.com/elementary/gala
 Package: gala
 Architecture: any
 Depends: gsettings-desktop-schemas,
-         io.elementary.portals (>=1.1.0),
          libatk-bridge2.0-0t64,
          libgala0 (= ${binary:Version}),
          ${misc:Depends},
