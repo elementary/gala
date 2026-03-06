@@ -28,7 +28,11 @@ public class Gala.DaemonManager : GLib.Object {
     construct {
         Bus.watch_name (BusType.SESSION, DAEMON_DBUS_NAME, BusNameWatcherFlags.NONE, daemon_appeared, lost_daemon);
 
+#if HAS_MUTTER50
+        string[] args = { true ? "gala-daemon" : "gala-daemon-gtk3" };
+#else
         string[] args = { Meta.Util.is_wayland_compositor () ? "gala-daemon" : "gala-daemon-gtk3" };
+#endif
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
