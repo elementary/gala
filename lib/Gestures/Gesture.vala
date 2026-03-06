@@ -41,29 +41,28 @@ namespace Gala {
         MULTITASKING_VIEW,
         ZOOM,
         CUSTOM,
-        N_ACTIONS
+        N_ACTIONS;
+
+        public ModalActions to_modal_action () {
+            switch (this) {
+                case SWITCH_WORKSPACE:
+                    return ModalActions.SWITCH_WORKSPACE;
+                case SWITCH_WINDOWS:
+                    return ModalActions.SWITCH_WINDOWS;
+                case MULTITASKING_VIEW:
+                    return ModalActions.MULTITASKING_VIEW;
+                case ZOOM:
+                    return ModalActions.ZOOM;
+                default:
+                    return ModalActions.NONE;
+            }
+        }
     }
 
     private class Gesture {
-        public const float INVALID_COORD = float.MAX;
-
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;
         public Clutter.InputDeviceType performed_on_device_type;
-
-        /**
-         * The x coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
-         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
-         */
-        public float origin_x = INVALID_COORD;
-
-        /**
-         * The y coordinate of the initial contact point for the gesture.
-         * Doesn't have to be set. In that case it is set to {@link INVALID_COORD}.
-         * Currently the only backend not setting this is {@link GestureTracker.enable_touchpad}.
-         */
-        public float origin_y = INVALID_COORD;
     }
 }

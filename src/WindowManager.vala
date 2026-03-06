@@ -77,7 +77,7 @@ namespace Gala {
 
         private WindowSwitcher? window_switcher = null;
 
-        public ActivatableComponent? window_overview { get; private set; }
+        public WindowOverview window_overview { get; private set; }
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -290,12 +290,8 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
             }
 
-            if (plugin_manager.window_overview_provider == null
-                || (window_overview = (plugin_manager.get_plugin (plugin_manager.window_overview_provider) as ActivatableComponent)) == null
-            ) {
-                window_overview = new WindowOverview (this);
-                ui_group.add_child ((Clutter.Actor) window_overview);
-            }
+            window_overview = new WindowOverview (this);
+            ui_group.add_child (window_overview);
 
             // Add the remaining components that should be on top
             shell_group = new Clutter.Actor ();
@@ -785,6 +781,10 @@ namespace Gala {
 
             switch (type) {
                 case ActionType.SHOW_MULTITASKING_VIEW:
+                    if (filter_action (MULTITASKING_VIEW)) {
+                        break;
+                    }
+
                     if (multitasking_view.is_opened ())
                         multitasking_view.close ();
                     else
@@ -847,9 +847,17 @@ namespace Gala {
                         current.stick ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_PREVIOUS:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     switch_to_next_workspace (Meta.MotionDirection.LEFT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_NEXT:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     switch_to_next_workspace (Meta.MotionDirection.RIGHT, Meta.CURRENT_TIME);
                     break;
                 case ActionType.MOVE_CURRENT_WORKSPACE_LEFT:
@@ -872,7 +880,7 @@ namespace Gala {
                     launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
-                    if (window_overview == null) {
+                    if (filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
@@ -884,7 +892,7 @@ namespace Gala {
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
-                    if (window_overview == null) {
+                    if (filter_action (WINDOW_OVERVIEW)) {
                         break;
                     }
 
@@ -895,11 +903,19 @@ namespace Gala {
                     }
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
+                    if (filter_action (SWITCH_WORKSPACE)) {
+                        break;
+                    }
+
                     unowned var manager = display.get_workspace_manager ();
                     unowned var workspace = manager.get_workspace_by_index (manager.get_n_workspaces () - 1);
                     workspace.activate (display.get_current_time ());
                     break;
                 case ActionType.SCREENSHOT_CURRENT:
+                    if (filter_action (SCREENSHOT_WINDOW)) {
+                        break;
+                    }
+
                     screenshot_manager.handle_screenshot_current_window_shortcut.begin (false);
                     break;
                 default:
@@ -909,70 +925,68 @@ namespace Gala {
         }
 
         public override void show_window_menu (Meta.Window window, Meta.WindowMenuType menu, int x, int y) {
-            switch (menu) {
-                case Meta.WindowMenuType.WM:
-                    if (NotificationStack.is_notification (window)) {
-                        return;
-                    }
+            if (menu != WM) {
+                warning ("Unsupported window menu type");
+                return;
+            }
 
-                    WindowFlags flags = WindowFlags.NONE;
-                    if (window.can_minimize ())
-                        flags |= WindowFlags.CAN_HIDE;
+            if (!Utils.get_window_is_normal (window) || NotificationStack.is_notification (window)) {
+                return;
+            }
 
-                    if (window.can_maximize ())
-                        flags |= WindowFlags.CAN_MAXIMIZE;
+            WindowFlags flags = WindowFlags.NONE;
+            if (window.can_minimize ())
+                flags |= WindowFlags.CAN_HIDE;
+
+            if (window.can_maximize ())
+                flags |= WindowFlags.CAN_MAXIMIZE;
 
 #if HAS_MUTTER49
-                    if (window.is_maximized ())
-                        flags |= WindowFlags.IS_MAXIMIZED;
+            if (window.is_maximized ())
+                flags |= WindowFlags.IS_MAXIMIZED;
 
-                    if (window.maximized_vertically && !window.maximized_horizontally)
-                        flags |= WindowFlags.IS_TILED;
+            if (window.maximized_vertically && !window.maximized_horizontally)
+                flags |= WindowFlags.IS_TILED;
 #else
-                    var maximize_flags = window.get_maximized ();
-                    if (maximize_flags > 0) {
-                        flags |= WindowFlags.IS_MAXIMIZED;
+            var maximize_flags = window.get_maximized ();
+            if (maximize_flags > 0) {
+                flags |= WindowFlags.IS_MAXIMIZED;
 
-                        if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                            flags |= WindowFlags.IS_TILED;
-                        }
-                    }
+                if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
+                    flags |= WindowFlags.IS_TILED;
+                }
+            }
 #endif
 
-                    if (window.allows_move ())
-                        flags |= WindowFlags.ALLOWS_MOVE;
+            if (window.allows_move ())
+                flags |= WindowFlags.ALLOWS_MOVE;
 
-                    if (window.allows_resize ())
-                        flags |= WindowFlags.ALLOWS_RESIZE;
+            if (window.allows_resize ())
+                flags |= WindowFlags.ALLOWS_RESIZE;
 
-                    if (window.is_above ())
-                        flags |= WindowFlags.ALWAYS_ON_TOP;
+            if (window.is_above ())
+                flags |= WindowFlags.ALWAYS_ON_TOP;
 
-                    if (window.on_all_workspaces)
-                        flags |= WindowFlags.ON_ALL_WORKSPACES;
+            if (window.on_all_workspaces)
+                flags |= WindowFlags.ON_ALL_WORKSPACES;
 
-                    if (window.can_close ())
-                        flags |= WindowFlags.CAN_CLOSE;
+            if (window.can_close ())
+                flags |= WindowFlags.CAN_CLOSE;
 
-                    unowned var workspace = window.get_workspace ();
-                    if (workspace != null) {
-                        unowned var manager = window.display.get_workspace_manager ();
-                        var workspace_index = workspace.workspace_index;
-                        if (workspace_index != 0) {
-                            flags |= WindowFlags.ALLOWS_MOVE_LEFT;
-                        }
+            unowned var workspace = window.get_workspace ();
+            if (workspace != null) {
+                unowned var manager = window.display.get_workspace_manager ();
+                var workspace_index = workspace.workspace_index;
+                if (workspace_index != 0) {
+                    flags |= WindowFlags.ALLOWS_MOVE_LEFT;
+                }
 
-                        if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
-                            flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
-                        }
-                    }
-
-                    daemon_manager.show_window_menu.begin (flags, x, y);
-                    break;
-                case Meta.WindowMenuType.APP:
-                    // FIXME we don't have any sort of app menus
-                    break;
+                if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
+                    flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
+                }
             }
+
+            daemon_manager.show_window_menu.begin (flags, x, y);
         }
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
@@ -1313,95 +1327,56 @@ namespace Gala {
                 return;
             }
 
+            animate_map.begin (actor);
+        }
+
+        private async void animate_map (Meta.WindowActor actor) {
+            var window = actor.meta_window;
+
+            mapping.add (actor);
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.HIDE;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
-
-                    mapping.add (actor);
-
                     if (window.maximized_vertically || window.maximized_horizontally) {
                         var outer_rect = window.get_frame_rect ();
                         actor.set_position (outer_rect.x, outer_rect.y);
                     }
 
                     actor.set_pivot_point (0.5f, 1.0f);
-                    actor.set_scale (0.01f, 0.1f);
-                    actor.opacity = 0;
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
+                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
+                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 case Meta.WindowType.MENU:
                 case Meta.WindowType.DROPDOWN_MENU:
                 case Meta.WindowType.POPUP_MENU:
-                    var duration = AnimationDuration.MENU_MAP;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
-
-                    mapping.add (actor);
-
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (duration);
-                    actor.opacity = 255;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, AnimationDuration.MENU_MAP, EASE_OUT_QUAD);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-
-                    mapping.add (actor);
-
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (200);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
-
                     dim_parent_window (window);
+                    actor.set_pivot_point (0.5f, 0.5f);
 
+                    var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
+                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
+                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    map_completed (actor);
                     break;
             }
+
+            mapping.remove (actor);
+            map_completed (actor);
         }
 
         public override void destroy (Meta.WindowActor actor) {
@@ -1430,68 +1405,45 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.opacity = 0;
-                destroy_completed (actor);
+            animate_destroy.begin (actor);
+        }
 
-                if (window.window_type == Meta.WindowType.NORMAL) {
-                    Utils.clear_window_cache (window);
-                }
+        private async void animate_destroy (Meta.WindowActor actor) {
+            var window = actor.meta_window;
 
-                return;
-            }
+            destroying.add (actor);
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.CLOSE;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.show ();
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
+                    var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
+                    builder.add_property ("scale-x", 0.8);
+                    builder.add_property ("scale-y", 0.8);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                        Utils.clear_window_cache (window);
-                    });
+                    Utils.clear_window_cache (window);
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
+                    builder.add_property ("scale-x", 1.05);
+                    builder.add_property ("scale-y", 1.05);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    destroy_completed (actor);
                     break;
             }
+
+            destroying.remove (actor);
+            destroy_completed (actor);
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1592,15 +1544,13 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
-            if (end_animation (ref mapping, actor))
-                map_completed (actor);
             if (end_animation (ref unminimizing, actor))
                 unminimize_completed (actor);
             if (end_animation (ref minimizing, actor))
                 minimize_completed (actor);
-            if (end_animation (ref destroying, actor))
-                destroy_completed (actor);
 
+            end_animation (ref mapping, actor);
+            end_animation (ref destroying, actor);
             end_animation (ref unmaximizing, actor);
             end_animation (ref maximizing, actor);
         }
@@ -1652,6 +1602,10 @@ namespace Gala {
                 case Meta.KeyBindingAction.SWITCH_GROUP:
                 case Meta.KeyBindingAction.SWITCH_GROUP_BACKWARD:
                     return filter_action (SWITCH_WINDOWS);
+                case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
+                    return filter_action (LOCATE_POINTER);
+                case Meta.KeyBindingAction.NONE:
+                    return filter_action (MEDIA_KEYS);
                 default:
                     break;
             }
@@ -1667,24 +1621,26 @@ namespace Gala {
                     return filter_action (ZOOM);
                 case "toggle-multitasking-view":
                     return filter_action (MULTITASKING_VIEW);
+                case "expose-all-windows":
+                    return filter_action (WINDOW_OVERVIEW);
+                case "screenshot":
+                case "screenshot-clip":
+                case "interactive-screenshot":
+                    return filter_action (SCREENSHOT);
+                case "area-screenshot":
+                case "area-screenshot-clip":
+                    return filter_action (SCREENSHOT_AREA);
+                case "window-screenshot":
+                case "window-screenshot-clip":
+                    return filter_action (SCREENSHOT_WINDOW);
                 default:
                     break;
             }
 
-            var modal_proxy = modal_stack.peek_head ();
-            if (modal_proxy == null) {
-                return false;
-            }
-
-            unowned var filter = modal_proxy.get_keybinding_filter ();
-            if (filter == null) {
-                return false;
-            }
-
-            return filter (binding);
+            return false;
         }
 
-        public bool filter_action (GestureAction action) {
+        public bool filter_action (ModalActions action) {
             if (!is_modal ()) {
                 return false;
             }

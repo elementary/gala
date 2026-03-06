@@ -20,6 +20,8 @@ You'll need the following dependencies:
 * libmutter-10-dev (>= 42.0) | libmutter-dev (>= 3.18.3)
 * meson (>= 0.59.0)
 * valac (>= 0.46.0)
+* libsqlite3-dev
+* libhandy-1-dev
 
 Run `meson build` to configure the build environment. Change to the build directory and run `ninja` to build
 
@@ -31,7 +33,7 @@ You can set the `documentation` option to `true` to build the documentation. In 
 
     meson configure -Ddocumentation=true
 
-To install, use `ninja install`, then execute with `gala --replace`
+To install, run `ninja install`, then based on your session type do the following:
 
-    sudo ninja install
-    gala --replace
+- **Wayland**: Log out and log back in (or reboot) to start the newly installed Gala. (`gala --replace` is not supported for an already running Wayland session.)
+- **X11**: run `gala --replace` to replace the running Gala.

@@ -3,10 +3,12 @@ gala_common_enums = files(
 )
 
 gala_lib_sources = files(
+    'AbstractSwitcher.vala',
     'ActivatableComponent.vala',
     'App.vala',
     'AppCache.vala',
     'AppSystem.vala',
+    'BackgroundBlurEffect.vala',
     'BackgroundManager.vala',
     'CanvasActor.vala',
     'CloseButton.vala',
@@ -32,10 +34,13 @@ gala_lib_sources = files(
     'Gestures/GestureController.vala',
     'Gestures/GestureSettings.vala',
     'Gestures/GestureTarget.vala',
+    'Gestures/GestureTrigger.vala',
+    'Gestures/GlobalTrigger.vala',
     'Gestures/PropertyTarget.vala',
     'Gestures/RootTarget.vala',
     'Gestures/ScrollBackend.vala',
     'Gestures/SpringTimeline.vala',
+    'Gestures/SwipeTrigger.vala',
     'Gestures/ToucheggBackend.vala',
     'Gestures/TouchpadBackend.vala',
     'Gestures/WorkspaceHideTracker.vala'

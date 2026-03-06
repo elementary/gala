@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2025-11-20 18:22+0000\n"
+"POT-Creation-Date: 2026-02-22 18:33+0000\n"
 "PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: aalhaif <aalhaif@hotmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
@@ -92,17 +92,25 @@ msgid "Maximize"
 msgstr "قم بالتكبير"
 
 #: data/gala.metainfo.xml.in:11
-msgid "Multitasking &amp; Window Management"
+#, fuzzy
+#| msgid "Multitasking &amp; Window Management"
+msgid "Multitasking & Window Management"
 msgstr "تعدد المهام وإدارة النوافذ"
 
 #: data/gala.metainfo.xml.in:12
-msgid "A window &amp; compositing manager for Pantheon"
+#, fuzzy
+#| msgid "A window &amp; compositing manager for Pantheon"
+msgid "A window & compositing manager for Pantheon"
 msgstr "مدير نوافذ ل Pantheon"
 
 #: data/gala.metainfo.xml.in:14
+#, fuzzy
+#| msgid ""
+#| "A window &amp; compositing manager based on libmutter and designed by "
+#| "elementary for use with Pantheon."
 msgid ""
-"A window &amp; compositing manager based on libmutter and designed by "
-"elementary for use with Pantheon."
+"A window & compositing manager based on libmutter and designed by elementary "
+"for use with Pantheon."
 msgstr ""
 "مدير نوافذ مبني على libmutter ومصمم من قبل elementary للاستخدام مع Pantheon."
 
@@ -110,146 +118,149 @@ msgstr ""
 msgid "elementary, Inc."
 msgstr "elementary, Inc."
 
-#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:52
-#: data/gala.metainfo.xml.in:87 data/gala.metainfo.xml.in:99
-#: data/gala.metainfo.xml.in:114 data/gala.metainfo.xml.in:140
-#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:166
-#: data/gala.metainfo.xml.in:199 data/gala.metainfo.xml.in:230
-#: data/gala.metainfo.xml.in:243 data/gala.metainfo.xml.in:258
-#: data/gala.metainfo.xml.in:275 data/gala.metainfo.xml.in:291
-#: data/gala.metainfo.xml.in:332 data/gala.metainfo.xml.in:357
-#: data/gala.metainfo.xml.in:373
+#: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:44
+#: data/gala.metainfo.xml.in:64 data/gala.metainfo.xml.in:88
+#: data/gala.metainfo.xml.in:123 data/gala.metainfo.xml.in:135
+#: data/gala.metainfo.xml.in:150 data/gala.metainfo.xml.in:176
+#: data/gala.metainfo.xml.in:188 data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:235 data/gala.metainfo.xml.in:266
+#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:294
+#: data/gala.metainfo.xml.in:311 data/gala.metainfo.xml.in:327
+#: data/gala.metainfo.xml.in:368 data/gala.metainfo.xml.in:393
+#: data/gala.metainfo.xml.in:409
 msgid "Improvements:"
 msgstr "التحسينات:"
 
-#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:54
-#: data/gala.metainfo.xml.in:89 data/gala.metainfo.xml.in:101
-#: data/gala.metainfo.xml.in:116 data/gala.metainfo.xml.in:142
-#: data/gala.metainfo.xml.in:154 data/gala.metainfo.xml.in:168
-#: data/gala.metainfo.xml.in:201 data/gala.metainfo.xml.in:232
-#: data/gala.metainfo.xml.in:245 data/gala.metainfo.xml.in:260
-#: data/gala.metainfo.xml.in:279 data/gala.metainfo.xml.in:295
-#: data/gala.metainfo.xml.in:338 data/gala.metainfo.xml.in:360
-#: data/gala.metainfo.xml.in:375
+#: data/gala.metainfo.xml.in:34 data/gala.metainfo.xml.in:46
+#: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:90
+#: data/gala.metainfo.xml.in:125 data/gala.metainfo.xml.in:137
+#: data/gala.metainfo.xml.in:152 data/gala.metainfo.xml.in:178
+#: data/gala.metainfo.xml.in:190 data/gala.metainfo.xml.in:204
+#: data/gala.metainfo.xml.in:237 data/gala.metainfo.xml.in:268
+#: data/gala.metainfo.xml.in:281 data/gala.metainfo.xml.in:296
+#: data/gala.metainfo.xml.in:315 data/gala.metainfo.xml.in:331
+#: data/gala.metainfo.xml.in:374 data/gala.metainfo.xml.in:396
+#: data/gala.metainfo.xml.in:411
 msgid "Updated translations"
 msgstr "تحديثات على الترجمة"
 
-#: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:55
+#: data/gala.metainfo.xml.in:47 data/gala.metainfo.xml.in:67
+#: data/gala.metainfo.xml.in:91
 msgid "Improved HiDPI support"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:36
+#: data/gala.metainfo.xml.in:68
 msgid "Improve Reduced Motion behavior"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:56
+#: data/gala.metainfo.xml.in:92
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved render performance"
 msgstr "تحسين ظلال النوافذ للتطبيقات القديمة"
 
-#: data/gala.metainfo.xml.in:57
+#: data/gala.metainfo.xml.in:93
 msgid "Reveal dock and panel in sync when starting"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:58
+#: data/gala.metainfo.xml.in:94
 msgid "Improved workspace switch dock animation"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:59
+#: data/gala.metainfo.xml.in:95
 msgid "Picture-in-Picture windows now have rounded corners"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:169
+#: data/gala.metainfo.xml.in:205
 msgid "Window state is now saved on sleep and shutdown"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:170
+#: data/gala.metainfo.xml.in:206
 msgid "Remove scaling effect from menus"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:171
+#: data/gala.metainfo.xml.in:207
 msgid "Swipe up to close windows in Multitasking View"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:202
+#: data/gala.metainfo.xml.in:238
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:203
+#: data/gala.metainfo.xml.in:239
 msgid "Added interactive screenshot shortcut"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:204
+#: data/gala.metainfo.xml.in:240
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fixed crash when using tiling shortcuts"
 msgstr "إصلاح التعطل المحتمل عند التقاط صورة للشاشة"
 
-#: data/gala.metainfo.xml.in:233
+#: data/gala.metainfo.xml.in:269
 #, fuzzy
 #| msgid "Improve window shadows for legacy apps"
 msgid "Improved shadows performance"
 msgstr "تحسين ظلال النوافذ للتطبيقات القديمة"
 
-#: data/gala.metainfo.xml.in:277
+#: data/gala.metainfo.xml.in:313
 #, fuzzy
 #| msgid "Fix potential crash when taking screenshots"
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr "إصلاح التعطل المحتمل عند التقاط صورة للشاشة"
 
-#: data/gala.metainfo.xml.in:278
+#: data/gala.metainfo.xml.in:314
 #, fuzzy
 #| msgid "Fix notification position after changing DPI"
 msgid "Fix notification animation when entering multitasking view"
 msgstr "إصلاح مكان الإشعار عند تغيير دقة الشاشة"
 
-#: data/gala.metainfo.xml.in:293
+#: data/gala.metainfo.xml.in:329
 #, fuzzy
 #| msgid "Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
 msgstr "منظور تعدد المهام"
 
-#: data/gala.metainfo.xml.in:294
+#: data/gala.metainfo.xml.in:330
 msgid "Change panel color at the same time as wallpaper transition"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:334
+#: data/gala.metainfo.xml.in:370
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:335
+#: data/gala.metainfo.xml.in:371
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:336
+#: data/gala.metainfo.xml.in:372
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:337
+#: data/gala.metainfo.xml.in:373
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
 
-#: data/gala.metainfo.xml.in:359
+#: data/gala.metainfo.xml.in:395
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala-multitaskingview.desktop.in:4
-#: data/gala-multitaskingview.desktop.in:6
+#: data/gala-multitaskingview.desktop.in:3
+#: data/gala-multitaskingview.desktop.in:5
 msgid "Multitasking View"
 msgstr "منظور تعدد المهام"
 
-#: data/gala-multitaskingview.desktop.in:5
+#: data/gala-multitaskingview.desktop.in:4
 msgid "View all open windows and workspaces"
 msgstr "اعرض جميع النوافذ المفتوحة ومساحات العمل"
 
-#: data/gala-other.desktop.in:4
+#: data/gala-other.desktop.in:3
 msgid "Other"
 msgstr "أخرى"
 
-#: data/gala-other.desktop.in:5
+#: data/gala-other.desktop.in:4
 msgid "Fallback desktop file for notifications from outdated applications."
 msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
 
@@ -334,11 +345,11 @@ msgstr ""
 msgid "Screenshots"
 msgstr "لقطات الشاشة"
 
-#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:78
+#: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1736
+#: src/WindowManager.vala:1719
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -349,19 +360,19 @@ msgstr[3] "التغييرات ستظهر بعد %i ثواني."
 msgstr[4] "التغييرات ستظهر بعد %i ثانية."
 msgstr[5] "التغييرات ستظهر قريباً."
 
-#: src/WindowManager.vala:1743
+#: src/WindowManager.vala:1726
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "إعدادات شاشة العرض…"
 
-#: src/WindowManager.vala:1747
+#: src/WindowManager.vala:1730
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "إعدادات النظام…"
 
-#: src/WindowManager.vala:1748
+#: src/WindowManager.vala:1731
 msgid "Use Previous Settings"
 msgstr ""
 

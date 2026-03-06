@@ -1,6 +1,6 @@
 project('gala',
     'vala',
-    version: '8.4.0',
+    version: '8.4.1',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
     default_options: [
@@ -36,7 +36,6 @@ glib_version_required = '2.78'
 add_project_arguments([
         '--target-glib=' + glib_version_required,
         '--hide-internal',
-        '--enable-deprecated',
         '--vapidir=' + vapi_dir,
     ],
     language: 'vala',
@@ -45,6 +44,9 @@ add_project_arguments([
         '-Wno-discarded-qualifiers',
         '-Wno-incompatible-pointer-types',
         '-Wno-unused',
+        '-Wno-address',
+        '-Wno-duplicate-decl-specifier',
+        '-Wno-deprecated-declarations',
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
