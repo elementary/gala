@@ -291,7 +291,7 @@ public class Gala.GestureController : Object {
      */
     public void goto (double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
-        if (progress == to || recognizing ||
+        if (recognizing || timeline == null && progress == to ||
             timeline != null && clamped_to == timeline.value_to // Only allow overshoot if there's no ongoing overshoot animation to prevent stacking
         ) {
             return;
@@ -299,6 +299,18 @@ public class Gala.GestureController : Object {
 
         prepare ();
         finish ((to > progress ? 1 : -1) * 1, to);
+    }
+
+    public void jump (double to) {
+        if (timeline != null) {
+            target?.propagate (END, action, timeline.value_to);
+            timeline = null;
+        }
+
+        var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+
+        target?.propagate (COMMIT, action, clamped_to);
+        progress = clamped_to;
     }
 
     public void cancel_gesture () {
