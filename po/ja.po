@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-02-22 18:33+0000\n"
-"PO-Revision-Date: 2026-03-02 01:51+0000\n"
+"PO-Revision-Date: 2026-03-09 08:55+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -305,7 +305,7 @@ msgstr "ウィンドウはすでにアクティブです"
 #: src/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
-msgstr "スクリーンショット %s"
+msgstr "Screenshot from %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/ScreenshotManager.vala:168
@@ -315,7 +315,7 @@ msgstr "“%s”で表示"
 
 #: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
 msgid "Screenshot taken"
-msgstr "スクリーンショットが取得されました"
+msgstr "スクリーンショットを取得しました"
 
 #: src/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
@@ -323,7 +323,7 @@ msgstr "スクリーンショットをクリップボードに保存しました
 
 #: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
-msgstr "スクリーンショットを“スクリーンショット”フォルダーに保存しました"
+msgstr "スクリーンショットを “Screenshots” フォルダーに保存しました"
 
 #: src/ScreenshotManager.vala:470
 msgid "Screenshots"
