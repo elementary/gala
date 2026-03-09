@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.WorkspaceRow : ActorTarget {
+public class Gala.WorkspaceRow : Widget {
     public const int WORKSPACE_GAP = 24;
 
     public Meta.Display display { get; construct; }
@@ -40,6 +40,11 @@ public class Gala.WorkspaceRow : ActorTarget {
         if (action == SWITCH_WORKSPACE) {
             queue_relayout ();
         }
+    }
+
+    public override bool move_focus (FocusDirection direction) {
+        var widget = (Widget) get_child_at_index ((int) (-get_current_commit (SWITCH_WORKSPACE)));
+        return widget.focus (direction);
     }
 
     private void update_order () {
