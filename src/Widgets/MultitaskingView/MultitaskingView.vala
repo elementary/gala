@@ -65,7 +65,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
-        workspaces = new WorkspaceRow (display);
+        workspaces = new WorkspaceRow (wm);
 
         workspaces_trigger = new GlobalTrigger (SWITCH_WORKSPACE, wm);
 
@@ -89,9 +89,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         add_child (StaticWindowContainer.get_instance (display));
 
         unowned var manager = display.get_workspace_manager ();
-        manager.workspace_added.connect (add_workspace);
-        manager.workspace_removed.connect (remove_workspace);
-        manager.workspaces_reordered.connect (on_workspaces_reordered);
+        manager.workspace_removed.connect (sync_active_workspace);
+        manager.workspaces_reordered.connect (sync_active_workspace);
         manager.workspace_switched.connect (on_workspace_switched);
 
         workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
@@ -119,7 +118,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
      */
     private void update_monitors () {
         update_blurred_bg ();
-        update_workspaces ();
 
         foreach (var monitor_clone in window_containers_monitors) {
             monitor_clone.destroy ();
@@ -144,16 +142,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
 
         var primary_geometry = display.get_monitor_geometry (primary);
-        var scale = Utils.get_ui_scaling_factor (display, primary);
-
         primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
         primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.monitor_scale = scale;
-            workspace_clone.update_size (primary_geometry);
-        }
     }
 
     private void update_brightness_effect () {
@@ -177,18 +167,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         blurred_bg.add_effect (brightness_effect);
 
         insert_child_below (blurred_bg, null);
-    }
-
-    private void update_workspaces () {
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var workspace_clone = (WorkspaceClone) child;
-            workspace_clone.destroy ();
-        }
-
-        unowned var manager = display.get_workspace_manager ();
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            add_workspace (i);
-        }
     }
 
     /**
@@ -321,45 +299,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
     }
 
-    private void add_workspace (int num) {
-        unowned var manager = display.get_workspace_manager ();
-        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
-
-        var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
-        workspaces.insert_child_at_index (workspace, num);
-
-        workspace.window_selected.connect (window_selected);
-    }
-
-    private void remove_workspace (int num) {
-        WorkspaceClone? workspace = null;
-
-        // FIXME is there a better way to get the removed workspace?
-        unowned Meta.WorkspaceManager manager = display.get_workspace_manager ();
-        List<Meta.Workspace> existing_workspaces = null;
-        for (int i = 0; i < manager.get_n_workspaces (); i++) {
-            existing_workspaces.append (manager.get_workspace_by_index (i));
-        }
-
-        foreach (unowned var child in workspaces.get_children ()) {
-            unowned var clone = (WorkspaceClone) child;
-            if (existing_workspaces.index (clone.workspace) < 0) {
-                workspace = clone;
-                break;
-            }
-        }
-
-        if (workspace == null) {
-            return;
-        }
-
-        workspace.window_selected.disconnect (window_selected);
-        workspace.destroy ();
-
-        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
-    }
-
-    private void on_workspaces_reordered () {
+    private void sync_active_workspace () {
         unowned var manager = display.get_workspace_manager ();
         workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
