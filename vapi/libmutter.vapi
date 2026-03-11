@@ -105,7 +105,12 @@ namespace Meta {
 #endif
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_verbose")]
 		public static bool is_verbose ();
-#if !HAS_MUTTER50
+#if HAS_MUTTER50
+		[CCode (cheader_filename = "meta/main.h")]
+		public static bool is_wayland_compositor () {
+			return true;
+		}
+#else
 		[CCode (cheader_filename = "meta/util.h", cname = "meta_is_wayland_compositor")]
 		public static bool is_wayland_compositor ();
 #endif

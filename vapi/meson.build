@@ -479,7 +479,8 @@ if mutter50_dep.found()
 			'--pkg=pango',
 			'--pkg=x11',
 			'--pkg=xfixes-4.0',
-			vapigen_args
+			vapigen_args,
+			files('Meta-18-custom.vala')
 		],
 		depends: [ cogl_target, clutter_target ],
 		output: 'libmutter-18.vapi'
