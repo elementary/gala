@@ -47,7 +47,7 @@ namespace Gala {
          * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
          * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
          */
-        private Clutter.Actor shell_group { get; private set; }
+        private ShellGroup shell_group { get; private set; }
 
         private Clutter.Actor menu_group { get; set; }
 
@@ -294,7 +294,7 @@ namespace Gala {
             ui_group.add_child (window_overview);
 
             // Add the remaining components that should be on top
-            shell_group = new Clutter.Actor ();
+            shell_group = new ShellGroup ();
             ui_group.add_child (shell_group);
 
             menu_group = new Clutter.Actor ();
@@ -1049,7 +1049,12 @@ namespace Gala {
             }
 
             if (ShellClientsManager.get_instance ().is_shell_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, shell_group);
+                var shell_window = ShellClientsManager.get_instance ().get_shell_window (window);
+                if (shell_window != null) {
+                    shell_group.add_shell_window (actor, shell_window);
+                } else {
+                    shell_group.add_transient_window (actor);
+                }
 
                 // FIXME: workaround for https://github.com/elementary/dock/issues/537
                 actor.set_scale (1.0, 1.0);

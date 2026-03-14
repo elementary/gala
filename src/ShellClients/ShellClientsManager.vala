@@ -254,6 +254,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
+    public ShellWindow? get_shell_window (Meta.Window window) {
+        return ((ShellWindow) panel_windows[window]) ?? positioned_windows[window];
+    }
+
     public bool is_itself_shell_window (Meta.Window window) {
         return (
             (window in positioned_windows && positioned_windows[window].modal) ||
