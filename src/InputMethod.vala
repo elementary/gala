@@ -12,6 +12,9 @@ public class Gala.InputMethod : Clutter.InputMethod {
     private IBus.Bus bus;
     private IBus.InputContext context;
 
+    private IBus.InputPurpose input_purpose;
+    private IBus.InputHints input_hints;
+
     public InputMethod (Meta.Display display) {
         Object (display: display);
     }
@@ -34,9 +37,11 @@ public class Gala.InputMethod : Clutter.InputMethod {
             context = bus.create_input_context_async_finish (res);
         } catch (Error e) {
             warning ("Failed to create IBus input context: %s", e.message);
+            return;
         }
 
         context.commit_text.connect (on_commit_text);
+        context.require_surrounding_text.connect (on_require_surrounding_text);
         context.delete_surrounding_text.connect (on_delete_surrounding_text);
         context.update_preedit_text_with_mode.connect (on_update_preedit_text_with_mode);
         context.show_preedit_text.connect (on_show_preedit_text);
@@ -46,6 +51,10 @@ public class Gala.InputMethod : Clutter.InputMethod {
 
     private void on_commit_text (IBus.Text text) {
         commit (text.text);
+    }
+
+    private void on_require_surrounding_text () {
+        request_surrounding ();
     }
 
     private void on_delete_surrounding_text (int offset, uint length) {
@@ -98,6 +107,7 @@ public class Gala.InputMethod : Clutter.InputMethod {
 
     public override bool filter_key_event (Clutter.Event event) {
         var state = (IBus.ModifierType) event.get_state ();
+        warning ("Filter key event");
 
         if (IBus.ModifierType.IGNORED_MASK in state) {
             return false;
@@ -112,6 +122,7 @@ public class Gala.InputMethod : Clutter.InputMethod {
             (obj, res) => {
                 try {
                     var handled = context.process_key_event_async_finish (res);
+                    warning ("Key event handled: %s", handled ? "yes" : "no");
                     notify_key_event (event, handled);
                 } catch (Error e) {
                     warning ("Failed to process key event on IM: %s", e.message);
@@ -120,5 +131,91 @@ public class Gala.InputMethod : Clutter.InputMethod {
         );
 
         return true;
+    }
+
+    public override void update_content_hints (Clutter.InputContentHintFlags hints) {
+        IBus.InputHints ibus_hints = 0;
+
+        if (COMPLETION in hints) {
+            ibus_hints |= IBus.InputHints.WORD_COMPLETION;
+        }
+
+        if (SPELLCHECK in hints) {
+            ibus_hints |= IBus.InputHints.SPELLCHECK;
+        }
+
+        if (AUTO_CAPITALIZATION in hints) {
+            ibus_hints |= IBus.InputHints.UPPERCASE_SENTENCES;
+        }
+
+        if (LOWERCASE in hints) {
+            ibus_hints |= IBus.InputHints.LOWERCASE;
+        }
+
+        if (UPPERCASE in hints) {
+            ibus_hints |= IBus.InputHints.UPPERCASE_CHARS;
+        }
+
+        if (TITLECASE in hints) {
+            ibus_hints |= IBus.InputHints.UPPERCASE_WORDS;
+        }
+
+        if (SENSITIVE_DATA in hints) {
+            ibus_hints |= IBus.InputHints.PRIVATE;
+        }
+
+        if (HIDDEN_TEXT in hints) {
+            // TODO: Probably needs a newer version
+            //  ibus_hints |= IBus.InputHints.HIDDEN_TEXT;
+        }
+
+        input_hints = ibus_hints;
+
+        context.set_content_type (input_purpose, input_hints);
+    }
+
+    public override void update_content_purpose (Clutter.InputContentPurpose purpose) {
+        IBus.InputPurpose ibus_purpose;
+
+        switch (purpose) {
+            case NORMAL:
+                ibus_purpose = FREE_FORM;
+                break;
+            case ALPHA:
+                ibus_purpose = ALPHA;
+                break;
+            case DIGITS:
+                ibus_purpose = DIGITS;
+                break;
+            case NUMBER:
+                ibus_purpose = NUMBER;
+                break;
+            case PHONE:
+                ibus_purpose = PHONE;
+                break;
+            case URL:
+                ibus_purpose = URL;
+                break;
+            case EMAIL:
+                ibus_purpose = EMAIL;
+                break;
+            case NAME:
+                ibus_purpose = NAME;
+                break;
+            case PASSWORD:
+                ibus_purpose = PASSWORD;
+                break;
+            case TERMINAL:
+                ibus_purpose = TERMINAL;
+                break;
+            default:
+                warning ("Unknown input purpose: %d", purpose);
+                ibus_purpose = FREE_FORM;
+                break;
+        }
+
+        input_purpose = ibus_purpose;
+
+        context.set_content_type(input_purpose, input_hints);
     }
 }
