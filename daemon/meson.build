@@ -5,6 +5,8 @@ gala_daemon_sources = files(
     'MonitorLabel.vala',
     'Window.vala',
     'WindowMenu.vala',
+    'IBus' / 'IBusService.vala',
+    'IBus' / 'IBusCandidateWindow.vala'
 )
 
 gtk4_dep = dependency('gtk4')
@@ -16,6 +18,6 @@ executable(
     gala_common_enums,
     config_header,
     gala_resources,
-    dependencies: [gtk4_dep, granite7_dep],
+    dependencies: [gtk4_dep, granite7_dep, ibus_dep],
     install: true
 )
