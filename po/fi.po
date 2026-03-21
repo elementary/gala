@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-03-17 16:29+0000\n"
-"PO-Revision-Date: 2024-12-02 05:14+0000\n"
+"PO-Revision-Date: 2026-03-22 15:55+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish <https://l10n.elementary.io/projects/desktop/gala/fi/"
-">\n"
+"Language-Team: Finnish <https://l10n.elementaryos.org/projects/desktop/gala/"
+"fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6.2\n"
+"X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-23 06:29+0000\n"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
@@ -78,7 +78,7 @@ msgstr "Sulje"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Untile"
-msgstr ""
+msgstr "Poista asettelusta"
 
 #: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
 msgid "Unmaximize"
@@ -89,22 +89,14 @@ msgid "Maximize"
 msgstr "Suurenna"
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
-msgstr "Moniajo ja ikkunahallinta"
+msgstr "Moniajo ja ikkunanhallinta"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
 msgstr "Ikkuna- ja kompositointihallinta Pantheonille"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
@@ -327,11 +319,11 @@ msgstr "Kuvakaappaus otettu"
 
 #: src/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Kuvakaappaus tallennettu leikepöydälle"
 
 #: src/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Kuvakaappaus tallennettu kuvakaappausten kansioon"
 
 #: src/ScreenshotManager.vala:470
 msgid "Screenshots"
