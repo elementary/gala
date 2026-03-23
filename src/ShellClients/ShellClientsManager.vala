@@ -28,7 +28,9 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private int starting_panels = 0;
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
-    private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
+    private GLib.HashTable<Meta.Window, ShellWindow> positioned_windows = new GLib.HashTable<Meta.Window, ShellWindow> (null, null);
+
+    private GLib.HashTable<Meta.Window, bool> modal_windows = new GLib.HashTable<Meta.Window, bool> (null, null);
 
     private ShellClientsManager (WindowManager wm) {
         Object (wm: wm);
@@ -240,8 +242,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
     }
 
-    public void make_modal (Meta.Window window, bool dim) requires (window in positioned_windows) {
-        positioned_windows[window].make_modal (dim);
+    public void make_modal (Meta.Window window, bool dim) requires (!(window in modal_windows)) {
+        modal_windows[window] = dim;
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => modal_windows.remove (_window));
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -256,7 +261,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public bool is_itself_shell_window (Meta.Window window) {
         return (
-            (window in positioned_windows && positioned_windows[window].modal) ||
+            (window in modal_windows) ||
             (window in panel_windows) ||
             NotificationStack.is_notification (window)
         );
@@ -284,7 +289,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     private bool is_itself_system_modal (Meta.Window window) {
-        return (window in positioned_windows) && positioned_windows[window].modal;
+        return (window in modal_windows);
     }
 
     public bool is_system_modal_window (Meta.Window window) {
@@ -301,7 +306,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public bool is_system_modal_dimmed (Meta.Window window) {
-        return is_itself_system_modal (window) && positioned_windows[window].dim;
+        return is_itself_system_modal (window) && modal_windows[window];
     }
 
     //X11 only
