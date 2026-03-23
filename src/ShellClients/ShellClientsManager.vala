@@ -249,6 +249,13 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => modal_windows.remove (_window));
     }
 
+    public void make_fixed_position (Meta.Window window, Mtk.Rectangle position) {
+        positioned_windows[window] = new FixedPositionWindow (window, position);
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => positioned_windows.remove (_window));
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
