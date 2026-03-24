@@ -243,9 +243,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             return;
         }
 
-        //Although we are setting visible via the opacity notify handler anyway
-        //we have to set it here manually otherwise the size gotten via get_preferred_size is wrong
-        visible = true;
+        /* Toggle display already so that we are visible and the reported size is correct */
+        toggle_display.begin (true);
 
         float width, height;
         get_preferred_size (null, null, out width, out height);
@@ -256,30 +255,38 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             (int) (geom.x + (geom.width - width) / 2),
             (int) (geom.y + (geom.height - height) / 2)
         );
-
-        toggle_display (true);
     }
 
-    private void toggle_display (bool show) {
+    private async void toggle_display (bool show) {
         if (opened == show) {
             return;
         }
 
         opened = show;
-        if (show && modal_proxy == null) {
+
+        if (show) {
+            assert (modal_proxy == null);
             modal_proxy = wm.push_modal (get_stage (), true);
             modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
-        } else if (modal_proxy != null) {
+        } else {
+            assert (modal_proxy != null);
             wm.pop_modal (modal_proxy);
             modal_proxy = null;
 
             get_stage ().set_key_focus (null);
         }
 
-        save_easing_state ();
-        set_easing_duration (Utils.get_animation_duration (AnimationDuration.HIDE));
-        opacity = show ? 255 : 0;
-        restore_easing_state ();
+        /* Drop out of any ongoing toggle displays */
+        remove_all_transitions ();
+
+        visible = true;
+
+        var transition_builder = new TransitionBuilder (this, AnimationDuration.HIDE, EASE_OUT_CUBIC);
+        transition_builder.add_property ("opacity", show ? 255u : 0u);
+
+        yield transition_builder.run ();
+
+        visible = show;
     }
 
     private void close_switcher (uint32 time, bool cancel = false) {
@@ -288,11 +295,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         }
 
         var window = current_icon.window;
-        if (window == null) {
-            return;
-        }
 
-        if (!cancel) {
+        if (window != null && !cancel) {
             unowned var workspace = window.get_workspace ();
             if (workspace != wm.get_display ().get_workspace_manager ().get_active_workspace ()) {
                 workspace.activate_with_focus (window, time);
@@ -301,7 +305,7 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             }
         }
 
-        toggle_display (false);
+        toggle_display.begin (false);
     }
 
     private void next_window (bool backward) {

@@ -72,8 +72,6 @@ public abstract class Gala.AbstractSwitcher : CanvasActor {
 
         // Redraw the components if the colour scheme changes.
         style_manager.notify["prefers-color-scheme"].connect (content.invalidate);
-
-        notify["opacity"].connect (() => visible = opacity != 0);
     }
 
     private void scale () {
