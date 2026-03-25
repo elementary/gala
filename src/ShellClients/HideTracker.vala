@@ -98,6 +98,14 @@ public class Gala.HideTracker : Object {
         setup_barrier ();
     }
 
+    ~HideTracker () {
+#if HAS_MUTTER48
+        display.get_compositor ().get_stage ().remove_action (pan_action);
+#else
+        display.get_stage ().remove_action (pan_action);
+#endif
+    }
+
     private void on_window_created (Meta.Window new_window) {
         InternalUtils.wait_for_window_actor (new_window, (new_window_actor) => {
             if (!panel.window.is_ancestor_of_transient (new_window_actor.meta_window)) {
