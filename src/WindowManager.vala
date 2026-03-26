@@ -142,7 +142,7 @@ namespace Gala {
 
             osk_manager = new OSKManager (get_display (), input_method);
 
-            ShellClientsManager.init (this, input_method);
+            ShellClientsManager.init (this, input_method, osk_manager);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
