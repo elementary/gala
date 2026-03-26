@@ -32,7 +32,7 @@ public class Gala.DaemonManager : GLib.Object {
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
-            window.shown.connect (handle_daemon_window);
+            window.notify["title"].connect ((obj, pspec) => handle_daemon_window ((Meta.Window) obj));
         });
     }
 
