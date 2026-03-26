@@ -42,6 +42,7 @@ public class Gala.Daemon.Application : Gtk.Application {
         Gtk.init ();
 
         connection.register_object (object_path, new DBus ());
+        connection.register_object (object_path, new OSKManager ());
 
         return true;
     }
