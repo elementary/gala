@@ -157,6 +157,8 @@ public class Gala.InputMethod : Clutter.InputMethod {
             set_preedit_text (null, preedit_cursor, preedit_anchor, preedit_mode);
             preedit_text = null;
         }
+
+        set_input_panel_state (OFF);
     }
 
     public override void reset () {
