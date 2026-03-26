@@ -8,6 +8,7 @@
 public class Gala.InputMethod : Clutter.InputMethod {
     public Meta.Display display { private get; construct; }
     public Graphene.Rect cursor_location { get; private set; }
+    public bool input_panel_active { get; private set; }
 
     private IBus.Bus bus;
     private IBus.InputContext? context;
@@ -30,6 +31,8 @@ public class Gala.InputMethod : Clutter.InputMethod {
     }
 
     construct {
+        input_panel_state.connect (on_input_panel_state_changed);
+
         IBus.init ();
 
         bus = new IBus.Bus.async ();
@@ -37,6 +40,22 @@ public class Gala.InputMethod : Clutter.InputMethod {
 
         if (bus.is_connected ()) {
             on_connected ();
+        }
+    }
+
+    private void on_input_panel_state_changed (Clutter.InputPanelState state) {
+        switch (state) {
+            case ON:
+                input_panel_active = true;
+                break;
+
+            case OFF:
+                input_panel_active = false;
+                break;
+
+            case TOGGLE:
+                input_panel_active = !input_panel_active;
+                break;
         }
     }
 
@@ -162,6 +181,8 @@ public class Gala.InputMethod : Clutter.InputMethod {
             set_preedit_text (null, preedit_cursor, preedit_anchor, preedit_mode);
             preedit_text = null;
         }
+
+        set_input_panel_state (OFF);
     }
 
     public override void reset () {
