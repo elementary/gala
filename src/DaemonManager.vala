@@ -80,6 +80,10 @@ public class Gala.DaemonManager : GLib.Object {
             case "IBUS_CANDIDATE":
                 ShellClientsManager.get_instance ().make_ibus_candidate_window (window);
                 break;
+
+            case "OSK":
+                ShellClientsManager.get_instance ().make_osk_window (window);
+                break;
         }
     }
 
