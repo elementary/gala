@@ -32,6 +32,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
     private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
     private IBusCandidateWindow? ibus_candidate_window = null;
+    private OSKWindow? osk_window = null;
 
     private ShellClientsManager (WindowManagerGala wm, InputMethod im) {
         Object (wm: wm, im: im);
@@ -252,6 +253,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         wm.override_window_group (window, LOCK_SCREEN);
     }
 
+    public void make_osk_window (Meta.Window window) requires (osk_window == null) {
+        osk_window = new OSKWindow (im, window);
+
+        wm.override_window_group (window, OVERLAY);
+
+        window.unmanaged.connect_after (() => osk_window = null);
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
@@ -268,7 +277,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             (window in panel_windows) ||
             (window in monitor_label_windows) ||
             NotificationStack.is_notification (window) ||
-            window == ibus_candidate_window?.window
+            window == ibus_candidate_window?.window ||
+            window == osk_window?.window
         );
     }
 
