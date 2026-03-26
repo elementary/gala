@@ -52,6 +52,7 @@ gala_bin_sources = files(
     'ShellClients/IBusCandidateWindow.vala',
     'ShellClients/ManagedClient.vala',
     'ShellClients/NotificationsClient.vala',
+    'ShellClients/OSKWindow.vala',
     'ShellClients/PanelWindow.vala',
     'ShellClients/PositionedWindow.vala',
     'ShellClients/ShellClientsManager.vala',
