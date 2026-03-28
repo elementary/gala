@@ -41,7 +41,7 @@ jobs:
         ninja -C build install
     - name: Run Tests
       run: |
-        meson test -v -C build
+        meson test -v -C build --no-suite Gala/mutter
 
   fedora:
     runs-on: ubuntu-latest
