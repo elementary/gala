@@ -242,10 +242,6 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     public void show_windows_for (string app_id) throws IOError, DBusError {
-        if (wm.window_overview == null) {
-            throw new IOError.FAILED ("Window overview not provided by window manager");
-        }
-
         App app;
         if ((app = AppSystem.get_default ().lookup_app (app_id)) == null) {
             throw new IOError.NOT_FOUND ("App not found");

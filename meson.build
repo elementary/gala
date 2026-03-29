@@ -1,8 +1,11 @@
 project('gala',
     'vala',
-    version: '8.4.0',
+    version: '8.4.1',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
+    default_options: [
+        'buildtype=debugoptimized',
+    ],
 )
 
 gnome = import('gnome')
@@ -33,7 +36,6 @@ glib_version_required = '2.78'
 add_project_arguments([
         '--target-glib=' + glib_version_required,
         '--hide-internal',
-        '--enable-deprecated',
         '--vapidir=' + vapi_dir,
     ],
     language: 'vala',
@@ -42,6 +44,9 @@ add_project_arguments([
         '-Wno-discarded-qualifiers',
         '-Wno-incompatible-pointer-types',
         '-Wno-unused',
+        '-Wno-address',
+        '-Wno-duplicate-decl-specifier',
+        '-Wno-deprecated-declarations',
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
@@ -132,6 +137,17 @@ if mutter49_dep.found()
 		dependency('mutter-clutter-17')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49']
+endif
+
+mutter50_dep = dependency('libmutter-18', version: ['>= 50', '< 51'], required: false)
+if mutter50_dep.found()
+	libmutter_dep = dependency('libmutter-18', version: '>= 50')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-18'), dependency('mutter-cogl-18'),
+		dependency('mutter-clutter-18')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50']
 endif
 
 if mutter_dep.length() == 0

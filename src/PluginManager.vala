@@ -22,7 +22,6 @@ public class Gala.PluginManager : Object {
     }
 
     public string? window_switcher_provider { get; private set; default = null; }
-    public string? window_overview_provider { get; private set; default = null; }
 
     private HashTable<string,Plugin> plugins;
     private File plugin_dir;
@@ -125,18 +124,12 @@ public class Gala.PluginManager : Object {
     private bool check_provides (string name, PluginFunction provides) {
         var message = "Plugins %s and %s both provide %s functionality, using first one only";
         switch (provides) {
-            case PluginFunction.WINDOW_OVERVIEW:
-                if (window_overview_provider != null) {
-                    warning (message, window_overview_provider, name, "window overview");
-                    return false;
-                }
-                window_overview_provider = name;
-                return true;
             case PluginFunction.WINDOW_SWITCHER:
                 if (window_switcher_provider != null) {
                     warning (message, window_switcher_provider, name, "window switcher");
                     return false;
                 }
+
                 window_switcher_provider = name;
                 return true;
             default:
