@@ -99,7 +99,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
                 };
 
                 new_content.set_rounded_clip_bounds (clip_bounds);
-                new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+                new_content.rounded_clip_radius = Utils.scale_to_int (6, Utils.get_ui_scaling_factor (display, monitor_index));
             }
 
             swap_background_actor (animate);
@@ -119,7 +119,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
                 };
 
                 new_content.set_rounded_clip_bounds (clip_bounds);
-                new_content.rounded_clip_radius = Utils.scale_to_int (6, display.get_monitor_scale (monitor_index));
+                new_content.rounded_clip_radius = Utils.scale_to_int (6, Utils.get_ui_scaling_factor (display, monitor_index));
             }
 
             swap_background_actor (animate);

@@ -36,7 +36,7 @@ public class Gala.InhibitShortcutsDialog : AccessDialog, Meta.InhibitShortcutsDi
         }
 
         if (app.id == "io.elementary.settings.desktop" || // Naive check to always allow inhibiting by our settings app. This is needed for setting custom shortcuts
-            ShellClientsManager.get_instance ().is_positioned_window (window) // Certain windows (e.g. centered ones) may want to disable move via super + drag
+            ShellClientsManager.get_instance ().is_shell_window (window) // Certain windows (e.g. centered ones) may want to disable move via super + drag
         ) {
             on_response (0);
             return;

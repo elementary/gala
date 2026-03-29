@@ -71,7 +71,7 @@ public class Gala.StaticWindowContainer : ActorTarget {
     }
 
     private void check_window_changed (Meta.Window window) {
-        var is_static = is_static (window) && !ShellClientsManager.get_instance ().is_positioned_window (window);
+        var is_static = is_static (window) && !ShellClientsManager.get_instance ().is_shell_window (window);
 
         Clutter.Actor? clone = null;
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {

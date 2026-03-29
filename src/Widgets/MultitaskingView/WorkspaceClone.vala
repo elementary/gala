@@ -32,7 +32,7 @@ private class Gala.FramedBackground : BackgroundManager {
 #endif
         pipeline = new Cogl.Pipeline (ctx);
 
-        add_effect (new ShadowEffect ("workspace", display.get_monitor_scale (display.get_primary_monitor ())));
+        add_effect (new ShadowEffect ("workspace", Utils.get_ui_scaling_factor (display, display.get_primary_monitor ())));
 
         reactive = true;
     }
@@ -132,8 +132,13 @@ public class Gala.WorkspaceClone : ActorTarget {
         unowned var display = workspace.get_display ();
         var monitor_geometry = display.get_monitor_geometry (display.get_primary_monitor ());
 
+#if HAS_MUTTER49
+        var background_click_action = new Clutter.ClickGesture ();
+        background_click_action.recognize.connect (() => activate (true));
+#else
         var background_click_action = new Clutter.ClickAction ();
         background_click_action.clicked.connect (() => activate (true));
+#endif
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 

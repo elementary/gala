@@ -92,9 +92,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
                     return Clutter.EVENT_PROPAGATE;
                 }
 
-                float origin_x, origin_y;
-                event.get_coords (out origin_x, out origin_y);
-                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
+                var gesture = build_gesture (delta_x, delta_y, orientation, time);
                 started = true;
                 direction = gesture.direction;
                 on_gesture_detected (gesture, time);
@@ -147,7 +145,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         }
     }
 
-    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
+    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -159,9 +157,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
-            origin_x = origin_x,
-            origin_y = origin_y
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE
         };
     }
 

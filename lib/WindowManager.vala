@@ -23,10 +23,20 @@ namespace Gala {
         public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
     }
 
-    /**
-     * Function that should return true if the given shortcut should be blocked.
-     */
-    public delegate bool KeybindingFilter (Meta.KeyBinding binding);
+    [Flags]
+    public enum ModalActions {
+        NONE = 0,
+        SWITCH_WORKSPACE,
+        SWITCH_WINDOWS,
+        MULTITASKING_VIEW,
+        WINDOW_OVERVIEW,
+        ZOOM,
+        LOCATE_POINTER,
+        SCREENSHOT,
+        SCREENSHOT_AREA,
+        SCREENSHOT_WINDOW,
+        MEDIA_KEYS
+    }
 
     /**
      * A minimal class mostly used to identify your call to {@link WindowManager.push_modal} and used
@@ -35,38 +45,16 @@ namespace Gala {
     public class ModalProxy : Object {
         public Clutter.Grab? grab { get; set; }
 
-        private GestureAction[] allowed_actions;
-
-        /**
-         * A function which is called whenever a keybinding is pressed. If you supply a custom
-         * one you can filter out those that'd you like to be passed through and block all others.
-         * Defaults to blocking all.
-         * @see KeybindingFilter
-         */
-        private KeybindingFilter? _keybinding_filter = () => true;
-        public unowned KeybindingFilter? get_keybinding_filter () {
-            return _keybinding_filter;
-        }
-
-        public void set_keybinding_filter (KeybindingFilter? filter) {
-            _keybinding_filter = filter;
-        }
+        private ModalActions allowed_actions;
 
         public ModalProxy () {
         }
 
-        /**
-         * Small utility to allow all keybindings
-         */
-        public void allow_all_keybindings () {
-            _keybinding_filter = null;
-        }
-
-        public void allow_actions (GestureAction[] actions) {
+        public void allow_actions (ModalActions actions) {
             allowed_actions = actions;
         }
 
-        public bool filter_action (GestureAction action) {
+        public bool filter_action (ModalActions action) {
             return !(action in allowed_actions);
         }
     }
@@ -172,6 +160,6 @@ namespace Gala {
          * Checks whether the action should currently be prohibited.
          * @return true if the action should be prohibited, false otherwise
          */
-        public abstract bool filter_action (GestureAction action);
+        public abstract bool filter_action (ModalActions action);
     }
 }

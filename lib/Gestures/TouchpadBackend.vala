@@ -6,6 +6,11 @@
  */
 
 private class Gala.TouchpadBackend : Object, GestureBackend {
+    public enum Group {
+        NONE,
+        MULTITASKING_VIEW,
+    }
+
     private const int TOUCHPAD_BASE_HEIGHT = 300;
     private const int TOUCHPAD_BASE_WIDTH = 400;
     private const int DRAG_THRESHOLD_DISTANCE = 16;
@@ -19,7 +24,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     }
 
     public Clutter.Actor actor { get; construct; }
-    public GestureController.Group group { get; construct; }
+    public Group group { get; construct; }
 
     private static List<TouchpadBackend> instances = new List<TouchpadBackend> ();
 
@@ -29,7 +34,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     private double distance_y = 0;
     private double distance = 0;
 
-    public TouchpadBackend (Clutter.Actor actor, GestureController.Group group) {
+    public TouchpadBackend (Clutter.Actor actor, Group group) {
         Object (actor: actor, group: group);
     }
 
@@ -56,11 +61,12 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
             return Clutter.EVENT_PROPAGATE;
         }
 
-        if (state == IGNORED) {
-            if (event.get_gesture_phase () == END || event.get_gesture_phase () == CANCEL) {
-                reset ();
-            }
+        if (state != ONGOING && (event.get_gesture_phase () == END || event.get_gesture_phase () == CANCEL)) {
+            reset ();
+            return Clutter.EVENT_PROPAGATE;
+        }
 
+        if (state == IGNORED) {
             return Clutter.EVENT_PROPAGATE;
         }
 
@@ -90,7 +96,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
 
             gesture.type = event.get_type ();
             gesture.fingers = (int) event.get_touchpad_gesture_finger_count ();
-            gesture.performed_on_device_type = event.get_device ().get_device_type ();
+            gesture.performed_on_device_type = event.get_source_device ().get_device_type ();
 
             if (!on_gesture_detected (gesture, event.get_time ())) {
                 if (state == NONE) {

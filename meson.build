@@ -1,8 +1,11 @@
 project('gala',
     'vala',
-    version: '8.2.5',
+    version: '8.4.1',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
+    default_options: [
+        'buildtype=debugoptimized',
+    ],
 )
 
 gnome = import('gnome')
@@ -28,10 +31,11 @@ config_header = configure_file (
     configuration: conf
 )
 
+glib_version_required = '2.78'
+
 add_project_arguments([
-        '--target-glib=2.44',
+        '--target-glib=' + glib_version_required,
         '--hide-internal',
-        '--enable-deprecated',
         '--vapidir=' + vapi_dir,
     ],
     language: 'vala',
@@ -40,21 +44,22 @@ add_project_arguments([
         '-Wno-discarded-qualifiers',
         '-Wno-incompatible-pointer-types',
         '-Wno-unused',
+        '-Wno-address',
+        '-Wno-duplicate-decl-specifier',
+        '-Wno-deprecated-declarations',
         '-Wl,--enable-new-dtags',
 
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
         '-DGNOME_DESKTOP_USE_UNSTABLE_API',
 
-        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_2_74',
-        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_2_74',
+        '-DGLIB_VERSION_MIN_REQUIRED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
+        '-DGLIB_VERSION_MAX_ALLOWED=GLIB_VERSION_@0@'.format(glib_version_required.replace('.', '_')),
     ],
     language: 'c',
 )
 
 
 # Dependencies
-glib_version_required = '2.74.0'
-
 atk_bridge_dep = dependency('atk-bridge-2.0')
 gdk_pixbuf_def = dependency ('gdk-pixbuf-2.0')
 gtk4_dep = dependency('gtk4')
@@ -134,8 +139,23 @@ if mutter49_dep.found()
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49']
 endif
 
+mutter50_dep = dependency('libmutter-18', version: ['>= 50', '< 51'], required: false)
+if mutter50_dep.found()
+	libmutter_dep = dependency('libmutter-18', version: '>= 50')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-18'), dependency('mutter-cogl-18'),
+		dependency('mutter-clutter-18')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50']
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
+endif
+
+if libmutter_dep.version().version_compare('>= 48') and libmutter_dep.get_variable('have_fonts') == 'false'
+	error ('Gala requires mutter to be built with fonts rendering support!')
 endif
 
 mutter_typelib_dir = libmutter_dep.get_variable('typelibdir')
@@ -167,6 +187,9 @@ subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')
     subdir('docs')
+endif
+if get_option('tests')
+    subdir('tests')
 endif
 subdir('po')
 

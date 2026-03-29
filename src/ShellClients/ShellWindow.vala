@@ -85,7 +85,7 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
         unowned var manager = ShellClientsManager.get_instance ();
         window.foreach_transient ((transient) => {
-            if (manager.is_itself_positioned (transient)) {
+            if (manager.is_itself_shell_window (transient)) {
                 return true;
             }
 

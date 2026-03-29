@@ -9,6 +9,12 @@
  * a close button and a shadow. Used together with the WindowCloneContainer.
  */
 public class Gala.WindowClone : ActorTarget, RootTarget {
+    public enum Mode {
+        MULTITASKING_VIEW,
+        OVERVIEW,
+        SINGLE_APP_OVERVIEW
+    }
+
     private const int WINDOW_ICON_SIZE = 64;
     private const int ACTIVE_SHAPE_SIZE = 12;
     private const int FADE_ANIMATION_DURATION = 200;
@@ -42,8 +48,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     public bool active {
         set {
-            active_shape.update_color ();
-
             active_shape.save_easing_state ();
             active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
             active_shape.opacity = value ? 255 : 0;
@@ -51,7 +55,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         }
     }
 
-    public bool overview_mode { get; construct; }
+    public Mode mode { get; construct; }
     public float monitor_scale { get; construct set; }
 
     [CCode (notify = false)]
@@ -74,7 +78,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Clone? drag_handle = null;
 
     private ulong check_confirm_dialog_cb = 0;
-    private bool in_slot_animation = false;
 
     private Clutter.Actor clone_container;
     private Gala.CloseButton close_button;
@@ -84,20 +87,20 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private GestureController gesture_controller;
 
-    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, bool overview_mode = false) {
+    public WindowClone (WindowManager wm, Meta.Window window, float monitor_scale, Mode mode) {
         Object (
             wm: wm,
             window: window,
             monitor_scale: monitor_scale,
-            overview_mode: overview_mode
+            mode: mode
         );
     }
 
     construct {
         reactive = true;
 
-        gesture_controller = new GestureController (CUSTOM, wm);
-        gesture_controller.enable_scroll (this, VERTICAL);
+        gesture_controller = new GestureController (CUSTOM);
+        gesture_controller.add_trigger (new SwipeTrigger (this, VERTICAL));
         add_gesture_controller (gesture_controller);
 
         window.unmanaged.connect (unmanaged);
@@ -108,10 +111,16 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.connect (update_targets);
         window.size_changed.connect (() => request_reposition ());
 
-        if (overview_mode) {
+        if (mode != MULTITASKING_VIEW) {
+#if HAS_MUTTER49
+            var click_action = new Clutter.ClickGesture ();
+            click_action.recognize.connect ((action) => {
+                actor_clicked (((Clutter.PressGesture)action).get_button ());
+#else
             var click_action = new Clutter.ClickAction ();
             click_action.clicked.connect ((action, actor) => {
                 actor_clicked (action.get_button ());
+#endif
             });
 
             add_action (click_action);
@@ -127,18 +136,28 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
             add_action (drag_action);
         }
 
-        active_shape = new ActiveShape ();
-        active_shape.opacity = 0;
+        active_shape = new ActiveShape (monitor_scale) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale", active_shape, "monitor-scale");
 
         clone_container = new Clutter.Actor () {
             pivot_point = { 0.5f, 0.5f }
         };
 
-        window_title = new Tooltip ();
+        window_title = new Tooltip (monitor_scale);
+        bind_property ("monitor-scale", window_title, "monitor-scale");
+
+        close_button = new Gala.CloseButton (monitor_scale) {
+            opacity = 0
+        };
+        bind_property ("monitor-scale", close_button, "monitor-scale");
+        close_button.triggered.connect (close_window);
 
         add_child (active_shape);
         add_child (clone_container);
         add_child (window_title);
+        add_child (close_button);
 
         notify["monitor-scale"].connect (reallocate);
         reallocate ();
@@ -147,8 +166,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
-
-        notify["has-pointer"].connect (() => update_hover_widgets ());
     }
 
     ~WindowClone () {
@@ -163,19 +180,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     }
 
     private void reallocate () {
-        close_button = new Gala.CloseButton (monitor_scale) {
-            opacity = 0
-        };
-        close_button.triggered.connect (close_window);
-        close_button.notify["has-pointer"].connect (() => update_hover_widgets ());
-
         window_icon = new WindowIcon (window, WINDOW_ICON_SIZE, (int)Math.round (monitor_scale)) {
-            visible = !overview_mode
+            visible = mode != SINGLE_APP_OVERVIEW
         };
         window_icon.opacity = 0;
         window_icon.set_pivot_point (0.5f, 0.5f);
 
-        add_child (close_button);
         add_child (window_icon);
 
         set_child_below_sibling (window_icon, window_title);
@@ -189,10 +199,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * effect and makes sure the shadow is updated on size changes.
      */
     private void load_clone (Meta.WindowActor actor) {
-        if (overview_mode) {
-            actor.hide ();
-        }
-
         clone = new Clutter.Clone (actor);
         clone_container.add_child (clone);
 
@@ -223,7 +229,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      * the current one. To ease their appearance we have to fade them in.
      */
     private bool should_fade () {
-        return (overview_mode
+        return (mode != MULTITASKING_VIEW
             && window.get_workspace () != window.get_display ().get_workspace_manager ().get_active_workspace ()) || window.minimized;
     }
 
@@ -263,42 +269,41 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "shadow-opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
         if (should_fade ()) {
             add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+        } else {
+            // When a window should no longer fade (e.g. gets unminimized) make sure we reset the opacity
+            opacity = 255u;
         }
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
-    }
 
-    public override void start_progress (GestureAction action) {
-        update_hover_widgets (true);
+        add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint), 0u, 255u));
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
-        if (action != CUSTOM || slot == null || !Meta.Prefs.get_gnome_animations ()) {
-            return;
+        if (action == CUSTOM && slot != null) {
+            var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
+            var target_opacity = (uint) (255 * (1 - progress));
+
+            clone_container.translation_y = target_translation_y;
+            clone_container.opacity = target_opacity;
+
+            window_icon.translation_y = target_translation_y;
+            window_icon.opacity = target_opacity;
+
+            window_title.translation_y = target_translation_y;
+            window_title.opacity = target_opacity;
+
+            close_button.translation_y = target_translation_y;
+            close_button.opacity = target_opacity;
+        } else if (action == MULTITASKING_VIEW) {
+            close_button.reactive = progress == 1;
         }
-
-        var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
-        var target_opacity = (uint) (255 * (1 - progress));
-
-        clone_container.translation_y = target_translation_y;
-        clone_container.opacity = target_opacity;
-
-        window_icon.translation_y = target_translation_y;
-        window_icon.opacity = target_opacity;
-
-        window_title.translation_y = target_translation_y;
-        window_title.opacity = target_opacity;
-
-        close_button.translation_y = target_translation_y;
-        close_button.opacity = target_opacity;
     }
 
     public override void end_progress (GestureAction action) {
-        update_hover_widgets (false);
-
-        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5 && Meta.Prefs.get_gnome_animations ()) {
+        if (action == CUSTOM && get_current_commit (CUSTOM) > 0.5) {
             close_window (Meta.CURRENT_TIME);
         }
     }
@@ -308,7 +313,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var input_rect = window.get_buffer_rect ();
         var outer_rect = window.get_frame_rect ();
-        var clone_scale_factor = width / outer_rect.width;
+        var clone_scale_factor = outer_rect.width != 0 ? width / outer_rect.width : 1f;
 
         // Compensate for invisible borders of the texture
         float clone_x = (input_rect.x - outer_rect.x) * clone_scale_factor;
@@ -324,12 +329,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         unowned var display = wm.get_display ();
 
         clone.set_scale (clone_scale_factor, clone_scale_factor);
-
-        float clone_width, clone_height;
-        clone.get_preferred_size (null, null, out clone_width, out clone_height);
-
-        var clone_alloc = InternalUtils.actor_box_from_rect (0, 0, clone_width, clone_height);
-        clone.allocate (clone_alloc);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -360,39 +359,20 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         var rect = get_transformed_extents ();
         var monitor_index = display.get_monitor_index_for_rect (Mtk.Rectangle.from_graphene_rect (rect, ROUND));
-        var monitor_scale = display.get_monitor_scale (monitor_index);
+        var monitor_scale = Utils.get_ui_scaling_factor (display, monitor_index);
 
-        float window_title_max_width = box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale);
-        float window_title_height, window_title_nat_width;
-        window_title.get_preferred_size (null, null, out window_title_nat_width, out window_title_height);
+        float window_title_min_width, window_title_nat_width, window_title_height;
+        window_title.get_preferred_size (out window_title_min_width, null, out window_title_nat_width, out window_title_height);
 
-        var window_title_width = window_title_nat_width.clamp (0, window_title_max_width);
+        float window_title_max_width = float.max (window_title_min_width, box.get_width () - Utils.scale_to_int (TITLE_MAX_WIDTH_MARGIN, monitor_scale));
+
+        var window_title_width = float.min (window_title_nat_width, window_title_max_width);
 
         float window_title_x = (box.get_width () - window_title_width) / 2;
         float window_title_y = (window_icon.visible ? window_icon_y : box.get_height ()) - (window_title_height / 2) - Utils.scale_to_int (18, monitor_scale);
 
         var window_title_alloc = InternalUtils.actor_box_from_rect (window_title_x, window_title_y, window_title_width, window_title_height);
         window_title.allocate (window_title_alloc);
-    }
-
-    public override bool button_press_event (Clutter.Event event) {
-        return Clutter.EVENT_STOP;
-    }
-
-    private void update_hover_widgets (bool? animating = null) {
-        if (animating != null) {
-            in_slot_animation = animating;
-        }
-
-        var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
-
-        var show = (has_pointer || close_button.has_pointer) && !in_slot_animation;
-
-        close_button.save_easing_state ();
-        close_button.set_easing_mode (Clutter.AnimationMode.LINEAR);
-        close_button.set_easing_duration (duration);
-        close_button.opacity = show ? 255 : 0;
-        close_button.restore_easing_state ();
     }
 
     /**
@@ -484,7 +464,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.visible = false;
         window_title.visible = false;
 
-#if HAS_MUTTER48
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.MOVE);
+#elif HAS_MUTTER48
         wm.get_display ().set_cursor (Meta.Cursor.MOVE);
 #else
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
@@ -525,7 +507,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         active_shape.show ();
 
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
 
         bool did_move = false;
 
@@ -584,7 +570,11 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         close_button.visible = true;
         window_title.visible = true;
 
+#if HAS_MUTTER50
+        wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
 
         if (duration > 0) {
             ulong handler = 0;
@@ -622,20 +612,31 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     private class ActiveShape : Clutter.Actor {
         private const int BORDER_RADIUS = 16;
-        private const double COLOR_OPACITY = 0.8;
+        private const uint8 COLOR_OPACITY = 204;
 
-        construct {
-            add_effect (new RoundedCornersEffect (BORDER_RADIUS, 1.0f));
+        public float monitor_scale { get; construct set; }
+
+        public ActiveShape (float monitor_scale) {
+            Object (monitor_scale: monitor_scale);
         }
 
-        public void update_color () {
-            var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-            background_color = {
-                (uint8) (accent_color.red * uint8.MAX),
-                (uint8) (accent_color.green * uint8.MAX),
-                (uint8) (accent_color.blue * uint8.MAX),
-                (uint8) (COLOR_OPACITY * uint8.MAX)
-            };
+        construct {
+            var rounded_corners_effect = new RoundedCornersEffect (BORDER_RADIUS, monitor_scale);
+            bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
+            add_effect (rounded_corners_effect);
+
+            unowned var style_manager = Drawing.StyleManager.get_instance ();
+            style_manager.bind_property ("theme-accent-color", this, "background-color", SYNC_CREATE, (binding, from_value, ref to_value) => {
+#if !HAS_MUTTER47
+                var new_color = (Clutter.Color) from_value;
+#else
+                var new_color = (Cogl.Color) from_value;
+#endif
+                new_color.alpha = COLOR_OPACITY;
+
+                to_value.set_boxed (&new_color);
+                return true;
+            });
         }
     }
 }

@@ -18,10 +18,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int texture_width;
     private int texture_height;
 
-    private Cogl.Framebuffer actor_framebuffer;
-    private Cogl.Pipeline actor_pipeline;
-    private Cogl.Texture actor_texture;
-
     private Cogl.Framebuffer background_framebuffer;
     private Cogl.Pipeline background_pipeline;
     private Cogl.Texture background_texture;
@@ -33,22 +29,14 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int round_actor_size_location;
 
     private int frame_counter = 0;
+    private float last_box_scale_factor = 1.0f;
 
     public BackgroundBlurEffect (float blur_radius, float clip_radius, float monitor_scale) {
         Object (blur_radius: blur_radius, clip_radius: clip_radius, monitor_scale: monitor_scale);
     }
 
     construct {
-#if HAS_MUTTER47
-        unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
-
-        actor_pipeline = new Cogl.Pipeline (ctx);
-        actor_pipeline.set_layer_null_texture (0);
-        actor_pipeline.set_layer_filters (0, Cogl.PipelineFilter.LINEAR, Cogl.PipelineFilter.LINEAR);
-        actor_pipeline.set_layer_wrap_mode (0, Cogl.PipelineWrapMode.CLAMP_TO_EDGE);
 
         background_pipeline = new Cogl.Pipeline (ctx);
         background_pipeline.set_layer_null_texture (0);
@@ -172,14 +160,17 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             Mtk.Rectangle stage_view_layout = {};
 
             box_scale_factor = stage_view.get_scale ();
+            last_box_scale_factor = box_scale_factor;
+
             stage_view.get_layout (ref stage_view_layout);
 
             origin_x -= stage_view_layout.x;
             origin_y -= stage_view_layout.y;
         } else {
-            /* If we're drawing off stage, just assume scale = 1, this won't work
-             * with stage-view scaling though.
+            /* We're drawing off stage, e.g. during a screenshot.
+             * Use last_box_scale_factor as it's probably the most accurate one.
              */
+            box_scale_factor = last_box_scale_factor;
         }
 
         source_actor_box.set_origin (origin_x, origin_y);
@@ -221,45 +212,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         projection.scale (2.0f / width, -2.0f / height, 1.0f);
 
         framebuffer.set_projection_matrix (projection);
-    }
-
-    private bool update_actor_fbo (int width, int height, float downscale_factor) {
-        if (
-            texture_width == width &&
-            texture_height == height &&
-            this.downscale_factor == downscale_factor &&
-            actor_framebuffer != null
-        ) {
-            return true;
-        }
-
-#if HAS_MUTTER47
-        unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
-
-        var new_width = (int) Math.floorf (width / downscale_factor);
-        var new_height = (int) Math.floorf (height / downscale_factor);
-
-#if HAS_MUTTER46
-        actor_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
-#else
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
-        try {
-            actor_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
-        } catch (Error e) {
-            critical ("BackgroundBlurEffect: Couldn't create actor_texture: %s", e.message);
-            return false;
-        }
-#endif
-
-        actor_pipeline.set_layer_texture (0, actor_texture);
-        actor_framebuffer = new Cogl.Offscreen.with_texture (actor_texture);
-
-        setup_projection_matrix (actor_framebuffer, new_width, new_height);
-
-        return true;
     }
 
     private bool update_rounded_fbo (int width, int height, float downscale_factor) {
@@ -347,7 +299,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
 
         var downscale_factor = calculate_downscale_factor (width, height, real_blur_radius);
 
-        var updated = update_actor_fbo (width, height, downscale_factor) && update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
+        var updated = update_rounded_fbo (width, height, downscale_factor) && update_background_fbo (width, height);
 
         texture_width = width;
         texture_height = height;

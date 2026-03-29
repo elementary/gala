@@ -42,6 +42,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private GLib.Settings gala_behavior_settings;
     private Drawing.StyleManager style_manager;
+    private GlobalTrigger workspaces_trigger;
 
     public MultitaskingView (WindowManagerGala wm) {
         Object (wm: wm);
@@ -58,20 +59,22 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         opened = false;
         display = wm.get_display ();
 
-        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW, wm, MULTITASKING_VIEW);
-        multitasking_gesture_controller.enable_touchpad (wm.stage);
+        multitasking_gesture_controller = new GestureController (MULTITASKING_VIEW);
+        multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
 
         workspaces = new WorkspaceRow (display);
 
-        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE, wm, MULTITASKING_VIEW) {
+        workspaces_trigger = new GlobalTrigger (SWITCH_WORKSPACE, wm);
+
+        workspaces_gesture_controller = new GestureController (SWITCH_WORKSPACE) {
             overshoot_upper_clamp = 0.1,
             follow_natural_scroll = true,
         };
-        workspaces_gesture_controller.enable_touchpad (wm.stage);
-        workspaces_gesture_controller.enable_scroll (this, HORIZONTAL);
+        workspaces_gesture_controller.add_trigger (workspaces_trigger);
+        workspaces_gesture_controller.add_trigger (new SwipeTrigger (this, HORIZONTAL));
         add_gesture_controller (workspaces_gesture_controller);
 
         update_blurred_bg ();
@@ -141,7 +144,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         }
 
         var primary_geometry = display.get_monitor_geometry (primary);
-        var scale = display.get_monitor_scale (primary);
+        var scale = Utils.get_ui_scaling_factor (display, primary);
 
         primary_monitor_container.set_position (primary_geometry.x, primary_geometry.y);
         primary_monitor_container.set_size (primary_geometry.width, primary_geometry.height);
@@ -249,8 +252,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
             grab_key_focus ();
 
             modal_proxy = wm.push_modal (get_stage (), false);
-            modal_proxy.set_keybinding_filter (keybinding_filter);
-            modal_proxy.allow_actions ({ MULTITASKING_VIEW, SWITCH_WORKSPACE, ZOOM });
+            modal_proxy.allow_actions (MULTITASKING_VIEW | SWITCH_WORKSPACE | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
         } else if (action == MULTITASKING_VIEW) {
             DragDropAction.cancel_all_by_id ("multitaskingview-window");
         }
@@ -260,8 +262,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
             var mru_window = InternalUtils.get_mru_window (display.get_workspace_manager ().get_active_workspace ());
 
-            if (workspaces_gesture_controller.action_info != null
-                && (bool) workspaces_gesture_controller.action_info
+            if (workspaces_trigger.action_info != null
+                && (bool) workspaces_trigger.action_info
                 && mru_window != null
             ) {
                 var moving = mru_window;
@@ -321,7 +323,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
 
     private void add_workspace (int num) {
         unowned var manager = display.get_workspace_manager ();
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
 
         var workspace = new WorkspaceClone (wm, manager.get_workspace_by_index (num), scale);
         workspaces.insert_child_at_index (workspace, num);
@@ -358,10 +360,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
     }
 
     private void on_workspaces_reordered () {
-        if (!visible) {
-            unowned var manager = display.get_workspace_manager ();
-            workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
-        }
+        unowned var manager = display.get_workspace_manager ();
+        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
     }
 
     private void on_workspace_switched (int from, int to) {
@@ -432,28 +432,6 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
      */
     public void close (HashTable<string,Variant>? hints = null) {
         multitasking_gesture_controller.goto (0);
-    }
-
-    private bool keybinding_filter (Meta.KeyBinding binding) {
-        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
-
-        switch (action) {
-            case Meta.KeyBindingAction.NONE:
-            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                return false;
-            default:
-                break;
-        }
-
-        switch (binding.get_name ()) {
-            case "screenshot":
-            case "screenshot-clip":
-                return false;
-            default:
-                break;
-        }
-
-        return true;
     }
 
     public override bool captured_event (Clutter.Event event) {

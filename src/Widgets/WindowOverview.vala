@@ -21,6 +21,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private WindowCloneContainer window_clone_container;
 
     private uint64[]? window_ids = null;
+    private Meta.Window? window_queued_for_activation = null;
 
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
@@ -29,7 +30,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     construct {
         visible = false;
         reactive = true;
-        gesture_controller = new GestureController (MULTITASKING_VIEW, wm) {
+        gesture_controller = new GestureController (MULTITASKING_VIEW) {
             enabled = false
         };
         add_gesture_controller (gesture_controller);
@@ -106,20 +107,21 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this, true);
-        modal_proxy.set_keybinding_filter (keybinding_filter);
-        modal_proxy.allow_actions ({ ZOOM });
+        modal_proxy.allow_actions (WINDOW_OVERVIEW | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
 
         unowned var display = wm.get_display ();
 
+        var mode = window_ids != null ? WindowClone.Mode.SINGLE_APP_OVERVIEW : WindowClone.Mode.OVERVIEW;
+
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var geometry = display.get_monitor_geometry (i);
-            var scale = display.get_monitor_scale (i);
+            var scale = Utils.get_ui_scaling_factor (display, i);
 
             var custom_filter = new Gtk.CustomFilter (window_filter_func);
             var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
-            window_clone_container = new WindowCloneContainer (wm, model, scale, true) {
+            window_clone_container = new WindowCloneContainer (wm, model, scale, mode) {
                 padding_top = TOP_GAP,
                 padding_left = BORDER,
                 padding_right = BORDER,
@@ -145,27 +147,6 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         gesture_controller.goto (1);
     }
 
-    private bool keybinding_filter (Meta.KeyBinding binding) {
-        var action = Meta.Prefs.get_keybinding_action (binding.get_name ());
-
-        switch (action) {
-            case Meta.KeyBindingAction.NONE:
-            case Meta.KeyBindingAction.LOCATE_POINTER_KEY:
-                return false;
-            default:
-                break;
-        }
-
-        switch (binding.get_name ()) {
-            case "expose-all-windows":
-                return false;
-            default:
-                break;
-        }
-
-        return true;
-    }
-
     private bool window_filter_func (Object obj) requires (obj is Meta.Window) {
         var window = (Meta.Window) obj;
         return window_ids == null || (window.get_id () in window_ids);
@@ -184,13 +165,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             window.activate (window.get_display ().get_current_time ());
             close ();
         } else {
+            window_queued_for_activation = window;
             close ();
-
-            // wait for the animation to finish before switching
-            Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-                window.get_workspace ().activate_with_focus (window, window.get_display ().get_current_time ());
-                return Source.REMOVE;
-            });
         }
     }
 
@@ -202,20 +178,14 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             return;
         }
 
-#if HAS_MUTTER48
-        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#else
-        Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#endif
-            cleanup ();
-
-            return Source.REMOVE;
-        });
-
         gesture_controller.goto (0);
     }
 
-    private void cleanup () {
+    public override void end_progress (GestureAction action) {
+        if (action != MULTITASKING_VIEW || get_current_commit (MULTITASKING_VIEW) != 0) {
+            return;
+        }
+
         visible = false;
 
         wm.pop_modal (modal_proxy);
@@ -227,5 +197,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         }
 
         destroy_all_children ();
+
+        window_queued_for_activation?.activate (wm.get_display ().get_current_time ());
+        window_queued_for_activation = null;
     }
 }

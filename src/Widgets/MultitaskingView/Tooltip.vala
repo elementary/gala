@@ -8,46 +8,46 @@
  * Clutter actor to display text in a tooltip-like component.
  */
 public class Gala.Tooltip : Clutter.Actor {
-    /**
-     * Actor to display the Tooltip text.
-     */
+    private const int TEXT_MARGIN = 6;
+    private const int CORNER_RADIUS = 3;
+
+    public float monitor_scale { get; construct set; }
+
     private Gala.Text text_actor;
 
+    public Tooltip (float monitor_scale) {
+        Object (monitor_scale: monitor_scale);
+    }
+
     construct {
-#if HAS_MUTTER47
-        Cogl.Color text_color = {
-#else
-        Clutter.Color text_color = {
-#endif
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.red * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.green * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.blue * uint8.MAX,
-            (uint8) Drawing.Color.TOOLTIP_TEXT_COLOR.alpha * uint8.MAX,
-        };
-
         text_actor = new Gala.Text () {
-            margin_left = 6,
-            margin_top = 6,
-            margin_bottom = 6,
-            margin_right = 6,
             ellipsize = Pango.EllipsizeMode.MIDDLE,
-            color = text_color
+            color = Drawing.Color.TOOLTIP_TEXT_COLOR
         };
-
-        add_child (text_actor);
+        bind_property ("monitor-scale", text_actor, "margin-left", SYNC_CREATE, transform_monitor_scale_to_margin);
+        bind_property ("monitor-scale", text_actor, "margin-top", SYNC_CREATE, transform_monitor_scale_to_margin);
+        bind_property ("monitor-scale", text_actor, "margin-right", SYNC_CREATE, transform_monitor_scale_to_margin);
+        bind_property ("monitor-scale", text_actor, "margin-bottom", SYNC_CREATE, transform_monitor_scale_to_margin);
 
         layout_manager = new Clutter.BinLayout ();
-        background_color = {
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.red * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.green * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.blue * uint8.MAX),
-            (uint8) (Drawing.Color.TOOLTIP_BACKGROUND.alpha * uint8.MAX)
-        };
+        background_color = Drawing.Color.TOOLTIP_BACKGROUND;
+        add_child (text_actor);
 
-        add_effect (new RoundedCornersEffect (3, 1.0f));
+        var rounded_corners_effect = new RoundedCornersEffect (CORNER_RADIUS, monitor_scale);
+        bind_property ("monitor-scale", rounded_corners_effect, "monitor-scale");
+        add_effect (rounded_corners_effect);
     }
 
     public void set_text (string new_text) {
         text_actor.text = new_text;
+    }
+
+    private static bool transform_monitor_scale_to_margin (Binding binding, Value from_value, ref Value to_value) {
+        to_value.set_float (
+            Utils.get_framebuffer_is_logical ()
+            ? TEXT_MARGIN
+            : Utils.scale_to_int (TEXT_MARGIN, from_value.get_float ())
+        );
+        return true;
     }
 }
