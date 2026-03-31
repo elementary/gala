@@ -84,6 +84,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
+    private GLib.ListModel window_list_model;
+    private Gee.Map<Meta.Window, Clutter.Clone> child_clones = new Gee.HashMap<Meta.Window, Clutter.Clone> (null, null);
 
     private GestureController gesture_controller;
 
@@ -141,9 +143,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
-        clone_container = new Clutter.Actor () {
-            pivot_point = { 0.5f, 0.5f }
-        };
+        clone_container = new Clutter.Actor ();
 
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
@@ -164,6 +164,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         InternalUtils.wait_for_window_actor (window, load_clone);
 
+        window_list_model = new WindowListModel (wm.get_display (), NONE, true, false, -1, null, new Gtk.CustomFilter (filter_child_window));
+        window_list_model.items_changed.connect (on_items_changed);
+        on_items_changed (0, 0, window_list_model.get_n_items ());
+
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
     }
@@ -177,6 +181,32 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         window.position_changed.disconnect (update_targets);
 
         finish_drag ();
+    }
+
+    private bool filter_child_window (Object obj) requires (obj is Meta.Window) {
+        unowned var window_to_filter = (Meta.Window) obj;
+        return window.is_ancestor_of_transient (window_to_filter);
+    }
+
+    private void on_items_changed (uint pos, uint removed, uint added) {
+        for (var i = child_clones.iterator (); i.has_next (); i.next ()) {
+            if (!i.valid) {
+                break;
+            }
+
+            clone_container.remove_child (i.get ().value);
+            i.remove ();
+        }
+
+        for (var i = 0; i < window_list_model.get_n_items (); i++) {
+            var child_window = (Meta.Window) window_list_model.get_item (i);
+            unowned var child_window_actor = (Meta.WindowActor) child_window.get_compositor_private ();
+            var child_window_clone = new Clutter.Clone (child_window_actor);
+            child_clones[child_window] = child_window_clone;
+            clone_container.add_child (child_window_clone);
+        }
+
+        update_targets ();
     }
 
     private void reallocate () {
@@ -279,6 +309,39 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint), 0u, 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint), 0u, 255u));
+
+        var window_buffer_rect = window.get_buffer_rect ();
+        var window_shadow_spread_x = window_rect.x - window_buffer_rect.x;
+        var window_shadow_spread_y = window_rect.y - window_buffer_rect.y;
+
+        child_clones.foreach ((entry) => {
+            unowned var child_window = entry.key;
+            unowned var child_clone = entry.value;
+
+            var child_buffer_rect = child_window.get_buffer_rect ();
+            var child_frame_rect = child_window.get_frame_rect ();
+
+            var scale = 1.0f;
+            if (child_frame_rect.width > window_rect.width || child_frame_rect.height > window_rect.height) {
+                scale = float.min ((float) window_rect.width / child_frame_rect.width, (float) window_rect.height / child_frame_rect.height);
+
+                add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "width", typeof (float), (float) child_buffer_rect.width, child_buffer_rect.width * scale));
+                add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "height", typeof (float), (float) child_buffer_rect.height, child_buffer_rect.height * scale));
+            }
+
+            var child_parent_x_diff = child_buffer_rect.x - window_buffer_rect.x;
+            var child_parent_y_diff = child_buffer_rect.y - window_buffer_rect.y;
+            // Center the window
+            var child_shadow_spread_x = (child_frame_rect.x - child_buffer_rect.x) * scale;
+            var child_shadow_spread_y = (child_frame_rect.y - child_buffer_rect.y) * scale;
+            var target_x = window_shadow_spread_x - child_shadow_spread_x + (window_rect.width - child_frame_rect.width * scale) / 2.0f;
+            var target_y = window_shadow_spread_y - child_shadow_spread_y + (window_rect.height - child_frame_rect.height * scale) / 2.0f;
+
+            add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "x", typeof (float), (float) child_parent_x_diff, target_x));
+            add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "y", typeof (float), (float) child_parent_y_diff, target_y));
+
+            return true;
+        });
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
@@ -328,7 +391,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         unowned var display = wm.get_display ();
 
-        clone.set_scale (clone_scale_factor, clone_scale_factor);
+        clone_container.set_scale (clone_scale_factor, clone_scale_factor);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
