@@ -80,6 +80,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private ulong check_confirm_dialog_cb = 0;
 
     private Clutter.Actor clone_container;
+    private Clutter.Actor child_clone_container;
     private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
@@ -143,7 +144,15 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         };
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
+        window_list_model = new WindowListModel (wm.get_display (), STACKING, true, false, -1, null, new ChildFilter (window));
+
+        child_clone_container = new Clutter.Actor ();
+        child_clone_container.bind_model (window_list_model, create_child_func);
+        child_clone_container.child_added.connect (update_targets);
+        child_clone_container.child_removed.connect (update_targets);
+
         clone_container = new Clutter.Actor ();
+        clone_container.add_child (child_clone_container);
 
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
@@ -164,10 +173,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         InternalUtils.wait_for_window_actor (window, load_clone);
 
-        window_list_model = new WindowListModel (wm.get_display (), NONE, true, false, -1, null, new Gtk.CustomFilter (filter_child_window));
-        window_list_model.items_changed.connect (on_items_changed);
-        on_items_changed (0, 0, window_list_model.get_n_items ());
-
         window.notify["title"].connect (() => window_title.set_text (window.get_title () ?? ""));
         window_title.set_text (window.get_title () ?? "");
     }
@@ -183,30 +188,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         finish_drag ();
     }
 
-    private bool filter_child_window (Object obj) requires (obj is Meta.Window) {
-        unowned var window_to_filter = (Meta.Window) obj;
-        return window.is_ancestor_of_transient (window_to_filter);
-    }
+    private Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
+        unowned var child_window = (Meta.Window) obj;
+        var child_window_clone = new Clutter.Clone ((Meta.WindowActor) child_window.get_compositor_private ());
+        child_clones[child_window] = child_window_clone;
 
-    private void on_items_changed (uint pos, uint removed, uint added) {
-        for (var i = child_clones.iterator (); i.has_next (); i.next ()) {
-            if (!i.valid) {
-                break;
-            }
-
-            clone_container.remove_child (i.get ().value);
-            i.remove ();
-        }
-
-        for (var i = 0; i < window_list_model.get_n_items (); i++) {
-            var child_window = (Meta.Window) window_list_model.get_item (i);
-            unowned var child_window_actor = (Meta.WindowActor) child_window.get_compositor_private ();
-            var child_window_clone = new Clutter.Clone (child_window_actor);
-            child_clones[child_window] = child_window_clone;
-            clone_container.add_child (child_window_clone);
-        }
-
-        update_targets ();
+        return child_window_clone;
     }
 
     private void reallocate () {
@@ -230,7 +217,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
      */
     private void load_clone (Meta.WindowActor actor) {
         clone = new Clutter.Clone (actor);
-        clone_container.add_child (clone);
+        clone_container.insert_child_below (clone, null);
 
         check_shadow_requirements ();
     }
@@ -700,6 +687,23 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
                 to_value.set_boxed (&new_color);
                 return true;
             });
+        }
+    }
+
+    private class ChildFilter : Gtk.Filter {
+        public Meta.Window parent_window { private get; construct; }
+
+        public ChildFilter (Meta.Window parent_window) {
+            Object (parent_window: parent_window);
+        }
+
+        public override Gtk.FilterMatch get_strictness () {
+            return ALL;
+        }
+
+        public override bool match (GLib.Object? item) requires (item is Meta.Window) {
+            unowned var window = (Meta.Window) item;
+            return parent_window.is_ancestor_of_transient (window);
         }
     }
 }

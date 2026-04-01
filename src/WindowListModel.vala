@@ -100,10 +100,6 @@ public class Gala.WindowListModel : Object, ListModel {
     }
 
     private void check_window (Meta.Window window) {
-        if (window.get_compositor_private () == null) {
-            return;
-        }
-
         var exists = window in windows;
         var should_exist = should_present_window (window);
 
@@ -118,6 +114,10 @@ public class Gala.WindowListModel : Object, ListModel {
     }
 
     private bool should_present_window (Meta.Window window) {
+        if (window.get_compositor_private () == null) {
+            return false;
+        }
+
         if (monitor_filter >= 0 && monitor_filter != window.get_monitor ()) {
             return false;
         }
