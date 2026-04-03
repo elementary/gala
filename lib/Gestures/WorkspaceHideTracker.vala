@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2025 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.WorkspaceHideTracker : Object {
@@ -11,13 +11,19 @@ public class Gala.WorkspaceHideTracker : Object {
 
     public Meta.Display display { private get; construct; }
 
+    private const uint WINDOW_STATE_CHANGED_TIMEOUT_MSEC = 100;
     private ComputeShouldHideOnWorkspace? compute_func = null;
     private double switch_workspace_progress = 0.0;
     private bool[] should_hide_on_workspace_cache = {};
+    private uint window_state_changed_progress_updated_id = 0;
 
     public WorkspaceHideTracker (Meta.Display display, ComputeShouldHideOnWorkspace? compute_func) {
         Object (display: display);
         this.compute_func = compute_func;
+    }
+
+    ~WorkspaceHideTracker () {
+        remove_window_state_changed_progress_timeout ();
     }
 
     construct {
@@ -115,7 +121,7 @@ public class Gala.WorkspaceHideTracker : Object {
             internal_recalculate_workspace (workspace, false);
         }
 
-        window_state_changed_progress_updated (get_hidden_progress ());
+        emit_window_state_changed_progress_updated (get_hidden_progress ());
     }
 
     private void internal_recalculate_workspace (Meta.Workspace? workspace, bool send_signal) {
@@ -130,7 +136,7 @@ public class Gala.WorkspaceHideTracker : Object {
         should_hide_on_workspace_cache[workspace.workspace_index] = compute_func (workspace);
 
         if (send_signal) {
-            window_state_changed_progress_updated (get_hidden_progress ());
+            emit_window_state_changed_progress_updated (get_hidden_progress ());
         }
     }
 
@@ -140,5 +146,26 @@ public class Gala.WorkspaceHideTracker : Object {
 
     private void recalculate_workspace_pspec (Object obj, ParamSpec pspec) {
         internal_recalculate_workspace (((Meta.Window) obj).get_workspace (), true);
+    }
+
+    private void emit_window_state_changed_progress_updated (double new_progress) {
+        remove_window_state_changed_progress_timeout ();
+
+        window_state_changed_progress_updated_id = Timeout.add (
+            WINDOW_STATE_CHANGED_TIMEOUT_MSEC,
+            () => {
+                window_state_changed_progress_updated_id = 0;
+                window_state_changed_progress_updated (new_progress);
+
+                return Source.REMOVE;
+            }
+        );
+    }
+
+    private void remove_window_state_changed_progress_timeout () {
+        if (window_state_changed_progress_updated_id != 0) {
+            Source.remove (window_state_changed_progress_updated_id);
+            window_state_changed_progress_updated_id = 0;
+        }
     }
 }
