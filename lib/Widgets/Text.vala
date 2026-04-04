@@ -1,13 +1,13 @@
 /*
  * SPDX-License-Identifier: LGPL-3.0-or-later
- * SPDX-FileCopyrightText: 2025 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 /*
  * Clutter.Text that automatically changes font-name to the system one
  */
 public class Gala.Text : Clutter.Actor {
-    private static GLib.Settings gnome_interface_settings;
+    private static GLib.Settings gnome_interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
 
 #if HAS_MUTTER47
     public Cogl.Color color { get { return text_actor.color; } set { text_actor.color = value; } }
@@ -15,16 +15,31 @@ public class Gala.Text : Clutter.Actor {
     public Clutter.Color color { get { return text_actor.color; } set { text_actor.color = value; } }
 #endif
     public Pango.EllipsizeMode ellipsize { get { return text_actor.ellipsize; } set { text_actor.ellipsize = value; } }
-    public Pango.Alignment line_alignment {
-        get { return text_actor.line_alignment; } set { text_actor.line_alignment = value; }
-    }
+    public Pango.Alignment line_alignment { get { return text_actor.line_alignment; } set { text_actor.line_alignment = value; }}
     public string text { get { return text_actor.text; } set { text_actor.text = value; } }
 
-    private Clutter.Text text_actor;
-
-    static construct {
-        gnome_interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
+    public bool use_shadow {
+        get {
+            return shadow_actor.get_parent () != null;
+        }
+        set {
+            if (value) {
+                insert_child_below (shadow_actor, null);
+            } else {
+                remove_child (shadow_actor);
+            }
+        }
     }
+#if HAS_MUTTER47
+    public Cogl.Color shadow_color { get { return shadow_actor.color; } set { shadow_actor.color = value; } }
+#else
+    public Clutter.Color shadow_color { get { return shadow_actor.color; } set { shadow_actor.color = value; } }
+#endif
+    //  public float shadow_offset_x { get { return shadow_actor.margin_left; } set { shadow_actor.margin_left = value; }}
+    //  public float shadow_offset_y { get { return shadow_actor.margin_top; } set { shadow_actor.margin_top = value; }}
+
+    private Clutter.Text text_actor;
+    private Clutter.Text shadow_actor;
 
     class construct {
         set_layout_manager_type (typeof (Clutter.BinLayout));
@@ -33,6 +48,17 @@ public class Gala.Text : Clutter.Actor {
     construct {
         text_actor = new Clutter.Text ();
         add_child (text_actor);
+
+        shadow_actor = new Clutter.Text ();
+        // We add 2 blur effects because the shadow size needs to be 2px, and Clutter.BlurEffect is quite cheap.
+        // TODO: replace with a Gala.BoxBlurEffect in the future
+        shadow_actor.add_effect (new Clutter.BlurEffect ());
+        shadow_actor.add_effect (new Clutter.BlurEffect ());
+
+        text_actor.bind_property ("ellipsize", shadow_actor, "ellipsize");
+        text_actor.bind_property ("line-alignment", shadow_actor, "line-alignment");
+        text_actor.bind_property ("text", shadow_actor, "text");
+        text_actor.bind_property ("font-name", shadow_actor, "font-name");
 
         set_system_font_name ();
         gnome_interface_settings.changed["font-name"].connect (set_system_font_name);
@@ -49,5 +75,13 @@ public class Gala.Text : Clutter.Actor {
         }
 
         text_actor.font_name = string.joinv (" ", name);
+    }
+
+    public override void get_preferred_height (float for_width, out float min_height_p, out float natural_height_p) {
+        /*
+         *shadow_actor.margin_top increases total height by 2px, when it shouldn't affect height at all.
+         * To workaround this we override the height calculation.
+         */
+        min_height_p = natural_height_p = text_actor.height;
     }
 }
