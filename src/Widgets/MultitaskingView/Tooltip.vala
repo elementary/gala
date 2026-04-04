@@ -22,7 +22,9 @@ public class Gala.Tooltip : Clutter.Actor {
     construct {
         text_actor = new Gala.Text () {
             ellipsize = Pango.EllipsizeMode.MIDDLE,
-            color = Drawing.Color.TOOLTIP_TEXT_COLOR
+            color = Drawing.Color.TOOLTIP_TEXT_COLOR,
+            use_shadow = true,
+            shadow_color = { 0, 0, 0, 153 }
         };
         bind_property ("monitor-scale", text_actor, "margin-left", SYNC_CREATE, transform_monitor_scale_to_margin);
         bind_property ("monitor-scale", text_actor, "margin-top", SYNC_CREATE, transform_monitor_scale_to_margin);
