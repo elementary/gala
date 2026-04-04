@@ -4,15 +4,15 @@ gala_common_enums = files(
 
 gala_lib_sources = files(
     'ActivatableComponent.vala',
-    'App.vala',
-    'AppCache.vala',
-    'AppSystem.vala',
     'BackgroundManager.vala',
     'Constants.vala',
     'DragDropAction.vala',
     'Plugin.vala',
     'Utils.vala',
     'WindowManager.vala',
+    'AppSystem/App.vala',
+    'AppSystem/AppCache.vala',
+    'AppSystem/AppSystem.vala',
     'Drawing/BufferSurface.vala',
     'Drawing/Canvas.vala',
     'Drawing/Color.vala',
