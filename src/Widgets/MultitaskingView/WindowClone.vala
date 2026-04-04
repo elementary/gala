@@ -86,7 +86,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
     private Clutter.Actor window_icon;
     private Tooltip window_title;
     private GLib.ListModel window_list_model;
-    private Gee.Map<Meta.Window, Clutter.Clone> child_clones = new Gee.HashMap<Meta.Window, Clutter.Clone> (null, null);
 
     private GestureController gesture_controller;
 
@@ -190,10 +189,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
     private Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
         unowned var child_window = (Meta.Window) obj;
-        var child_window_clone = new Clutter.Clone ((Meta.WindowActor) child_window.get_compositor_private ());
-        child_clones[child_window] = child_window_clone;
 
-        return child_window_clone;
+        return new Clutter.Clone ((Meta.WindowActor) child_window.get_compositor_private ());
     }
 
     private void reallocate () {
@@ -301,9 +298,9 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var window_shadow_spread_x = window_rect.x - window_buffer_rect.x;
         var window_shadow_spread_y = window_rect.y - window_buffer_rect.y;
 
-        child_clones.foreach ((entry) => {
-            unowned var child_window = entry.key;
-            unowned var child_clone = entry.value;
+        for (var i = 0; i < child_clone_container.get_n_children (); i++) {
+            var child_window = (Meta.Window) window_list_model.get_item (i);
+            unowned var child_clone = child_clone_container.get_child_at_index (i);
 
             var child_buffer_rect = child_window.get_buffer_rect ();
             var child_frame_rect = child_window.get_frame_rect ();
@@ -326,9 +323,7 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
             add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "x", typeof (float), (float) child_parent_x_diff, target_x));
             add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "y", typeof (float), (float) child_parent_y_diff, target_y));
-
-            return true;
-        });
+        }
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
