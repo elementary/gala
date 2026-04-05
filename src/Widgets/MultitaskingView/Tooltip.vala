@@ -10,6 +10,8 @@
 public class Gala.Tooltip : Clutter.Actor {
     private const int TEXT_MARGIN = 6;
     private const int CORNER_RADIUS = 3;
+    private const int TEXT_SHADOW_Y_OFFSET = 1;
+    private const int TEXT_SHADOW_BLUR_RADIUS = 2;
 
     public float monitor_scale { get; construct set; }
 
@@ -24,7 +26,9 @@ public class Gala.Tooltip : Clutter.Actor {
             ellipsize = Pango.EllipsizeMode.MIDDLE,
             color = Drawing.Color.TOOLTIP_TEXT_COLOR,
             use_shadow = true,
-            shadow_color = { 0, 0, 0, 153 }
+            shadow_color = Drawing.Color.TOOLTIP_TEXT_SHADOW_COLOR,
+            shadow_offset_y = TEXT_SHADOW_Y_OFFSET,
+            shadow_blur_radius = TEXT_SHADOW_BLUR_RADIUS
         };
         bind_property ("monitor-scale", text_actor, "margin-left", SYNC_CREATE, transform_monitor_scale_to_margin);
         bind_property ("monitor-scale", text_actor, "margin-top", SYNC_CREATE, transform_monitor_scale_to_margin);

@@ -4,7 +4,7 @@
  */
 
 /*
- * Clutter.Text that automatically changes font-name to the system one
+ * Clutter.Text that automatically changes font-name to the system one and supports text shadow
  */
 public class Gala.Text : Clutter.Actor {
     private static GLib.Settings gnome_interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
@@ -35,11 +35,13 @@ public class Gala.Text : Clutter.Actor {
 #else
     public Clutter.Color shadow_color { get { return shadow_actor.color; } set { shadow_actor.color = value; } }
 #endif
-    //  public float shadow_offset_x { get { return shadow_actor.margin_left; } set { shadow_actor.margin_left = value; }}
-    //  public float shadow_offset_y { get { return shadow_actor.margin_top; } set { shadow_actor.margin_top = value; }}
+    public float shadow_offset_x { get { return shadow_actor.translation_x; } set { shadow_actor.translation_x = value; } }
+    public float shadow_offset_y { get { return shadow_actor.translation_y; } set { shadow_actor.translation_y = value; } }
+    public int shadow_blur_radius { get { return box_blur_manager.radius; } set { box_blur_manager.radius = value; } }
 
     private Clutter.Text text_actor;
     private Clutter.Text shadow_actor;
+    private BoxBlurManager box_blur_manager;
 
     class construct {
         set_layout_manager_type (typeof (Clutter.BinLayout));
@@ -50,10 +52,7 @@ public class Gala.Text : Clutter.Actor {
         add_child (text_actor);
 
         shadow_actor = new Clutter.Text ();
-        // We add 2 blur effects because the shadow size needs to be 2px, and Clutter.BlurEffect is quite cheap.
-        // TODO: replace with a Gala.BoxBlurEffect in the future
-        shadow_actor.add_effect (new Clutter.BlurEffect ());
-        shadow_actor.add_effect (new Clutter.BlurEffect ());
+        box_blur_manager = new BoxBlurManager (shadow_actor);
 
         text_actor.bind_property ("ellipsize", shadow_actor, "ellipsize");
         text_actor.bind_property ("line-alignment", shadow_actor, "line-alignment");
@@ -78,10 +77,10 @@ public class Gala.Text : Clutter.Actor {
     }
 
     public override void get_preferred_height (float for_width, out float min_height_p, out float natural_height_p) {
-        /*
-         *shadow_actor.margin_top increases total height by 2px, when it shouldn't affect height at all.
-         * To workaround this we override the height calculation.
-         */
         min_height_p = natural_height_p = text_actor.height;
+    }
+
+    public override void get_preferred_width (float for_height, out float min_width_p, out float natural_width_p) {
+        min_width_p = natural_width_p = text_actor.width;
     }
 }

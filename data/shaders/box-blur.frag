@@ -9,6 +9,11 @@ uniform vec2 PIXEL_STEP;
 uniform vec2 DIRECTION;
 
 void main() {
+    if (RADIUS == 0) {
+        cogl_color_out = texture2D(tex, cogl_tex_coord0_in.xy);
+        return;
+    }
+
     vec4 sum = vec4(0, 0, 0, 0);
     int count = 0;
 
