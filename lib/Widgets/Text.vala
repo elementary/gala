@@ -18,23 +18,23 @@ public class Gala.Text : Clutter.Actor {
     public Pango.Alignment line_alignment { get { return text_actor.line_alignment; } set { text_actor.line_alignment = value; }}
     public string text { get { return text_actor.text; } set { text_actor.text = value; } }
 
-    public bool use_shadow {
-        get {
-            return shadow_actor.get_parent () != null;
-        }
+#if HAS_MUTTER47
+    public Cogl.Color shadow_color {
+#else
+    public Clutter.Color shadow_color {
+#endif
+        get { return shadow_actor.color; }
         set {
-            if (value) {
+            shadow_actor.color = value;
+
+            if (shadow_actor.color.alpha != 0 && shadow_actor.get_parent () == null) {
                 insert_child_below (shadow_actor, null);
-            } else {
+            } else if (shadow_actor.color.alpha == 0 && shadow_actor.get_parent () == this) {
                 remove_child (shadow_actor);
             }
         }
     }
-#if HAS_MUTTER47
-    public Cogl.Color shadow_color { get { return shadow_actor.color; } set { shadow_actor.color = value; } }
-#else
-    public Clutter.Color shadow_color { get { return shadow_actor.color; } set { shadow_actor.color = value; } }
-#endif
+
     public float shadow_offset_x { get { return shadow_actor.translation_x; } set { shadow_actor.translation_x = value; } }
     public float shadow_offset_y { get { return shadow_actor.translation_y; } set { shadow_actor.translation_y = value; } }
     public int shadow_blur_radius { get { return box_blur_manager.radius; } set { box_blur_manager.radius = value; } }
@@ -74,13 +74,5 @@ public class Gala.Text : Clutter.Actor {
         }
 
         text_actor.font_name = string.joinv (" ", name);
-    }
-
-    public override void get_preferred_height (float for_width, out float min_height_p, out float natural_height_p) {
-        min_height_p = natural_height_p = text_actor.height;
-    }
-
-    public override void get_preferred_width (float for_height, out float min_width_p, out float natural_width_p) {
-        min_width_p = natural_width_p = text_actor.width;
     }
 }

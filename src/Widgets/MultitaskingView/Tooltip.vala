@@ -25,7 +25,6 @@ public class Gala.Tooltip : Clutter.Actor {
         text_actor = new Gala.Text () {
             ellipsize = Pango.EllipsizeMode.MIDDLE,
             color = Drawing.Color.TOOLTIP_TEXT_COLOR,
-            use_shadow = true,
             shadow_color = Drawing.Color.TOOLTIP_TEXT_SHADOW_COLOR,
             shadow_offset_y = TEXT_SHADOW_Y_OFFSET,
             shadow_blur_radius = TEXT_SHADOW_BLUR_RADIUS

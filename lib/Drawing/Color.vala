@@ -10,25 +10,25 @@ namespace Gala.Drawing {
     */
     public class Color : GLib.Object {
 #if !HAS_MUTTER47
-        public const Clutter.Color LIGHT_BACKGROUND = { 250, 250, 250, 255 };
-        public const Clutter.Color DARK_BACKGROUND = { 51, 51, 51, 255 };
-        public const Clutter.Color LIGHT_BORDER = { 0, 0, 0, 51 };
-        public const Clutter.Color DARK_BORDER = { 0, 0, 0, 191 };
-        public const Clutter.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255 };
-        public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13 };
-        public const Clutter.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230 };
-        public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255 };
-        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153 };
+        public const Clutter.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
+        public const Clutter.Color DARK_BACKGROUND = { 51, 51, 51, 255};
+        public const Clutter.Color LIGHT_BORDER = { 0, 0, 0, 51};
+        public const Clutter.Color DARK_BORDER = { 0, 0, 0, 191};
+        public const Clutter.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
+        public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
+        public const Clutter.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
+        public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 255, 0, 0, 153};
 #else
-        public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255 };
-        public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255 };
-        public const Cogl.Color LIGHT_BORDER = { 0, 0, 0, 51 };
-        public const Cogl.Color DARK_BORDER = { 0, 0, 0, 191 };
-        public const Cogl.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255 };
-        public const Cogl.Color DARK_HIGHLIGHT = { 255, 255, 255, 13 };
-        public const Cogl.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230 };
-        public const Cogl.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255 };
-        public const Cogl.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153 };
+        public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
+        public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255};
+        public const Cogl.Color LIGHT_BORDER = { 0, 0, 0, 51};
+        public const Cogl.Color DARK_BORDER = { 0, 0, 0, 191};
+        public const Cogl.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
+        public const Cogl.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
+        public const Cogl.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
+        public const Cogl.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+        public const Cogl.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
 #endif
 
         /**
