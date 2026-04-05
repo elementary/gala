@@ -18,7 +18,7 @@ namespace Gala.Drawing {
         public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
         public const Clutter.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
         public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
-        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 255, 0, 0, 153};
+        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
 #else
         public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
         public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255};
