@@ -11,7 +11,7 @@
  * It enables touchpad and (once supported) touchscreen backends for the given actor.
  */
 public class Gala.SwipeTrigger : Object, GestureTrigger {
-    public weak Clutter.Actor? actor;
+    private weak Clutter.Actor? actor;
     public Clutter.Orientation orientation { get; construct; }
 
     public SwipeTrigger (Clutter.Actor actor, Clutter.Orientation orientation) {
