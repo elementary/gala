@@ -52,7 +52,7 @@ lib/Widgets/CloseButton.vala
 lib/Widgets/Icon.vala
 lib/Widgets/Image.vala
 lib/Widgets/Text.vala
-lib/Widgets/WindowIcon.val
+lib/Widgets/WindowIcon.vala
 plugins/pip/Main.vala
 plugins/pip/PopupWindow.vala
 plugins/pip/SelectionArea.vala
