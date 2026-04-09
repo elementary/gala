@@ -19,19 +19,14 @@ public class Gala.Daemon.OSKManager : Object {
             return;
         }
 
-        osk = new OSKWindow ();
+        var model_manager = new ModelManager ();
+        var input_manager = new InputManager (this);
 
-        osk.keyval_pressed.connect (on_keyval_pressed);
-        osk.keyval_released.connect (on_keyval_released);
-
+        osk = new OSKWindow (model_manager, input_manager);
         osk.present ();
     }
 
-    private void on_keyval_pressed (uint keyval) {
-        keyval_pressed (keyval);
-    }
-
-    private void on_keyval_released (uint keyval) {
-        keyval_released (keyval);
+    public async void set_input_purpose () throws DBusError, IOError {
+        //  model_manager.set_input_purpose (input_purpose);
     }
 }
