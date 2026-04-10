@@ -16,3 +16,13 @@ daemon-window {
     margin: 1em;
     text-shadow: 0 1px 1px alpha(white, 0.1);
 }
+
+listview {
+    background: none;
+    border-spacing: 3px;
+}
+
+listview > row {
+    padding: 3px;
+    border-radius: 4px;
+}

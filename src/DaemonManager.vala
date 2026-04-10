@@ -6,8 +6,8 @@
  */
 
 public class Gala.DaemonManager : GLib.Object {
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
+    public const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
+    public const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
     private const int SPACING = 12;
 
     [DBus (name = "org.pantheon.gala.daemon")]
@@ -32,7 +32,12 @@ public class Gala.DaemonManager : GLib.Object {
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
-            window.shown.connect (handle_daemon_window);
+#if HAS_MUTTER49
+            window.set_type (DOCK);
+#elif HAS_MUTTER46
+            client.wayland_client.make_dock (window);
+#endif
+            window.notify["title"].connect ((obj, pspec) => handle_daemon_window ((Meta.Window) obj));
         });
     }
 
@@ -70,6 +75,14 @@ public class Gala.DaemonManager : GLib.Object {
                 window.move_frame (false, 0, 0);
                 window.make_above ();
                 window.stick ();
+                break;
+
+            case "IBUS_CANDIDATE":
+                ShellClientsManager.get_instance ().make_ibus_candidate_window (window);
+                break;
+
+            case "OSK":
+                ShellClientsManager.get_instance ().make_osk_window (window);
                 break;
         }
     }

@@ -43,6 +43,7 @@ all_doc_target = custom_target(
         '--pkg', 'atk-bridge-2.0',
         '--pkg', 'gnome-bg-4',
         '--pkg', 'gnome-desktop-4',
+        '--pkg', 'ibus-1.0',
         '--pkg', 'libsystemd',
         '--pkg', 'wayland-server',
         '--pkg', 'pantheon-desktop-shell',
