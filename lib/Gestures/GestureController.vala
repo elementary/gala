@@ -77,6 +77,8 @@ public class Gala.GestureController : Object {
 
     public bool recognizing { get; private set; }
 
+    private bool running = false;
+
     private Gee.List<GestureBackend> backends;
     private Gee.List<GestureTrigger> triggers;
 
@@ -126,11 +128,12 @@ public class Gala.GestureController : Object {
     }
 
     private void prepare () {
-        if (timeline != null) {
-            timeline = null;
-        } else {
+        if (!running) {
             target.propagate (START, action, progress);
+            running = true;
         }
+
+        timeline = null;
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -251,14 +254,14 @@ public class Gala.GestureController : Object {
     private void finish (double velocity, double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
 
-        target.propagate (COMMIT, action, clamped_to);
-
         if (progress == to) {
+            target.propagate (COMMIT, action, clamped_to);
             finished ();
             return;
         }
 
         if (!Meta.Prefs.get_gnome_animations ()) {
+            target.propagate (COMMIT, action, clamped_to);
             progress = clamped_to;
             finished ();
             return;
@@ -269,10 +272,14 @@ public class Gala.GestureController : Object {
         spring.stopped.connect_after (finished);
 
         timeline = spring;
+
+        target.propagate (COMMIT, action, clamped_to);
     }
 
     private void finished (bool is_finished = true) requires (is_finished) {
+        assert (running);
         target.propagate (END, action, progress);
+        running = false;
         timeline = null;
     }
 
@@ -284,7 +291,8 @@ public class Gala.GestureController : Object {
      */
     public void goto (double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
-        if (progress == to || recognizing ||
+        if (progress == to && (timeline == null || timeline.value_to == to) ||
+            recognizing ||
             timeline != null && clamped_to == timeline.value_to // Only allow overshoot if there's no ongoing overshoot animation to prevent stacking
         ) {
             return;

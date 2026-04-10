@@ -15,6 +15,7 @@ public class Gala.WindowMover : Object {
 
     private Settings behavior_settings;
     private HashTable<Meta.Window, int> old_workspaces;
+    private HashTable<Meta.Window, uint> queued_moves;
 
     public WindowMover (Meta.Display display, WindowListener window_listener) {
         Object (display: display, window_listener: window_listener);
@@ -23,6 +24,7 @@ public class Gala.WindowMover : Object {
     construct {
         behavior_settings = new Settings ("io.elementary.desktop.wm.behavior");
         old_workspaces = new HashTable<Meta.Window, int> (null, null);
+        queued_moves = new HashTable<Meta.Window, uint> (null, null);
 
         window_listener.window_maximized_changed.connect (on_window_maximized_changed);
         window_listener.window_fullscreen_changed.connect (on_window_fullscreen_changed);
@@ -46,10 +48,19 @@ public class Gala.WindowMover : Object {
         }
 
         if (window.fullscreen) {
-            move_window_to_next_ws (window);
+            /* Firefox (while playing a video) immediately unfullscreens if we move it immediately */
+            queue_move_window_to_next_ws (window);
         } else {
             move_window_to_old_ws (window);
         }
+    }
+
+    private void queue_move_window_to_next_ws (Meta.Window window) {
+        queued_moves[window] = Idle.add (() => {
+            move_window_to_next_ws (window);
+            queued_moves.remove (window);
+            return Source.REMOVE;
+        });
     }
 
     private void move_window_to_next_ws (Meta.Window window) {
@@ -81,6 +92,12 @@ public class Gala.WindowMover : Object {
     }
 
     private void move_window_to_old_ws (Meta.Window window) {
+        if (window in queued_moves) {
+            Source.remove (queued_moves[window]);
+            queued_moves.remove (window);
+            return;
+        }
+
         unowned var win_ws = window.get_workspace ();
 
         // Do nothing if the current workspace is populated with other windows

@@ -1318,95 +1318,56 @@ namespace Gala {
                 return;
             }
 
+            animate_map.begin (actor);
+        }
+
+        private async void animate_map (Meta.WindowActor actor) {
+            var window = actor.meta_window;
+
+            mapping.add (actor);
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.HIDE;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
-
-                    mapping.add (actor);
-
                     if (window.maximized_vertically || window.maximized_horizontally) {
                         var outer_rect = window.get_frame_rect ();
                         actor.set_position (outer_rect.x, outer_rect.y);
                     }
 
                     actor.set_pivot_point (0.5f, 1.0f);
-                    actor.set_scale (0.01f, 0.1f);
-                    actor.opacity = 0;
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
+                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
+                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 case Meta.WindowType.MENU:
                 case Meta.WindowType.DROPDOWN_MENU:
                 case Meta.WindowType.POPUP_MENU:
-                    var duration = AnimationDuration.MENU_MAP;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
-
-                    mapping.add (actor);
-
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (duration);
-                    actor.opacity = 255;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, AnimationDuration.MENU_MAP, EASE_OUT_QUAD);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-
-                    mapping.add (actor);
-
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (200);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
-
                     dim_parent_window (window);
+                    actor.set_pivot_point (0.5f, 0.5f);
 
+                    var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
+                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
+                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    map_completed (actor);
                     break;
             }
+
+            mapping.remove (actor);
+            map_completed (actor);
         }
 
         public override void destroy (Meta.WindowActor actor) {
@@ -1435,68 +1396,45 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.opacity = 0;
-                destroy_completed (actor);
+            animate_destroy.begin (actor);
+        }
 
-                if (window.window_type == Meta.WindowType.NORMAL) {
-                    Utils.clear_window_cache (window);
-                }
+        private async void animate_destroy (Meta.WindowActor actor) {
+            var window = actor.meta_window;
 
-                return;
-            }
+            destroying.add (actor);
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.CLOSE;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.show ();
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
+                    var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
+                    builder.add_property ("scale-x", 0.8);
+                    builder.add_property ("scale-y", 0.8);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                        Utils.clear_window_cache (window);
-                    });
+                    Utils.clear_window_cache (window);
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
+                    builder.add_property ("scale-x", 1.05);
+                    builder.add_property ("scale-y", 1.05);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    destroy_completed (actor);
                     break;
             }
+
+            destroying.remove (actor);
+            destroy_completed (actor);
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1597,15 +1535,13 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
-            if (end_animation (ref mapping, actor))
-                map_completed (actor);
             if (end_animation (ref unminimizing, actor))
                 unminimize_completed (actor);
             if (end_animation (ref minimizing, actor))
                 minimize_completed (actor);
-            if (end_animation (ref destroying, actor))
-                destroy_completed (actor);
 
+            end_animation (ref mapping, actor);
+            end_animation (ref destroying, actor);
             end_animation (ref unmaximizing, actor);
             end_animation (ref maximizing, actor);
         }
