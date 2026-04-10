@@ -144,11 +144,10 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
         window_list_model = new WindowListModel (wm.get_display (), STACKING, true, false, -1, null, new ChildFilter (window));
+        window_list_model.items_changed.connect_after (update_targets);
 
         child_clone_container = new Clutter.Actor ();
         child_clone_container.bind_model (window_list_model, create_child_func);
-        child_clone_container.child_added.connect (update_targets);
-        child_clone_container.child_removed.connect (update_targets);
 
         clone_container = new Clutter.Actor ();
         clone_container.add_child (child_clone_container);
@@ -298,9 +297,12 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
         var window_shadow_spread_x = window_rect.x - window_buffer_rect.x;
         var window_shadow_spread_y = window_rect.y - window_buffer_rect.y;
 
-        for (var i = 0; i < child_clone_container.get_n_children (); i++) {
+        var i = 0u;
+        for (unowned var child_clone = child_clone_container.get_first_child ();
+            child_clone != null;
+            child_clone = child_clone.get_next_sibling ()
+        ) {
             var child_window = (Meta.Window) window_list_model.get_item (i);
-            unowned var child_clone = child_clone_container.get_child_at_index (i);
 
             var child_buffer_rect = child_window.get_buffer_rect ();
             var child_frame_rect = child_window.get_frame_rect ();
@@ -323,6 +325,8 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
             add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "x", typeof (float), (float) child_parent_x_diff, target_x));
             add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "y", typeof (float), (float) child_parent_y_diff, target_y));
+
+            i++;
         }
     }
 
@@ -690,10 +694,6 @@ public class Gala.WindowClone : ActorTarget, RootTarget {
 
         public ChildFilter (Meta.Window parent_window) {
             Object (parent_window: parent_window);
-        }
-
-        public override Gtk.FilterMatch get_strictness () {
-            return ALL;
         }
 
         public override bool match (GLib.Object? item) requires (item is Meta.Window) {
