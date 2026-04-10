@@ -11,11 +11,24 @@
  * It enables touchpad and (once supported) touchscreen backends for the given actor.
  */
 public class Gala.SwipeTrigger : Object, GestureTrigger {
-    public Clutter.Actor actor { get; construct; }
+    private weak Clutter.Actor? actor;
     public Clutter.Orientation orientation { get; construct; }
 
     public SwipeTrigger (Clutter.Actor actor, Clutter.Orientation orientation) {
-        Object (actor: actor, orientation: orientation);
+        Object (orientation: orientation);
+
+        this.actor = actor;
+        this.actor.weak_ref (on_actor_disposed);
+    }
+
+    ~SwipeTrigger () {
+        if (actor != null) {
+            actor.weak_unref (on_actor_disposed);
+        }
+    }
+
+    private void on_actor_disposed () {
+        actor = null;
     }
 
     internal bool triggers (Gesture gesture) {
@@ -26,6 +39,11 @@ public class Gala.SwipeTrigger : Object, GestureTrigger {
     }
 
     internal void enable_backends (GestureController controller) {
+        if (actor == null) {
+            warning ("ScrollTrigger.enable_backends (): Can't add backends to controller: actor is null");
+            return;
+        }
+
         controller.enable_backend (new ScrollBackend (actor, orientation, new GestureSettings ()));
     }
 }
