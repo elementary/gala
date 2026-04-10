@@ -33,7 +33,7 @@ public class Gala.MonitorClone : ActorTarget {
 
         background = new BackgroundManager (display, monitor, false);
 
-        var windows = new WindowListModel (display, STACKING, true, monitor);
+        var windows = new WindowListModel (display, STACKING, true, true, monitor);
 
         window_container = new WindowCloneContainer (wm, windows, monitor_scale);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));

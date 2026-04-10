@@ -118,7 +118,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             var scale = Utils.get_ui_scaling_factor (display, i);
 
             var custom_filter = new Gtk.CustomFilter (window_filter_func);
-            var model = new WindowListModel (display, STACKING, true, i, null, custom_filter);
+            var model = new WindowListModel (display, STACKING, true, true, i, null, custom_filter);
             model.items_changed.connect (on_items_changed);
 
             window_clone_container = new WindowCloneContainer (wm, model, scale, mode) {
