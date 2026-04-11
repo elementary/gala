@@ -3,8 +3,8 @@ mutter_test_sources = files(
     meson.project_source_root() / 'lib' / 'CommonEnums.vala',
     meson.project_source_root() / 'lib' / 'WindowManager.vala',
     meson.project_source_root() / 'lib' / 'Gestures' / 'Gesture.vala',
-    meson.project_source_root() / 'lib' / 'Gestures' / 'GestureTarget.vala',
-    meson.project_source_root() / 'lib' / 'Gestures' / 'PropertyTarget.vala',
+    meson.project_source_root() / 'lib' / 'Gestures' / 'Targets' / 'GestureTarget.vala',
+    meson.project_source_root() / 'lib' / 'Gestures' / 'Targets' / 'PropertyTarget.vala',
 )
 
 tests = [
