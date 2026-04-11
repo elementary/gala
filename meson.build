@@ -25,6 +25,16 @@ conf.set('GETTEXT_PACKAGE', meson.project_name())
 conf.set('LOCALEDIR', locale_dir)
 conf.set('PLUGINDIR', plugins_dir)
 conf.set('VERSION', meson.project_version())
+
+git = find_program('git', required: false)
+git_hash = 'unknown'
+if git.found()
+	# fixes 'fatal: detected dubious ownership in repository at '/__w/gala/gala' in CI
+	run_command(['git', 'config', '--global', '--add', 'safe.directory', meson.current_source_dir ()], capture : true, check : true)
+	git_hash = run_command(['git', 'rev-parse', '--short', 'HEAD'], capture : true, check : true).stdout().strip()
+endif
+conf.set('GIT_HASH', git_hash)
+
 config_header = configure_file (
     input: 'config.vala.in',
     output: 'config.vala',
