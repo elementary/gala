@@ -41,7 +41,7 @@ jobs:
         ninja -C build install
     - name: Prepare Test Environment
       run: |
-        mkdir -m 700 ${{ github.workspace }}/runtime-dir
+        mkdir -p -m 700 ${{ github.workspace }}/runtime-dir
         mkdir -m 1777 /tmp/.X11-unix
     - name: Run Tests
       env:
