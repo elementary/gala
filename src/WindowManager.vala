@@ -1579,7 +1579,8 @@ namespace Gala {
                     if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
                         return filter_action (MULTITASKING_VIEW);
                     }
-                    break;
+
+                    return true;
                 case Meta.KeyBindingAction.WORKSPACE_1:
                 case Meta.KeyBindingAction.WORKSPACE_2:
                 case Meta.KeyBindingAction.WORKSPACE_3:
