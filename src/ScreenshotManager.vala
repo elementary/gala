@@ -574,6 +574,9 @@ public class Gala.ScreenshotManager : Object {
                     image.get_data (),
                     image.get_stride (),
                     Cogl.PixelFormat.BGRA_8888_PRE,
+#if HAS_MUTTER50
+                    null,
+#endif
                     paint_flags
                 );
             } else {
@@ -583,6 +586,9 @@ public class Gala.ScreenshotManager : Object {
                     image.get_data (),
                     image.get_stride (),
                     Cogl.PixelFormat.ARGB_8888_PRE,
+#if HAS_MUTTER50
+                    null,
+#endif
                     paint_flags
                 );
             }

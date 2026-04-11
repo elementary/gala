@@ -21,6 +21,7 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
     private WindowCloneContainer window_clone_container;
 
     private uint64[]? window_ids = null;
+    private Meta.Window? window_queued_for_activation = null;
 
     public WindowOverview (WindowManager wm) {
         Object (wm : wm);
@@ -164,13 +165,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             window.activate (window.get_display ().get_current_time ());
             close ();
         } else {
+            window_queued_for_activation = window;
             close ();
-
-            // wait for the animation to finish before switching
-            Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-                window.get_workspace ().activate_with_focus (window, window.get_display ().get_current_time ());
-                return Source.REMOVE;
-            });
         }
     }
 
@@ -182,20 +178,14 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
             return;
         }
 
-#if HAS_MUTTER48
-        GLib.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#else
-        Clutter.Threads.Timeout.add (MultitaskingView.ANIMATION_DURATION, () => {
-#endif
-            cleanup ();
-
-            return Source.REMOVE;
-        });
-
         gesture_controller.goto (0);
     }
 
-    private void cleanup () {
+    public override void end_progress (GestureAction action) {
+        if (action != MULTITASKING_VIEW || get_current_commit (MULTITASKING_VIEW) != 0) {
+            return;
+        }
+
         visible = false;
 
         wm.pop_modal (modal_proxy);
@@ -207,5 +197,8 @@ public class Gala.WindowOverview : ActorTarget, RootTarget, ActivatableComponent
         }
 
         destroy_all_children ();
+
+        window_queued_for_activation?.activate (wm.get_display ().get_current_time ());
+        window_queued_for_activation = null;
     }
 }
