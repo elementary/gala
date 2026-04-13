@@ -19,6 +19,7 @@ gala_lib_sources = files(
     'Drawing/StyleManager.vala',
     'Drawing/Utilities.vala',
     'Effects/BackgroundBlurEffect.vala',
+    'Effects/BoxBlurManager.vala',
     'Effects/RoundedCornersEffect.vala',
     'Effects/ShadowEffect.vala',
     'Gestures/Backends/GestureBackend.vala',
