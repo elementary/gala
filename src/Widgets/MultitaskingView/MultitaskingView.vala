@@ -94,7 +94,7 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         unowned var manager = display.get_workspace_manager ();
         manager.workspace_added.connect (add_workspace);
         manager.workspace_removed.connect (remove_workspace);
-        manager.workspaces_reordered.connect (on_workspaces_reordered);
+        manager.workspaces_reordered.connect (sync_active_workspace);
         manager.workspace_switched.connect (on_workspace_switched);
 
         workspaces_gesture_controller.overshoot_lower_clamp = -manager.n_workspaces - 0.1 + 1;
@@ -332,6 +332,8 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         workspaces.insert_child_at_index (workspace, num);
 
         workspace.window_selected.connect (window_selected);
+
+        sync_active_workspace ();
     }
 
     private void remove_workspace (int num) {
@@ -359,12 +361,16 @@ public class Gala.MultitaskingView : ActorTarget, RootTarget, ActivatableCompone
         workspace.window_selected.disconnect (window_selected);
         workspace.destroy ();
 
-        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+        sync_active_workspace ();
     }
 
-    private void on_workspaces_reordered () {
-        unowned var manager = display.get_workspace_manager ();
-        workspaces_gesture_controller.progress = -manager.get_active_workspace_index ();
+    private void sync_active_workspace () {
+        if (workspaces_gesture_controller.recognizing) {
+            return;
+        }
+
+        var target = -display.get_workspace_manager ().get_active_workspace_index ();
+        workspaces_gesture_controller.jump (target);
     }
 
     private void on_workspace_switched (int from, int to) {
