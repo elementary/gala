@@ -85,6 +85,10 @@ namespace Gala {
 
         private KeyboardManager keyboard_manager;
 
+        private InputMethod input_method;
+
+        private OSKManager osk_manager;
+
         public WindowTracker? window_tracker { get; private set; }
 
         private WindowMover window_mover;
@@ -133,7 +137,12 @@ namespace Gala {
         }
 
         public override void start () {
-            ShellClientsManager.init (this);
+            input_method = new InputMethod (get_display ());
+            Clutter.get_default_backend ().set_input_method (input_method);
+
+            osk_manager = new OSKManager (get_display (), input_method);
+
+            ShellClientsManager.init (this, input_method, osk_manager);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
