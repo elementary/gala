@@ -20,6 +20,7 @@ gala_daemon_sources = files(
     'OSK' / 'KeyboardModel' / 'KeyboardView.vala',
     'OSK' / 'Parsers' / 'GnomeOSKParser.vala',
     'OSK' / 'Window' / 'OSKWindow.vala',
+    'OSK' / 'Window' / 'Suggestions.vala',
     'OSK' / 'Window' / 'Keyboard' / 'Keyboard.vala',
     'OSK' / 'Window' / 'Keyboard' / 'KeyButton.vala',
     'OSK' / 'Window' / 'Keyboard' / 'ViewContainer.vala',

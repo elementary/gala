@@ -8,6 +8,8 @@
 public class Gala.Daemon.IBusCandidateWindow : Gtk.Window {
     public IBus.PanelService service { get; construct; }
 
+    public bool disabled { get; set; default = false; }
+
     private Gtk.Label preedit_text;
     private Gtk.Label auxiliary_text;
     private CandidateArea candidate_area;
@@ -61,7 +63,7 @@ public class Gala.Daemon.IBusCandidateWindow : Gtk.Window {
     }
 
     private void update_visibility () {
-        var is_visible = preedit_text.visible || auxiliary_text.visible || candidate_area.visible;
+        var is_visible = !disabled && (preedit_text.visible || auxiliary_text.visible || candidate_area.visible);
 
         if (is_visible) {
             present ();
