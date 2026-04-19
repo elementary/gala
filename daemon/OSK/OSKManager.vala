@@ -5,28 +5,45 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-[DBus (name = "io.elementary.OSK")]
 public class Gala.Daemon.OSKManager : Object {
-    public signal void keyval_pressed (uint keyval);
-    public signal void keyval_released (uint keyval);
+    public IBusService ibus_service { private get; construct; }
 
-    private OSKWindow? osk;
+    private OSKService osk_service;
+    private OSKWindow? osk_window;
 
-    public async void set_enabled (bool enabled) throws DBusError, IOError {
-        if (!enabled) {
-            osk?.destroy ();
-            osk = null;
+    public OSKManager (IBusService ibus_service) {
+        Object (ibus_service: ibus_service);
+    }
+
+    construct {
+        osk_service = new OSKService ();
+        osk_service.notify["osk-enabled"].connect (on_osk_enabled_changed);
+
+        Bus.own_name (SESSION, "io.elementary.OSK", NONE, null, on_name_acquired);
+    }
+
+    private void on_name_acquired (DBusConnection connection, string name) {
+        try {
+            connection.register_object ("/io/elementary/OSK", osk_service);
+        } catch (Error e) {
+            warning ("Failed to get D-Bus session bus: %s", e.message);
+        }
+    }
+
+    private void on_osk_enabled_changed () {
+        /* If the OSK is active we show the candidates directly in the OSK so disable the popup */
+        ibus_service.disable_popup = osk_service.osk_enabled;
+
+        if (!osk_service.osk_enabled) {
+            osk_window?.destroy ();
+            osk_window = null;
             return;
         }
 
-        var model_manager = new ModelManager ();
-        var input_manager = new InputManager (this);
+        var model_manager = new ModelManager (osk_service);
+        var input_manager = new InputManager (osk_service);
 
-        osk = new OSKWindow (model_manager, input_manager);
-        osk.present ();
-    }
-
-    public async void set_input_purpose () throws DBusError, IOError {
-        //  model_manager.set_input_purpose (input_purpose);
+        osk_window = new OSKWindow (model_manager, input_manager, ibus_service);
+        osk_window.present ();
     }
 }

@@ -37,6 +37,7 @@ public class Gala.Daemon.Keyboard : Granite.Bin {
     construct {
         view_container = new ViewContainer ();
         child = view_container;
+        vexpand = true;
 
         var action_group = new SimpleActionGroup ();
         action_group.add_action_entries (ACTIONS, this);

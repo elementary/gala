@@ -8,15 +8,22 @@
 public class Gala.Daemon.OSKWindow : Gtk.Window {
     public ModelManager model_manager { get; construct; }
     public InputManager input_manager { get; construct; }
+    public IBusService ibus_service { get; construct; }
 
-    public OSKWindow (ModelManager model_manager, InputManager input_manager) {
-        Object (model_manager: model_manager, input_manager: input_manager);
+    public OSKWindow (ModelManager model_manager, InputManager input_manager, IBusService ibus_service) {
+        Object (model_manager: model_manager, input_manager: input_manager, ibus_service: ibus_service);
     }
 
     construct {
+        var suggestions = new Suggestions (ibus_service);
+
         var keyboard = new Keyboard (model_manager, input_manager);
 
-        child = keyboard;
+        var box = new Granite.Box (VERTICAL);
+        box.append (suggestions);
+        box.append (keyboard);
+
+        child = box;
         titlebar = new Gtk.Grid () { visible = false };
         title = "OSK";
 

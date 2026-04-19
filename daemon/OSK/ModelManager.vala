@@ -6,11 +6,15 @@
  */
 
 public class Gala.Daemon.ModelManager : Object {
-    public IBus.InputPurpose input_purpose { private get; set; }
+    public OSKService service { private get; construct; }
 
     public KeyboardModel? current_model { get; private set; }
 
     private Settings settings;
+
+    public ModelManager (OSKService service) {
+        Object (service: service);
+    }
 
     construct {
         settings = new Settings ("org.gnome.desktop.input-sources");
@@ -47,7 +51,7 @@ public class Gala.Daemon.ModelManager : Object {
     }
 
     private string[] get_eligible_models (string current_group_name) {
-        switch (input_purpose) {
+        switch (service.osk_input_purpose) {
             case DIGITS:
                 return { "digits" };
             case NUMBER:
@@ -75,7 +79,7 @@ public class Gala.Daemon.ModelManager : Object {
 
         groups += "us";
 
-        if (input_purpose == TERMINAL) {
+        if (service.osk_input_purpose == TERMINAL) {
             for (int i = 0; i < groups.length; i++) {
                 groups[i] += "-extended";
             }

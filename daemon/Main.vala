@@ -5,6 +5,7 @@
 
 public class Gala.Daemon.Application : Gtk.Application {
     private IBusService ibus_service;
+    private OSKManager osk_manager;
 
     public Application () {
         Object (application_id: "org.pantheon.gala.daemon");
@@ -12,6 +13,7 @@ public class Gala.Daemon.Application : Gtk.Application {
 
     construct {
         ibus_service = new IBusService ();
+        osk_manager = new OSKManager (ibus_service);
     }
 
     public override void startup () {
@@ -42,7 +44,6 @@ public class Gala.Daemon.Application : Gtk.Application {
         Gtk.init ();
 
         connection.register_object (object_path, new DBus ());
-        connection.register_object (object_path, new OSKManager ());
 
         return true;
     }
