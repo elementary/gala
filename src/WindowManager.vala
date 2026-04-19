@@ -51,6 +51,8 @@ namespace Gala {
 
         private Clutter.Actor menu_group { get; set; }
 
+        private Clutter.Actor osk_group;
+
         /**
          * The group that contains all WindowActors that are system modal.
          * See {@link ShellClientsManager.is_system_modal_window}.
@@ -241,6 +243,7 @@ namespace Gala {
              * +-- window overview
              * +-- shell group
              * +-- menu group
+             * +-- osk group
              * +-- modal group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
@@ -308,6 +311,9 @@ namespace Gala {
 
             menu_group = new Clutter.Actor ();
             ui_group.add_child (menu_group);
+
+            osk_group = new Clutter.Actor ();
+            ui_group.add_child (osk_group);
 
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
@@ -1054,6 +1060,11 @@ namespace Gala {
 
             if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, modal_group.window_group);
+                return;
+            }
+
+            if (ShellClientsManager.get_instance ().is_osk_window (window)) {
+                InternalUtils.clutter_actor_reparent (actor, osk_group);
                 return;
             }
 

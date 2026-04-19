@@ -336,6 +336,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return is_itself_system_modal (window) && positioned_windows[window].dim;
     }
 
+    public bool is_osk_window (Meta.Window window) {
+        return window.find_root_ancestor () == osk_window?.window;
+    }
+
     //X11 only
     private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         if (window.mutter_hints == null) {
