@@ -43,28 +43,27 @@ namespace Gala.FocusUtils {
                 return true;
             }
 
-            var focus_rect = get_allocation_rect (focus_child);
-            var rect = get_allocation_rect (c);
+            var focus_alloc = focus_child.allocation;
+            var alloc = c.allocation;
 
-            if ((direction == UP || direction == DOWN) && !rect.horiz_overlap (focus_rect) ||
-                (direction == LEFT || direction == RIGHT) && !rect.vert_overlap (focus_rect)
+            var horiz_overlap = alloc.x1 < focus_alloc.x2 && alloc.x2 > focus_alloc.x1;
+            var vert_overlap = alloc.y1 < focus_alloc.y2 && alloc.y2 > focus_alloc.y1;
+
+            if ((direction == UP || direction == DOWN) && !horiz_overlap ||
+                (direction == LEFT || direction == RIGHT) && !vert_overlap
             ) {
                 return false;
             }
 
             return (
-                direction == UP && rect.y + rect.height <= focus_rect.y ||
-                direction == DOWN && rect.y >= focus_rect.y + focus_rect.height ||
-                direction == LEFT && rect.x + rect.width <= focus_rect.x ||
-                direction == RIGHT && rect.x >= focus_rect.x + focus_rect.width
+                direction == UP && alloc.y2 <= focus_alloc.y1 ||
+                direction == DOWN && alloc.y1 >= focus_alloc.y2 ||
+                direction == LEFT && alloc.x2 <= focus_alloc.x1 ||
+                direction == RIGHT && alloc.x1 >= focus_alloc.x2
             );
         }));
 
         children.retain_all (to_retain);
-    }
-
-    private inline Mtk.Rectangle get_allocation_rect (Clutter.Actor actor) {
-        return {(int) actor.x, (int) actor.y, (int) actor.width, (int) actor.height};
     }
 
     public void sort_children_for_direction (Gee.List<Widget> children, FocusDirection direction) {
