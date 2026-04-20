@@ -1,4 +1,5 @@
 tests = [
+    'GestureControllerTest',
     'PropertyTargetTest',
     'SetupTest',
 ]
