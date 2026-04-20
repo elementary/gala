@@ -15,7 +15,7 @@ public class Gala.Widget : ActorTarget {
     }
 
     internal void focus_changed () {
-        has_visible_focus = has_key_focus () && get_root ().focus_visible;
+        has_visible_focus = has_key_focus () && (get_root ()?.focus_visible ?? false);
     }
 
     private Root? get_root () {
