@@ -128,12 +128,16 @@ public class Gala.GestureController : Object {
     }
 
     private void prepare () {
+        warning ("Controller %s: preparing gesture", action.to_string ());
         if (!running) {
+            warning ("Controller %s: Not running, starting", action.to_string ());
             target.propagate (START, action, progress);
             running = true;
         }
 
+        warning ("Controller %s: Deleting timeline", action.to_string ());
         timeline = null;
+        warning ("Controller %s: Deleted timeline", action.to_string ());
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -208,6 +212,7 @@ public class Gala.GestureController : Object {
         if (!recognizing) {
             return;
         }
+        warning ("Controller %s: gesture end", action.to_string ());
 
         recognizing = false;
 
@@ -252,9 +257,12 @@ public class Gala.GestureController : Object {
     }
 
     private void finish (double velocity, double to) {
+        warning ("Controller %s: Finishing gesture with velocity %f and target progress %f", action.to_string (), velocity, to);
+
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
 
         if (progress == to) {
+            warning ("Controller %s: Progress == to, immediate finished", action.to_string ());
             target.propagate (COMMIT, action, clamped_to);
             finished ();
             return;
@@ -272,11 +280,20 @@ public class Gala.GestureController : Object {
         spring.stopped.connect_after (finished);
 
         timeline = spring;
+        warning ("Controller %s: Created spring", action.to_string ());
 
         target.propagate (COMMIT, action, clamped_to);
+        warning ("Controller %s: propagated commit spring", action.to_string ());
     }
 
-    private void finished (bool is_finished = true) requires (is_finished) {
+    private void finished (bool is_finished = true) {
+        if (!is_finished) {
+            warning ("Controller %s: finished but not finished", action.to_string ());
+            return;
+        }
+
+        warning ("Controller %s: finished", action.to_string ());
+
         assert (running);
         target.propagate (END, action, progress);
         running = false;
@@ -290,6 +307,7 @@ public class Gala.GestureController : Object {
      * If you don't want animation but an immediate jump, you should set {@link progress} directly.
      */
     public void goto (double to) {
+        warning ("Controller %s: goto %f", action.to_string (), to);
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
         if (progress == to && (timeline == null || timeline.value_to == to) ||
             recognizing ||
@@ -298,12 +316,16 @@ public class Gala.GestureController : Object {
             return;
         }
 
+        warning ("Controller %s: actually goto", action.to_string ());
         prepare ();
+        warning ("Controller %s: prepared goto", action.to_string ());
         finish ((to > progress ? 1 : -1) * 1, to);
+        warning ("Controller %s: finished goto", action.to_string ());
     }
 
     public void cancel_gesture () {
         if (recognizing) {
+            warning ("Controller %s: canceling gesture", action.to_string ());
             recognizing_backend.cancel_gesture ();
             gesture_end (previous_percentage, previous_time);
         }
