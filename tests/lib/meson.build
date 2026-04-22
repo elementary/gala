@@ -2,6 +2,7 @@ tests = [
     'GestureControllerTest',
     'PropertyTargetTest',
     'SetupTest',
+    'SwipeTriggerTest',
 ]
 
 foreach test : tests
