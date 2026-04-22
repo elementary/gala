@@ -17,8 +17,6 @@ public class Gala.ModalGroup : Clutter.Actor {
     public WindowManager wm { private get; construct; }
     public ShellClientsManager shell_clients { private get; construct; }
 
-    public Clutter.Actor window_group { get; construct; }
-
     private Clutter.Actor background;
     private Gee.Set<Clutter.Actor> dimmed;
     private ModalProxy? modal_proxy = null;
@@ -39,33 +37,29 @@ public class Gala.ModalGroup : Clutter.Actor {
         };
         background.add_effect (new BackgroundBlurEffect (10, 0, 1));
 
-        window_group = new Clutter.Actor () {
-            x_expand = true,
-            y_expand = true,
-        };
-
         add_child (background);
-        add_child (window_group);
 
         dimmed = new Gee.HashSet<Clutter.Actor> ();
 
         visible = false;
         reactive = true;
 #if HAS_MUTTER46
-        window_group.child_added.connect (on_child_added);
-        window_group.child_removed.connect (on_child_removed);
+        child_added.connect (on_child_added);
+        child_removed.connect (on_child_removed);
 #else
-        window_group.actor_added.connect (on_child_added);
-        window_group.actor_removed.connect (on_child_removed);
+        actor_added.connect (on_child_added);
+        actor_removed.connect (on_child_removed);
 #endif
     }
 
     private void on_child_added (Clutter.Actor child) {
+        set_child_below_sibling (background, null);
+
         if (child is Meta.WindowActor && shell_clients.is_system_modal_dimmed (child.meta_window)) {
             dimmed.add (child);
         }
 
-        if (window_group.get_n_children () == 1) {
+        if (get_n_children () - 1 == 1) {
             assert (modal_proxy == null);
 
             visible = true;
@@ -91,7 +85,7 @@ public class Gala.ModalGroup : Clutter.Actor {
             background.restore_easing_state ();
         }
 
-        if (window_group.get_n_children () == 0) {
+        if (get_n_children () - 1 == 0) {
             wm.pop_modal (modal_proxy);
             modal_proxy = null;
 
