@@ -8,7 +8,7 @@
 public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm) {
         if (instance != null) {
             return;
         }
@@ -20,7 +20,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -31,7 +31,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
     private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
 
-    private ShellClientsManager (WindowManager wm) {
+    private ShellClientsManager (WindowManagerGala wm) {
         Object (wm: wm);
     }
 
@@ -178,6 +178,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
 
+        wm.override_window_group (window, DESKTOP_SHELL);
+
         InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
@@ -243,6 +245,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void make_modal (Meta.Window window, bool dim) requires (window in positioned_windows) {
         positioned_windows[window].make_modal (dim);
+
+        wm.override_window_group (window, MODAL);
     }
 
     public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_itself_shell_window (window)) {
@@ -252,6 +256,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         monitor_label_windows[window] = new MonitorLabelWindow (window, monitor_index);
+
+        wm.override_window_group (window, DESKTOP_SHELL);
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
@@ -297,25 +303,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return positioned;
     }
 
-    private bool is_itself_system_modal (Meta.Window window) {
-        return (window in positioned_windows) && positioned_windows[window].modal;
-    }
-
-    public bool is_system_modal_window (Meta.Window window) {
-        var modal = is_itself_system_modal (window);
-        window.foreach_ancestor ((ancestor) => {
-            if (is_itself_system_modal (ancestor)) {
-                modal = true;
-            }
-
-            return !modal;
-        });
-
-        return modal;
-    }
-
-    public bool is_system_modal_dimmed (Meta.Window window) {
-        return is_itself_system_modal (window) && positioned_windows[window].dim;
+    public bool is_system_modal_dimmed (Meta.Window window) requires (
+        window in positioned_windows && positioned_windows[window].modal
+    ) {
+        return positioned_windows[window].dim;
     }
 
     //X11 only
