@@ -404,13 +404,6 @@ namespace Gala {
                 InternalUtils.wait_for_window_actor_visible (window, check_window_group)
             );
 
-            WindowListener.get_default ().window_type_changed.connect ((window) => {
-                unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (window_actor != null) {
-                    check_window_group (window_actor);
-                }
-            });
-
             stage.show ();
 
             plugin_manager.load_waiting_plugins ();
