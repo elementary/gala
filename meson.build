@@ -168,6 +168,10 @@ if vala.version().version_compare('>= 0.56.17')
     vala_flags += ['--define', 'VALA_0_56_17']
 endif
 
+if get_option('tests')
+	vala_flags += ['--define', 'TESTS']
+endif
+
 add_project_arguments(vala_flags, language: 'vala')
 add_project_link_arguments(['-Wl,-rpath,@0@'.format(mutter_typelib_dir)], language: 'c')
 

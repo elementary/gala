@@ -5,9 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.MockPlugin : Meta.Plugin {
-
-}
 
 /**
  * Base class for tests that need to interact with Mutter and Clutter.
@@ -19,12 +16,22 @@ public class Gala.MockPlugin : Meta.Plugin {
  * instead of {@link Meta.Context.run_main_loop} and {@link Meta.Context.terminate}.
  */
 public abstract class Gala.MutterTestCase : Gala.TestCase {
+    public class TestWindowManager : WindowManagerGala {
+        public static WindowManagerGala? instance;
+
+        public override void start () {
+            base.start ();
+
+            instance = this;
+        }
+    }
     private const string[] MUTTER_ARGS = {
         "--wayland", "--headless", "--no-x11",
         "--wayland-display", "wayland-1",
         "--virtual-monitor", "1280x720@60"
     };
 
+    protected WindowManagerGala wm { get { return TestWindowManager.instance; } }
     protected Meta.Context context { get; private set; }
     protected Clutter.Stage stage { get { return (Clutter.Stage) context.get_backend ().get_stage (); } }
 
@@ -40,7 +47,7 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
             assert_no_error (e);
         }
 
-        context.set_plugin_gtype (typeof (MockPlugin));
+        context.set_plugin_gtype (typeof (TestWindowManager));
 
         try {
             context.setup ();
@@ -63,6 +70,7 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         });
 
         main_loop = new MainLoop (null, false);
+        wait_for_wm ();
     }
 
     public override void tear_down () {
@@ -77,5 +85,13 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
     protected void quit_main_loop () {
         assert_true (main_loop != null);
         main_loop.quit ();
+    }
+
+    protected void wait_for_wm () {
+        var context = MainContext.default ();
+
+        while (TestWindowManager.instance == null) {
+            context.iteration (true);
+        }
     }
 }

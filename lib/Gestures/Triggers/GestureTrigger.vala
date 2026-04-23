@@ -10,6 +10,11 @@
  * the necessary backends for the type of gesture.
  */
 public interface Gala.GestureTrigger : Object {
+#if TESTS
+    public abstract bool triggers (Gesture gesture);
+    public abstract void enable_backends (GestureController controller);
+#else
     internal abstract bool triggers (Gesture gesture);
     internal abstract void enable_backends (GestureController controller);
+#endif
 }

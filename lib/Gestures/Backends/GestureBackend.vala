@@ -5,7 +5,11 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
+#if TESTS
+public interface Gala.GestureBackend : Object {
+#else
 private interface Gala.GestureBackend : Object {
+#endif
     public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
     public signal void on_begin (double percentage, uint64 time);
     public signal void on_update (double percentage, uint64 time);
