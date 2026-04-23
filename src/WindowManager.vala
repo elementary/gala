@@ -18,6 +18,11 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        public enum WindowGroup {
+            DESKTOP_SHELL,
+            MODAL,
+        }
+
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
         private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
@@ -119,6 +124,8 @@ namespace Gala {
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
+
+        private Gee.Map<Meta.Window, WindowGroup> overridden_window_group = new Gee.HashMap<Meta.Window, WindowGroup> ();
 
         construct {
 #if !HAS_MUTTER48
@@ -1040,23 +1047,57 @@ namespace Gala {
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
-        private void check_shell_window (Meta.WindowActor actor) {
-            unowned var window = actor.get_meta_window ();
+        /**
+         * Tells the wm to place the {@link window} in the given {@link new_group} instead of the default
+         * window group as determined by the wm.
+         * The wm will also automatically place transient windows of {@link window} in the same group.
+         */
+        public void override_window_group (Meta.Window window, WindowGroup new_group) {
+            overridden_window_group[window] = new_group;
+            window.unmanaged.connect ((_window) => overridden_window_group.unset (_window));
 
-            if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, modal_group.window_group);
-                return;
-            }
-
-            if (ShellClientsManager.get_instance ().is_shell_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, shell_group);
+            InternalUtils.wait_for_window_actor_visible (window, (actor) => {
+                InternalUtils.clutter_actor_reparent (actor, get_window_group_actor (new_group));
 
                 // FIXME: workaround for https://github.com/elementary/dock/issues/537
                 actor.set_scale (1.0, 1.0);
                 actor.opacity = 255;
+            });
+        }
+
+        private Clutter.Actor get_window_group_actor (WindowGroup group) {
+            switch (group) {
+                case DESKTOP_SHELL: return shell_group;
+                case MODAL: return modal_group.window_group;
+                default: assert_not_reached ();
+            }
+        }
+
+        private void check_shell_window (Meta.WindowActor actor) {
+            unowned var window = actor.get_meta_window ();
+
+            if (overridden_window_group.has_key (window)) {
+                /* We are already overridden so make sure to ignore it */
+                return;
+            }
+
+            /* Check if we're a transient of a window with an overridden group and if so place there */
+            window.foreach_ancestor ((ancestor) => {
+                if (overridden_window_group.has_key (ancestor)) {
+                    override_window_group (window, overridden_window_group[ancestor]);
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (overridden_window_group.has_key (window)) {
+                /* We found an ancestor with an overridden group so we are now being placed in the same group */
+                return;
             }
 
             if (NotificationStack.is_notification (window)) {
+                override_window_group (window, DESKTOP_SHELL);
                 notification_stack.show_notification (actor);
             }
 
