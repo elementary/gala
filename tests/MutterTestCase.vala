@@ -5,10 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.MockPlugin : Meta.Plugin {
-
-}
-
 /**
  * Base class for tests that need to interact with Mutter and Clutter.
  * Sets up a Meta.Context, starts it, and provides access to the context
@@ -40,7 +36,7 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
             assert_no_error (e);
         }
 
-        context.set_plugin_gtype (typeof (MockPlugin));
+        context.set_plugin_gtype (typeof (Gala.WindowManagerGala));
 
         try {
             context.setup ();

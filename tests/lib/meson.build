@@ -10,6 +10,7 @@ foreach test : tests
         '@0@.vala'.format(test),
         common_test_sources,
         gala_lib_sources,
+        gala_bin_sources,
         dependencies: gala_base_dep,
         install: false,
     )
