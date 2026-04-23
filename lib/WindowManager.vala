@@ -35,11 +35,6 @@ namespace Gala {
         WindowMenuItemCallback callback;
     }
 
-    /**
-     * Function that should return true if the given shortcut should be blocked.
-     */
-    public delegate bool KeybindingFilter (Meta.KeyBinding binding);
-
     [Flags]
     public enum ModalActions {
         NONE = 0,
