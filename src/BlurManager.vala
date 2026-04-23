@@ -74,8 +74,17 @@ public class Gala.BlurManager : Object {
         var x_shadow_size = frame_rect.x - buffer_rect.x;
         var y_shadow_size = frame_rect.y - buffer_rect.y;
 
-        blur_data.actor.set_position (x_shadow_size + left, y_shadow_size + top);
-        blur_data.actor.set_size (frame_rect.width - left - right, frame_rect.height - top - bottom);
+        var monitor_scale = Utils.get_ui_scaling_factor (window.display, window.get_monitor ());
+        var inverse_monitor_scale = 1.0f / monitor_scale;
+
+        blur_data.actor.set_position (
+            Utils.scale_to_int (x_shadow_size, inverse_monitor_scale) + left,
+            Utils.scale_to_int (y_shadow_size, inverse_monitor_scale) + top
+        );
+        blur_data.actor.set_size (
+            Utils.scale_to_int (frame_rect.width, inverse_monitor_scale) - left - right,
+            Utils.scale_to_int (frame_rect.height, inverse_monitor_scale) - top - bottom
+        );
     }
 
     public void remove_blur (Meta.Window window) {

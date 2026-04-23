@@ -13,5 +13,5 @@ public interface Gala.GestureTarget : Object {
         END
     }
 
-    public virtual void propagate (UpdateType update_type, GestureAction action, double progress) { }
+    public abstract void propagate (UpdateType update_type, GestureAction action, double progress);
 }

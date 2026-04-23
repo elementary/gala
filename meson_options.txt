@@ -1,3 +1,4 @@
 option ('documentation', type : 'boolean', value : false)
+option ('tests', type : 'boolean', value : false)
 option ('systemd', type : 'boolean', value : true)
 option ('systemduserunitdir', type : 'string', value : '')

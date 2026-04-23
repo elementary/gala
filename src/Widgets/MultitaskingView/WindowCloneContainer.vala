@@ -7,10 +7,8 @@
 /**
  * Container which controls the layout of a set of WindowClones.
  */
-public class Gala.WindowCloneContainer : ActorTarget {
+public class Gala.WindowCloneContainer : Widget {
     public signal void window_selected (Meta.Window window);
-    public signal void requested_close ();
-    public signal void last_window_closed ();
 
     public int padding_top { get; set; default = 12; }
     public int padding_left { get; set; default = 12; }
@@ -18,89 +16,53 @@ public class Gala.WindowCloneContainer : ActorTarget {
     public int padding_bottom { get; set; default = 12; }
 
     public WindowManager wm { get; construct; }
+    public WindowListModel windows { get; construct; }
     public float monitor_scale { get; construct set; }
-    public bool overview_mode { get; construct; }
+    public WindowClone.Mode window_clone_mode { get; construct; }
 
     private bool opened = false;
 
-    /**
-     * The window that is currently selected via keyboard shortcuts.
-     * It is not necessarily the same as the active window.
-     */
-    private unowned WindowClone? current_window = null;
-
-    public WindowCloneContainer (WindowManager wm, float monitor_scale, bool overview_mode = false) {
-        Object (wm: wm, monitor_scale: monitor_scale, overview_mode: overview_mode);
+    public WindowCloneContainer (
+        WindowManager wm, WindowListModel windows, float monitor_scale,
+        WindowClone.Mode window_clone_mode = MULTITASKING_VIEW
+    ) {
+        Object (wm: wm, windows: windows, monitor_scale: monitor_scale, window_clone_mode: window_clone_mode);
     }
 
-    /**
-     * Create a WindowClone for a Meta.Window and add it to the group
-     *
-     * @param window The window for which to create the WindowClone for
-     */
-    public void add_window (Meta.Window window) {
-        var windows = new List<Meta.Window> ();
-        windows.append (window);
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            windows.append (clone.window);
+    construct {
+        on_items_changed (0, 0, windows.get_n_items ());
+        windows.items_changed.connect (on_items_changed);
+    }
+
+    private void on_items_changed (uint position, uint removed, uint added) {
+        // Used to make sure we only construct new window clones for windows that are really new
+        // and not when only the position changed (e.g. when sorted)
+        var to_remove = new HashTable<Meta.Window, WindowClone> (null, null);
+
+        for (uint i = 0; i < removed; i++) {
+            var window_clone = (WindowClone) get_child_at_index ((int) position);
+            to_remove[window_clone.window] = window_clone;
+            remove_child (window_clone);
         }
 
-        var new_window = new WindowClone (wm, window, monitor_scale, overview_mode);
-        new_window.selected.connect ((_new_window) => window_selected (_new_window.window));
-        new_window.request_reposition.connect (() => reflow (false));
-        new_window.destroy.connect ((_new_window) => {
-            // make sure to release reference if the window is selected
-            if (_new_window == current_window) {
-                select_next_window (Meta.MotionDirection.RIGHT, false);
+        for (int i = (int) position; i < position + added; i++) {
+            var window = (Meta.Window) windows.get_item (i);
+
+            WindowClone? clone = to_remove.take (window);
+
+            if (clone == null) {
+                clone = new WindowClone (wm, window, monitor_scale, window_clone_mode);
+                clone.selected.connect ((_clone) => window_selected (_clone.window));
+                clone.request_reposition.connect (() => reflow (false));
+                bind_property ("monitor-scale", clone, "monitor-scale");
             }
 
-            // if window is still selected, reset the selection
-            if (_new_window == current_window) {
-                current_window = null;
-            }
+            insert_child_at_index (clone, i);
+        }
 
+        // Don't reflow if only the sorting changed
+        if (to_remove.size () > 0 || added != removed) {
             reflow (false);
-        });
-        bind_property ("monitor-scale", new_window, "monitor-scale");
-
-        unowned Meta.Window? target = null;
-        foreach (unowned var w in sort_windows (windows)) {
-            if (w != window) {
-                target = w;
-                continue;
-            }
-            break;
-        }
-
-        // top most or no other children
-        if (target == null) {
-            add_child (new_window);
-        }
-
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            if (target == clone.window) {
-                insert_child_below (new_window, clone);
-                break;
-            }
-        }
-
-        reflow (false);
-    }
-
-    /**
-     * Find and remove the WindowClone for a MetaWindow
-     */
-    public void remove_window (Meta.Window window) {
-        foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-            if (clone.window == window) {
-                remove_child (clone);
-                reflow (false);
-                break;
-            }
-        }
-
-        if (get_n_children () == 0) {
-            last_window_closed ();
         }
     }
 
@@ -108,22 +70,18 @@ public class Gala.WindowCloneContainer : ActorTarget {
         if (!opened) {
             opened = true;
 
-            if (current_window != null) {
-                current_window.active = false;
-            }
-
             unowned var focus_window = wm.get_display ().focus_window;
             foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
                 if (clone.window == focus_window) {
-                    current_window = clone;
+                    clone.grab_key_focus ();
                     break;
                 }
             }
 
-            restack_windows ();
+            windows.sort ();
             reflow (true);
         } else if (action == MULTITASKING_VIEW) { // If we are open we only want to restack when we close
-            restack_windows ();
+            windows.sort ();
         }
     }
 
@@ -139,34 +97,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
 
             default:
                 break;
-        }
-    }
-
-    /**
-     * Sort the windows z-order by their actual stacking to make intersections
-     * during animations correct.
-     */
-    private void restack_windows () {
-        var children = (GLib.List<weak WindowClone>) get_children ();
-
-        var windows = new GLib.List<Meta.Window> ();
-        foreach (unowned var clone in children) {
-            windows.prepend (clone.window);
-        }
-
-        var windows_ordered = sort_windows (windows);
-        windows_ordered.reverse ();
-
-        var i = 0;
-        foreach (unowned var window in windows_ordered) {
-            foreach (unowned var clone in children) {
-                if (clone.window == window) {
-                    set_child_at_index (clone, i);
-                    children.remove (clone);
-                    i++;
-                    break;
-                }
-            }
         }
     }
 
@@ -204,181 +134,6 @@ public class Gala.WindowCloneContainer : ActorTarget {
         }
     }
 
-    /**
-     * Collect key events, mainly for redirecting them to the WindowCloneContainers to
-     * select the active window.
-     */
-    public override bool key_press_event (Clutter.Event event) {
-        if (!opened) {
-            return Clutter.EVENT_PROPAGATE;
-        }
-
-        switch (event.get_key_symbol ()) {
-            case Clutter.Key.Escape:
-                requested_close ();
-                break;
-            case Clutter.Key.Down:
-                select_next_window (Meta.MotionDirection.DOWN, true);
-                break;
-            case Clutter.Key.Up:
-                select_next_window (Meta.MotionDirection.UP, true);
-                break;
-            case Clutter.Key.Left:
-                select_next_window (Meta.MotionDirection.LEFT, true);
-                break;
-            case Clutter.Key.Right:
-                select_next_window (Meta.MotionDirection.RIGHT, true);
-                break;
-            case Clutter.Key.Return:
-            case Clutter.Key.KP_Enter:
-                if (current_window == null) {
-                    requested_close ();
-                } else {
-                    window_selected (current_window.window);
-                }
-                break;
-        }
-
-        return Clutter.EVENT_STOP;
-    }
-
-    /**
-     * Look for the next window in a direction and make this window the new current_window.
-     * Used for keyboard navigation.
-     *
-     * @param direction   The MetaMotionDirection in which to search for windows for.
-     * @param user_action Whether we must select a window and, if failed, play a bell sound.
-     */
-    public void select_next_window (Meta.MotionDirection direction, bool user_action) {
-        if (get_n_children () == 0) {
-            return;
-        }
-
-        WindowClone? closest = null;
-
-        if (current_window == null) {
-            closest = (WindowClone) get_child_at_index (0);
-        } else {
-            var current_rect = current_window.slot;
-
-            foreach (unowned var clone in (GLib.List<weak WindowClone>) get_children ()) {
-                if (clone == current_window) {
-                    continue;
-                }
-
-                var window_rect = clone.slot;
-
-                if (window_rect == null) {
-                    continue;
-                }
-
-                if (direction == LEFT) {
-                    if (window_rect.x > current_rect.x) {
-                        continue;
-                    }
-
-                    // test for vertical intersection
-                    if (window_rect.y + window_rect.height > current_rect.y
-                        && window_rect.y < current_rect.y + current_rect.height) {
-
-                        if (closest == null || closest.slot.x < window_rect.x) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == RIGHT) {
-                    if (window_rect.x < current_rect.x) {
-                        continue;
-                    }
-
-                    // test for vertical intersection
-                    if (window_rect.y + window_rect.height > current_rect.y
-                        && window_rect.y < current_rect.y + current_rect.height) {
-
-                        if (closest == null || closest.slot.x > window_rect.x) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == UP) {
-                    if (window_rect.y > current_rect.y) {
-                        continue;
-                    }
-
-                    // test for horizontal intersection
-                    if (window_rect.x + window_rect.width > current_rect.x
-                        && window_rect.x < current_rect.x + current_rect.width) {
-
-                        if (closest == null || closest.slot.y < window_rect.y) {
-                            closest = clone;
-                        }
-                    }
-                } else if (direction == DOWN) {
-                    if (window_rect.y < current_rect.y) {
-                        continue;
-                    }
-
-                    // test for horizontal intersection
-                    if (window_rect.x + window_rect.width > current_rect.x
-                        && window_rect.x < current_rect.x + current_rect.width) {
-
-                        if (closest == null || closest.slot.y > window_rect.y) {
-                            closest = clone;
-                        }
-                    }
-                } else {
-                    warning ("Invalid direction");
-                    break;
-                }
-            }
-        }
-
-        if (closest == null) {
-            if (current_window != null && user_action) {
-                InternalUtils.bell_notify (wm.get_display ());
-                current_window.active = true;
-            }
-            return;
-        }
-
-        if (current_window != null) {
-            current_window.active = false;
-        }
-
-        if (user_action) {
-            closest.active = true;
-        }
-
-        current_window = closest;
-    }
-
-    /**
-     * Sorts the windows by stacking order so that the window on active workspaces come first.
-     */
-    private GLib.SList<weak Meta.Window> sort_windows (GLib.List<Meta.Window> windows) {
-        unowned var display = wm.get_display ();
-
-        var windows_on_active_workspace = new GLib.SList<Meta.Window> ();
-        var windows_on_other_workspaces = new GLib.SList<Meta.Window> ();
-        unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-        foreach (unowned var window in windows) {
-            if (window.get_workspace () == active_workspace) {
-                windows_on_active_workspace.append (window);
-            } else {
-                windows_on_other_workspaces.append (window);
-            }
-        }
-
-        var sorted_windows = new GLib.SList<weak Meta.Window> ();
-        var windows_on_active_workspace_sorted = display.sort_windows_by_stacking (windows_on_active_workspace);
-        windows_on_active_workspace_sorted.reverse ();
-        var windows_on_other_workspaces_sorted = display.sort_windows_by_stacking (windows_on_other_workspaces);
-        windows_on_other_workspaces_sorted.reverse ();
-        sorted_windows.concat ((owned) windows_on_active_workspace_sorted);
-        sorted_windows.concat ((owned) windows_on_other_workspaces_sorted);
-
-        return sorted_windows;
-    }
-
-
     // Code ported from KWin present windows effect
     // https://projects.kde.org/projects/kde/kde-workspace/repository/revisions/master/entry/kwin/effects/presentwindows/presentwindows.cpp
 
@@ -390,8 +145,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
         return k1 * k1 + k2 * k2;
     }
 
-    private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dx1, int dy1, int dx2, int dy2) {
-        return {rect.x + dx1, rect.y + dy1, rect.width + (-dx1 + dx2), rect.height + (-dy1 + dy2)};
+    private static Mtk.Rectangle rect_adjusted (Mtk.Rectangle rect, int dw, int dh) {
+        return { rect.x + dw / 2, rect.y + dh / 2, rect.width - dw, rect.height - dh };
     }
 
     private static Graphene.Point rect_center (Mtk.Rectangle rect) {
@@ -406,7 +161,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
     /**
      * Careful: List<TilableWindow?> windows will be modified in place and shouldn't be used afterwards.
      */
-    private static GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
+    private GLib.List<TilableWindow?> calculate_grid_placement (Mtk.Rectangle area, GLib.List<TilableWindow?> windows) {
         uint window_count = windows.length ();
         int columns = (int) Math.ceil (Math.sqrt (window_count));
         int rows = (int) Math.ceil (window_count / (double) columns);
@@ -476,6 +231,8 @@ public class Gala.WindowCloneContainer : ActorTarget {
         // see how many windows we have on the last row
         int left_over = (int) window_count - columns * (rows - 1);
 
+        var button_size = Utils.calculate_button_size (monitor_scale);
+
         for (int slot = 0; slot < columns * rows; slot++) {
             var window = taken_slots[slot];
             // some slots might be empty
@@ -491,7 +248,7 @@ public class Gala.WindowCloneContainer : ActorTarget {
                 slot_width,
                 slot_height
             };
-            target = rect_adjusted (target, 10, 10, -10, -10);
+            target = rect_adjusted (target, button_size, button_size);
 
             float scale;
             if (target.width / (double) rect.width < target.height / (double) rect.height) {

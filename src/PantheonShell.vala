@@ -53,6 +53,8 @@ namespace Gala {
             set_keep_above,
             make_centered,
             focus_extended_behavior,
+            make_modal,
+            make_monitor_label,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
@@ -374,6 +376,36 @@ namespace Gala {
         }
 
         ShellClientsManager.get_instance ().make_centered (window);
+    }
+
+    internal static void make_modal (Wl.Client client, Wl.Resource resource, uint dim) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_modal (window, dim == 1);
+    }
+
+    internal static void make_monitor_label (Wl.Client client, Wl.Resource resource, int monitor_index) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_monitor_label (window, monitor_index);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

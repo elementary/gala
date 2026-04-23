@@ -73,7 +73,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         // Scroll events apply the natural scroll preferences out of the box
         // Standardize them so the direction matches the physical direction of the gesture and the
         // GestureTracker user can decide if it wants to follow natural scroll settings or not
-        bool natural_scroll = settings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
+        bool natural_scroll = GestureSettings.is_natural_scroll_enabled (Clutter.InputDeviceType.TOUCHPAD_DEVICE);
         if (natural_scroll) {
             x *= -1;
             y *= -1;
@@ -92,9 +92,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
                     return Clutter.EVENT_PROPAGATE;
                 }
 
-                float origin_x, origin_y;
-                event.get_coords (out origin_x, out origin_y);
-                Gesture gesture = build_gesture (origin_x, origin_y, delta_x, delta_y, orientation, time);
+                var gesture = build_gesture (delta_x, delta_y, orientation, time);
                 started = true;
                 direction = gesture.direction;
                 on_gesture_detected (gesture, time);
@@ -147,7 +145,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         }
     }
 
-    private static Gesture build_gesture (float origin_x, float origin_y, double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
+    private static Gesture build_gesture (double delta_x, double delta_y, Clutter.Orientation orientation, uint32 timestamp) {
         GestureDirection direction;
         if (orientation == Clutter.Orientation.HORIZONTAL) {
             direction = delta_x > 0 ? GestureDirection.RIGHT : GestureDirection.LEFT;
@@ -159,9 +157,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
             type = Clutter.EventType.SCROLL,
             direction = direction,
             fingers = 2,
-            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE,
-            origin_x = origin_x,
-            origin_y = origin_y
+            performed_on_device_type = Clutter.InputDeviceType.TOUCHPAD_DEVICE
         };
     }
 

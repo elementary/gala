@@ -52,7 +52,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     construct {
         var scale = display.get_monitor_scale (display.get_current_monitor ());
 
-        button_size = Gala.Utils.scale_to_int (36, scale);
+        button_size = Gala.Utils.calculate_button_size (scale);
         container_margin = button_size / 2;
 
         reactive = true;
@@ -118,7 +118,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         window_actor.notify["allocation"].connect (on_allocation_changed);
         container.set_position (container_margin, container_margin);
-        update_clone_clip ();
+        on_allocation_changed ();
 
         unowned var window = window_actor.get_meta_window ();
         window.unmanaged.connect (on_close_click_clicked);
@@ -198,7 +198,9 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     }
 
     private Clutter.Actor on_move_begin () {
-#if HAS_MUTTER48
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.MOVE);
+#elif HAS_MUTTER48
         display.set_cursor (Meta.Cursor.MOVE);
 #else
         display.set_cursor (Meta.Cursor.DND_IN_DRAG);
@@ -210,7 +212,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private bool on_resize_button_press (Clutter.Event event) {
@@ -228,7 +234,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.SE_RESIZE);
+#else
         display.set_cursor (Meta.Cursor.SE_RESIZE);
+#endif
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -289,7 +299,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor {
 
         update_screen_position ();
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         display.set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private void on_allocation_changed () {

@@ -15,6 +15,8 @@ public class Gala.WindowIcon : Clutter.Actor {
     public int icon_size { get; construct; }
     public int scale { get; construct; }
 
+    private Icon icon;
+
     /**
      * Creates a new WindowIcon
      *
@@ -29,6 +31,9 @@ public class Gala.WindowIcon : Clutter.Actor {
     }
 
     construct {
+        icon = new Icon (icon_size, scale);
+        add_child (icon);
+
         /**
          * Sometimes a WindowIcon is constructed on Meta.Display::window_created.
          * In this case it can happen that we don't have any info about the app yet so we can't get the
@@ -42,11 +47,6 @@ public class Gala.WindowIcon : Clutter.Actor {
     }
 
     private void reload_icon () {
-        width = icon_size * scale;
-        height = icon_size * scale;
-
-        var pixbuf = Gala.Utils.get_icon_for_window (window, icon_size, scale);
-        var image = new Gala.Image.from_pixbuf (pixbuf);
-        set_content (image);
+        icon.gicon = Utils.get_icon_for_window (window);
     }
 }

@@ -9,7 +9,7 @@
  * The window container use this to know whether a window became static (they shouldn't show it anymore)
  * or isn't static anymore (they have to show it now).
  */
-public class Gala.StaticWindowContainer : ActorTarget {
+public class Gala.StaticWindowContainer : Widget {
     private static GLib.Once<StaticWindowContainer> instance;
     public static StaticWindowContainer get_instance (Meta.Display display) {
         return instance.once (() => new StaticWindowContainer (display));
@@ -71,7 +71,7 @@ public class Gala.StaticWindowContainer : ActorTarget {
     }
 
     private void check_window_changed (Meta.Window window) {
-        var is_static = is_static (window) && !ShellClientsManager.get_instance ().is_positioned_window (window);
+        var is_static = is_static (window) && !ShellClientsManager.get_instance ().is_shell_window (window);
 
         Clutter.Actor? clone = null;
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
