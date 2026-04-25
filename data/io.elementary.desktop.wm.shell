@@ -2,8 +2,10 @@
 launch-on-x=true
 args=io.elementary.wingpanel
 wait-for-animation=true
+session-type=desktop
 
 [io.elementary.dock]
 launch-on-x=true
 args=io.elementary.dock
 wait-for-animation=true
+session-type=desktop

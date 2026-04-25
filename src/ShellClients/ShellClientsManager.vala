@@ -102,6 +102,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
+                var type = key_file.get_string (group, "session-type");
+                if (type != SessionSettings.get_shell_clients_type ()) {
+                    continue;
+                }
+            } catch (Error e) {
+                warning ("Failed to check session type for client %s, assuming it should be launched: %s", group, e.message);
+            }
+
+            try {
                 if (key_file.get_boolean (group, "wait-for-animation")) {
                     starting_panels++;
                 }

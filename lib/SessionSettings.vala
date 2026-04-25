@@ -36,4 +36,17 @@ namespace Gala.SessionSettings {
 
         return session_type;
     }
+
+    public string get_shell_clients_type () {
+        switch (get_session_type ()) {
+            case DESKTOP:
+                return "desktop";
+            case GREETER:
+                return "greeter";
+            case INSTALLER:
+                return "installer";
+        }
+
+        return "desktop";
+    }
 }
