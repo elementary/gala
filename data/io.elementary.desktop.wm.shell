@@ -7,3 +7,19 @@ session-type=desktop
 launch-on-x=true
 args=io.elementary.dock
 session-type=desktop
+
+[Greeter wingpanel]
+args=io.elementary.wingpanel;-g
+session-type=greeter
+
+[Greeter Session Manager]
+args=io.elementary.greeter-session-manager
+session-type=greeter
+
+[Greeter]
+args=io.elementary.greeter
+session-type=greeter
+
+[Greeter Settings Daemon]
+args=io.elementary.settings-daemon
+session-type=greeter
