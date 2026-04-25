@@ -1352,14 +1352,6 @@ namespace Gala {
                     yield builder.run ();
                     break;
 
-                case Meta.WindowType.MENU:
-                case Meta.WindowType.DROPDOWN_MENU:
-                case Meta.WindowType.POPUP_MENU:
-                    var builder = new TransitionBuilder (actor, AnimationDuration.MENU_MAP, EASE_OUT_QUAD);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
-                    yield builder.run ();
-                    break;
-
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
                     dim_parent_window (window);
@@ -1580,7 +1572,8 @@ namespace Gala {
                     if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
                         return filter_action (MULTITASKING_VIEW);
                     }
-                    break;
+
+                    return true;
                 case Meta.KeyBindingAction.WORKSPACE_1:
                 case Meta.KeyBindingAction.WORKSPACE_2:
                 case Meta.KeyBindingAction.WORKSPACE_3:
