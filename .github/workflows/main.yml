@@ -40,9 +40,15 @@ jobs:
         meson build -Ddocumentation=true -Dtests=true
         ninja -C build
         ninja -C build install
-    - name: Run Tests
+    - name: Prepare Test Environment
       run: |
-        meson test -v -C build
+        mkdir -p -m 700 ${{ github.workspace }}/runtime-dir
+        mkdir -m 1777 /tmp/.X11-unix
+    - name: Run Tests
+      env:
+        XDG_RUNTIME_DIR: ${{ github.workspace }}/runtime-dir
+      run: |
+        dbus-run-session -- meson test -v -C build
 
   fedora:
     runs-on: ubuntu-latest
