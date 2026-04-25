@@ -294,7 +294,7 @@ namespace Meta {
 		public void purge (GLib.File file);
 	}
 #if HAS_MUTTER49
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_backlight_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-backlight.h", type_id = "meta_backlight_get_type ()")]
 	public abstract class Backlight : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Backlight ();
@@ -691,14 +691,14 @@ namespace Meta {
 		public Meta.Workspace workspace { owned get; set; }
 	}
 #if HAS_MUTTER49
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_logical_monitor_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-logical-monitor.h", type_id = "meta_logical_monitor_get_type ()")]
 	public class LogicalMonitor : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected LogicalMonitor ();
 		public unowned GLib.List<Meta.Monitor> get_monitors ();
 		public int get_number ();
 	}
-	[CCode (cheader_filename = "meta/main.h", type_id = "meta_monitor_get_type ()")]
+	[CCode (cheader_filename = "meta/meta-monitor.h", type_id = "meta_monitor_get_type ()")]
 	public class Monitor : GLib.Object {
 		[CCode (has_construct_function = false)]
 		protected Monitor ();
