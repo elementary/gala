@@ -1,7 +1,9 @@
 [io.elementary.wingpanel]
 launch-on-x=true
 args=io.elementary.wingpanel
+session-type=desktop
 
 [io.elementary.dock]
 launch-on-x=true
 args=io.elementary.dock
+session-type=desktop

@@ -102,6 +102,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
+                var type = key_file.get_string (group, "session-type");
+                if (type != SessionSettings.get_shell_clients_type ()) {
+                    continue;
+                }
+            } catch (Error e) {
+                warning ("Failed to check session type for client %s, assuming it should be launched: %s", group, e.message);
+            }
+
+            try {
                 var args = key_file.get_string_list (group, "args");
                 protocol_clients += new ManagedClient (wm.get_display (), args);
             } catch (Error e) {
