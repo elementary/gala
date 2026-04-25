@@ -118,6 +118,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
         }
 
+        if (!SessionSettings.should_animate_panels ()) {
+            starting_panels = 0;
+            return;
+        }
+
         starting_panels = protocol_clients.length;
     }
 

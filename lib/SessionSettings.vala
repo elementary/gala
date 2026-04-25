@@ -53,4 +53,9 @@ namespace Gala.SessionSettings {
     public bool should_set_xdg_current_desktop () {
         return get_session_type () != DESKTOP;
     }
+
+    public bool should_animate_panels () {
+        /* In the other types we fade in anyways */
+        return get_session_type () == DESKTOP;
+    }
 }
