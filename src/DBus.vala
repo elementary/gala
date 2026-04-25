@@ -19,6 +19,9 @@ public class Gala.DBus {
             (connection, name) => {
                 try {
                     connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
+#if HAS_MUTTER50
+                    connection.register_object ("/io/elementary/gala/BrightnessManager", new BrightnessManager (wm));
+#endif
                 } catch (Error e) {
                     warning (e.message);
                 }
