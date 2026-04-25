@@ -49,4 +49,8 @@ namespace Gala.SessionSettings {
 
         return "desktop";
     }
+
+    public bool should_set_xdg_current_desktop () {
+        return get_session_type () != DESKTOP;
+    }
 }
