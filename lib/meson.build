@@ -8,6 +8,7 @@ gala_lib_sources = files(
     'Constants.vala',
     'DragDropAction.vala',
     'Plugin.vala',
+    'SessionSettings.vala',
     'Utils.vala',
     'WindowManager.vala',
     'AppSystem/App.vala',
