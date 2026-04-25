@@ -9,3 +9,19 @@ launch-on-x=true
 args=io.elementary.dock
 wait-for-animation=true
 session-type=desktop
+
+[Greeter wingpanel]
+args=io.elementary.wingpanel;-g
+session-type=greeter
+
+[Greeter Session Manager]
+args=io.elementary.greeter-session-manager
+session-type=greeter
+
+[Greeter]
+args=io.elementary.greeter
+session-type=greeter
+
+[Greeter Settings Daemon]
+args=io.elementary.settings-daemon
+session-type=greeter
