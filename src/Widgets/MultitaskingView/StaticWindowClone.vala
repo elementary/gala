@@ -10,7 +10,7 @@
  * windows (e.g. on all workspaces or moving) and fades out while the multitasking view
  * is being opened.
  */
-public class Gala.StaticWindowClone : ActorTarget {
+public class Gala.StaticWindowClone : Widget {
     public Meta.Window window { get; construct; }
 
     public StaticWindowClone (Meta.Window window) {
