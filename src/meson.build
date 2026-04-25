@@ -25,6 +25,7 @@ gala_bin_sources = files(
     'HotCorners/HotCorner.vala',
     'HotCorners/HotCornerManager.vala',
     'Misc/BlurManager.vala',
+    'Misc/BrightnessManager.vala',
     'Misc/DaemonManager.vala',
     'Misc/DBusAccelerator.vala',
     'Misc/DesktopIntegration.vala',
