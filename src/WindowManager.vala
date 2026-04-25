@@ -139,6 +139,10 @@ namespace Gala {
 
             show_stage ();
 
+            if (SessionSettings.should_fade_in ()) {
+                fade_in.begin ();
+            }
+
             init_a11y ();
 
             AccessDialog.watch_portal ();
@@ -416,6 +420,22 @@ namespace Gala {
                 display.get_context ().notify_ready ();
                 return GLib.Source.REMOVE;
             });
+        }
+
+        private async void fade_in () {
+            var fade_in_actor = new Clutter.Actor () {
+                background_color = { 0, 0, 0, 255 },
+            };
+            fade_in_actor.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
+            stage.add_child (fade_in_actor);
+
+            /* TODO: We might want to wait another second before we start the fade otherwise it's not really visible */
+
+            var transition_builder = new TransitionBuilder (fade_in_actor, 1000, EASE);
+            transition_builder.add_property ("opacity", 0u);
+            yield transition_builder.run ();
+
+            stage.remove_child (fade_in_actor);
         }
 
         private void init_a11y () {

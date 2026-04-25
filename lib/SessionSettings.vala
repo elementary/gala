@@ -62,4 +62,8 @@ namespace Gala.SessionSettings {
     public bool should_blur_background () {
         return get_session_type () != DESKTOP;
     }
+
+    public bool should_fade_in () {
+        return get_session_type () != DESKTOP;
+    }
 }
