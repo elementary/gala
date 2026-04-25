@@ -27,6 +27,12 @@ namespace Gala {
     }
 
     public static int main (string[] args) {
+        if (SessionSettings.should_set_xdg_current_desktop ()) {
+            // Ensure we present ourselves as Pantheon so we pick up the right GSettings
+            // overrides
+            Environment.set_variable ("XDG_CURRENT_DESKTOP", "Pantheon", true);
+        }
+
         GLib.Intl.setlocale (LocaleCategory.ALL, "");
         GLib.Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
         GLib.Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
