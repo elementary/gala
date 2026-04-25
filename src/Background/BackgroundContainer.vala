@@ -54,6 +54,10 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
         for (var i = 0; i < display.get_n_monitors (); i++) {
             var background = new BackgroundManager (display, i);
 
+            if (SessionSettings.should_blur_background ()) {
+                background.add_effect (new BlurEffect (background, 18));
+            }
+
             add_child (background);
 
             if (i == 0)
