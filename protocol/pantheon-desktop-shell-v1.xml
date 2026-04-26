@@ -61,6 +61,15 @@
       <entry name="always" value="4" summary="always hide and only show if requested by the user"/>
     </enum>
 
+    <enum name="layer">
+      <description summary="layer">
+        The layer to place the panel in.
+      </description>
+      <entry name="desktop" value="0" summary="the desktop shell layer, only visible while in desktop"/>
+      <entry name="greeter" value="1" summary="the greeter shell layer, only visible while in the greeter"/>
+      <entry name="top" value="2" summary="the top shell layer, always visible"/>
+    </enum>
+
     <request name="set_anchor">
       <description summary="set panel edge anchor">
         Tell the shell which side of the screen the panel is
@@ -121,6 +130,14 @@
       <description summary="remove blur">
         Tell the window manager to remove blur that was set in set_blur_region.
       </description>
+    </request>
+
+    <request name="set_layer">
+      <description summary="set panel layer">
+        Tell the shell which layer to place the panel in.
+      </description>
+
+      <arg name="layer" type="uint" enum="layer" summary="layer"/>
     </request>
   </interface>
 

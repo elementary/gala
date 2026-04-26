@@ -24,6 +24,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
+    private ManagedClient[] greeter_clients = {};
 
     private int starting_panels = 0;
 
@@ -48,6 +49,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         Timeout.add_seconds_once (5, on_failsafe_timeout);
+
+        wm.get_display ().window_created.connect ((window) => {
+            warning ("Window created");
+            if (is_greeter_window (window)) {
+                window.shown.connect (make_greeter);
+                warning ("Made greeter");
+                //  wm.override_window_group (window, wm.greeter.window_group);
+            }
+        });
     }
 
     private async void start_clients () {
@@ -101,8 +111,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
                 }
             }
 
+            var is_greeter_client = false;
             try {
                 var type = key_file.get_string (group, "session-type");
+
+                if (type == "greeter") {
+                    is_greeter_client = true;
+                }
+
                 if (type != SessionSettings.get_shell_clients_type ()) {
                     continue;
                 }
@@ -120,7 +136,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
             try {
                 var args = key_file.get_string_list (group, "args");
-                protocol_clients += new ManagedClient (wm.get_display (), args);
+                var client = new ManagedClient (wm.get_display (), args);
+                protocol_clients += client;
+
+                if (is_greeter_client) {
+                    greeter_clients += client;
+                }
             } catch (Error e) {
                 warning ("Failed to load launch args for client %s: %s", group, e.message);
             }
@@ -182,6 +203,16 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 #endif
 
+    private bool is_greeter_window (Meta.Window window) {
+        foreach (var client in greeter_clients) {
+            if (client.wayland_client.owns_window (window)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
             panel_windows[window].anchor = anchor;
@@ -193,7 +224,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
 
-        wm.override_window_group (window, DESKTOP_SHELL);
+        set_layer (window, DESKTOP); // The default layer
 
         InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
 
@@ -251,6 +282,27 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         panel_windows[window].request_visible_in_multitasking_view ();
     }
 
+    public void set_layer (Meta.Window window, Pantheon.Desktop.Layer layer) {
+        if (!(window in panel_windows)) {
+            warning ("Set anchor for window before layer.");
+            return;
+        }
+
+        switch (layer) {
+            case DESKTOP:
+                wm.override_window_group (window, DESKTOP_SHELL);
+                break;
+
+            case GREETER:
+                wm.override_window_group (window, GREETER_SHELL);
+                break;
+
+            case TOP:
+                // TODO
+                break;
+        }
+    }
+
     public void make_centered (Meta.Window window) requires (!is_itself_shell_window (window)) {
         positioned_windows[window] = new ExtendedBehaviorWindow (window);
 
@@ -276,6 +328,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         // connect_after so we make sure that any queued move is unqueued
         window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
+    }
+
+    public void make_greeter (Meta.Window window) {
+        wm.override_window_group (window, GREETER);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {

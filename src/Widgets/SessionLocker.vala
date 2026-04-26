@@ -311,12 +311,21 @@ public class Gala.SessionLocker : Clutter.Actor {
             return;
         }
 
-        is_locked = true;
+        //  is_locked = true;
 
         activate (animate, SHORT_ANIMATION_TIME);
     }
 
     public void activate (bool animate, uint animation_time = LONG_ANIMATION_TIME) {
+        ((WindowManagerGala) wm).greeter.set_active.begin (true, () => {
+            try {
+                display_manager.switch_to_greeter ();
+            } catch (Error e) {
+                critical ("Unable to switch to greeter to unlock: %s", e.message);
+            }
+        });
+
+        return;
         if (visible || !connected_to_buses) {
             return;
         }
@@ -386,6 +395,8 @@ public class Gala.SessionLocker : Clutter.Actor {
     }
 
     public void deactivate (bool animate) {
+        ((WindowManagerGala) wm).greeter.set_active (false);
+        return;
         if (!connected_to_buses) {
             return;
         }

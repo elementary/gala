@@ -32,6 +32,13 @@ namespace Pantheon.Desktop {
         ALWAYS
     }
 
+    [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "enum io_elementary_pantheon_panel_v1_layer", cprefix="IO_ELEMENTARY_PANTHEON_PANEL_V1_LAYER_", has_type_id = false)]
+    public enum Layer {
+        DESKTOP,
+        GREETER,
+        TOP,
+    }
+
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_panel_v1_interface")]
     public struct PanelInterface {
         [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "io_elementary_pantheon_panel_v1_interface")]
@@ -44,6 +51,7 @@ namespace Pantheon.Desktop {
         public RequestVisibleInMultitaskingView request_visible_in_multitasking_view;
         public AddBlur add_blur;
         public RemoveBlur remove_blur;
+        public SetLayer set_layer;
     }
 
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_widget_v1_interface")]
@@ -85,6 +93,8 @@ namespace Pantheon.Desktop {
     public delegate void AddBlur (Wl.Client client, Wl.Resource resource, uint left, uint right, uint top, uint bottom, uint clip_radius);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void RemoveBlur (Wl.Client client, Wl.Resource resource);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void SetLayer (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Layer layer);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetKeepAbove (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]

@@ -20,6 +20,8 @@ namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
         public enum WindowGroup {
             DESKTOP_SHELL,
+            GREETER,
+            GREETER_SHELL,
             MODAL,
         }
 
@@ -61,6 +63,8 @@ namespace Gala {
          * See {@link ShellClientsManager.is_system_modal_window}.
          */
         public ModalGroup modal_group { get; private set; }
+
+        public Greeter greeter { get; private set; }
 
         /**
          * {@inheritDoc}
@@ -237,8 +241,11 @@ namespace Gala {
              * +-- multitasking view
              * +-- window switcher
              * +-- window overview
-             * +-- shell group
+             * +-- desktop shell group
              * +-- menu group
+             * +-- greeter // NOTE: Everything below greeter can be accessed without authentication
+             * +---- window group
+             * +---- shell group
              * +-- modal group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
@@ -306,6 +313,10 @@ namespace Gala {
 
             menu_group = new Clutter.Actor ();
             ui_group.add_child (menu_group);
+
+            greeter = new Greeter (this);
+            greeter.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
+            ui_group.add_child (greeter);
 
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
@@ -1061,6 +1072,8 @@ namespace Gala {
         private Clutter.Actor get_window_group_actor (WindowGroup group) {
             switch (group) {
                 case DESKTOP_SHELL: return shell_group;
+                case GREETER: return greeter.window_group;
+                case GREETER_SHELL: return greeter.shell_group;
                 case MODAL: return modal_group.window_group;
                 default: assert_not_reached ();
             }
