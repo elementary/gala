@@ -5,7 +5,7 @@ gala_template_sources = files(
 gala_template_lib = shared_library(
     'gala-template',
     gala_template_sources,
-    dependencies: [gala_dep, gala_base_dep],
+    dependencies: [gala_lib_dep, gala_base_dep],
     install: false,
     install_dir: plugins_dir,
     install_rpath: mutter_typelib_dir,
