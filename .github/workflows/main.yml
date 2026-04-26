@@ -36,9 +36,14 @@ jobs:
       env:
         DESTDIR: out
       run: |
-        meson build -Ddocumentation=true -Dtests=true
-        ninja -C build
-        ninja -C build install
+        meson setup build --prefix=/usr -Ddocumentation=true
+        cd build
+        ninja install
+    - name: Build Tests
+      run: |
+        cd build
+        meson configure -Dtests=true
+        ninja install
     - name: Prepare Test Environment
       run: |
         mkdir -p -m 700 ${{ github.workspace }}/runtime-dir

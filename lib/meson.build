@@ -4,7 +4,7 @@ gala_common_enums = files(
 
 gala_lib_sources = files(
     'ActivatableComponent.vala',
-    'BackgroundManager.vala',
+    'BackgroundManagerInterface.vala',
     'Constants.vala',
     'DragDropAction.vala',
     'Plugin.vala',

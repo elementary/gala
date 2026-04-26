@@ -30,13 +30,16 @@ public class Gala.SetupTest : MutterTestCase {
     private void test_setup_successful () {
         assert_true (context != null);
 
-        var display = context.get_display ();
-        assert_true (display != null);
-
         var backend = context.get_backend ();
         assert_true (backend != null);
 
-        var stage = backend.get_stage ();
+        assert_true (wm != null);
+        assert_true (wm is WindowManagerGala);
+
+        var display = wm.get_display ();
+        assert_true (display != null);
+
+        var stage = wm.stage;
         assert_true (stage != null);
         assert_true (stage is Clutter.Stage);
         assert_true (this.stage == stage);

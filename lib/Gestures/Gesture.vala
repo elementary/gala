@@ -20,7 +20,11 @@ namespace Gala {
     /**
      * Physical direction of the gesture. This direction doesn't follow natural scroll preferences.
      */
+#if TESTS
+    public enum GestureDirection {
+#else
     private enum GestureDirection {
+#endif
         UNKNOWN = 0,
 
         // GestureType.SWIPE and GestureType.SCROLL
@@ -59,7 +63,11 @@ namespace Gala {
         }
     }
 
+#if TESTS
+    public class Gesture {
+#else
     private class Gesture {
+#endif
         public Clutter.EventType type;
         public GestureDirection direction;
         public int fingers;

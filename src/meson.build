@@ -6,7 +6,6 @@ gala_bin_sources = files(
     'DesktopIntegration.vala',
     'InternalUtils.vala',
     'KeyboardManager.vala',
-    'Main.vala',
     'NotificationsManager.vala',
     'NotificationStack.vala',
     'PantheonShell.vala',
@@ -20,7 +19,7 @@ gala_bin_sources = files(
     'WindowDragProvider.vala',
     'WindowListener.vala',
     'WindowListModel.vala',
-    'WindowManager.vala',
+    'WindowManagerGala.vala',
     'WindowMover.vala',
     'WindowStateSaver.vala',
     'WindowTracker.vala',
@@ -72,11 +71,26 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
 )
 
-gala_bin = executable(
-    'gala',
+gala_bin_lib = shared_library(
+    'gala-bin',
     gala_bin_sources,
     config_header,
+    gala_resources,
     dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep],
+    install: false,
+    version : '0.0.0'
+)
+
+gala_bin_dep = declare_dependency(
+    link_with: [gala_bin_lib],
+    dependencies: [gala_dep, gala_base_dep, pantheon_desktop_shell_dep],
+    include_directories: include_directories('.')
+)
+
+gala_bin = executable(
+    'gala',
+    'Main.vala',
+    dependencies: [gala_bin_dep],
     install_rpath: mutter_typelib_dir,
     install: true,
 )
