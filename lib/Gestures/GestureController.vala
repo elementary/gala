@@ -287,9 +287,9 @@ public class Gala.GestureController : Object {
 
     private void finished () {
         assert (running);
-        target.propagate (END, action, progress);
         running = false;
         remove_timeline ();
+        target.propagate (END, action, progress);
     }
 
     private void remove_timeline () {
@@ -317,6 +317,18 @@ public class Gala.GestureController : Object {
 
         prepare ();
         finish ((to > progress ? 1 : -1) * 1, to);
+    }
+
+    public void jump (double to) {
+        if (running && !recognizing) {
+            /* We are animating to a snap point so stop the animation */
+            finished ();
+        }
+
+        var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+
+        target?.propagate (COMMIT, action, clamped_to);
+        progress = clamped_to;
     }
 
     public void cancel_gesture () {
