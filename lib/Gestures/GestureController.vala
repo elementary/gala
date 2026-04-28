@@ -133,7 +133,7 @@ public class Gala.GestureController : Object {
             running = true;
         }
 
-        timeline = null;
+        remove_timeline ();
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -268,19 +268,36 @@ public class Gala.GestureController : Object {
         }
 
         var spring = new SpringTimeline (target.actor, progress, clamped_to, velocity, 1, 1, 500);
-        spring.progress.connect ((value) => progress = value);
-        spring.stopped.connect_after (finished);
+        spring.progress.connect (on_timeline_progress);
+        spring.stopped.connect_after (on_timeline_stopped);
 
         timeline = spring;
 
         target.propagate (COMMIT, action, clamped_to);
     }
 
-    private void finished (bool is_finished = true) requires (is_finished) {
+    private void on_timeline_progress (double value) {
+        progress = value;
+    }
+
+    private void on_timeline_stopped (bool is_finished) {
+        assert (is_finished);
+        finished ();
+    }
+
+    private void finished () {
         assert (running);
         target.propagate (END, action, progress);
         running = false;
-        timeline = null;
+        remove_timeline ();
+    }
+
+    private void remove_timeline () {
+        if (timeline != null) {
+            timeline.progress.disconnect (on_timeline_progress);
+            timeline.stopped.disconnect (on_timeline_stopped);
+            timeline = null;
+        }
     }
 
     /**
