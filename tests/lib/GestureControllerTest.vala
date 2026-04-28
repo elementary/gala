@@ -164,6 +164,10 @@ public class Gala.GestureControllerTest : MutterTestCase {
         target.assert_and_remove_propagation (COMMIT, CUSTOM, 1);
         target.assert_and_remove_propagation (END, CUSTOM, 1);
         target.assert_no_propagations ();
+
+        assert_finalize_object (ref target);
+        assert_finalize_object (ref controller);
+        assert_finalize_object (ref backend);
     }
 
     /**
