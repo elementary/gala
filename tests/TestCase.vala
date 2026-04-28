@@ -20,10 +20,8 @@ public abstract class Gala.TestCase : Object {
         suite = new GLib.TestSuite (name);
     }
 
-    public int run (string[] args) {
-        Test.init (ref args);
+    public override void constructed () {
         TestSuite.get_root ().add_suite ((owned) suite);
-        return Test.run ();
     }
 
     protected void add_test (string name, TestMethod test) {
@@ -41,12 +39,5 @@ public abstract class Gala.TestCase : Object {
     }
 
     public virtual void tear_down () {
-    }
-
-    public void assert_finalize_object<G> (ref G data) {
-        unowned var weak_pointer = data;
-        ((Object) data).add_weak_pointer (&weak_pointer);
-        data = null;
-        assert_null (weak_pointer);
     }
 }

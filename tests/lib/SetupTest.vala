@@ -88,7 +88,3 @@ public class Gala.SetupTest : MutterTestCase {
         assert_cmpint (frames, GT, 0);
     }
 }
-
-public int main (string[] args) {
-    return new Gala.SetupTest ().run (args);
-}

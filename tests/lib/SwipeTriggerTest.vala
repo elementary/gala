@@ -56,7 +56,3 @@ public class Gala.SwipeTriggerTest : MutterTestCase {
         assert_finalize_object (ref trigger);
     }
 }
-
-public int main (string[] args) {
-    return new Gala.SwipeTriggerTest ().run (args);
-}

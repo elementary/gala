@@ -151,7 +151,3 @@ public class Gala.PropertyTargetTest : TestCase {
         assert_finalize_object<MockObject> (ref target);
     }
 }
-
-public int main (string[] args) {
-    return new Gala.PropertyTargetTest ().run (args);
-}
