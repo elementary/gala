@@ -287,9 +287,9 @@ public class Gala.GestureController : Object {
 
     private void finished () {
         assert (running);
-        target.propagate (END, action, progress);
         running = false;
         remove_timeline ();
+        target.propagate (END, action, progress);
     }
 
     private void remove_timeline () {
