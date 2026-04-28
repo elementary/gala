@@ -19,7 +19,7 @@ internal class Gala.MockTrigger : Object, GestureTrigger {
         return true;
     }
 
-    public override void enable_backends (GestureController controller) {
+    public void enable_backends (GestureController controller) {
         controller.enable_backend (backend);
     }
 }
@@ -92,10 +92,6 @@ public class Gala.GestureControllerTest : MutterTestCase {
     private MockBackend backend;
     private GestureController controller;
     private MockTarget target;
-
-    public GestureControllerTest () {
-        Object (name: "GestureControllerTest");
-    }
 
     construct {
         add_test ("Test basic propagation", test_basic_propagation);
@@ -200,8 +196,4 @@ public class Gala.GestureControllerTest : MutterTestCase {
 
         run_main_loop ();
     }
-}
-
-public int main (string[] args) {
-    return new Gala.GestureControllerTest ().run (args);
 }

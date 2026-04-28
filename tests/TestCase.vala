@@ -12,18 +12,14 @@
 public abstract class Gala.TestCase : Object {
     public delegate void TestMethod ();
 
-    public string name { get; construct; }
-
     private GLib.TestSuite suite;
 
     construct {
-        suite = new GLib.TestSuite (name);
+        suite = new GLib.TestSuite (this.get_class ().get_type ().name ());
     }
 
-    public int run (string[] args) {
-        Test.init (ref args);
+    public override void constructed () {
         TestSuite.get_root ().add_suite ((owned) suite);
-        return Test.run ();
     }
 
     protected void add_test (string name, TestMethod test) {
