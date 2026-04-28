@@ -1298,14 +1298,6 @@ namespace Gala {
                     yield builder.run ();
                     break;
 
-                case Meta.WindowType.MENU:
-                case Meta.WindowType.DROPDOWN_MENU:
-                case Meta.WindowType.POPUP_MENU:
-                    var builder = new TransitionBuilder (actor, AnimationDuration.MENU_MAP, EASE_OUT_QUAD);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
-                    yield builder.run ();
-                    break;
-
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
                     dim_parent_window (window);
