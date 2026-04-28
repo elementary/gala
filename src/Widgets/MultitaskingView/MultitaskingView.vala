@@ -277,6 +277,12 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
                 } else {
                     target_workspace.activate (display.get_current_time ());
                 }
+
+                /* Activating a workspace will set the input focus to the stage so recapture it
+                   (Gala.Root will automatically recapture it if we try to move the focus but we want
+                   it right away for escape to work) */
+                grab_key_focus ();
+
                 break;
 
             default:
