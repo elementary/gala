@@ -232,10 +232,6 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             return;
         }
 
-        //Although we are setting visible via the opacity notify handler anyway
-        //we have to set it here manually otherwise the size gotten via get_preferred_size is wrong
-        visible = true;
-
         float width, height;
         get_preferred_size (null, null, out width, out height);
 
