@@ -26,6 +26,5 @@ test_executable = executable(
 )
 
 foreach lib_test : lib_tests
-    test(lib_test, test_executable, args: ['--test-name=@0@'.format(lib_test)], suite: ['Gala'], is_parallel: false)
+    test(lib_test, test_executable, args: ['-p', '/Gala@0@'.format(lib_test)], suite: ['Gala'], is_parallel: false)
 endforeach
-

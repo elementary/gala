@@ -25,12 +25,16 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         "--virtual-monitor", "1280x720@60"
     };
 
-    protected Meta.Context context { get; private set; }
-    protected Clutter.Stage stage { get { return (Clutter.Stage) context.get_backend ().get_stage (); } }
+    protected static Meta.Context? context { get; private set; }
+    protected static Clutter.Stage? stage { get { return (Clutter.Stage) context?.get_backend ().get_stage (); } }
 
     private MainLoop? main_loop;
 
     construct {
+        if (context != null) {
+            return;
+        }
+
         context = new Meta.Context ("");
 
         unowned var unowned_args = MUTTER_ARGS;

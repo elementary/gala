@@ -35,7 +35,7 @@ public class Gala.SetupTest : MutterTestCase {
         var stage = backend.get_stage ();
         assert_true (stage != null);
         assert_true (stage is Clutter.Stage);
-        assert_true (this.stage == stage);
+        assert_true (MutterTestCase.stage == stage);
 
         // Creating an actor requires clutter machinery to be set up, so check this
         var actor = new Clutter.Actor ();
