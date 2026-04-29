@@ -1,7 +1,9 @@
 [io.elementary.wingpanel]
 launch-on-x=true
 args=io.elementary.wingpanel
+wait-for-animation=true
 
 [io.elementary.dock]
 launch-on-x=true
 args=io.elementary.dock
+wait-for-animation=true

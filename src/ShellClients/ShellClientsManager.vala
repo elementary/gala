@@ -102,14 +102,20 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
+                if (key_file.get_boolean (group, "wait-for-animation")) {
+                    starting_panels++;
+                }
+            } catch (Error e) {
+                warning ("Failed to check whether client should wait for animation, assuming no: %s", e.message);
+            }
+
+            try {
                 var args = key_file.get_string_list (group, "args");
                 protocol_clients += new ManagedClient (wm.get_display (), args);
             } catch (Error e) {
                 warning ("Failed to load launch args for client %s: %s", group, e.message);
             }
         }
-
-        starting_panels = protocol_clients.length;
     }
 
     private void on_failsafe_timeout () {
