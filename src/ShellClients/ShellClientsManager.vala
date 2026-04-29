@@ -104,14 +104,18 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
+                starting_panels += key_file.get_integer (group, "wait-for-n-panels");
+            } catch (Error e) {
+                warning ("Failed to check how many panels should be awaited, assuming 0: %s", e.message);
+            }
+
+            try {
                 var args = key_file.get_string_list (group, "args");
                 protocol_clients += new ManagedClient (wm.get_display (), args);
             } catch (Error e) {
                 warning ("Failed to load launch args for client %s: %s", group, e.message);
             }
         }
-
-        starting_panels = protocol_clients.length;
     }
 
     private void on_failsafe_timeout () {
