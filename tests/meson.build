@@ -13,7 +13,7 @@ lib_tests = [
 
 lib_test_sources = files()
 foreach lib_test : lib_tests
-    lib_test_sources += files('lib/@0@.vala'.format(lib_test))
+    lib_test_sources += 'lib' / '@0@.vala'.format(lib_test)
 endforeach
 
 test_executable = executable(
@@ -25,8 +25,7 @@ test_executable = executable(
     install: false,
 )
 
-lib_test_sources = files()
 foreach lib_test : lib_tests
-    test(lib_test, test_executable, args: ['--test-name=@0@'.format(lib_test)] ,is_parallel: false)
+    test(lib_test, test_executable, args: ['--test-name=@0@'.format(lib_test)], suite: ['Gala'], is_parallel: false)
 endforeach
 
