@@ -12,12 +12,10 @@
 public abstract class Gala.TestCase : Object {
     public delegate void TestMethod ();
 
-    public string name { get; construct; }
-
     private GLib.TestSuite suite;
 
     construct {
-        suite = new GLib.TestSuite (name);
+        suite = new GLib.TestSuite (this.get_class ().get_type ().name ());
     }
 
     public override void constructed () {

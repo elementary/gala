@@ -12,10 +12,6 @@
  * and allows us to interact with it, e.g. by creating a Clutter actor.
  */
 public class Gala.SetupTest : MutterTestCase {
-    public SetupTest () {
-        Object (name: "SetupTest");
-    }
-
     construct {
         add_test ("Test setup successful", test_setup_successful);
         add_test ("Test main loop", test_main_loop);

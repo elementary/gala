@@ -12,10 +12,6 @@ public class Gala.PropertyTargetTest : TestCase {
     private MockObject? target;
     private PropertyTarget? default_int_prop_target;
 
-    public PropertyTargetTest () {
-        Object (name: "PropertyTarget");
-    }
-
     construct {
         add_test ("simple propagation", test_simple_propagation);
         add_test ("double propagation", test_double_propagation);

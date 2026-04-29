@@ -9,10 +9,6 @@ public class Gala.SwipeTriggerTest : MutterTestCase {
     private Clutter.Actor? actor;
     private SwipeTrigger? trigger;
 
-    public SwipeTriggerTest () {
-        Object (name: "SwipeTriggerTest");
-    }
-
     construct {
         add_test ("Test finalize trigger first", test_finalize_trigger_first);
         add_test ("Test finalize actor first", test_finalize_actor_first);
