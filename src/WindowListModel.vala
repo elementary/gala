@@ -156,6 +156,10 @@ public class Gala.WindowListModel : Object, ListModel {
     }
 
     public Object? get_item (uint position) {
+        if (position >= get_n_items ()) {
+            return null;
+        }
+
         return windows[(int) position];
     }
 
