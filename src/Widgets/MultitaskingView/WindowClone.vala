@@ -287,7 +287,7 @@ public class Gala.WindowClone : Widget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_icon, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
-        
+
         add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
 
         var window_buffer_rect = window.get_buffer_rect ();
@@ -492,18 +492,21 @@ public class Gala.WindowClone : Widget, RootTarget {
     private Clutter.Actor drag_begin (float click_x, float click_y) requires (drag_handle == null) {
         active_shape.hide ();
 
-        var scale = window_icon.width / clone.width;
+        var scale = window_icon.width / clone_container.width;
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         float abs_x, abs_y;
-        clone.get_transformed_position (out abs_x, out abs_y);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
-        clone.set_scale (scale, scale);
-        clone.opacity = 0;
-        clone.restore_easing_state ();
+        clone_container.get_transformed_position (out abs_x, out abs_y);
+        clone_container.save_easing_state ();
+        clone_container.set_easing_duration (duration);
+        clone_container.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+        clone_container.set_pivot_point (
+            (click_x - abs_x) / clone_container.width,
+            (click_y - abs_y) / clone_container.height
+        );
+        clone_container.set_scale (scale, scale);
+        clone_container.opacity = 0;
+        clone_container.restore_easing_state ();
 
         get_transformed_position (out abs_x, out abs_y);
 
@@ -614,13 +617,13 @@ public class Gala.WindowClone : Widget, RootTarget {
         drag_handle.set_position (target_x, target_y);
         drag_handle.restore_easing_state ();
 
-        clone.set_pivot_point (0.0f, 0.0f);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_scale (1, 1);
-        clone.opacity = 255;
-        clone.restore_easing_state ();
+        clone_container.set_pivot_point (0.0f, 0.0f);
+        clone_container.save_easing_state ();
+        clone_container.set_easing_duration (duration);
+        clone_container.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        clone_container.set_scale (1, 1);
+        clone_container.opacity = 255;
+        clone_container.restore_easing_state ();
 
         close_button.visible = true;
         window_title.visible = true;
