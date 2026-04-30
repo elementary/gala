@@ -476,11 +476,24 @@ namespace Gala {
             return Clutter.EVENT_STOP;
         }
 
-        private void handle_cycle_workspaces (Meta.Display display, Meta.Window? window, Clutter.KeyEvent? event,
-            Meta.KeyBinding binding) {
-            var direction = (binding.get_name () == "cycle-workspaces-next" ? 1 : -1);
+        private void handle_cycle_workspaces (
+            Meta.Display display,
+            Meta.Window? window,
+            Clutter.KeyEvent? event,
+            Meta.KeyBinding binding
+        ) {
             unowned var manager = display.get_workspace_manager ();
             var active_workspace_index = manager.get_active_workspace_index ();
+
+            var timestamp = event != null ? event?.get_time () : Meta.CURRENT_TIME;
+
+            // If only 1 populated workspace is present we allow switching to new workspace
+            if (manager.n_workspaces == 2) {
+                manager.get_workspace_by_index (1 - active_workspace_index).activate (timestamp);
+                return;
+            }
+
+            var direction = binding.get_name () == "cycle-workspaces-next" ? 1 : -1;
             var index = active_workspace_index + direction;
 
             if (index < 0) {
@@ -490,7 +503,6 @@ namespace Gala {
             }
 
             if (active_workspace_index != index) {
-                var timestamp = event != null ? event.get_time () : Meta.CURRENT_TIME;
                 manager.get_workspace_by_index (index).activate (timestamp);
             } else {
                 InternalUtils.bell_notify (display);
