@@ -8,12 +8,12 @@
 public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManager wm, InputMethod im) {
         if (instance != null) {
             return;
         }
 
-        instance = new ShellClientsManager (wm);
+        instance = new ShellClientsManager (wm, im);
     }
 
     public static unowned ShellClientsManager? get_instance () {
@@ -21,6 +21,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public WindowManager wm { get; construct; }
+    public InputMethod im { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -30,9 +31,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
     private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
+    private IBusCandidateWindow? ibus_candidate_window = null;
 
-    private ShellClientsManager (WindowManager wm) {
-        Object (wm: wm);
+    private ShellClientsManager (WindowManager wm, InputMethod im) {
+        Object (wm: wm, im: im);
     }
 
     construct {
@@ -257,6 +259,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
     }
 
+    public void make_ibus_candidate_window (Meta.Window window) requires (ibus_candidate_window == null) {
+        ibus_candidate_window = new IBusCandidateWindow (im, window);
+
+        window.unmanaged.connect_after (() => ibus_candidate_window = null);
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
@@ -272,7 +280,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             (window in positioned_windows && positioned_windows[window].modal) ||
             (window in panel_windows) ||
             (window in monitor_label_windows) ||
-            NotificationStack.is_notification (window)
+            NotificationStack.is_notification (window) ||
+            window == ibus_candidate_window?.window
         );
     }
 
