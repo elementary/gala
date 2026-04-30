@@ -67,10 +67,12 @@ public class Gala.WindowClone : Widget, RootTarget {
     private ulong check_confirm_dialog_cb = 0;
 
     private Clutter.Actor clone_container;
+    private Clutter.Actor child_clone_container;
     private Gala.CloseButton close_button;
     private ActiveShape active_shape;
     private Clutter.Actor window_icon;
     private Tooltip window_title;
+    private GLib.ListModel window_list_model;
 
     private GestureController gesture_controller;
 
@@ -131,9 +133,14 @@ public class Gala.WindowClone : Widget, RootTarget {
         };
         bind_property ("monitor-scale", active_shape, "monitor-scale");
 
-        clone_container = new Clutter.Actor () {
-            pivot_point = { 0.5f, 0.5f }
-        };
+        window_list_model = new WindowListModel (wm.get_display (), STACKING, true, false, -1, null, new ChildFilter (window));
+        window_list_model.items_changed.connect_after (update_targets);
+
+        child_clone_container = new Clutter.Actor ();
+        child_clone_container.bind_model (window_list_model, create_child_func);
+
+        clone_container = new Clutter.Actor ();
+        clone_container.add_child (child_clone_container);
 
         window_title = new Tooltip (monitor_scale);
         bind_property ("monitor-scale", window_title, "monitor-scale");
@@ -169,6 +176,12 @@ public class Gala.WindowClone : Widget, RootTarget {
         finish_drag ();
     }
 
+    private Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
+        unowned var child_window = (Meta.Window) obj;
+
+        return new Clutter.Clone ((Meta.WindowActor) child_window.get_compositor_private ());
+    }
+
     private void on_visible_focus_changed () {
         active_shape.save_easing_state ();
         active_shape.set_easing_duration (Utils.get_animation_duration (FADE_ANIMATION_DURATION));
@@ -197,7 +210,7 @@ public class Gala.WindowClone : Widget, RootTarget {
      */
     private void load_clone (Meta.WindowActor actor) {
         clone = new Clutter.Clone (actor);
-        clone_container.add_child (clone);
+        clone_container.insert_child_below (clone, null);
 
         check_shadow_requirements ();
     }
@@ -276,6 +289,42 @@ public class Gala.WindowClone : Widget, RootTarget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, window_title, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, close_button, "opacity", typeof (uint8), (uint8) 0u, (uint8) 255u));
+
+        var window_buffer_rect = window.get_buffer_rect ();
+        var window_shadow_spread_x = window_rect.x - window_buffer_rect.x;
+        var window_shadow_spread_y = window_rect.y - window_buffer_rect.y;
+
+        var i = 0u;
+        for (unowned var child_clone = child_clone_container.get_first_child ();
+            child_clone != null;
+            child_clone = child_clone.get_next_sibling ()
+        ) {
+            var child_window = (Meta.Window) window_list_model.get_item (i);
+
+            var child_buffer_rect = child_window.get_buffer_rect ();
+            var child_frame_rect = child_window.get_frame_rect ();
+
+            var scale = 1.0f;
+            if (child_frame_rect.width > window_rect.width || child_frame_rect.height > window_rect.height) {
+                scale = float.min ((float) window_rect.width / child_frame_rect.width, (float) window_rect.height / child_frame_rect.height);
+
+                add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "width", typeof (float), (float) child_buffer_rect.width, child_buffer_rect.width * scale));
+                add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "height", typeof (float), (float) child_buffer_rect.height, child_buffer_rect.height * scale));
+            }
+
+            var child_parent_x_diff = child_buffer_rect.x - window_buffer_rect.x;
+            var child_parent_y_diff = child_buffer_rect.y - window_buffer_rect.y;
+            // Center the window
+            var child_shadow_spread_x = (child_frame_rect.x - child_buffer_rect.x) * scale;
+            var child_shadow_spread_y = (child_frame_rect.y - child_buffer_rect.y) * scale;
+            var target_x = window_shadow_spread_x - child_shadow_spread_x + (window_rect.width - child_frame_rect.width * scale) / 2.0f;
+            var target_y = window_shadow_spread_y - child_shadow_spread_y + (window_rect.height - child_frame_rect.height * scale) / 2.0f;
+
+            add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "x", typeof (float), (float) child_parent_x_diff, target_x));
+            add_target (new PropertyTarget (MULTITASKING_VIEW, child_clone, "y", typeof (float), (float) child_parent_y_diff, target_y));
+
+            i++;
+        }
     }
 
     public override void update_progress (Gala.GestureAction action, double progress) {
@@ -325,7 +374,7 @@ public class Gala.WindowClone : Widget, RootTarget {
 
         unowned var display = wm.get_display ();
 
-        clone.set_scale (clone_scale_factor, clone_scale_factor);
+        clone_container.set_scale (clone_scale_factor, clone_scale_factor);
 
         Clutter.ActorBox shape_alloc = {
             -ACTIVE_SHAPE_SIZE,
@@ -443,18 +492,21 @@ public class Gala.WindowClone : Widget, RootTarget {
     private Clutter.Actor drag_begin (float click_x, float click_y) requires (drag_handle == null) {
         active_shape.hide ();
 
-        var scale = window_icon.width / clone.width;
+        var scale = window_icon.width / clone_container.width;
         var duration = Utils.get_animation_duration (FADE_ANIMATION_DURATION);
 
         float abs_x, abs_y;
-        clone.get_transformed_position (out abs_x, out abs_y);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
-        clone.set_pivot_point ((click_x - abs_x) / clone.width, (click_y - abs_y) / clone.height);
-        clone.set_scale (scale, scale);
-        clone.opacity = 0;
-        clone.restore_easing_state ();
+        clone_container.get_transformed_position (out abs_x, out abs_y);
+        clone_container.save_easing_state ();
+        clone_container.set_easing_duration (duration);
+        clone_container.set_easing_mode (Clutter.AnimationMode.EASE_IN_CUBIC);
+        clone_container.set_pivot_point (
+            (click_x - abs_x) / clone_container.width,
+            (click_y - abs_y) / clone_container.height
+        );
+        clone_container.set_scale (scale, scale);
+        clone_container.opacity = 0;
+        clone_container.restore_easing_state ();
 
         get_transformed_position (out abs_x, out abs_y);
 
@@ -565,13 +617,13 @@ public class Gala.WindowClone : Widget, RootTarget {
         drag_handle.set_position (target_x, target_y);
         drag_handle.restore_easing_state ();
 
-        clone.set_pivot_point (0.0f, 0.0f);
-        clone.save_easing_state ();
-        clone.set_easing_duration (duration);
-        clone.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-        clone.set_scale (1, 1);
-        clone.opacity = 255;
-        clone.restore_easing_state ();
+        clone_container.set_pivot_point (0.0f, 0.0f);
+        clone_container.save_easing_state ();
+        clone_container.set_easing_duration (duration);
+        clone_container.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
+        clone_container.set_scale (1, 1);
+        clone_container.opacity = 255;
+        clone_container.restore_easing_state ();
 
         close_button.visible = true;
         window_title.visible = true;
@@ -643,6 +695,19 @@ public class Gala.WindowClone : Widget, RootTarget {
                 to_value.set_boxed (&new_color);
                 return true;
             });
+        }
+    }
+
+    private class ChildFilter : Gtk.Filter {
+        public Meta.Window parent_window { private get; construct; }
+
+        public ChildFilter (Meta.Window parent_window) {
+            Object (parent_window: parent_window);
+        }
+
+        public override bool match (GLib.Object? item) requires (item is Meta.Window) {
+            unowned var window = (Meta.Window) item;
+            return parent_window.is_ancestor_of_transient (window);
         }
     }
 }

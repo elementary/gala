@@ -137,7 +137,7 @@ public class Gala.WorkspaceClone : Widget {
         background = new FramedBackground (display);
         background.add_action (background_click_action);
 
-        windows = new WindowListModel (display, STACKING, true, display.get_primary_monitor (), workspace);
+        windows = new WindowListModel (display, STACKING, true, true, display.get_primary_monitor (), workspace);
 
         window_container = new WindowCloneContainer (wm, windows, monitor_scale) {
             width = monitor_geometry.width,
