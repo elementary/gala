@@ -19,7 +19,7 @@ internal class Gala.MockTrigger : Object, GestureTrigger {
         return true;
     }
 
-    public override void enable_backends (GestureController controller) {
+    public void enable_backends (GestureController controller) {
         controller.enable_backend (backend);
     }
 }
@@ -92,10 +92,7 @@ public class Gala.GestureControllerTest : MutterTestCase {
     private MockBackend backend;
     private GestureController controller;
     private MockTarget target;
-
-    public GestureControllerTest () {
-        Object (name: "GestureControllerTest");
-    }
+    private Clutter.Actor actor;
 
     construct {
         add_test ("Test basic propagation", test_basic_propagation);
@@ -105,7 +102,7 @@ public class Gala.GestureControllerTest : MutterTestCase {
     public override void set_up () {
         base.set_up ();
 
-        var actor = new Clutter.Actor ();
+        actor = new Clutter.Actor ();
         stage.add_child (actor);
 
         backend = new MockBackend ();
@@ -125,11 +122,14 @@ public class Gala.GestureControllerTest : MutterTestCase {
     }
 
     public override void tear_down () {
-        stage.remove_child (target.actor);
+        if (actor != null) {
+            stage.remove_child (actor);
+        }
 
         backend = null;
         controller = null;
         target = null;
+        actor = null;
 
         base.tear_down ();
     }
@@ -168,6 +168,10 @@ public class Gala.GestureControllerTest : MutterTestCase {
         assert_finalize_object (ref target);
         assert_finalize_object (ref controller);
         assert_finalize_object (ref backend);
+
+        assert_nonnull (&actor);
+        stage.remove_child (actor);
+        assert_finalize_object (ref actor);
     }
 
     /**
@@ -200,8 +204,4 @@ public class Gala.GestureControllerTest : MutterTestCase {
 
         run_main_loop ();
     }
-}
-
-public int main (string[] args) {
-    return new Gala.GestureControllerTest ().run (args);
 }

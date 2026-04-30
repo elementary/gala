@@ -12,10 +12,6 @@
  * and allows us to interact with it, e.g. by creating a Clutter actor.
  */
 public class Gala.SetupTest : MutterTestCase {
-    public SetupTest () {
-        Object (name: "SetupTest");
-    }
-
     construct {
         add_test ("Test setup successful", test_setup_successful);
         add_test ("Test main loop", test_main_loop);
@@ -39,7 +35,7 @@ public class Gala.SetupTest : MutterTestCase {
         var stage = backend.get_stage ();
         assert_true (stage != null);
         assert_true (stage is Clutter.Stage);
-        assert_true (this.stage == stage);
+        assert_true (MutterTestCase.stage == stage);
 
         // Creating an actor requires clutter machinery to be set up, so check this
         var actor = new Clutter.Actor ();
@@ -87,8 +83,4 @@ public class Gala.SetupTest : MutterTestCase {
         Test.message ("Got %d frames", frames);
         assert_cmpint (frames, GT, 0);
     }
-}
-
-public int main (string[] args) {
-    return new Gala.SetupTest ().run (args);
 }
