@@ -72,6 +72,10 @@ gala_bin_sources = files(
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
 )
 
+if mutter50_dep.found()
+    gala_bin_sources+=files('BrightnessManager.vala')
+endif
+
 gala_bin = executable(
     'gala',
     gala_bin_sources,
