@@ -4,8 +4,16 @@
  */
 
 public class Gala.Daemon.Application : Gtk.Application {
+    private IBusService ibus_service;
+    private OSKManager osk_manager;
+
     public Application () {
         Object (application_id: "org.pantheon.gala.daemon");
+    }
+
+    construct {
+        ibus_service = new IBusService ();
+        osk_manager = new OSKManager (ibus_service);
     }
 
     public override void startup () {

@@ -51,6 +51,8 @@ namespace Gala {
 
         private Clutter.Actor menu_group { get; set; }
 
+        private Clutter.Actor osk_group;
+
         /**
          * The group that contains all WindowActors that are system modal.
          * See {@link ShellClientsManager.is_system_modal_window}.
@@ -84,6 +86,10 @@ namespace Gala {
         private HotCornerManager? hot_corner_manager = null;
 
         private KeyboardManager keyboard_manager;
+
+        private InputMethod input_method;
+
+        private OSKManager osk_manager;
 
         public WindowTracker? window_tracker { get; private set; }
 
@@ -133,7 +139,12 @@ namespace Gala {
         }
 
         public override void start () {
-            ShellClientsManager.init (this);
+            input_method = new InputMethod (get_display ());
+            Clutter.get_default_backend ().set_input_method (input_method);
+
+            osk_manager = new OSKManager (get_display (), input_method);
+
+            ShellClientsManager.init (this, input_method, osk_manager);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
@@ -232,6 +243,7 @@ namespace Gala {
              * +-- window overview
              * +-- shell group
              * +-- menu group
+             * +-- osk group
              * +-- modal group
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
@@ -299,6 +311,9 @@ namespace Gala {
 
             menu_group = new Clutter.Actor ();
             ui_group.add_child (menu_group);
+
+            osk_group = new Clutter.Actor ();
+            ui_group.add_child (osk_group);
 
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
@@ -1045,6 +1060,11 @@ namespace Gala {
 
             if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
                 InternalUtils.clutter_actor_reparent (actor, modal_group.window_group);
+                return;
+            }
+
+            if (ShellClientsManager.get_instance ().is_osk_window (window)) {
+                InternalUtils.clutter_actor_reparent (actor, osk_group);
                 return;
             }
 
