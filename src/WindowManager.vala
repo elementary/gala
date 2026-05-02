@@ -401,13 +401,13 @@ namespace Gala {
             stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
 
             display.window_created.connect ((window) =>
-                InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
+                InternalUtils.wait_for_window_actor_visible (window, check_window_group)
             );
 
             WindowListener.get_default ().window_type_changed.connect ((window) => {
                 unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
                 if (window_actor != null) {
-                    check_shell_window (window_actor);
+                    check_window_group (window_actor);
                 }
             });
 
@@ -1073,7 +1073,7 @@ namespace Gala {
             }
         }
 
-        private void check_shell_window (Meta.WindowActor actor) {
+        private void check_window_group (Meta.WindowActor actor) {
             unowned var window = actor.get_meta_window ();
 
             if (overridden_window_group.has_key (window)) {
