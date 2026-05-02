@@ -22,12 +22,14 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
     private const string[] MUTTER_ARGS = {
         "--wayland", "--headless", "--no-x11",
         "--wayland-display", "wayland-1",
-        "--virtual-monitor", "1280x720@60"
+        "--virtual-monitor", "1920x1080@60",
     };
 
     protected static Meta.Context? context { get; private set; }
     protected static Clutter.Stage? stage { get { return (Clutter.Stage) context?.get_backend ().get_stage (); } }
+    protected bool force_stage_repaint { get; set; default = false; } 
 
+    private bool stop_main_loop = false;
     private MainLoop? main_loop;
 
     construct {
@@ -75,11 +77,20 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
 
     protected void run_main_loop () {
         assert_true (main_loop != null);
-        main_loop.run ();
+
+        while (!stop_main_loop) {
+            if (force_stage_repaint) {
+                assert_true (stage != null);
+                stage.queue_redraw ();
+            }
+
+            main_loop.get_context ().iteration (false);
+        }
+
+        stop_main_loop = false;
     }
 
     protected void quit_main_loop () {
-        assert_true (main_loop != null);
-        main_loop.quit ();
+        stop_main_loop = true;
     }
 }

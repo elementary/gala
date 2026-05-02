@@ -5,10 +5,11 @@ common_test_sources = files(
 )
 
 lib_tests = [
+    'SetupTest',
     'GestureControllerTest',
     'PropertyTargetTest',
-    'SetupTest',
     'SwipeTriggerTest',
+    'BackgroundBlurPerfTest',
 ]
 
 lib_test_sources = files()

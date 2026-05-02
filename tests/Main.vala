@@ -10,6 +10,7 @@ namespace Gala {
             typeof (GestureControllerTest),
             typeof (PropertyTargetTest),
             typeof (SwipeTriggerTest),
+            typeof (BackgroundBlurPerfTest),
         };
 
         Object[] tests = {};
