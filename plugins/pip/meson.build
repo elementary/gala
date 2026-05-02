@@ -7,7 +7,7 @@ gala_pip_sources = files(
 gala_pip_lib = shared_library(
     'gala-pip',
     gala_pip_sources,
-    dependencies: [gala_dep, gala_base_dep],
+    dependencies: [gala_lib_dep, gala_base_dep],
     install: true,
     install_dir: plugins_dir,
     install_rpath: mutter_typelib_dir,

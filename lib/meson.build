@@ -76,7 +76,7 @@ config_h = configure_file(
     install_dir: join_paths(get_option('datadir'), 'vala', 'vapi')
 )
 
-gala_dep = declare_dependency(link_with: [gala_lib], include_directories: include_directories('.'))
+gala_lib_dep = declare_dependency(link_with: [gala_lib], include_directories: include_directories('.'))
 
 pkg.generate(
     gala_lib,

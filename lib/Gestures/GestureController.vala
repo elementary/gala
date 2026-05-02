@@ -119,7 +119,11 @@ public class Gala.GestureController : Object {
         trigger.enable_backends (this);
     }
 
+#if TESTS
+    public void enable_backend (GestureBackend backend) {
+#else
     internal void enable_backend (GestureBackend backend) {
+#endif
         backend.on_gesture_detected.connect (gesture_detected);
         backend.on_begin.connect (gesture_begin);
         backend.on_update.connect (gesture_update);
