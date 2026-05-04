@@ -1,8 +1,14 @@
+gala (8.5.0) noble; urgency=medium
+
+  * Release 8.5.0
+
+ -- Danielle Foré <danielle@elementary.io>  Mon, 04 May 2026 12:17:27 -0700
+
 gala (8.4.2) noble; urgency=medium
 
   * Release 8.4.2
 
- -- Danielle <dani@mini.lan>  Thu, 02 Apr 2026 10:13:41 -0700
+ -- Danielle Foré <danielle@elementary.io>  Thu, 02 Apr 2026 10:13:41 -0700
 
 gala (8.4.1) noble; urgency=medium
 
