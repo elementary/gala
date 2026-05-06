@@ -1,5 +1,4 @@
 gala_bin_sources = files(
-    'BackgroundBlurEffect.vala',
     'BlurManager.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
@@ -16,6 +15,7 @@ gala_bin_sources = files(
     'ScreenshotManager.vala',
     'SessionManager.vala',
     'SuperScrollAction.vala',
+    'TransitionBuilder.vala',
     'WindowAttentionTracker.vala',
     'WindowDragProvider.vala',
     'WindowListener.vala',
@@ -46,6 +46,7 @@ gala_bin_sources = files(
     'ShellClients/ExtendedBehaviorWindow.vala',
     'ShellClients/HideTracker.vala',
     'ShellClients/ManagedClient.vala',
+    'ShellClients/MonitorLabelWindow.vala',
     'ShellClients/NotificationsClient.vala',
     'ShellClients/PanelWindow.vala',
     'ShellClients/PositionedWindow.vala',

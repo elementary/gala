@@ -8,6 +8,15 @@ namespace Mtk {
 	public class AnonymousFile {
 	}
 #endif
+#if HAS_MUTTER50
+	[CCode (cheader_filename = "mtk/mtk.h", has_type_id = false)]
+	[Compact]
+	public class DbusPidfd {
+		public void free ();
+		public pid_t get_pid ();
+		public int get_pidfd ();
+	}
+#endif
 #if HAS_MUTTER46
 	[CCode (cheader_filename = "mtk/mtk.h", ref_function = "mtk_region_ref", type_id = "mtk_region_get_type ()", unref_function = "mtk_region_unref")]
 	[Compact]
@@ -20,6 +29,9 @@ namespace Mtk {
 		public static Mtk.Region create_rectangle (Mtk.Rectangle rect);
 		public static Mtk.Region create_rectangles (Mtk.Rectangle rects, int n_rects);
 		public Mtk.Region crop_and_scale (Graphene.Rect src_rect, int dst_width, int dst_height);
+#if HAS_MUTTER50
+		public Mtk.Region downscale (int scale);
+#endif
 		public bool equal (Mtk.Region other);
 #if HAS_MUTTER48
 		public void get_box (int nth, int x1, int y1, int x2, int y2);
@@ -163,7 +175,15 @@ namespace Mtk {
 #endif
 #if HAS_MUTTER49
 	[CCode (cheader_filename = "mtk/mtk.h")]
+#if HAS_MUTTER50
+	public static int64 extrapolate_next_interval_boundary (int64 boundary_us, int64 base_us, int64 interval_us);
+#else
 	public static int64 extrapolate_next_interval_boundary (int64 base_us, int64 interval_us);
+#endif
+#endif
+#if HAS_MUTTER50
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static int64 find_nearest_interval_boundary (int64 boundary_us, int64 base_us, int64 interval_us);
 #endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]

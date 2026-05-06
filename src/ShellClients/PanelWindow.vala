@@ -61,7 +61,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         notify["width"].connect (update_strut);
         notify["height"].connect (update_strut);
 
-        user_gesture_controller = new GestureController (CUSTOM, wm) {
+        user_gesture_controller = new GestureController (CUSTOM) {
             progress = 1.0
         };
 
@@ -69,7 +69,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         hide_tracker.hide.connect (hide);
         hide_tracker.show.connect (show);
 
-        workspace_gesture_controller = new GestureController (CUSTOM, wm) {
+        workspace_gesture_controller = new GestureController (CUSTOM) {
             progress = 1.0
         };
 

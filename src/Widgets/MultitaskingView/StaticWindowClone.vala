@@ -10,7 +10,7 @@
  * windows (e.g. on all workspaces or moving) and fades out while the multitasking view
  * is being opened.
  */
-public class Gala.StaticWindowClone : ActorTarget {
+public class Gala.StaticWindowClone : Widget {
     public Meta.Window window { get; construct; }
 
     public StaticWindowClone (Meta.Window window) {
@@ -22,7 +22,7 @@ public class Gala.StaticWindowClone : ActorTarget {
         var clone = new Clutter.Clone (window_actor);
         add_child (clone);
 
-        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint), 255u, 0u));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, this, "opacity", typeof (uint8), (uint8) 255u, (uint8) 0u));
 
         window_actor.bind_property ("x", this, "x", SYNC_CREATE);
         window_actor.bind_property ("y", this, "y", SYNC_CREATE);

@@ -18,6 +18,11 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        public enum WindowGroup {
+            DESKTOP_SHELL,
+            MODAL,
+        }
+
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
         private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
@@ -119,6 +124,8 @@ namespace Gala {
         private Clutter.Actor? latest_window_snapshot;
 
         private GLib.Settings behavior_settings;
+
+        private Gee.Map<Meta.Window, WindowGroup> overridden_window_group = new Gee.HashMap<Meta.Window, WindowGroup> ();
 
         construct {
 #if !HAS_MUTTER48
@@ -394,15 +401,8 @@ namespace Gala {
             stage.add_action_full ("wm-super-scroll-action", CAPTURE, scroll_action);
 
             display.window_created.connect ((window) =>
-                InternalUtils.wait_for_window_actor_visible (window, check_shell_window)
+                InternalUtils.wait_for_window_actor_visible (window, check_window_group)
             );
-
-            WindowListener.get_default ().window_type_changed.connect ((window) => {
-                unowned var window_actor = (Meta.WindowActor) window.get_compositor_private ();
-                if (window_actor != null) {
-                    check_shell_window (window_actor);
-                }
-            });
 
             stage.show ();
 
@@ -1040,23 +1040,57 @@ namespace Gala {
             show_window_menu (window, menu, rect.x, rect.y);
         }
 
-        private void check_shell_window (Meta.WindowActor actor) {
-            unowned var window = actor.get_meta_window ();
+        /**
+         * Tells the wm to place the {@link window} in the given {@link new_group} instead of the default
+         * window group as determined by the wm.
+         * The wm will also automatically place transient windows of {@link window} in the same group.
+         */
+        public void override_window_group (Meta.Window window, WindowGroup new_group) {
+            overridden_window_group[window] = new_group;
+            window.unmanaged.connect ((_window) => overridden_window_group.unset (_window));
 
-            if (ShellClientsManager.get_instance ().is_system_modal_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, modal_group.window_group);
-                return;
-            }
-
-            if (ShellClientsManager.get_instance ().is_shell_window (window)) {
-                InternalUtils.clutter_actor_reparent (actor, shell_group);
+            InternalUtils.wait_for_window_actor_visible (window, (actor) => {
+                InternalUtils.clutter_actor_reparent (actor, get_window_group_actor (new_group));
 
                 // FIXME: workaround for https://github.com/elementary/dock/issues/537
                 actor.set_scale (1.0, 1.0);
                 actor.opacity = 255;
+            });
+        }
+
+        private Clutter.Actor get_window_group_actor (WindowGroup group) {
+            switch (group) {
+                case DESKTOP_SHELL: return shell_group;
+                case MODAL: return modal_group.window_group;
+                default: assert_not_reached ();
+            }
+        }
+
+        private void check_window_group (Meta.WindowActor actor) {
+            unowned var window = actor.get_meta_window ();
+
+            if (overridden_window_group.has_key (window)) {
+                /* We are already overridden so make sure to ignore it */
+                return;
+            }
+
+            /* Check if we're a transient of a window with an overridden group and if so place there */
+            window.foreach_ancestor ((ancestor) => {
+                if (overridden_window_group.has_key (ancestor)) {
+                    override_window_group (window, overridden_window_group[ancestor]);
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (overridden_window_group.has_key (window)) {
+                /* We found an ancestor with an overridden group so we are now being placed in the same group */
+                return;
             }
 
             if (NotificationStack.is_notification (window)) {
+                override_window_group (window, DESKTOP_SHELL);
                 notification_stack.show_notification (actor);
             }
 
@@ -1327,95 +1361,48 @@ namespace Gala {
                 return;
             }
 
+            animate_map.begin (actor);
+        }
+
+        private async void animate_map (Meta.WindowActor actor) {
+            var window = actor.meta_window;
+
+            mapping.add (actor);
+
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.HIDE;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
-
-                    mapping.add (actor);
-
                     if (window.maximized_vertically || window.maximized_horizontally) {
                         var outer_rect = window.get_frame_rect ();
                         actor.set_position (outer_rect.x, outer_rect.y);
                     }
 
                     actor.set_pivot_point (0.5f, 1.0f);
-                    actor.set_scale (0.01f, 0.1f);
-                    actor.opacity = 0;
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
+                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
+                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
-                case Meta.WindowType.MENU:
-                case Meta.WindowType.DROPDOWN_MENU:
-                case Meta.WindowType.POPUP_MENU:
-                    var duration = AnimationDuration.MENU_MAP;
-                    if (duration == 0) {
-                        map_completed (actor);
-                        return;
-                    }
 
-                    mapping.add (actor);
-
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (duration);
-                    actor.opacity = 255;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
-                    break;
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-
-                    mapping.add (actor);
-
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0;
-
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (200);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
-
-                    ulong map_handler_id = 0UL;
-                    map_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (map_handler_id);
-                        mapping.remove (actor);
-                        map_completed (actor);
-                    });
-
                     dim_parent_window (window);
+                    actor.set_pivot_point (0.5f, 0.5f);
 
+                    var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
+                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
+                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
+                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    map_completed (actor);
                     break;
             }
+
+            mapping.remove (actor);
+            map_completed (actor);
         }
 
         public override void destroy (Meta.WindowActor actor) {
@@ -1444,68 +1431,45 @@ namespace Gala {
                 return;
             }
 
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.opacity = 0;
-                destroy_completed (actor);
+            animate_destroy.begin (actor);
+        }
 
-                if (window.window_type == Meta.WindowType.NORMAL) {
-                    Utils.clear_window_cache (window);
-                }
+        private async void animate_destroy (Meta.WindowActor actor) {
+            var window = actor.meta_window;
 
-                return;
-            }
+            destroying.add (actor);
 
             switch (window.window_type) {
                 case Meta.WindowType.NORMAL:
-                    var duration = AnimationDuration.CLOSE;
-                    if (duration == 0) {
-                        destroy_completed (actor);
-                        return;
-                    }
-
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
                     actor.show ();
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.LINEAR);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (0.8f, 0.8f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
+                    var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
+                    builder.add_property ("scale-x", 0.8);
+                    builder.add_property ("scale-y", 0.8);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                        Utils.clear_window_cache (window);
-                    });
+                    Utils.clear_window_cache (window);
                     break;
+
                 case Meta.WindowType.MODAL_DIALOG:
                 case Meta.WindowType.DIALOG:
-                    destroying.add (actor);
-
                     actor.set_pivot_point (0.5f, 0.5f);
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_QUAD);
-                    actor.set_easing_duration (150);
-                    actor.set_scale (1.05f, 1.05f);
-                    actor.opacity = 0U;
-                    actor.restore_easing_state ();
 
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
+                    var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
+                    builder.add_property ("scale-x", 1.05);
+                    builder.add_property ("scale-y", 1.05);
+                    builder.add_property ("opacity", 0U);
+                    yield builder.run ();
                     break;
+
                 default:
-                    destroy_completed (actor);
                     break;
             }
+
+            destroying.remove (actor);
+            destroy_completed (actor);
         }
 
         private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1606,15 +1570,13 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
-            if (end_animation (ref mapping, actor))
-                map_completed (actor);
             if (end_animation (ref unminimizing, actor))
                 unminimize_completed (actor);
             if (end_animation (ref minimizing, actor))
                 minimize_completed (actor);
-            if (end_animation (ref destroying, actor))
-                destroy_completed (actor);
 
+            end_animation (ref mapping, actor);
+            end_animation (ref destroying, actor);
             end_animation (ref unmaximizing, actor);
             end_animation (ref maximizing, actor);
         }
@@ -1643,7 +1605,8 @@ namespace Gala {
                     if (behavior_settings.get_string ("overlay-action") == OPEN_MULTITASKING_VIEW) {
                         return filter_action (MULTITASKING_VIEW);
                     }
-                    break;
+
+                    return true;
                 case Meta.KeyBindingAction.WORKSPACE_1:
                 case Meta.KeyBindingAction.WORKSPACE_2:
                 case Meta.KeyBindingAction.WORKSPACE_3:

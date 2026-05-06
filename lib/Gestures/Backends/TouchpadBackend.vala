@@ -6,6 +6,11 @@
  */
 
 private class Gala.TouchpadBackend : Object, GestureBackend {
+    public enum Group {
+        NONE,
+        MULTITASKING_VIEW,
+    }
+
     private const int TOUCHPAD_BASE_HEIGHT = 300;
     private const int TOUCHPAD_BASE_WIDTH = 400;
     private const int DRAG_THRESHOLD_DISTANCE = 16;
@@ -19,7 +24,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     }
 
     public Clutter.Actor actor { get; construct; }
-    public GestureController.Group group { get; construct; }
+    public Group group { get; construct; }
 
     private static List<TouchpadBackend> instances = new List<TouchpadBackend> ();
 
@@ -29,7 +34,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     private double distance_y = 0;
     private double distance = 0;
 
-    public TouchpadBackend (Clutter.Actor actor, GestureController.Group group) {
+    public TouchpadBackend (Clutter.Actor actor, Group group) {
         Object (actor: actor, group: group);
     }
 

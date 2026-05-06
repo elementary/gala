@@ -36,7 +36,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
     private bool resizing = false;
     private bool off_screen = false;
     private Clutter.Grab? grab = null;
-    
+
     private GestureController gesture_controller;
     private WorkspaceHideTracker workspace_hide_tracker;
     private PropertyTarget property_target;
@@ -130,7 +130,7 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
 
         wm.add_multitasking_view_target (this);
 
-        gesture_controller = new GestureController (CUSTOM, wm) {
+        gesture_controller = new GestureController (CUSTOM) {
             progress = 0.0
         };
         add_gesture_controller (gesture_controller);
@@ -193,8 +193,10 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
     }
 
     private Clutter.Actor on_move_begin () {
-#if HAS_MUTTER48
-        wm.get_display ().set_cursor (Meta.Cursor.MOVE);
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.MOVE);
+#elif HAS_MUTTER48
+        display.set_cursor (Meta.Cursor.MOVE);
 #else
         wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
 #endif
@@ -205,7 +207,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
     private void on_move_end () {
         reactive = true;
         update_screen_position ();
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private bool on_resize_button_press (Clutter.Event event) {
@@ -223,7 +229,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
         grab = resize_button.get_stage ().grab (resize_button);
         resize_button.event.connect (on_resize_event);
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.SE_RESIZE);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.SE_RESIZE);
+#endif
 
         return Clutter.EVENT_PROPAGATE;
     }
@@ -284,7 +294,11 @@ public class Gala.Plugins.PIP.PopupWindow : Clutter.Actor, GestureTarget, RootTa
 
         update_screen_position ();
 
+#if HAS_MUTTER50
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
     }
 
     private void on_allocation_changed () {
