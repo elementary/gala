@@ -9,7 +9,7 @@
  * The window container use this to know whether a window became static (they shouldn't show it anymore)
  * or isn't static anymore (they have to show it now).
  */
-public class Gala.StaticWindowContainer : ActorTarget {
+public class Gala.StaticWindowContainer : Widget {
     private static GLib.Once<StaticWindowContainer> instance;
     public static StaticWindowContainer get_instance (Meta.Display display) {
         return instance.once (() => new StaticWindowContainer (display));

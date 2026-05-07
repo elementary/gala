@@ -11,7 +11,7 @@
  * as the WindowGroup is hidden while the view is active. Only used when
  * workspaces-only-on-primary is set to true.
  */
-public class Gala.MonitorClone : ActorTarget {
+public class Gala.MonitorClone : Widget {
     public signal void window_selected (Meta.Window window);
 
     public WindowManager wm { get; construct; }
@@ -33,7 +33,7 @@ public class Gala.MonitorClone : ActorTarget {
 
         background = new BackgroundManager (display, monitor, false);
 
-        var windows = new WindowListModel (display, STACKING, true, monitor);
+        var windows = new WindowListModel (display, STACKING, true, true, monitor);
 
         window_container = new WindowCloneContainer (wm, windows, monitor_scale);
         window_container.add_constraint (new Clutter.BindConstraint (this, SIZE, 0.0f));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2025 elementary, Inc. (https://elementary.io)
+ * Copyright 2019-2026 elementary, Inc. (https://elementary.io)
  * Copyright 2011–2013 Robert Dyer
  * SPDX-License-Identifier: LGPL-3.0-or-later
  */
@@ -16,8 +16,9 @@ namespace Gala.Drawing {
         public const Clutter.Color DARK_BORDER = { 0, 0, 0, 191};
         public const Clutter.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
         public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
-        public const Clutter.Color TOOLTIP_BACKGROUND = { 0, 0, 0, 255};
+        public const Clutter.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
         public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
 #else
         public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
         public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255};
@@ -25,8 +26,9 @@ namespace Gala.Drawing {
         public const Cogl.Color DARK_BORDER = { 0, 0, 0, 191};
         public const Cogl.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
         public const Cogl.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
-        public const Cogl.Color TOOLTIP_BACKGROUND = { 0, 0, 0, 255};
+        public const Cogl.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
         public const Cogl.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
+        public const Cogl.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
 #endif
 
         /**

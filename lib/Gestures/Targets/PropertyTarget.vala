@@ -6,6 +6,26 @@
  */
 
 public class Gala.PropertyTarget : Object, GestureTarget {
+    static construct {
+        /* The default progress func starts from the beginning when it overflows but we want
+           to clamp. E.g. when the multitasking view overshoots we want the opacity
+           to stay at max and not switch to 0 again. */
+        Clutter.Interval.register_progress_func (typeof (uint8), uint8_progress_func);
+    }
+
+    private static bool uint8_progress_func (Value a, Value b, double progress, Value result) {
+        if (a.type () != typeof (uint8) || b.type () != typeof (uint8)) {
+            return false;
+        }
+
+        var a_val = a.get_uchar ();
+        var b_val = b.get_uchar ();
+
+        var res = (uint8) (a_val + progress * b_val).clamp (0, 255);
+        result.set_uchar (res);
+        return true;
+    }
+
     public GestureAction action { get; construct; }
     // Don't take a reference since we are most of the time owned by the target
     public weak Object? target { get; private set; }

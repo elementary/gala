@@ -19,6 +19,7 @@ gala_lib_sources = files(
     'Drawing/StyleManager.vala',
     'Drawing/Utilities.vala',
     'Effects/BackgroundBlurEffect.vala',
+    'Effects/BoxBlurManager.vala',
     'Effects/RoundedCornersEffect.vala',
     'Effects/ShadowEffect.vala',
     'Gestures/Backends/GestureBackend.vala',
@@ -40,9 +41,12 @@ gala_lib_sources = files(
     'Widgets/AbstractSwitcher.vala',
     'Widgets/CanvasActor.vala',
     'Widgets/CloseButton.vala',
+    'Widgets/FocusUtils.vala',
     'Widgets/Icon.vala',
     'Widgets/Image.vala',
+    'Widgets/Root.vala',
     'Widgets/Text.vala',
+    'Widgets/Widget.vala',
     'Widgets/WindowIcon.vala'
 ) + gala_common_enums
 
