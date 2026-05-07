@@ -26,6 +26,11 @@ public class Gala.WindowListModel : Object, ListModel {
     public bool normal_filter { get; construct set; }
 
     /**
+     * If true only present windows that are toplevel windows and not transients.
+     */
+    public bool not_transient_filter { get; construct set; }
+
+    /**
      * If >= 0 only present windows that are on this monitor.
      */
     public int monitor_filter { get; construct set; }
@@ -41,14 +46,21 @@ public class Gala.WindowListModel : Object, ListModel {
     private Gee.ArrayList<Meta.Window> windows;
 
     public WindowListModel (
-        Meta.Display display, SortMode sort_mode = NONE,
-        bool normal_filter = false, int monitor_filter = -1,
+        Meta.Display display,
+        SortMode sort_mode = NONE,
+        bool normal_filter = false,
+        bool not_transient_filter = false,
+        int monitor_filter = -1,
         Meta.Workspace? workspace_filter = null,
         Gtk.Filter? custom_filter = null
     ) {
         Object (
-            display: display, sort_mode: sort_mode, normal_filter: normal_filter,
-            monitor_filter: monitor_filter, workspace_filter: workspace_filter,
+            display: display,
+            sort_mode: sort_mode,
+            normal_filter: normal_filter,
+            not_transient_filter: not_transient_filter,
+            monitor_filter: monitor_filter,
+            workspace_filter: workspace_filter,
             custom_filter: custom_filter
         );
     }
@@ -70,7 +82,7 @@ public class Gala.WindowListModel : Object, ListModel {
 
     private void on_window_created (Meta.Window window) {
         window.unmanaging.connect (on_window_unmanaging);
-        InternalUtils.wait_for_window_actor (window, (actor) => check_window (actor.meta_window));
+        InternalUtils.wait_for_window_actor_visible (window, (actor) => check_window (actor.meta_window));
     }
 
     private void on_window_unmanaging (Meta.Window window) {
@@ -102,6 +114,10 @@ public class Gala.WindowListModel : Object, ListModel {
     }
 
     private bool should_present_window (Meta.Window window) {
+        if (window.get_compositor_private () == null) {
+            return false;
+        }
+
         if (monitor_filter >= 0 && monitor_filter != window.get_monitor ()) {
             return false;
         }
@@ -114,6 +130,10 @@ public class Gala.WindowListModel : Object, ListModel {
         }
 
         if (normal_filter && !Utils.get_window_is_normal (window)) {
+            return false;
+        }
+
+        if (not_transient_filter && window.find_root_ancestor () != window) {
             return false;
         }
 
