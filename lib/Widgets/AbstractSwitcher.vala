@@ -31,6 +31,7 @@ public abstract class Gala.AbstractSwitcher : CanvasActor {
         style_manager = Drawing.StyleManager.get_instance ();
 
         container = new Clutter.Actor () {
+            reactive = true,
 #if HAS_MUTTER46
             layout_manager = new Clutter.FlowLayout (Clutter.Orientation.HORIZONTAL)
 #else
@@ -88,35 +89,24 @@ public abstract class Gala.AbstractSwitcher : CanvasActor {
         caption.margin_bottom = margin;
     }
 
-    public override void allocate (Clutter.ActorBox box) {
+    protected override void get_preferred_width (float for_height, out float min_width, out float natural_width) {
+        min_width = 0;
+
+        float preferred_nat_width;
+        base.get_preferred_width (for_height, null, out preferred_nat_width);
+
         unowned var display = wm.get_display ();
         var geom = display.get_monitor_geometry (display.get_current_monitor ());
 
-        float nat_container_width;
-        container.get_preferred_width (-1, null, out nat_container_width);
+        float container_nat_width;
+        container.get_preferred_size (null, null, out container_nat_width, null);
 
-        var max_width = geom.width - Utils.scale_to_int (MIN_OFFSET * 2, monitor_scale);
-        var real_width = (int) float.min (nat_container_width, max_width);
+        var max_width = float.min (
+            geom.width - Utils.scale_to_int (MIN_OFFSET * 2, monitor_scale), // Don't overflow the monitor
+            container_nat_width // Ellipsize the label if it's longer than the icons
+        );
 
-        float nat_container_height;
-        container.get_preferred_height (real_width, null, out nat_container_height);
-
-        float nat_caption_height;
-        caption.get_preferred_height (real_width, null, out nat_caption_height);
-
-        var horizontal_margin = (geom.width - real_width) / 2;
-
-        var children_height = nat_container_height + nat_caption_height;
-        var vertical_margin = (geom.height - children_height) / 2;
-
-        box = {
-            geom.x + horizontal_margin,
-            geom.y + vertical_margin,
-            geom.width - horizontal_margin,
-            geom.height - vertical_margin
-        };
-
-        base.allocate (box);
+        natural_width = float.min (max_width, preferred_nat_width);
     }
 
     protected override void draw (Cairo.Context ctx, int width, int height) {
