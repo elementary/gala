@@ -193,7 +193,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
 
-        wm.override_window_group (window, DESKTOP_SHELL);
+        if (SessionSettings.is_greeter ()) {
+            wm.override_window_group (window, LOCK_SCREEN_SHELL);
+        } else {
+            wm.override_window_group (window, DESKTOP_SHELL);
+        }
 
         InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
 
