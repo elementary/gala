@@ -27,6 +27,19 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.5.1" date="2026-05-12" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fixed a frequent crash with multi monitor setups</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2839">Semi-crash crash when alt-tabbing from secondary monitor to the first</issue>
+      </issues>
+    </release>
+
     <release version="8.5.0" date="2026-05-04" urgency="medium">
       <description>
         <p>Improvements:</p>
@@ -190,7 +203,7 @@
         <issue url="https://github.com/elementary/gala/issues/2415">Wrong animation origin for windows on display 2 on workspace overview</issue>
       </issues>
     </release>
-  
+
     <release version="8.2.2" date="2025-05-17" urgency="medium">
       <description>
         <p>Improvements:</p>
