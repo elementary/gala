@@ -51,6 +51,8 @@ namespace Gala {
 
         private Clutter.Actor menu_group { get; set; }
 
+        private LockScreen lock_screen;
+
         /**
          * The group that contains all WindowActors that are system modal.
          * See {@link ShellClientsManager.is_system_modal_window}.
@@ -239,8 +241,11 @@ namespace Gala {
              * +-- multitasking view
              * +-- window switcher
              * +-- window overview
-             * +-- shell group
+             * +-- desktop shell group
              * +-- menu group
+             * +-- lock screen // NOTE: Everything below the lock screen can be accessed without authentication
+             * +---- window group
+             * +---- shell group
              * +-- modal group
              * +-- overlay group (e.g. ibus popup, osk, etc.)
              * +-- feedback group (e.g. DND icons)
@@ -309,6 +314,10 @@ namespace Gala {
 
             menu_group = new Clutter.Actor ();
             ui_group.add_child (menu_group);
+
+            lock_screen = new LockScreen (this);
+            lock_screen.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
+            ui_group.add_child (lock_screen);
 
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
@@ -1073,6 +1082,8 @@ namespace Gala {
         private Clutter.Actor get_window_group_actor (WindowGroup group) {
             switch (group) {
                 case DESKTOP_SHELL: return shell_group;
+                case LOCK_SCREEN: return lock_screen.window_group;
+                case LOCK_SCREEN_SHELL: return lock_screen.shell_group;
                 case MODAL: return modal_group.window_group;
                 case OVERLAY: return overlay_group;
                 default: assert_not_reached ();
