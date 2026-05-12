@@ -21,6 +21,7 @@ namespace Gala {
         public enum WindowGroup {
             DESKTOP_SHELL,
             MODAL,
+            OVERLAY,
         }
 
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
@@ -61,6 +62,8 @@ namespace Gala {
          * See {@link ShellClientsManager.is_system_modal_window}.
          */
         public ModalGroup modal_group { get; private set; }
+
+        private Clutter.Actor overlay_group;
 
         /**
          * {@inheritDoc}
@@ -245,6 +248,7 @@ namespace Gala {
              * +-- shell group
              * +-- menu group
              * +-- modal group
+             * +-- overlay group (e.g. ibus popup, osk, etc.)
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
@@ -315,6 +319,9 @@ namespace Gala {
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
             ui_group.add_child (modal_group);
+
+            overlay_group = new Clutter.Actor ();
+            ui_group.add_child (overlay_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1067,6 +1074,7 @@ namespace Gala {
             switch (group) {
                 case DESKTOP_SHELL: return shell_group;
                 case MODAL: return modal_group.window_group;
+                case OVERLAY: return overlay_group;
                 default: assert_not_reached ();
             }
         }
