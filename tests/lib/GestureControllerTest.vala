@@ -93,10 +93,6 @@ public class Gala.GestureControllerTest : MutterTestCase {
     private GestureController controller;
     private MockTarget target;
 
-    public GestureControllerTest () {
-        Object (name: "GestureControllerTest");
-    }
-
     construct {
         add_test ("Test basic propagation", test_basic_propagation);
         add_test ("Test two immediate gotos", test_two_immediate_gotos);
@@ -200,8 +196,4 @@ public class Gala.GestureControllerTest : MutterTestCase {
 
         run_main_loop ();
     }
-}
-
-public int main (string[] args) {
-    return new Gala.GestureControllerTest ().run (args);
 }

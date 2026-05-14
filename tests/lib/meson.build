@@ -5,15 +5,26 @@ tests = [
     'SwipeTriggerTest',
 ]
 
+test_sources = []
 foreach test : tests
-    test_executable = executable(
-        test,
-        '@0@.vala'.format(test),
-        common_test_sources,
-        gala_lib_sources,
-        dependencies: gala_base_dep,
-        install: false,
-    )
-
-    test(test, test_executable, suite: ['Gala', 'Gala/lib'], is_parallel: false)
+    test_sources += test + '.vala'
 endforeach
+
+lib_test_sources = [
+    'Main.vala'
+]
+
+test_executable = executable(
+    'io.elementary.gala.tests',
+    common_test_sources,
+    lib_test_sources,
+    test_sources,
+    gala_lib_sources,
+    dependencies: gala_base_dep,
+    install: false,
+)
+
+foreach test : tests
+    test(test, test_executable, args: 'Gala' + test, suite: ['Gala', 'Gala/lib'], is_parallel: false)
+endforeach
+
