@@ -7,6 +7,20 @@
  */
 
 namespace Gala {
+    public enum WindowMenuItemType {
+        BUTTON,
+        TOGGLE,
+        SEPARATOR
+    }
+
+    public struct DaemonWindowMenuItem {
+        WindowMenuItemType type;
+        bool sensitive;
+        bool toggle_state;
+        string display_name;
+        string keybinding;
+    }
+
     public enum ActionType {
         NONE = 0,
         SHOW_MULTITASKING_VIEW,
