@@ -183,10 +183,16 @@ public class Gala.WindowClone : Widget, RootTarget {
         active_shape.restore_easing_state ();
     }
 
-    private Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
+    private static Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
         unowned var child_window = (Meta.Window) obj;
+        unowned var child_window_actor = (Meta.WindowActor) child_window.get_compositor_private ();
 
-        return new Clutter.Clone ((Meta.WindowActor) child_window.get_compositor_private ());
+        if (child_window_actor == null) {
+            critical ("WindowClone: WindowListModel gave us a bad window");
+            return new Clutter.Actor ();
+        }
+
+        return new Clutter.Clone (child_window_actor);
     }
 
     private void reallocate () {
