@@ -8,11 +8,9 @@
 public class Gala.Daemon.GnomeOSKParser : Object {
     private HashTable<string, string> level_modes = new HashTable<string, string> (str_hash, str_equal);
 
-    public async KeyboardModel parse (File file) throws Error {
-        var stream = yield file.read_async (Priority.DEFAULT);
-
+    public async KeyboardModel parse (uint8[] data) throws Error {
         var parser = new Json.Parser ();
-        yield parser.load_from_stream_async (stream, null);
+        parser.load_from_data ((string) data, data.length);
 
         var root = parser.get_root ().get_object ();
         var builder = new KeyboardModelBuilder ();
