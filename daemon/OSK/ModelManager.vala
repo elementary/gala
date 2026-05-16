@@ -86,11 +86,20 @@ public class Gala.Daemon.ModelManager : Object {
     }
 
     private async bool load_model (string name) {
-        var file = File.new_for_path ("/home/leonhard/Projects/gnome-shell/data/osk-layouts/%s.json".printf (name));
+        var path = "/io/elementary/desktop/gala-daemon/osk-layouts/%s.json".printf (name);
+
+        Bytes data;
+        try {
+            data = resources_lookup_data (path, NONE);
+        } catch (Error e) {
+            warning ("Failed to load keyboard model: %s", e.message);
+            return false;
+        }
+
         var parser = new GnomeOSKParser ();
 
         try {
-            current_model = yield parser.parse (file);
+            current_model = yield parser.parse (data.get_data ());
             return true;
         } catch (Error e) {
             warning ("Failed to load keyboard model: %s", e.message);
