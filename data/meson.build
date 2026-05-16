@@ -38,6 +38,12 @@ i18n.merge_file(
 install_data(['gala.desktop', 'gala-wayland.desktop'], install_dir: join_paths(data_dir, 'applications'))
 install_data(files('20_elementary.pantheon.wm.gschema.override'), install_dir: join_paths(data_dir, 'glib-2.0', 'schemas'))
 
+osk_resources = gnome.compile_resources(
+    'osk-resources',
+    'gala-osk-layouts.gresource.xml',
+    source_dir: 'osk-layouts',
+)
+
 if get_option('systemd')
     dep_systemd = dependency('systemd', required: true)
     systemd_userunitdir = get_option('systemduserunitdir')
