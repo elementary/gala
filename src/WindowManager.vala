@@ -21,6 +21,7 @@ namespace Gala {
         public enum WindowGroup {
             DESKTOP_SHELL,
             MODAL,
+            OVERLAY,
         }
 
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
@@ -62,6 +63,8 @@ namespace Gala {
          */
         public ModalGroup modal_group { get; private set; }
 
+        private Clutter.Actor overlay_group;
+
         /**
          * {@inheritDoc}
          */
@@ -89,6 +92,8 @@ namespace Gala {
         private HotCornerManager? hot_corner_manager = null;
 
         private KeyboardManager keyboard_manager;
+
+        private InputMethod input_method;
 
         public WindowTracker? window_tracker { get; private set; }
 
@@ -140,7 +145,10 @@ namespace Gala {
         }
 
         public override void start () {
-            ShellClientsManager.init (this);
+            input_method = new InputMethod (get_display ());
+            Clutter.get_default_backend ().set_input_method (input_method);
+
+            ShellClientsManager.init (this, input_method);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
 
@@ -240,6 +248,7 @@ namespace Gala {
              * +-- shell group
              * +-- menu group
              * +-- modal group
+             * +-- overlay group (e.g. ibus popup, osk, etc.)
              * +-- feedback group (e.g. DND icons)
              * +-- pointer locator
              * +-- dwell click timer
@@ -310,6 +319,9 @@ namespace Gala {
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
             ui_group.add_child (modal_group);
+
+            overlay_group = new Clutter.Actor ();
+            ui_group.add_child (overlay_group);
 
             var feedback_group = display.get_compositor ().get_feedback_group ();
             stage.remove_child (feedback_group);
@@ -1062,6 +1074,7 @@ namespace Gala {
             switch (group) {
                 case DESKTOP_SHELL: return shell_group;
                 case MODAL: return modal_group.window_group;
+                case OVERLAY: return overlay_group;
                 default: assert_not_reached ();
             }
         }
