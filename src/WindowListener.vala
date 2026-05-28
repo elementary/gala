@@ -22,12 +22,15 @@ public class Gala.WindowListener : Object {
     }
 
     private static WindowListener? instance = null;
+    private static unowned DaemonManager shared_daemon_manager;
 
-    public static void init (Meta.Display display) {
+    public static void init (Meta.Display display, DaemonManager daemon_manager) {
         if (instance != null)
             return;
 
         instance = new WindowListener ();
+
+        shared_daemon_manager = daemon_manager;
 
 #if HAS_MUTTER48
         unowned List<Meta.WindowActor> actors = display.get_compositor ().get_window_actors ();
@@ -92,6 +95,14 @@ public class Gala.WindowListener : Object {
                 break;
             case "fullscreen":
                 window_fullscreen_changed (window);
+                if (window.fullscreen) {
+                    // Only prevent sleep for windows on the main monitor 
+                    if (window.is_on_primary_monitor ()) {
+                        shared_daemon_manager.prevent_sleep (window.get_id ());
+                    }
+                } else {
+                    shared_daemon_manager.unprevent_sleep (window.get_id ());
+                }
                 break;
         }
     }

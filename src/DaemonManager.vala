@@ -14,6 +14,8 @@ public class Gala.DaemonManager : GLib.Object {
     public interface Daemon: GLib.Object {
         public abstract async void show_window_menu (WindowFlags flags, int width, int height, int x, int y) throws Error;
         public abstract async void show_desktop_menu (int display_width, int display_height, int x, int y) throws Error;
+        public abstract async void prevent_sleep (uint64 window_id) throws Error;
+        public abstract async void unprevent_sleep (uint64 window_id) throws Error;
     }
 
     public Meta.Display display { get; construct; }
@@ -124,6 +126,34 @@ public class Gala.DaemonManager : GLib.Object {
 
         try {
             yield daemon_proxy.show_window_menu (flags, width, height, x, y);
+        } catch (Error e) {
+            warning ("Error invoking MenuManager: %s", e.message);
+        }
+    }
+
+    public async void prevent_sleep (uint64 window_id) {
+        if (daemon_proxy == null) {
+            return;
+        }
+
+        try {
+            debug ("Sending dbus message to daemon to prevent auto-suspend and auto-idle because a window [%" +
+                uint64.FORMAT + "] went fullscreen", window_id);
+            yield daemon_proxy.prevent_sleep (window_id);
+        } catch (Error e) {
+            warning ("Error invoking MenuManager: %s", e.message);
+        }
+    }
+
+    public async void unprevent_sleep (uint64 window_id) {
+        if (daemon_proxy == null) {
+            return;
+        }
+
+        try {
+            debug ("Sending dbus message to daemon to unprevent auto-suspend and auto-idle by window [%" +
+                uint64.FORMAT + "] because it exited fullscreen", window_id);
+            yield daemon_proxy.unprevent_sleep (window_id);
         } catch (Error e) {
             warning ("Error invoking MenuManager: %s", e.message);
         }
