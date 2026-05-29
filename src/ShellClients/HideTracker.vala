@@ -64,6 +64,7 @@ public class Gala.HideTracker : Object {
         });
 
         display.window_created.connect (on_window_created);
+        display.notify["focus-window"].connect (check_trigger_conditions);
 
 #if HAS_MUTTER49
         pan_action = new Clutter.PanGesture () {
@@ -123,7 +124,7 @@ public class Gala.HideTracker : Object {
     }
 
     private void check_trigger_conditions () {
-        if (hovered || has_transients) {
+        if (hovered || has_transients || panel.window.has_focus ()) {
             trigger_show ();
         } else {
             trigger_hide ();
@@ -131,7 +132,10 @@ public class Gala.HideTracker : Object {
     }
 
     private void trigger_hide () {
-        reset_hide_timeout ();
+        if (hide_timeout_id != 0) {
+            /* Hide is already queued */
+            return;
+        }
 
         hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
             hide ();
