@@ -112,6 +112,8 @@ namespace Gala {
 
         private NotificationStack notification_stack;
 
+        private LockScreenManager lock_screen_manager;
+
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
@@ -318,6 +320,8 @@ namespace Gala {
             lock_screen = new LockScreen (this);
             lock_screen.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
             ui_group.add_child (lock_screen);
+
+            lock_screen_manager = new LockScreenManager (lock_screen);
 
             modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
             modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
