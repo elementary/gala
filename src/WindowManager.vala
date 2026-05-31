@@ -1117,6 +1117,14 @@ namespace Gala {
                 return;
             }
 
+            if (SessionSettings.is_greeter ()) {
+                /* If we are in the greeter only the lock screen group is visible,
+                   so put everything there. This makes sure stuff like initial setup, keyboard layout overview
+                   etc. are still visible */
+                override_window_group (window, LOCK_SCREEN);
+                return;
+            }
+
             if (NotificationStack.is_notification (window)) {
                 override_window_group (window, DESKTOP_SHELL);
                 notification_stack.show_notification (actor);
