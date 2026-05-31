@@ -38,6 +38,12 @@ namespace Gala {
         MEDIA_KEYS
     }
 
+    public enum WindowGroup {
+        DESKTOP_SHELL,
+        MODAL,
+        OVERLAY,
+    }
+
     /**
      * A minimal class mostly used to identify your call to {@link WindowManager.push_modal} and used
      * to end your modal mode again with {@link WindowManager.pop_modal}
@@ -46,6 +52,7 @@ namespace Gala {
         public Clutter.Grab? grab { get; set; }
 
         private ModalActions allowed_actions;
+        private WindowGroup[] allowed_window_groups;
 
         public ModalProxy () {
         }
@@ -56,6 +63,14 @@ namespace Gala {
 
         public bool filter_action (ModalActions action) {
             return !(action in allowed_actions);
+        }
+
+        public void allow_window_groups (WindowGroup[] window_groups) requires (grab == null) {
+            allowed_window_groups = window_groups;
+        }
+
+        public bool is_window_group_allowed (WindowGroup window_group) {
+            return window_group in allowed_window_groups;
         }
     }
 
