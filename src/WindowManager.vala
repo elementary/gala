@@ -18,12 +18,6 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
-        public enum WindowGroup {
-            DESKTOP_SHELL,
-            MODAL,
-            OVERLAY,
-        }
-
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
         private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
@@ -721,10 +715,16 @@ namespace Gala {
         private void on_focus_window_changed () {
             unowned var display = get_display ();
 
-            if (!is_modal () || modal_stack.peek_head ().grab != null || display.focus_window == null ||
-                ShellClientsManager.get_instance ().is_shell_window (display.focus_window)
-            ) {
+            if (!is_modal () || modal_stack.peek_head ().grab != null || display.focus_window == null) {
                 return;
+            }
+
+            if (overridden_window_group.has_key (display.focus_window)) {
+                var overridden_group = overridden_window_group[display.focus_window];
+
+                if (modal_stack.peek_head ().is_window_group_allowed (overridden_group)) {
+                    return;
+                }
             }
 
             display.unset_input_focus (display.get_current_time ());
