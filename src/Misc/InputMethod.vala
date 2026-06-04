@@ -10,6 +10,8 @@ public class Gala.InputMethod : Clutter.InputMethod {
     public Graphene.Rect cursor_location { get; private set; }
     public bool input_panel_active { get; private set; }
 
+    private OSKManager osk_manager;
+
     private IBus.Bus bus;
     private IBus.InputContext? context;
 
@@ -31,6 +33,9 @@ public class Gala.InputMethod : Clutter.InputMethod {
     }
 
     construct {
+        osk_manager = new OSKManager (display);
+        osk_manager.input_panel_deactivation_requested.connect (() => input_panel_active = false);
+
         input_panel_state.connect (on_input_panel_state_changed);
 
         IBus.init ();
@@ -56,6 +61,11 @@ public class Gala.InputMethod : Clutter.InputMethod {
             case TOGGLE:
                 input_panel_active = !input_panel_active;
                 break;
+        }
+
+        if (!input_panel_active) {
+            /* The osk was closed, make sure it is in a clean state when it's opened again */
+            osk_manager.reset ();
         }
     }
 
@@ -333,5 +343,6 @@ public class Gala.InputMethod : Clutter.InputMethod {
         input_purpose = ibus_purpose;
 
         context?.set_content_type (input_purpose, input_hints);
+        osk_manager.set_input_purpose (input_purpose);
     }
 }
