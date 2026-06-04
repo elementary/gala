@@ -13,4 +13,5 @@ public interface Gala.OSKProxy : Object {
 
     public async abstract void set_enabled (bool enabled) throws DBusError, IOError;
     public async abstract void reset () throws DBusError, IOError;
+    public async abstract void set_input_purpose (IBus.InputPurpose input_purpose) throws DBusError, IOError;
 }

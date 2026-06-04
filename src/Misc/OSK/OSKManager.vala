@@ -14,8 +14,9 @@ public class Gala.OSKManager : Object {
 
     private const string OSK_SETTINGS_KEY = "screen-keyboard-enabled";
 
+    public signal void input_panel_deactivation_requested ();
+
     public Meta.Display display { private get; construct; }
-    public InputMethod im { private get; construct; }
 
     private static Settings settings = new Settings ("org.gnome.desktop.a11y.applications");
 
@@ -24,37 +25,19 @@ public class Gala.OSKManager : Object {
 
     private bool enabled = false;
 
-    public OSKManager (Meta.Display display, InputMethod im) {
-        Object (display: display, im: im);
+    private IBus.InputPurpose input_purpose = FREE_FORM;
+
+    public OSKManager (Meta.Display display) {
+        Object (display: display);
     }
 
     construct {
         settings.changed[OSK_SETTINGS_KEY].connect (sync_enabled);
         Clutter.get_default_backend ().get_default_seat ().notify["touch-mode"].connect (sync_enabled);
 
-        Bus.watch_name (SESSION, OSK_BUS_NAME, NONE, () => osk_appeared.begin (), osk_lost);
-
         sync_enabled ();
 
-        im.notify["input-panel-active"].connect (on_active_changed);
-    }
-
-    private async void osk_appeared () {
-        try {
-            osk = yield Bus.get_proxy<OSKProxy> (SESSION, OSK_BUS_NAME, OSK_OBJECT_PATH);
-        } catch (Error e) {
-            warning ("Failed to get OSK proxy: %s", e.message);
-            return;
-        }
-
-        receiver = new OSKReceiver (display, osk, im);
-
-        osk.set_enabled.begin (enabled);
-    }
-
-    private void osk_lost () {
-        osk = null;
-        receiver = null;
+        Bus.watch_name (SESSION, OSK_BUS_NAME, NONE, () => osk_appeared.begin (), osk_lost);
     }
 
     private void sync_enabled () {
@@ -68,14 +51,42 @@ public class Gala.OSKManager : Object {
         }
     }
 
-    private void on_active_changed () {
+    private async void osk_appeared () {
+        try {
+            osk = yield Bus.get_proxy<OSKProxy> (SESSION, OSK_BUS_NAME, OSK_OBJECT_PATH);
+        } catch (Error e) {
+            warning ("Failed to get OSK proxy: %s", e.message);
+            return;
+        }
+
+        receiver = new OSKReceiver (display, osk);
+
+        osk.set_enabled.begin (enabled);
+        osk.set_input_purpose.begin (input_purpose);
+
+        osk.hide_requested.connect (() => input_panel_deactivation_requested ());
+    }
+
+    private void osk_lost () {
+        osk = null;
+        receiver = null;
+    }
+
+    public void reset () {
         if (!enabled || osk == null) {
             return;
         }
 
-        if (!im.input_panel_active) {
-            /* The osk was closed, make sure it is in a clean state when it's opened again */
-            osk.reset.begin ();
+        osk.reset.begin ();
+    }
+
+    public void set_input_purpose (IBus.InputPurpose purpose) {
+        this.input_purpose = purpose;
+
+        if (osk == null) {
+            return;
         }
+
+        osk.set_input_purpose.begin (purpose);
     }
 }
