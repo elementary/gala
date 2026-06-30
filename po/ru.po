@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-05-13 12:04+0000\n"
-"PO-Revision-Date: 2026-03-02 01:51+0000\n"
+"PO-Revision-Date: 2026-06-29 05:56+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ru/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
@@ -125,7 +125,7 @@ msgstr "Улучшения:"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed a frequent crash with multi monitor setups"
-msgstr ""
+msgstr "Исправлен часто случавшийся сбой при использовании нескольких мониторов"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:47
 #: data/gala.metainfo.xml.in:65 data/gala.metainfo.xml.in:79

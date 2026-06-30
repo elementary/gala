@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-05-13 12:04+0000\n"
-"PO-Revision-Date: 2025-06-11 07:55+0000\n"
+"PO-Revision-Date: 2026-06-30 20:56+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
@@ -90,27 +90,19 @@ msgid "Maximize"
 msgstr "Розгорнути"
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
-msgstr "Багатозадачність та Керування вікнами"
+msgstr "Багатозадачність і Керування вікнами"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
-msgstr "Віконний менеджер та композитор для Pantheon"
+msgstr "Віконний менеджер і композитор для Pantheon"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
 msgstr ""
-"Віконний менеджер та композитор створений на libmutter та розроблений "
+"Віконний менеджер і композитор створений на libmutter та розроблений "
 "elementary для роботи з Pantheon."
 
 #: data/gala.metainfo.xml.in:24
@@ -152,17 +144,15 @@ msgstr "Оновлені переклади"
 #: data/gala.metainfo.xml.in:80 data/gala.metainfo.xml.in:100
 #: data/gala.metainfo.xml.in:124
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Поліпшено підтримку HiDPI"
 
 #: data/gala.metainfo.xml.in:101
 msgid "Improve Reduced Motion behavior"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:125
-#, fuzzy
-#| msgid "Improved shadows performance"
 msgid "Improved render performance"
-msgstr "Покращення швидкості показу тіней"
+msgstr "Підвищено швидкість промальовування"
 
 #: data/gala.metainfo.xml.in:126
 msgid "Reveal dock and panel in sync when starting"
