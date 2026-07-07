@@ -182,6 +182,50 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 #endif
 
+    public void make_desktop (Meta.Window window) {
+#if HAS_MUTTER49
+        window.set_type (Meta.WindowType.DESKTOP);
+#else
+        if (Meta.Util.is_wayland_compositor ()) {
+            make_desktop_wayland (window);
+        } else {
+            make_desktop_x11 (window);
+        }
+#endif
+    }
+
+#if !HAS_MUTTER49
+    private void make_desktop_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
+        foreach (var client in protocol_clients) {
+            if (client.wayland_client.owns_window (window)) {
+#if HAS_MUTTER46
+                client.wayland_client.make_desktop (window);
+#endif
+                break;
+            }
+        }
+    }
+
+    private void make_desktop_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
+        unowned var x11_display = wm.get_display ().get_x11_display ();
+
+#if HAS_MUTTER46
+        var x_window = x11_display.lookup_xwindow (window);
+#else
+        var x_window = window.get_xwindow ();
+#endif
+        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
+        unowned var xdisplay = x11_display.get_xdisplay ();
+        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
+        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DESKTOP", false);
+
+        // (X.Atom) 4 is XA_ATOM
+        // 32 is format
+        // 0 means replace
+        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+    }
+#endif
+
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
             panel_windows[window].anchor = anchor;
@@ -288,6 +332,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         wm.override_window_group (window, OVERLAY);
 
         window.unmanaged.connect_after (() => ibus_candidate_window = null);
+    }
+
+    public void init_greeter (Meta.Window window) {
+        make_desktop (window);
+
+        wm.override_window_group (window, LOCK_SCREEN);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
