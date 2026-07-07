@@ -17,6 +17,7 @@ namespace Gala {
     private static Pantheon.Desktop.ShellInterface wayland_pantheon_shell_interface;
     private static Pantheon.Desktop.PanelInterface wayland_pantheon_panel_interface;
     private static Pantheon.Desktop.WidgetInterface wayland_pantheon_widget_interface;
+    private static Pantheon.Desktop.GreeterInterface wayland_pantheon_greeter_interface;
     private static Pantheon.Desktop.ExtendedBehaviorInterface wayland_pantheon_extended_behavior_interface;
     private static Wl.Global shell_global;
 
@@ -30,7 +31,9 @@ namespace Gala {
         wayland_pantheon_shell_interface = {
             get_panel,
             get_widget,
+            get_greeter,
             get_extended_behavior,
+            get_greeter,
         };
 
         wayland_pantheon_panel_interface = {
@@ -48,6 +51,11 @@ namespace Gala {
             destroy_widget_surface,
         };
 
+        wayland_pantheon_greeter_interface = {
+            destroy_greeter_surface,
+            init_greeter,
+        };
+
         wayland_pantheon_extended_behavior_interface = {
             destroy_extended_behavior_surface,
             set_keep_above,
@@ -59,6 +67,7 @@ namespace Gala {
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
         WidgetSurface.quark = GLib.Quark.from_string ("-gala-wayland-widget-surface-data");
+        GreeterSurface.quark = GLib.Quark.from_string ("-gala-wayland-greeter-surface-data");
         ExtendedBehaviorSurface.quark = GLib.Quark.from_string ("-gala-wayland-extended-behavior-surface-data");
 
         shell_global = Wl.Global.create (wl_disp, ref Pantheon.Desktop.ShellInterface.iface, 1, (client, version, id) => {
@@ -95,6 +104,25 @@ namespace Gala {
         }
 
         ~WidgetSurface () {
+            if (wayland_surface != null) {
+                wayland_surface.steal_qdata<unowned GLib.Object> (quark);
+            }
+        }
+
+        public void on_wayland_surface_disposed () {
+            wayland_surface = null;
+        }
+    }
+
+    public class GreeterSurface : GLib.Object {
+        public static GLib.Quark quark = 0;
+        public unowned GLib.Object? wayland_surface;
+
+        public GreeterSurface (GLib.Object wayland_surface) {
+            this.wayland_surface = wayland_surface;
+        }
+
+        ~GreeterSurface () {
             if (wayland_surface != null) {
                 wayland_surface.steal_qdata<unowned GLib.Object> (quark);
             }
@@ -183,6 +211,35 @@ namespace Gala {
             WidgetSurface.quark,
             widget_surface,
             (GLib.DestroyNotify) WidgetSurface.on_wayland_surface_disposed
+        );
+    }
+
+    internal static void get_greeter (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface_resource) {
+        unowned GLib.Object? wayland_surface = surface_resource.get_user_data<GLib.Object> ();
+        GreeterSurface? greeter_surface = wayland_surface.get_qdata (GreeterSurface.quark);
+        if (greeter_surface != null) {
+            surface_resource.post_error (
+                Wl.DisplayError.INVALID_OBJECT,
+                "io_elementary_pantheon_shell_v1_interface::get_greeter already requested"
+            );
+            return;
+        }
+
+        greeter_surface = new GreeterSurface (wayland_surface);
+        unowned var greeter_resource = client.create_resource (
+            ref Pantheon.Desktop.GreeterInterface.iface,
+            resource.get_version (),
+            output
+        );
+        greeter_resource.set_implementation (
+            &wayland_pantheon_greeter_interface,
+            greeter_surface.ref (),
+            unref_obj_on_destroy
+        );
+        wayland_surface.set_qdata_full (
+            GreeterSurface.quark,
+            greeter_surface,
+            (GLib.DestroyNotify) GreeterSurface.on_wayland_surface_disposed
         );
     }
 
@@ -348,6 +405,23 @@ namespace Gala {
         BlurManager.get_instance ().remove_blur (window);
     }
 
+    internal static void init_greeter (Wl.Client client, Wl.Resource resource) {
+        unowned GreeterSurface? greeter_surface = resource.get_user_data<GreeterSurface> ();
+        if (greeter_surface.wayland_surface == null) {
+            warning ("Window tried to init greeter but wayland surface is null.");
+            return;
+        }
+
+        Meta.Window? window;
+        greeter_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            warning ("Window tried to init greeter but wayland surface had no associated window.");
+            return;
+        }
+
+        ShellClientsManager.get_instance ().init_greeter (window);
+    }
+
     internal static void set_keep_above (Wl.Client client, Wl.Resource resource) {
         unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
         if (eb_surface.wayland_surface == null) {
@@ -413,6 +487,10 @@ namespace Gala {
     }
 
     internal static void destroy_widget_surface (Wl.Client client, Wl.Resource resource) {
+        resource.destroy ();
+    }
+
+    internal static void destroy_greeter_surface (Wl.Client client, Wl.Resource resource) {
         resource.destroy ();
     }
 

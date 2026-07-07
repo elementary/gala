@@ -40,6 +40,7 @@ namespace Gala {
 
     public enum WindowGroup {
         DESKTOP_SHELL,
+        LOCK_SCREEN_APPLICATION,
         LOCK_SCREEN,
         LOCK_SCREEN_SHELL,
         MODAL,

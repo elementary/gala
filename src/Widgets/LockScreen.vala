@@ -6,10 +6,11 @@
  */
 
 public class Gala.LockScreen : Clutter.Actor {
-    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { LOCK_SCREEN, LOCK_SCREEN_SHELL, OVERLAY };
+    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { LOCK_SCREEN_APPLICATION, LOCK_SCREEN, LOCK_SCREEN_SHELL, OVERLAY };
 
     public WindowManager wm { get; construct; }
 
+    public Clutter.Actor lock_application_group { get; private set; }
     public Clutter.Actor window_group { get; private set; }
     public Clutter.Actor shell_group { get; private set; }
 
@@ -24,10 +25,12 @@ public class Gala.LockScreen : Clutter.Actor {
         var background = new BackgroundContainer (wm.get_display ());
         background.add_effect (new BlurEffect (background, 18));
 
+        lock_application_group = new Clutter.Actor ();
         window_group = new Clutter.Actor ();
         shell_group = new Clutter.Actor ();
 
         add_child (background);
+        add_child (lock_application_group);
         add_child (window_group);
         add_child (shell_group);
 

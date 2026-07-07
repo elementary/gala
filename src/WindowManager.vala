@@ -1086,6 +1086,7 @@ namespace Gala {
         private Clutter.Actor get_window_group_actor (WindowGroup group) {
             switch (group) {
                 case DESKTOP_SHELL: return shell_group;
+                case LOCK_SCREEN_APPLICATION: return lock_screen.lock_application_group;
                 case LOCK_SCREEN: return lock_screen.window_group;
                 case LOCK_SCREEN_SHELL: return lock_screen.shell_group;
                 case MODAL: return modal_group.window_group;
