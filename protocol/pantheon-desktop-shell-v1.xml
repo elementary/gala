@@ -28,14 +28,6 @@
       <arg name="surface" type="object" interface="wl_surface"/>
     </request>
 
-    <request name="get_greeter">
-      <description summary="create a greeter surface from a surface">
-        Create a greeter surface from an existing surface.
-      </description>
-      <arg name="output" type="new_id" interface="io_elementary_pantheon_greeter_v1"/>
-      <arg name="surface" type="object" interface="wl_surface"/>
-    </request>
-
     <request name="get_extended_behavior">
       <description summary="create a desktop-specific surface from a surface">
         Create a desktop-specific surface from an existing surface.

@@ -31,7 +31,6 @@ namespace Gala {
         wayland_pantheon_shell_interface = {
             get_panel,
             get_widget,
-            get_greeter,
             get_extended_behavior,
             get_greeter,
         };
