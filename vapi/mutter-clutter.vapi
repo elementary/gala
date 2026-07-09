@@ -6117,6 +6117,9 @@ namespace Clutter {
 		public double get_gesture_pinch_scale ();
 		public uint32 get_im_delete_length ();
 		public bool get_im_location (int32 offset, int32 anchor);
+#if HAS_MUTTER50
+		public bool get_im_preedit_hints (Clutter.PreeditAttribute preedit_hints, uint n_preedit_hints);
+#endif
 		public Clutter.PreeditResetMode get_im_preedit_reset_mode ();
 		public unowned string get_im_text ();
 		public uint16 get_key_code ();
@@ -6512,10 +6515,19 @@ namespace Clutter {
 		public virtual void reset ();
 		[NoWrapper]
 		public virtual void set_cursor_location (Graphene.Rect rect);
+#if HAS_MUTTER50
+		public virtual void set_handled_actions (Clutter.InputActionFlags actions);
+#endif
 		public void set_input_panel_state (Clutter.InputPanelState state);
 		public void set_preedit_text (string? preedit, uint cursor, uint anchor, Clutter.PreeditResetMode mode);
+#if HAS_MUTTER50
+		public void set_preedit_text_with_attrs (string? preedit, uint cursor, uint anchor, Clutter.PreeditResetMode mode, [CCode (array_length_cname = "n_preedit_hints", array_length_pos = 5.1, array_length_type = "guint")] Clutter.PreeditAttribute[]? preedit_hints);
+#endif
 		[NoWrapper]
 		public virtual void set_surrounding (string text, uint cursor, uint anchor);
+#if HAS_MUTTER50
+		public void trigger_action (Clutter.InputAction action);
+#endif
 		[NoWrapper]
 		public virtual void update_content_hints (Clutter.InputContentHintFlags hint);
 		[NoWrapper]
@@ -7857,6 +7869,14 @@ namespace Clutter {
 		public int dwell_delay;
 		public int dwell_threshold;
 	}
+#if HAS_MUTTER50
+	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
+	public struct PreeditAttribute {
+		public Clutter.PreeditStyleHint hint;
+		public uint start;
+		public uint end;
+	}
+#endif
 #if HAS_MUTTER48
 	[CCode (cheader_filename = "clutter/clutter.h", has_type_id = false)]
 	public struct Primaries {
@@ -8302,6 +8322,20 @@ namespace Clutter {
 		TOP,
 		BOTTOM
 	}
+#if HAS_MUTTER50
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_INPUT_ACTION_", type_id = "clutter_input_action_get_type ()")]
+	public enum InputAction {
+		SUBMIT,
+		LAST
+	}
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_INPUT_ACTION_FLAG_", type_id = "clutter_input_action_flags_get_type ()")]
+	[Flags]
+	public enum InputActionFlags {
+		NONE,
+		SUBMIT,
+		ALL
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_INPUT_AXIS_", type_id = "clutter_input_axis_get_type ()")]
 	public enum InputAxis {
 		IGNORE,
@@ -8575,6 +8609,19 @@ namespace Clutter {
 		CLEAR,
 		COMMIT
 	}
+#if HAS_MUTTER50
+	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_PREEDIT_STYLE_", type_id = "clutter_preedit_style_hint_get_type ()")]
+	public enum PreeditStyleHint {
+		NONE,
+		WHOLE,
+		SELECTION,
+		PREDICTION,
+		PREFIX,
+		SUFFIX,
+		SPELLING_ERROR,
+		COMPOSE_ERROR
+	}
+#endif
 	[CCode (cheader_filename = "clutter/clutter.h", cprefix = "CLUTTER_REPAINT_FLAGS_", type_id = "clutter_repaint_flags_get_type ()")]
 	[Flags]
 	public enum RepaintFlags {
