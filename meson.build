@@ -162,6 +162,21 @@ if mutter50_dep.found()
     endif
 endif
 
+mutter51_dep = dependency('libmutter-51', version: ['>= 51', '< 52'], required: false)
+if mutter51_dep.found()
+	libmutter_dep = dependency('libmutter-51', version: '>= 51')
+	mutter_dep = [
+		libmutter_dep,
+		dependency('mutter-mtk-51'), dependency('mutter-cogl-51'),
+		dependency('mutter-clutter-51')
+	]
+	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50', '--define', 'HAS_MUTTER51']
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-51')
+    endif
+endif
+
 if mutter_dep.length() == 0
     error ('No supported mutter library found!')
 endif
