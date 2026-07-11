@@ -172,6 +172,8 @@ namespace Mtk {
 #if HAS_MUTTER50
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	public static int64 find_nearest_interval_boundary (int64 boundary_us, int64 base_us, int64 interval_us);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static bool is_fd_readable (int fd);
 #endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]
