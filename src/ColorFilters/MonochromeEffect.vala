@@ -21,6 +21,9 @@ public class Gala.MonochromeEffect : Clutter.ShaderEffect {
             queue_repaint ();
         }
     }
+#if HAS_MUTTER51
+    private string shader;
+#endif
 
     /*
      * Used for fading in and out the effect, since you can't add transitions to effects.
@@ -29,21 +32,33 @@ public class Gala.MonochromeEffect : Clutter.ShaderEffect {
 
     public MonochromeEffect (double strength) {
         Object (
+#if !HAS_MUTTER51
 #if HAS_MUTTER48
             shader_type: Cogl.ShaderType.FRAGMENT,
 #else
             shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
+#endif
 #endif
             strength: strength
         );
 
         try {
             var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/monochrome.frag", GLib.ResourceLookupFlags.NONE);
+#if HAS_MUTTER51
+            shader = (string) bytes.get_data ();
+#else
             set_shader_source ((string) bytes.get_data ());
+#endif
         } catch (Error e) {
             critical ("Unable to load monochrome.frag: %s", e.message);
         }
 
         pause_for_screenshot = false;
     }
+#if HAS_MUTTER51
+    public override Cogl.Snippet get_static_snippet () {
+        // TODO: split declarations from shader code and put it here
+        return new Cogl.Snippet (Cogl.SnippetHook.FRAGMENT, null, shader);
+    }
+#endif
 }
