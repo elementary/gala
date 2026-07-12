@@ -36,24 +36,48 @@ public class Gala.BoxBlurManager : Object {
         private const float[] HORIZONTAL_PASS_DATA = { 1.0f, 0.0f };
         private const float[] VERTICAL_PASS_DATA = { 0.0f, 1.0f };
 
+        private static string decls = """
+            uniform sampler2D tex;
+            uniform int RADIUS;
+            uniform vec2 PIXEL_STEP;
+            uniform vec2 DIRECTION;
+        """;
+
+        private static string post = """
+            if (RADIUS == 0) {
+                cogl_color_out = texture2D(tex, cogl_tex_coord0_in.xy);
+                return;
+            }
+
+            vec4 sum = vec4(0, 0, 0, 0);
+            int count = 0;
+
+            for (int i = -RADIUS; i <= RADIUS; i++) {
+                vec2 offset = DIRECTION * PIXEL_STEP * i;
+
+                sum += texture2D(tex, cogl_tex_coord0_in.xy + offset);
+                count += 1;
+            }
+
+            cogl_color_out = sum / count;
+        """;
+
         public int radius { set { set_uniform_value ("RADIUS", value); } }
 
         public BoxBlurEffect (PassDirection direction) {
             Object (
+#if !HAS_MUTTER51
 #if HAS_MUTTER48
-                shader_type: Cogl.ShaderType.FRAGMENT
+                    shader_type: Cogl.ShaderType.FRAGMENT
 #else
-                shader_type: Clutter.ShaderType.FRAGMENT_SHADER
+                    shader_type: Clutter.ShaderType.FRAGMENT_SHADER
+#endif
 #endif
             );
 
-            try {
-                var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/box-blur.frag", NONE);
-                set_shader_source ((string) bytes.get_data ());
-            } catch (Error e) {
-                critical ("Unable to load box-blur.frag: %s", e.message);
-            }
-
+#if !HAS_MUTTER51
+            set_shader_source (@"$decls \n void main() { $post }");
+#endif
             radius = 0;
 
             var direction_value = GLib.Value (typeof (Clutter.ShaderFloat));
@@ -62,6 +86,13 @@ public class Gala.BoxBlurManager : Object {
 
             set_uniform_value ("DIRECTION", direction_value);
         }
+
+#if HAS_MUTTER51
+        public override Cogl.Snippet get_static_snippet () {
+            return new Cogl.Snippet (Cogl.SnippetHook.FRAGMENT, decls, post);
+        }
+
+#endif
 
         public override void set_actor (Clutter.Actor? new_actor) {
             if (actor != null) {
