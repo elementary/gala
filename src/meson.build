@@ -20,6 +20,7 @@ gala_bin_sources = files(
     'TransitionBuilder.vala',
     'WindowAttentionTracker.vala',
     'WindowDragProvider.vala',
+    'WindowEffects.vala',
     'WindowListener.vala',
     'WindowListModel.vala',
     'WindowManager.vala',
