@@ -67,8 +67,7 @@ public class Gala.PluginManager : Object {
     }
 
     private bool load_module (string plugin_name) {
-        var path = Module.build_path (plugin_dir.get_path (), plugin_name);
-        var module = Module.open (path, ModuleFlags.LOCAL);
+        var module = Module.open (Path.build_filename (plugin_dir.get_path (), plugin_name), ModuleFlags.LOCAL);
         if (module == null) {
             warning (Module.error ());
             return false;

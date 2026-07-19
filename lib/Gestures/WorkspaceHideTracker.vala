@@ -11,7 +11,7 @@ public class Gala.WorkspaceHideTracker : Object {
 
     public Meta.Display display { private get; construct; }
 
-    private ComputeShouldHideOnWorkspace? compute_func = null;
+    private unowned ComputeShouldHideOnWorkspace? compute_func = null;
     private double switch_workspace_progress = 0.0;
     private bool[] should_hide_on_workspace_cache = {};
 
