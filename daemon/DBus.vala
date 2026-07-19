@@ -36,6 +36,9 @@ public class Gala.Daemon.DBus : GLib.Object {
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
+    private Gee.HashMap<string, uint> suspend_cookies = new Gee.HashMap<string, uint> ();
+    private Gee.HashMap<string, uint> idle_cookies = new Gee.HashMap<string, uint> ();
+
     construct {
         Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
 
@@ -153,6 +156,69 @@ public class Gala.Daemon.DBus : GLib.Object {
             menu.popup ();
             return Source.REMOVE;
         });
+    }
+
+    public void prevent_sleep (uint64 window_id) throws GLib.DBusError, GLib.IOError {
+        unowned var application = (Gtk.Application) GLib.Application.get_default ();
+
+        // TODO add gschema setting for disabling auto suspend when fullscreen
+        if (application != null) {
+            var window_id_str = window_id.to_string ();
+            info ("preventing auto-suspend and auto-idle because a window [%s] went fullscreen", window_id_str);
+            // Ask the session manager to not automatically turn off the screen or put the system to sleep
+            prevent_sleep_while_fullscreen (window_id_str, application);
+        }
+    }
+
+    public void unprevent_sleep (uint64 window_id) throws GLib.DBusError, GLib.IOError {
+        unowned var application = (Gtk.Application) GLib.Application.get_default ();
+
+        // Inform the session manager we do not want to prevent turning off the screen or sleeping
+        if (application != null) {
+            var window_id_str = window_id.to_string ();
+            info ("unpreventing auto-suspend and auto-idle by window [%s] because it exited fullscreen",
+                window_id_str);
+
+            if (suspend_cookies.has_key (window_id_str)) {
+                end_prevent_suspend_while_fullscreen (window_id_str, application);
+            }
+            if (idle_cookies.has_key (window_id_str)) {
+                end_prevent_idle_while_fullscreen (window_id_str, application);
+            }
+        }
+    }
+
+    private void prevent_sleep_while_fullscreen (string window_id_str, Gtk.Application application) {
+        // If window was already marked as preventing fullscreen, unhinibit before inhibiting
+        if (suspend_cookies.has_key (window_id_str)) {
+            end_prevent_suspend_while_fullscreen (window_id_str, application);
+        }
+        if (idle_cookies.has_key (window_id_str)) {
+            end_prevent_idle_while_fullscreen (window_id_str, application);
+        }
+
+        suspend_cookies.set (window_id_str, application.inhibit (
+            null,
+            Gtk.ApplicationInhibitFlags.SUSPEND,
+            "Prevent session from suspending while fullscreen"
+        ));
+        idle_cookies.set (window_id_str, application.inhibit (
+            null,
+            Gtk.ApplicationInhibitFlags.IDLE,
+            "Prevent session from idle while fullscreen"
+        ));
+    }
+
+    private void end_prevent_suspend_while_fullscreen (string window_id_str, Gtk.Application application) {
+        uint suspend_cookie = suspend_cookies.get (window_id_str);
+        application.uninhibit (suspend_cookie);
+        suspend_cookies.unset (window_id_str);
+    }
+
+    private void end_prevent_idle_while_fullscreen (string window_id_str, Gtk.Application application) {
+        uint idle_cookie = idle_cookies.get (window_id_str);
+        application.uninhibit (idle_cookie);
+        idle_cookies.unset (window_id_str);
     }
 
     public void show_monitor_labels (MonitorLabelInfo[] label_infos) throws GLib.DBusError, GLib.IOError {

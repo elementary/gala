@@ -204,7 +204,7 @@ namespace Gala {
         private void show_stage () {
             unowned Meta.Display display = get_display ();
 
-            WindowListener.init (display);
+            WindowListener.init (display, daemon_manager);
             keyboard_manager = new KeyboardManager (display);
             window_tracker = new WindowTracker ();
             WindowStateSaver.init (window_tracker);
