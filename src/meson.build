@@ -1,4 +1,4 @@
-gala_bin_sources = files(
+gala_bin_base_sources = files(
     'BlurManager.vala',
     'DBus.vala',
     'DBusAccelerator.vala',
@@ -8,7 +8,6 @@ gala_bin_sources = files(
     'InternalUtils.vala',
     'KeyboardManager.vala',
     'LockScreenManager.vala',
-    'Main.vala',
     'NotificationsManager.vala',
     'NotificationStack.vala',
     'PantheonShell.vala',
@@ -74,6 +73,10 @@ gala_bin_sources = files(
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
+)
+
+gala_bin_sources = gala_bin_base_sources + files(
+    'Main.vala',
 )
 
 gala_bin = executable(
