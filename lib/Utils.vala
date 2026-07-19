@@ -338,6 +338,17 @@ namespace Gala {
             }
         }
 
+        public static inline bool get_window_and_ancestors_normal (Meta.Window window) {
+            var normal = true;
+            window.foreach_ancestor ((ancestor_window) => {
+                normal = normal || get_window_is_normal (ancestor_window);
+
+                return normal;
+            });
+
+            return normal;
+        }
+
         public static int calculate_button_size (float monitor_scale) {
             return Utils.scale_to_int (BUTTON_SIZE, monitor_scale);
         }
