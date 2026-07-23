@@ -56,13 +56,25 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
     }
 
     public override void set_up () {
-        Test.log_set_fatal_handler ((domain, level, message) => {
-            /* Mutter sends a fatal log when failing to connect to colord but that doesn't matter for us */
-            Test.message ("Got fatal log, not aborting");
-            return false;
-        });
+        Test.log_set_fatal_handler (fatal_log_handler);
 
         main_loop = new MainLoop (null, false);
+    }
+
+    /**
+     * Override this method if you need to ignore certain fatal logs instead
+     * of manually calling log_set_fatal_handler.
+     * Also make sure to chain up to this implementation otherwise the test
+     * will probably fail.
+     */
+    protected virtual bool fatal_log_handler (string? domain, LogLevelFlags level, string message) {
+        if (domain == "libmutter" && FLAG_FATAL in level && "Failed to connect to colord daemon" in message) {
+            /* Mutter sends a fatal log when failing to connect to colord but that doesn't matter for us */
+            Test.message ("Got expected fatal colord log, not aborting");
+            return false;
+        }
+
+        return true;
     }
 
     public override void tear_down () {
