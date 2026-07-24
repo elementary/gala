@@ -70,7 +70,7 @@ namespace Pantheon.Desktop {
         [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "io_elementary_pantheon_greeter_v1_interface")]
         public static Wl.Interface iface;
         public Destroy destroy;
-        public Init init;
+        public MakeGreeter make_greeter;
     }
 
     [CCode (has_target = false, has_typedef = false)]
@@ -104,7 +104,7 @@ namespace Pantheon.Desktop {
     [CCode (has_target = false, has_typedef = false)]
     public delegate void MakeMonitorLabel (Wl.Client client, Wl.Resource resource, int monitor_index);
     [CCode (has_target = false, has_typedef = false)]
-    public delegate void Init (Wl.Client client, Wl.Resource resource);
+    public delegate void MakeGreeter (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }

@@ -61,7 +61,7 @@ namespace Gala {
 
         wayland_pantheon_greeter_interface = {
             destroy_greeter_surface,
-            init_greeter,
+            make_greeter,
         };
 
         PanelSurface.quark = GLib.Quark.from_string ("-gala-wayland-panel-surface-data");
@@ -464,21 +464,21 @@ namespace Gala {
         ShellClientsManager.get_instance ().make_monitor_label (window, monitor_index);
     }
 
-    internal static void init_greeter (Wl.Client client, Wl.Resource resource) {
+    internal static void make_greeter (Wl.Client client, Wl.Resource resource) {
         unowned GreeterSurface? greeter_surface = resource.get_user_data<GreeterSurface> ();
         if (greeter_surface.wayland_surface == null) {
-            warning ("Window tried to init greeter but wayland surface is null.");
+            warning ("Window tried to make greeter but wayland surface is null.");
             return;
         }
 
         Meta.Window? window;
         greeter_surface.wayland_surface.get ("window", out window, null);
         if (window == null) {
-            warning ("Window tried to init greeter but wayland surface had no associated window.");
+            warning ("Window tried to make greeter but wayland surface had no associated window.");
             return;
         }
 
-        ShellClientsManager.get_instance ().init_greeter (window);
+        ShellClientsManager.get_instance ().make_greeter (window);
     }
 
     internal static void destroy_panel_surface (Wl.Client client, Wl.Resource resource) {

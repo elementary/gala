@@ -315,7 +315,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaged.connect_after (() => ibus_candidate_window = null);
     }
 
-    public void init_greeter (Meta.Window window) {
+    public void make_greeter (Meta.Window window) {
         make_desktop (window);
 
         wm.override_window_group (window, LOCK_SCREEN);
