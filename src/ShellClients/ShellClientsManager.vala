@@ -138,7 +138,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    public void make_dock (Meta.Window window) {
+    private void make_dock (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
 #else
@@ -182,7 +182,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 #endif
 
-    public void make_desktop (Meta.Window window) {
+    private void make_desktop (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DESKTOP);
 #else
