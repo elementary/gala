@@ -121,7 +121,9 @@ public class Gala.GestureControllerTest : MutterTestCase {
     }
 
     public override void tear_down () {
-        stage.remove_child (target.actor);
+        if (target != null) {
+            stage.remove_child (target.actor);
+        }
 
         backend = null;
         controller = null;
