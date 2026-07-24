@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-05-13 12:04+0000\n"
+"POT-Creation-Date: 2026-07-24 10:59+0000\n"
 "PO-Revision-Date: 2023-11-09 19:10+0000\n"
 "Last-Translator: aalhaif <aalhaif@hotmail.com>\n"
 "Language-Team: Arabic <https://l10n.elementary.io/projects/desktop/gala/ar/"
@@ -43,53 +43,70 @@ msgstr "إعدادات النظام…"
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
 
-#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
+#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
 msgid "Hide"
 msgstr "أخف"
 
-#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
+#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
 msgid "Move"
 msgstr "حرك"
 
-#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
+#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
 msgid "Resize"
 msgstr "غير الحجم"
 
-#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
+#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
 msgid "Always on Top"
 msgstr "دائماً في المقدمة"
 
-#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
+#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
 msgid "Always on Visible Workspace"
 msgstr "دائماً في مساحة العمل الظاهرة"
 
-#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
+#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
 msgid "Move to Workspace Left"
 msgstr "انتقل إلى مساحة العمل على اليسار"
 
-#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
+#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
 msgid "Move to Workspace Right"
 msgstr "انتقل إلى مساحة العمل على اليمين"
 
-#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
+#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
 msgid "Take Screenshot"
 msgstr "التقط صورة للشاشة"
 
-#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
+#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
 msgid "Close"
 msgstr "أغلق"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Untile"
 msgstr "ألغ التجانب"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Unmaximize"
 msgstr "ألغ التكبير"
 
-#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
+#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
 msgid "Maximize"
 msgstr "قم بالتكبير"
+
+#: data/gala-multitaskingview.desktop.in:3
+#: data/gala-multitaskingview.desktop.in:5
+msgid "Multitasking View"
+msgstr "منظور تعدد المهام"
+
+#: data/gala-multitaskingview.desktop.in:4
+msgid "View all open windows and workspaces"
+msgstr "اعرض جميع النوافذ المفتوحة ومساحات العمل"
+
+#: data/gala-other.desktop.in:3
+msgid "Other"
+msgstr "أخرى"
+
+#: data/gala-other.desktop.in:4
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
 
 #: data/gala.metainfo.xml.in:11
 #, fuzzy
@@ -253,23 +270,6 @@ msgstr ""
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr ""
 
-#: data/gala-multitaskingview.desktop.in:3
-#: data/gala-multitaskingview.desktop.in:5
-msgid "Multitasking View"
-msgstr "منظور تعدد المهام"
-
-#: data/gala-multitaskingview.desktop.in:4
-msgid "View all open windows and workspaces"
-msgstr "اعرض جميع النوافذ المفتوحة ومساحات العمل"
-
-#: data/gala-other.desktop.in:3
-msgid "Other"
-msgstr "أخرى"
-
-#: data/gala-other.desktop.in:4
-msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "ملف سطح مكتب احتياطي للإشعارات من التطبيقات القديمة."
-
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
 msgid "Unknown"
@@ -319,35 +319,35 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr ""
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:103
+#: src/Misc/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
 msgstr "لقطات شاشة من %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:168
+#: src/Misc/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr ""
 
-#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
 msgid "Screenshot taken"
 msgstr "لقطات الشاشة الملتقطة"
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr ""
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "لقطات الشاشة"
 
@@ -355,7 +355,7 @@ msgstr "لقطات الشاشة"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1682
+#: src/WindowManager.vala:1718
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -366,19 +366,19 @@ msgstr[3] "التغييرات ستظهر بعد %i ثواني."
 msgstr[4] "التغييرات ستظهر بعد %i ثانية."
 msgstr[5] "التغييرات ستظهر قريباً."
 
-#: src/WindowManager.vala:1689
+#: src/WindowManager.vala:1725
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "إعدادات شاشة العرض…"
 
-#: src/WindowManager.vala:1693
+#: src/WindowManager.vala:1729
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "إعدادات النظام…"
 
-#: src/WindowManager.vala:1694
+#: src/WindowManager.vala:1730
 msgid "Use Previous Settings"
 msgstr ""
 

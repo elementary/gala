@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-05-13 12:04+0000\n"
+"POT-Creation-Date: 2026-07-24 10:59+0000\n"
 "PO-Revision-Date: 2026-06-29 05:56+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -41,53 +41,70 @@ msgstr "Не удалось открыть Параметры системы"
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Обработчик для схемы URI «settings://» должен быть установлен."
 
-#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
+#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
 msgid "Hide"
 msgstr "Скрыть"
 
-#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
+#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
 msgid "Move"
 msgstr "Переместить"
 
-#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
+#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
 msgid "Resize"
 msgstr "Изменить размер"
 
-#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
+#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
 msgid "Always on Top"
 msgstr "Поверх всех окон"
 
-#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
+#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
 msgid "Always on Visible Workspace"
 msgstr "Всегда на видимом рабочем столе"
 
-#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
+#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
 msgid "Move to Workspace Left"
 msgstr "Переместить на рабочий стол слева"
 
-#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
+#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
 msgid "Move to Workspace Right"
 msgstr "Переместить на рабочий стол справа"
 
-#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
+#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
 msgid "Take Screenshot"
 msgstr "Сделать снимок"
 
-#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
+#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
 msgid "Close"
 msgstr "Закрыть"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Untile"
 msgstr "Открепить"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Unmaximize"
 msgstr "Восстановить"
 
-#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
+#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
 msgid "Maximize"
 msgstr "Развернуть"
+
+#: data/gala-multitaskingview.desktop.in:3
+#: data/gala-multitaskingview.desktop.in:5
+msgid "Multitasking View"
+msgstr "Многозадачный вид"
+
+#: data/gala-multitaskingview.desktop.in:4
+msgid "View all open windows and workspaces"
+msgstr "Просмотр всех открытых окон и рабочих столов"
+
+#: data/gala-other.desktop.in:3
+msgid "Other"
+msgstr "Другие"
+
+#: data/gala-other.desktop.in:4
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "Устаревший файл desktop для уведомлений от устаревших приложений."
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking & Window Management"
@@ -125,7 +142,8 @@ msgstr "Улучшения:"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed a frequent crash with multi monitor setups"
-msgstr "Исправлен часто случавшийся сбой при использовании нескольких мониторов"
+msgstr ""
+"Исправлен часто случавшийся сбой при использовании нескольких мониторов"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:47
 #: data/gala.metainfo.xml.in:65 data/gala.metainfo.xml.in:79
@@ -237,23 +255,6 @@ msgstr ""
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Улучшено сочетание клавиш «Переместить на рабочий стол»"
 
-#: data/gala-multitaskingview.desktop.in:3
-#: data/gala-multitaskingview.desktop.in:5
-msgid "Multitasking View"
-msgstr "Многозадачный вид"
-
-#: data/gala-multitaskingview.desktop.in:4
-msgid "View all open windows and workspaces"
-msgstr "Просмотр всех открытых окон и рабочих столов"
-
-#: data/gala-other.desktop.in:3
-msgid "Other"
-msgstr "Другие"
-
-#: data/gala-other.desktop.in:4
-msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Устаревший файл desktop для уведомлений от устаревших приложений."
-
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
 msgid "Unknown"
@@ -304,35 +305,35 @@ msgstr "Разрешить"
 msgid "Deny"
 msgstr "Запретить"
 
-#: src/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr "Окно уже сфокусировано"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:103
+#: src/Misc/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Снимок экрана от %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:168
+#: src/Misc/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr "Показать в %s"
 
-#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
 msgid "Screenshot taken"
 msgstr "Снимок экрана сделан"
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr "Снимок сохранён в буфер обмена"
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr "Снимок сохранён в папку снимков экрана"
 
-#: src/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "Снимки экрана"
 
@@ -340,7 +341,7 @@ msgstr "Снимки экрана"
 msgid "Window switcher"
 msgstr "Переключатель окон"
 
-#: src/WindowManager.vala:1682
+#: src/WindowManager.vala:1718
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -348,15 +349,15 @@ msgstr[0] "Изменения будут отменены через %i секу
 msgstr[1] "Изменения будут отменены через %i секунды."
 msgstr[2] "Изменения будут отменены через %i секунд."
 
-#: src/WindowManager.vala:1689
+#: src/WindowManager.vala:1725
 msgid "Keep new display settings?"
 msgstr "Сохранить новые настройки экрана?"
 
-#: src/WindowManager.vala:1693
+#: src/WindowManager.vala:1729
 msgid "Keep Settings"
 msgstr "Сохранить настройки"
 
-#: src/WindowManager.vala:1694
+#: src/WindowManager.vala:1730
 msgid "Use Previous Settings"
 msgstr "Использовать предыдущие настройки"
 

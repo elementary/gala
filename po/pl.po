@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-05-13 12:04+0000\n"
+"POT-Creation-Date: 2026-07-24 10:59+0000\n"
 "PO-Revision-Date: 2025-07-07 19:55+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -41,53 +41,70 @@ msgstr "Nie udało się otworzyć Ustawień Systemowych"
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Odnośnik dla schematu URI \"settings://\" musi zostać zainstalowany."
 
-#: daemon-gtk3/WindowMenu.vala:36 daemon/WindowMenu.vala:38
+#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
 msgid "Hide"
 msgstr "Ukryj"
 
-#: daemon-gtk3/WindowMenu.vala:49 daemon/WindowMenu.vala:54
+#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
 msgid "Move"
 msgstr "Przenieś"
 
-#: daemon-gtk3/WindowMenu.vala:57 daemon/WindowMenu.vala:64
+#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
 msgid "Resize"
 msgstr "Zmień rozmiar"
 
-#: daemon-gtk3/WindowMenu.vala:65 daemon/WindowMenu.vala:74
+#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
 msgid "Always on Top"
 msgstr "Zawsze na wierzchu"
 
-#: daemon-gtk3/WindowMenu.vala:73 daemon/WindowMenu.vala:84
+#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
 msgid "Always on Visible Workspace"
 msgstr "Zawsze na aktywnym obszarze roboczym"
 
-#: daemon-gtk3/WindowMenu.vala:81 daemon/WindowMenu.vala:94
+#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
 msgid "Move to Workspace Left"
 msgstr "Przesuń do lewej części obszaru roboczego"
 
-#: daemon-gtk3/WindowMenu.vala:89 daemon/WindowMenu.vala:104
+#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
 msgid "Move to Workspace Right"
 msgstr "Przesuń do prawej części obszaru roboczego"
 
-#: daemon-gtk3/WindowMenu.vala:97 daemon/WindowMenu.vala:114
+#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
 msgid "Take Screenshot"
 msgstr "Zrób zrzut ekranu"
 
-#: daemon-gtk3/WindowMenu.vala:105 daemon/WindowMenu.vala:124
+#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
 msgid "Close"
 msgstr "Zamknij"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Untile"
 msgstr "Odsąsiaduj"
 
-#: daemon-gtk3/WindowMenu.vala:138 daemon/WindowMenu.vala:167
+#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
 msgid "Unmaximize"
 msgstr "Cofnij maksymalizację"
 
-#: daemon-gtk3/WindowMenu.vala:140 daemon/WindowMenu.vala:169
+#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
 msgid "Maximize"
 msgstr "Zmaksymalizuj"
+
+#: data/gala-multitaskingview.desktop.in:3
+#: data/gala-multitaskingview.desktop.in:5
+msgid "Multitasking View"
+msgstr "Widok wielozadaniowy"
+
+#: data/gala-multitaskingview.desktop.in:4
+msgid "View all open windows and workspaces"
+msgstr "Pokaż wszystkie otwarte okna i obszary robocze"
+
+#: data/gala-other.desktop.in:3
+msgid "Other"
+msgstr "Inne"
+
+#: data/gala-other.desktop.in:4
+msgid "Fallback desktop file for notifications from outdated applications."
+msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
 
 #: data/gala.metainfo.xml.in:11
 #, fuzzy
@@ -253,23 +270,6 @@ msgstr ""
 msgid "Improve handling of move-to-workspace shortcut"
 msgstr "Poprawiona obsługa skrótu „przenieś do obszaru”"
 
-#: data/gala-multitaskingview.desktop.in:3
-#: data/gala-multitaskingview.desktop.in:5
-msgid "Multitasking View"
-msgstr "Widok wielozadaniowy"
-
-#: data/gala-multitaskingview.desktop.in:4
-msgid "View all open windows and workspaces"
-msgstr "Pokaż wszystkie otwarte okna i obszary robocze"
-
-#: data/gala-other.desktop.in:3
-msgid "Other"
-msgstr "Inne"
-
-#: data/gala-other.desktop.in:4
-msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Rezerwowy plik pulpitu dla powiadomień z nieaktualnych programów."
-
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
 msgid "Unknown"
@@ -321,35 +321,35 @@ msgstr "Zezwól"
 msgid "Deny"
 msgstr "Odmów"
 
-#: src/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:210
 msgid "Window has already focus"
 msgstr "Okno ma już fokus"
 
 #. / TRANSLATORS: %s represents a timestamp here
-#: src/ScreenshotManager.vala:103
+#: src/Misc/ScreenshotManager.vala:103
 #, c-format
 msgid "Screenshot from %s"
 msgstr "Zrzut ekranu z %s"
 
 #. / TRANSLATORS: %s represents a name of file manager
-#: src/ScreenshotManager.vala:168
+#: src/Misc/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
 msgstr "Pokaż w %s"
 
-#: src/ScreenshotManager.vala:175 src/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
 msgstr "Zrzut ekranu zapisany do schowka"
 
-#: src/ScreenshotManager.vala:176
+#: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
 msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
 
-#: src/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:470
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
 
@@ -357,7 +357,7 @@ msgstr "Zrzuty ekranu"
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:1682
+#: src/WindowManager.vala:1718
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -365,15 +365,15 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:1689
+#: src/WindowManager.vala:1725
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:1693
+#: src/WindowManager.vala:1729
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:1694
+#: src/WindowManager.vala:1730
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
