@@ -255,10 +255,7 @@ public class Gala.DesktopIntegration : GLib.Object {
         var hints = new HashTable<string, Variant> (str_hash, str_equal);
         hints["windows"] = window_ids;
 
-        if (wm.window_overview.is_opened ()) {
-            wm.window_overview.close ();
-        }
-
+        wm.window_overview.close ();
         wm.window_overview.open (hints);
     }
 

@@ -59,7 +59,6 @@ lib/Widgets/Root.vala
 lib/Widgets/Text.vala
 lib/Widgets/Widget.vala
 lib/Widgets/WindowIcon.vala
-lib/ActivatableComponent.vala
 lib/BackgroundManager.vala
 lib/CommonEnums.vala
 lib/Constants.vala
