@@ -16,12 +16,16 @@ public class Gala.ManagedClient : Object {
     public Meta.Display display { private get; construct; }
     public string[] args { private get; construct; }
     
-    private static Gee.List<ManagedClient> instances = new Gee.LinkedList<ManagedClient> (null);
+    private static Gee.List<unowned ManagedClient> instances = new Gee.LinkedList<unowned ManagedClient> (null);
     private Meta.WaylandClient? wayland_client;
     private Subprocess? subprocess;
 
     public ManagedClient (Meta.Display display, string[] args) {
         Object (display: display, args: args);
+    }
+
+    ~ManagedClient () {
+        instances.remove (this);
     }
 
     construct {
