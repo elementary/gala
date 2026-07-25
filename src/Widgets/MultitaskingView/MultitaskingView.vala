@@ -28,7 +28,7 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
     private GestureController multitasking_gesture_controller;
 
     public Clutter.Actor? actor { get { return this; } }
-    public WindowManagerGala wm { get; construct; }
+    public WindowManager wm { get; construct; }
 
     private Meta.Display display;
     private ModalProxy modal_proxy;
@@ -51,7 +51,7 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
     private Clutter.PanAction pan_action;
 #endif
 
-    public MultitaskingView (WindowManagerGala wm) {
+    public MultitaskingView (WindowManager wm) {
         Object (wm: wm);
     }
 

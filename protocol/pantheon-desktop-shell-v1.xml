@@ -187,4 +187,15 @@
       <arg name="monitor_index" type="int" summary="the index of the monitor this surface should label"/>
     </request>
   </interface>
+
+  <interface name="io_elementary_pantheon_greeter_v1" version="1">
+    <request name="destroy" type="destructor"/>
+
+    <request name="make_greeter">
+      <description summary="make greeter">
+        Request to make the surface a Greeter window, which will be displayed bellow other windows
+        when running in greeter compositor mode.
+      </description>
+    </request>
+  </interface>
 </protocol>

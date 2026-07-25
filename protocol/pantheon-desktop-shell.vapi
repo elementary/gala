@@ -73,6 +73,14 @@ namespace Pantheon.Desktop {
         public MakeMonitorLabel make_monitor_label;
     }
 
+    [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_greeter_v1_interface")]
+    public struct GreeterInterface {
+        [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "io_elementary_pantheon_greeter_v1_interface")]
+        public static Wl.Interface iface;
+        public Destroy destroy;
+        public MakeGreeter make_greeter;
+    }
+
     [CCode (has_target = false, has_typedef = false)]
     public delegate void GetPanel (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
     [CCode (has_target = false, has_typedef = false)]
@@ -81,6 +89,8 @@ namespace Pantheon.Desktop {
     public delegate void GetGreeter (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void GetExtendedBehavior (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void GetGreeter (Wl.Client client, Wl.Resource resource, uint32 output, Wl.Resource surface);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void SetAnchor (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Anchor anchor);
     [CCode (has_target = false, has_typedef = false)]
@@ -105,6 +115,8 @@ namespace Pantheon.Desktop {
     public delegate void MakeModal (Wl.Client client, Wl.Resource resource, uint dim);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void MakeMonitorLabel (Wl.Client client, Wl.Resource resource, int monitor_index);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeGreeter (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void Destroy (Wl.Client client, Wl.Resource resource);
 }

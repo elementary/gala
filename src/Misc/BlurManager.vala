@@ -18,7 +18,7 @@ public class Gala.BlurManager : Object {
 
     private static BlurManager instance;
 
-    public static void init (WindowManagerGala wm) {
+    public static void init (WindowManager wm) {
         if (instance != null) {
             return;
         }
@@ -30,11 +30,11 @@ public class Gala.BlurManager : Object {
         return instance;
     }
 
-    public WindowManagerGala wm { get; construct; }
+    public WindowManager wm { get; construct; }
 
     private GLib.HashTable<Meta.Window, BlurData?> blurred_windows = new GLib.HashTable<Meta.Window, BlurData?> (null, null);
 
-    private BlurManager (WindowManagerGala wm) {
+    private BlurManager (WindowManager wm) {
         Object (wm: wm);
     }
 
