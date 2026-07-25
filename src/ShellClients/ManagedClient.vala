@@ -15,7 +15,7 @@ public class Gala.ManagedClient : Object {
 
     public Meta.Display display { private get; construct; }
     public string[] args { private get; construct; }
-    
+
     private static Gee.List<unowned ManagedClient> instances = new Gee.LinkedList<unowned ManagedClient> (null);
     private Meta.WaylandClient? wayland_client;
     private Subprocess? subprocess;
@@ -52,7 +52,7 @@ public class Gala.ManagedClient : Object {
             start_x.begin ();
         }
     }
-    
+
     public static void make_dock (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
@@ -94,7 +94,7 @@ public class Gala.ManagedClient : Object {
         xdisplay.change_property (x_window, atom, X.XA_ATOM, 32, X.PropMode.Replace, (uchar[]) dock_atom, 1);
     }
 #endif
-    
+
     public static void make_desktop (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DESKTOP);
