@@ -138,7 +138,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    public void make_dock (Meta.Window window) {
+    private void make_dock (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
 #else
@@ -179,6 +179,31 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         // 32 is format
         // 0 means replace
         xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
+    }
+#endif
+
+    private void make_desktop (Meta.Window window) {
+#if HAS_MUTTER49
+        window.set_type (Meta.WindowType.DESKTOP);
+#else
+        if (Meta.Util.is_wayland_compositor ()) {
+            make_desktop_wayland (window);
+        } else {
+            critical ("Making desktop window on X11 is not supported.");
+        }
+#endif
+    }
+
+#if !HAS_MUTTER49
+    private void make_desktop_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
+        foreach (var client in protocol_clients) {
+            if (client.wayland_client.owns_window (window)) {
+#if HAS_MUTTER46
+                client.wayland_client.make_desktop (window);
+#endif
+                break;
+            }
+        }
     }
 #endif
 
@@ -288,6 +313,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         wm.override_window_group (window, OVERLAY);
 
         window.unmanaged.connect_after (() => ibus_candidate_window = null);
+    }
+
+    public void make_greeter (Meta.Window window) {
+        make_desktop (window);
+
+        wm.override_window_group (window, LOCK_SCREEN);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
