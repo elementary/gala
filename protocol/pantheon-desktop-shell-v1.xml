@@ -136,6 +136,16 @@
     <request name="destroy" type="destructor"/>
   </interface>
 
+  <interface name="io_elementary_pantheon_greeter_v1" version="1">
+    <request name="destroy" type="destructor"/>
+
+    <request name="init">
+      <description summary="init greeter">
+        Init Greeter
+      </description>
+    </request>
+  </interface>
+
   <interface name="io_elementary_pantheon_extended_behavior_v1" version="1">
     <request name="destroy" type="destructor"/>
     <request name="set_keep_above">

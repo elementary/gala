@@ -26,9 +26,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
-    private int starting_panels = 0;
+    private int starting_windows = 0;
 
+    private GLib.HashTable<Meta.Window, unowned WindowWithStartAnimation> windows_waiting_for_start = new GLib.HashTable<Meta.Window, unowned WindowWithStartAnimation> (null, null);
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
+    private GLib.HashTable<Meta.Window, GreeterWindow> greeter_windows = new GLib.HashTable<Meta.Window, GreeterWindow> (null, null);
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
     private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
     private IBusCandidateWindow? ibus_candidate_window = null;
@@ -113,7 +115,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
-                starting_panels += key_file.get_integer (group, "wait-for-n-panels");
+                starting_windows += key_file.get_integer (group, "wait-for-n-windows");
             } catch (Error e) {
                 warning ("Failed to check how many panels should be awaited, assuming 0: %s", e.message);
             }
@@ -128,14 +130,20 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     private void on_failsafe_timeout () {
-        if (starting_panels > 0) {
-            warning ("%d panels failed to start in time, showing the others", starting_panels);
+        if (starting_windows > 0) {
+            warning ("%d staring windows failed to start in time, showing the others", starting_windows);
 
-            starting_panels = 0;
-            foreach (var window in panel_windows.get_values ()) {
-                window.animate_start ();
-            }
+            animate_all_starting_windows ();
         }
+    }
+
+    private void animate_all_starting_windows () {
+        starting_windows = 0;
+        foreach (var window in windows_waiting_for_start.get_values ()) {
+            window?.animate_start ();
+        }
+
+        windows_waiting_for_start.remove_all ();
     }
 
     private void make_dock (Meta.Window window) {
@@ -217,6 +225,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         // TODO: Return if requested by window that's not a trusted client?
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
+        windows_waiting_for_start[window] = panel_windows[window];
 
         if (SessionSettings.is_greeter ()) {
             wm.override_window_group (window, LOCK_SCREEN_SHELL);
@@ -224,25 +233,25 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             wm.override_window_group (window, DESKTOP_SHELL);
         }
 
-        InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
+        InternalUtils.wait_for_window_actor_visible (window, on_starting_window_ready);
 
         // connect_after so we make sure the PanelWindow can destroy its barriers and struts
         window.unmanaging.connect_after ((_window) => panel_windows.remove (_window));
     }
 
-    private void on_panel_ready (Meta.WindowActor actor) {
-        if (starting_panels == 0) {
-            panel_windows[actor.meta_window].animate_start ();
+    private void on_starting_window_ready (Meta.WindowActor actor) {
+        if (starting_windows == 0) {
+            unowned var window = actor.meta_window;
+            windows_waiting_for_start[window]?.animate_start ();
+            windows_waiting_for_start.remove (window);
             return;
         }
 
-        starting_panels--;
-        assert (starting_panels >= 0);
+        starting_windows--;
+        assert (starting_windows >= 0);
 
-        if (starting_panels == 0) {
-            foreach (var window in panel_windows.get_values ()) {
-                window.animate_start ();
-            }
+        if (starting_windows == 0) {
+            animate_all_starting_windows ();
         }
     }
 
@@ -273,11 +282,24 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void request_visible_in_multitasking_view (Meta.Window window) {
         if (!(window in panel_windows)) {
-            warning ("Set anchor for window before visible in mutltiasking view.");
+            warning ("Set anchor for window before visible in multitasking view.");
             return;
         }
 
         panel_windows[window].request_visible_in_multitasking_view ();
+    }
+
+    public void init_greeter (Meta.Window window) {
+        make_desktop (window);
+
+        greeter_windows[window] = new GreeterWindow (window);
+        windows_waiting_for_start[window] = greeter_windows[window];
+
+        wm.override_window_group (window, LOCK_SCREEN_APPLICATION);
+
+        InternalUtils.wait_for_window_actor_visible (window, on_starting_window_ready);
+
+        window.unmanaging.connect_after ((_window) => greeter_windows.remove (_window));
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_shell_window (window)) {

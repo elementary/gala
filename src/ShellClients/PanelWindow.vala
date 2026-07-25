@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.PanelWindow : ShellWindow, RootTarget {
+public class Gala.PanelWindow : ShellWindow, RootTarget, WindowWithStartAnimation {
     private static HashTable<Meta.Window, Meta.Strut?> window_struts = new HashTable<Meta.Window, Meta.Strut?> (null, null);
 
     public Clutter.Actor? actor { get { return (Clutter.Actor) window.get_compositor_private (); } }
