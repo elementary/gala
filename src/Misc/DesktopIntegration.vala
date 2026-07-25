@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 elementary, Inc. <https://elementary.io>
+ * Copyright 2022-2026 elementary, Inc. <https://elementary.io>
  * Copyright 2022 Corentin Noël <tintou@noel.tf>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
