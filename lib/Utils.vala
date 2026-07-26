@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//                2026 elementary, Inc. (https://elementary.io)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -107,11 +108,7 @@ namespace Gala {
             }
 
             if (window.get_client_type () == Meta.WindowClientType.X11) {
-#if HAS_MUTTER46
                 unowned Meta.Group group = window.x11_get_group ();
-#else
-                unowned Meta.Group group = window.get_group ();
-#endif
                 if (group != null) {
                     var group_windows = group.list_windows ();
                     group_windows.foreach ((window) => {
@@ -277,11 +274,7 @@ namespace Gala {
         public static void x11_set_window_pass_through (Meta.Window window) {
             unowned var x11_display = window.display.get_x11_display ();
 
-#if HAS_MUTTER46
             var x_window = x11_display.lookup_xwindow (window);
-#else
-            var x_window = window.get_xwindow ();
-#endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
             int count, ordering;
@@ -298,11 +291,7 @@ namespace Gala {
         public static void x11_unset_window_pass_through (Meta.Window window, bool restore_previous_region) {
             unowned var x11_display = window.display.get_x11_display ();
 
-#if HAS_MUTTER46
             var x_window = x11_display.lookup_xwindow (window);
-#else
-            var x_window = window.get_xwindow ();
-#endif
             unowned var xdisplay = x11_display.get_xdisplay ();
 
             if (restore_previous_region) {

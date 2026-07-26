@@ -768,9 +768,7 @@ namespace Gala {
                         event.get_event_sequence (),
 #endif
                         event.get_time ()
-#if HAS_MUTTER46
                         , null
-#endif
                     );
                 } else if (event.get_type () == LEAVE) {
                     /* We get leave emitted when beginning a grab op, so we have
@@ -824,19 +822,11 @@ namespace Gala {
                     break;
                 case ActionType.START_MOVE_CURRENT:
                     if (current != null && current.allows_move ())
-#if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_MOVING);
-#else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_MOVING, null, null, Meta.CURRENT_TIME);
-#endif
                     break;
                 case ActionType.START_RESIZE_CURRENT:
                     if (current != null && current.allows_resize ())
-#if HAS_MUTTER46
                         set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
-#else
-                        current.begin_grab_op (Meta.GrabOp.KEYBOARD_RESIZING_UNKNOWN, null, null, Meta.CURRENT_TIME);
-#endif
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
                     if (current == null)
