@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 Tom Beckmann
  * Copyright 2012 Rico Tzschichholz
- * Copyright 2023 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2026 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-public class Gala.WindowOverview : Root, RootTarget, ActivatableComponent {
+public class Gala.WindowOverview : Root, RootTarget {
     private const int BORDER = 10;
     private const int TOP_GAP = 30;
     private const int BOTTOM_GAP = 100;
@@ -55,15 +55,16 @@ public class Gala.WindowOverview : Root, RootTarget, ActivatableComponent {
         return Clutter.EVENT_STOP;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public bool is_opened () {
-        return visible;
+    public void toggle () {
+        if (!visible) {
+            open ();
+        } else {
+            close ();
+        }
     }
 
     /**
-     * {@inheritDoc}
+     * @param hints Pass an array of window ids in "windows" key to show only specified windows.
      */
     public void open (HashTable<string,Variant>? hints = null) {
         workspaces = new List<Meta.Workspace> ();
@@ -155,8 +156,8 @@ public class Gala.WindowOverview : Root, RootTarget, ActivatableComponent {
 
     private void on_items_changed (ListModel model, uint pos, uint removed, uint added) {
         // Check removed > added to make sure we only close once when the last window is removed
-        // This avoids an inifinite loop since closing will sort the windows which also triggers this signal
-        if (is_opened () && removed > added && model.get_n_items () == 0) {
+        // This avoids an infinite loop since closing will sort the windows which also triggers this signal
+        if (visible && removed > added && model.get_n_items () == 0) {
             close ();
         }
     }
@@ -171,10 +172,7 @@ public class Gala.WindowOverview : Root, RootTarget, ActivatableComponent {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void close (HashTable<string,Variant>? hints = null) {
+    public void close () {
         if (!visible) {
             return;
         }

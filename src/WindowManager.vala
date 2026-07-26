@@ -1,6 +1,6 @@
 //
 //  Copyright (C) 2012-2014 Tom Beckmann, Rico Tzschichholz
-//                2025 elementary, Inc.
+//                2025-2026 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -358,21 +358,9 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
 
-            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, () => {
-                if (multitasking_view.is_opened ()) {
-                    multitasking_view.close ();
-                } else {
-                    multitasking_view.open ();
-                }
-            });
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, multitasking_view.toggle);
 
-            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, () => {
-                if (window_overview.is_opened ()) {
-                    window_overview.close ();
-                } else {
-                    window_overview.open ();
-                }
-            });
+            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, window_overview.toggle);
 
             display.overlay_key.connect (() => {
                 // Showing panels in fullscreen is broken in X11
@@ -617,7 +605,7 @@ namespace Gala {
             }
 
             if (is_modal ()) {
-                var area = multitasking_view.is_opened () ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
+                var area = multitasking_view.opened ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
                 InternalUtils.set_input_area (display, area);
             } else {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
@@ -810,10 +798,7 @@ namespace Gala {
                         break;
                     }
 
-                    if (multitasking_view.is_opened ())
-                        multitasking_view.close ();
-                    else
-                        multitasking_view.open ();
+                    multitasking_view.toggle ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
@@ -909,11 +894,7 @@ namespace Gala {
                         break;
                     }
 
-                    if (window_overview.is_opened ()) {
-                        window_overview.close ();
-                    } else {
-                        window_overview.open ();
-                    }
+                    window_overview.toggle ();
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
@@ -921,11 +902,7 @@ namespace Gala {
                         break;
                     }
 
-                    if (window_overview.is_opened ()) {
-                        window_overview.close ();
-                    } else {
-                        window_overview.open ();
-                    }
+                    window_overview.toggle ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
                     if (filter_action (SWITCH_WORKSPACE)) {

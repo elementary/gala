@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2014 Tom Beckmann
+//                2026 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
  * preparing the wm, opening the components and holds containers for
  * the icon groups, the WorkspaceClones and the MonitorClones.
  */
-public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
+public class Gala.MultitaskingView : Root, RootTarget {
     public const int ANIMATION_DURATION = 250;
     private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { DESKTOP_SHELL, OVERLAY };
 
@@ -29,10 +30,10 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
 
     public Clutter.Actor? actor { get { return this; } }
     public WindowManager wm { get; construct; }
+    public bool opened { get; private set; default = false; }
 
     private Meta.Display display;
     private ModalProxy modal_proxy;
-    private bool opened = false;
 
     private List<MonitorClone> window_containers_monitors;
 
@@ -375,24 +376,19 @@ public class Gala.MultitaskingView : Root, RootTarget, ActivatableComponent {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public bool is_opened () {
-        return opened;
+    public void toggle () {
+        if (!opened) {
+            open ();
+        } else {
+            close ();
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void open (HashTable<string,Variant>? hints = null) {
+    private void open () {
         multitasking_gesture_controller.goto (1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void close (HashTable<string,Variant>? hints = null) {
+    private void close () {
         multitasking_gesture_controller.goto (0);
     }
 

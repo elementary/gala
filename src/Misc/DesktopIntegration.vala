@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2025 elementary, Inc. <https://elementary.io>
+ * Copyright 2022-2026 elementary, Inc. <https://elementary.io>
  * Copyright 2022 Corentin Noël <tintou@noel.tf>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -255,10 +255,7 @@ public class Gala.DesktopIntegration : GLib.Object {
         var hints = new HashTable<string, Variant> (str_hash, str_equal);
         hints["windows"] = window_ids;
 
-        if (wm.window_overview.is_opened ()) {
-            wm.window_overview.close ();
-        }
-
+        wm.window_overview.close ();
         wm.window_overview.open (hints);
     }
 
