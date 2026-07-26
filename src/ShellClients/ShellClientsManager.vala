@@ -138,82 +138,13 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    private void make_dock (Meta.Window window) {
-#if HAS_MUTTER49
-        window.set_type (Meta.WindowType.DOCK);
-#else
-        if (Meta.Util.is_wayland_compositor ()) {
-            make_dock_wayland (window);
-        } else {
-            make_dock_x11 (window);
-        }
-#endif
-    }
-
-#if !HAS_MUTTER49
-    private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
-        foreach (var client in protocol_clients) {
-            if (client.wayland_client.owns_window (window)) {
-#if HAS_MUTTER46
-                client.wayland_client.make_dock (window);
-#endif
-                break;
-            }
-        }
-    }
-
-    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
-        unowned var x11_display = wm.get_display ().get_x11_display ();
-
-#if HAS_MUTTER46
-        var x_window = x11_display.lookup_xwindow (window);
-#else
-        var x_window = window.get_xwindow ();
-#endif
-        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
-        unowned var xdisplay = x11_display.get_xdisplay ();
-        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
-        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
-
-        // (X.Atom) 4 is XA_ATOM
-        // 32 is format
-        // 0 means replace
-        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
-    }
-#endif
-
-    private void make_desktop (Meta.Window window) {
-#if HAS_MUTTER49
-        window.set_type (Meta.WindowType.DESKTOP);
-#else
-        if (Meta.Util.is_wayland_compositor ()) {
-            make_desktop_wayland (window);
-        } else {
-            critical ("Making desktop window on X11 is not supported.");
-        }
-#endif
-    }
-
-#if !HAS_MUTTER49
-    private void make_desktop_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
-        foreach (var client in protocol_clients) {
-            if (client.wayland_client.owns_window (window)) {
-#if HAS_MUTTER46
-                client.wayland_client.make_desktop (window);
-#endif
-                break;
-            }
-        }
-    }
-#endif
-
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
             panel_windows[window].anchor = anchor;
             return;
         }
 
-        make_dock (window);
+        ManagedClient.make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
@@ -273,7 +204,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void request_visible_in_multitasking_view (Meta.Window window) {
         if (!(window in panel_windows)) {
-            warning ("Set anchor for window before visible in mutltiasking view.");
+            warning ("Set anchor for window before visible in multitasking view.");
             return;
         }
 
@@ -316,7 +247,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_greeter (Meta.Window window) {
-        make_desktop (window);
+        ManagedClient.make_desktop (window);
 
         wm.override_window_group (window, LOCK_SCREEN);
     }
