@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2016 Rico Tzschichholz
  *                         2016 Santiago León O.
- *                         2025 elementary, Inc. (https://elementary.io)
+ *                         2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 [DBus (name="org.gnome.Shell.Screenshot")]
@@ -245,10 +245,8 @@ public class Gala.ScreenshotManager : Object {
         flash_actor.set_position (x, y);
 #if HAS_MUTTER47
         flash_actor.set_background_color (Cogl.Color.from_string ("#FFFFFF"));
-#elif HAS_MUTTER46
-        flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
 #else
-        flash_actor.set_background_color (Clutter.Color.get_static (Clutter.StaticColor.WHITE));
+        flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
 #endif
         flash_actor.set_opacity (0);
         flash_actor.transitions_completed.connect ((actor) => {

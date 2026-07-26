@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText: 2021-2023, 2025 elementary, Inc. (https://elementary.io)
+ * SPDX-FileCopyrightText: 2021-2023, 2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.AccessDialog : Object {
@@ -72,13 +72,9 @@ public class Gala.AccessDialog : Object {
 
         if (parent != null) {
             if (parent.get_client_type () == Meta.WindowClientType.X11) {
-#if HAS_MUTTER46
                 unowned Meta.Display display = parent.get_display ();
                 unowned Meta.X11Display x11display = display.get_x11_display ();
                 parent_handler = "x11:%x".printf ((uint) x11display.lookup_xwindow (parent));
-#else
-                parent_handler = "x11:%x".printf ((uint) parent.get_xwindow ());
-#endif
                 //TODO: wayland support
             }
 

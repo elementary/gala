@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 elementary, Inc. <https://elementary.io>
+ * Copyright 2025-2026 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -233,18 +233,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
 
-#if HAS_MUTTER46
         round_texture = new Cogl.Texture2D.with_size (ctx, new_width, new_height);
-#else
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, new_width, new_height);
-        try {
-            round_texture = new Cogl.Texture2D.from_data (ctx, new_width, new_height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
-        } catch (Error e) {
-            critical ("BackgroundBlurEffect: Couldn't create round_texture: %s", e.message);
-            return false;
-        }
-#endif
-
         round_pipeline.set_layer_texture (0, round_texture);
         round_framebuffer = new Cogl.Offscreen.with_texture (round_texture);
 
@@ -268,17 +257,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
 #endif
 
-#if HAS_MUTTER46
         background_texture = new Cogl.Texture2D.with_size (ctx, width, height);
-#else
-        var surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, width, height);
-        try {
-            background_texture = new Cogl.Texture2D.from_data (ctx, width, height, Cogl.PixelFormat.BGRA_8888_PRE, surface.get_stride (), surface.get_data ());
-        } catch (Error e) {
-            critical ("BackgroundBlurEffect: Couldn't create background_texture: %s", e.message);
-            return false;
-        }
-#endif
 
         background_pipeline.set_layer_texture (0, background_texture);
         background_framebuffer = new Cogl.Offscreen.with_texture (background_texture);

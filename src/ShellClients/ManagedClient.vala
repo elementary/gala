@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024, 2026 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -69,9 +69,7 @@ public class Gala.ManagedClient : Object {
     private static void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in instances) {
             if (client.wayland_client.owns_window (window)) {
-#if HAS_MUTTER46
                 client.wayland_client.make_dock (window);
-#endif
                 break;
             }
         }
@@ -80,11 +78,7 @@ public class Gala.ManagedClient : Object {
     private static void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
         unowned var x11_display = window.display.get_x11_display ();
 
-#if HAS_MUTTER46
         var x_window = x11_display.lookup_xwindow (window);
-#else
-        var x_window = window.get_xwindow ();
-#endif
         // gtk3's gdk_x11_window_set_type_hint() is used as a reference
         unowned var xdisplay = x11_display.get_xdisplay ();
         var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
@@ -111,9 +105,7 @@ public class Gala.ManagedClient : Object {
     private static void make_desktop_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
         foreach (var client in instances) {
             if (client.wayland_client.owns_window (window)) {
-#if HAS_MUTTER46
                 client.wayland_client.make_desktop (window);
-#endif
                 break;
             }
         }

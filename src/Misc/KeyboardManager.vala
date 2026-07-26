@@ -1,6 +1,6 @@
 /*
  * Copyright 2016 Santiago León
- * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2026 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -45,11 +45,7 @@ public class Gala.KeyboardManager : Object {
 
     private bool switch_input_source (bool backward) {
 #if !HAS_MUTTER50
-#if HAS_MUTTER46
         display.get_compositor ().backend.ungrab_keyboard (display.get_current_time ());
-#else
-        display.ungrab_keyboard (display.get_current_time ());
-#endif
 #endif
 
         var sources = settings.get_value ("sources");
@@ -135,10 +131,8 @@ public class Gala.KeyboardManager : Object {
                     }
                 }
             });
-#elif HAS_MUTTER46
-            backend.set_keymap (layout, variant, options, settings.get_string ("xkb-model"));
 #else
-            backend.set_keymap (layout, variant, options);
+            backend.set_keymap (layout, variant, options, settings.get_string ("xkb-model"));
 #endif
 #if !HAS_MUTTER50
         } else if (key == "current") {

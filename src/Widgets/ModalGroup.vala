@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 elementary, Inc. (https://elementary.io)
+ * Copyright 2025-2026 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -53,13 +53,8 @@ public class Gala.ModalGroup : Clutter.Actor {
 
         visible = false;
         reactive = true;
-#if HAS_MUTTER46
         window_group.child_added.connect (on_child_added);
         window_group.child_removed.connect (on_child_removed);
-#else
-        window_group.actor_added.connect (on_child_added);
-        window_group.actor_removed.connect (on_child_removed);
-#endif
     }
 
     private void on_child_added (Clutter.Actor child) {

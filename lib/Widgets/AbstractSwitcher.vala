@@ -32,11 +32,7 @@ public abstract class Gala.AbstractSwitcher : CanvasActor {
 
         container = new Clutter.Actor () {
             reactive = true,
-#if HAS_MUTTER46
             layout_manager = new Clutter.FlowLayout (Clutter.Orientation.HORIZONTAL)
-#else
-            layout_manager = new Clutter.FlowLayout (Clutter.FlowOrientation.HORIZONTAL)
-#endif
         };
 
         container.get_accessible ().accessible_role = LIST;
