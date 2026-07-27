@@ -21,8 +21,9 @@ public class Gala.CustomCoglVapiTest : TestCase {
         assert_cogl_color_is_white ("hsl(0, 0%, 100%)");
         assert_cogl_color_is_white ("hsla(0, 0%, 100%, 1)");
 
+        // Invalid string must be treated as a black color
         assert_cogl_color_is_black ("#55555");
-        assert_cogl_color_is_black ("#555555555555");
+        assert_cogl_color_is_black ("#121212121212");
         assert_cogl_color_is_black ("#555555555555555555555555");
         assert_cogl_color_is_black ("");
         assert_cogl_color_is_black ("qwerty");
