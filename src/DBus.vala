@@ -11,7 +11,11 @@ public class Gala.DBus {
     private static WindowManagerGala wm;
 
     [DBus (visible = false)]
+#if HAS_MUTTER50
+    public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager, BrightnessManager brightness_manager) {
+#else
     public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
+#endif
         wm = _wm;
 
         Bus.own_name (
@@ -20,7 +24,20 @@ public class Gala.DBus {
                 try {
                     connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
 #if HAS_MUTTER50
-                    connection.register_object ("/io/elementary/gala/BrightnessManager", new BrightnessManager (wm.get_display ()));
+                    connection.register_object ("/io/elementary/gala/BrightnessManager", brightness_manager);
+                    brightness_manager.monitor_added.connect ((monitor_brightness) => {
+                        try {
+                            var id = connection.register_object (@"/io/elementary/gala/BrightnessManager/$(monitor_brightness.get_monitor_serial ())", monitor_brightness);
+                            return id;
+                        } catch (Error e) {
+                            warning (e.message);
+                            return null;
+                        }
+                    });
+                    brightness_manager.monitor_removed.connect ((connection_id) => {
+                        connection.unregister_object (connection_id);
+                    });
+                    brightness_manager.update_available_backlights ();
 #endif
                 } catch (Error e) {
                     warning (e.message);

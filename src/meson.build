@@ -31,6 +31,7 @@ gala_bin_sources = files(
     'Misc/DesktopIntegration.vala',
     'Misc/InputMethod.vala',
     'Misc/KeyboardManager.vala',
+    'Misc/MonitorBrightness.vala',
     'Misc/LockScreenManager.vala',
     'Misc/NotificationsManager.vala',
     'Misc/NotificationStack.vala',
