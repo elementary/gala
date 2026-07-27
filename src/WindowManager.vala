@@ -93,6 +93,10 @@ namespace Gala {
 
         private LockScreenManager lock_screen_manager;
 
+#if HAS_MUTTER50
+        private BrightnessManager brightness_manager;
+#endif
+
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
