@@ -19,6 +19,7 @@ namespace Gala {
 
     private TestCase? get_test_case (string name) {
         Type[] test_types = {
+            typeof (CustomCoglVapiTest),
             typeof (GestureControllerTest),
             typeof (PropertyTargetTest),
             typeof (SetupTest),
