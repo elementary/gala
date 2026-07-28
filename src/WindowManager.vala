@@ -42,46 +42,15 @@ namespace Gala {
         public Clutter.Actor top_window_group { get; protected set; }
 
         /**
-         * The group that contains all WindowActors that make shell elements, that is all windows reported as
-         * ShellClientsManager.is_shell_window.
-         * It will (eventually) never be hidden by other components and is always on top of everything. Therefore elements are
-         * responsible themselves for hiding depending on the state we are currently in (e.g. normal desktop, open multitasking view, fullscreen, etc.).
-         */
-        private Clutter.Actor shell_group { get; private set; }
-
-        private Clutter.Actor menu_group { get; set; }
-
-        private LockScreen lock_screen;
-
-        /**
-         * The group that contains all WindowActors that are system modal.
-         * See {@link ShellClientsManager.is_system_modal_window}.
-         */
-        public ModalGroup modal_group { get; private set; }
-
-        private Clutter.Actor overlay_group;
-
-        /**
          * {@inheritDoc}
          */
         public Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
-         * View that allows to see and manage all your windows and desktops.
-         */
-        public MultitaskingView multitasking_view { get; protected set; }
-
-        public PointerLocator pointer_locator { get; private set; }
-
-        private SystemBackground system_background;
 
 #if !HAS_MUTTER48
         private Meta.PluginInfo info;
 #endif
 
-        private WindowSwitcher? window_switcher = null;
-
-        public WindowOverview window_overview { get; private set; }
+        private LayoutManager layout_manager;
 
         public ScreenSaverManager? screensaver { get; private set; }
 
@@ -214,134 +183,35 @@ namespace Gala {
 
             notification_stack = new NotificationStack (display);
 
-#if HAS_MUTTER48
-            stage = display.get_compositor ().get_stage () as Clutter.Stage;
-#else
-            stage = display.get_stage () as Clutter.Stage;
-#endif
-            var background_settings = new GLib.Settings ("org.gnome.desktop.background");
-            var color = background_settings.get_string ("primary-color");
-#if HAS_MUTTER47
-            stage.background_color = Cogl.Color.from_string (color);
-#else
-            stage.background_color = Clutter.Color.from_string (color);
-#endif
-
             unowned var laters = display.get_compositor ().get_laters ();
             laters.add (Meta.LaterType.BEFORE_REDRAW, () => {
                 WorkspaceManager.init (this);
                 return false;
             });
 
-            /* our layer structure:
-             * stage
-             * + system background
-             * + ui group
-             * +-- window group
-             * +---- background manager
-             * +-- top window group
-             * +-- multitasking view
-             * +-- window switcher
-             * +-- window overview
-             * +-- desktop shell group
-             * +-- menu group
-             * +-- lock screen // NOTE: Everything below the lock screen can be accessed without authentication
-             * +---- window group
-             * +---- shell group
-             * +-- modal group
-             * +-- overlay group (e.g. ibus popup, osk, etc.)
-             * +-- feedback group (e.g. DND icons)
-             * +-- pointer locator
-             * +-- dwell click timer
-             * +-- session locker
-             */
+            /* First create the layout manager. That will set up the initial structure
+               with the stage and UI group that we need for the properties on the WM */
+            layout_manager = new LayoutManager (display, daemon_manager);
 
-            system_background = new SystemBackground (display);
+            stage = layout_manager.stage;
+            ui_group = layout_manager.ui_group;
+            window_group = layout_manager.window_group;
+            top_window_group = layout_manager.top_window_group;
+            background_group = layout_manager.background_group;
 
-            system_background.background_actor.add_constraint (new Clutter.BindConstraint (stage,
-                Clutter.BindCoordinate.ALL, 0));
-            stage.insert_child_below (system_background.background_actor, null);
-
-            ui_group = new Clutter.Actor ();
-            update_ui_group_size ();
-            stage.add_child (ui_group);
-
-#if HAS_MUTTER48
-            window_group = display.get_compositor ().get_window_group ();
-#else
-            window_group = display.get_window_group ();
-#endif
-            stage.remove_child (window_group);
-            ui_group.add_child (window_group);
-
-            background_group = new BackgroundContainer (display);
-            ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
-            window_group.add_child (background_group);
-            window_group.set_child_below_sibling (background_group, null);
-
-#if HAS_MUTTER48
-            top_window_group = display.get_compositor ().get_top_window_group ();
-#else
-            top_window_group = display.get_top_window_group ();
-#endif
-            stage.remove_child (top_window_group);
-            ui_group.add_child (top_window_group);
-
-            // Initialize plugins and add default components if no plugin overrides them
+            // Initialize plugins. The layout manager will get overridden components from the
+            // plugin manager
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
             plugin_manager.regions_changed.connect (update_input_area);
 
-            multitasking_view = new MultitaskingView (this);
-            ui_group.add_child (multitasking_view);
+            /* Then once we have the layout structures that we expose to widgets
+               and initialized the plugins, init the rest of the UI */
+            layout_manager.init_ui (this);
 
-            if (plugin_manager.window_switcher_provider == null) {
-                window_switcher = new WindowSwitcher (this);
-                ui_group.add_child (window_switcher);
+            lock_screen_manager = new LockScreenManager (layout_manager.lock_screen);
 
-                Meta.KeyBinding.set_custom_handler ("switch-applications", window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-applications-backward", window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows", window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-windows-backward", window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-group", window_switcher.handle_switch_windows);
-                Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
-            }
-
-            window_overview = new WindowOverview (this);
-            ui_group.add_child (window_overview);
-
-            // Add the remaining components that should be on top
-            shell_group = new Clutter.Actor ();
-            ui_group.add_child (shell_group);
-
-            menu_group = new Clutter.Actor ();
-            ui_group.add_child (menu_group);
-
-            lock_screen = new LockScreen (this);
-            lock_screen.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
-            ui_group.add_child (lock_screen);
-
-            lock_screen_manager = new LockScreenManager (lock_screen);
-
-            modal_group = new ModalGroup (this, ShellClientsManager.get_instance ());
-            modal_group.add_constraint (new Clutter.BindConstraint (stage, SIZE, 0));
-            ui_group.add_child (modal_group);
-
-            overlay_group = new Clutter.Actor ();
-            ui_group.add_child (overlay_group);
-
-            var feedback_group = display.get_compositor ().get_feedback_group ();
-            stage.remove_child (feedback_group);
-            ui_group.add_child (feedback_group);
-
-            pointer_locator = new PointerLocator (display);
-            ui_group.add_child (pointer_locator);
-            ui_group.add_child (new DwellClickTimer (display));
-
-            var session_locker = new SessionLocker (this);
-            ui_group.add_child (session_locker);
-
-            screensaver = new ScreenSaverManager (session_locker);
+            screensaver = new ScreenSaverManager (layout_manager.session_locker);
             // Due to a bug which enables access to the stage when using multiple monitors
             // in the screensaver, we have to listen for changes and make sure the input area
             // is set to NONE when we are in locked mode
@@ -358,9 +228,9 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
 
-            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, multitasking_view.toggle);
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.toggle_multitasking_view);
 
-            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, window_overview.toggle);
+            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.toggle_window_overview);
 
             display.overlay_key.connect (() => {
                 // Showing panels in fullscreen is broken in X11
@@ -391,9 +261,6 @@ namespace Gala {
                 Meta.KeyBinding.set_custom_handler ("switch-to-workspace-%d".printf (i), handle_switch_to_workspace);
                 Meta.KeyBinding.set_custom_handler ("move-to-workspace-%d".printf (i), handle_move_to_workspace);
             }
-
-            unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-            monitor_manager.monitors_changed.connect (update_ui_group_size);
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
             hot_corner_manager.on_configured.connect (update_input_area);
@@ -434,25 +301,6 @@ namespace Gala {
             string[] args = {};
             unowned string[] _args = args;
             AtkBridge.adaptor_init (ref _args);
-        }
-
-        private void update_ui_group_size () {
-            unowned var display = get_display ();
-
-            int max_width = 0;
-            int max_height = 0;
-
-            var num_monitors = display.get_n_monitors ();
-            for (int i = 0; i < num_monitors; i++) {
-                var geom = display.get_monitor_geometry (i);
-                var total_width = geom.x + geom.width;
-                var total_height = geom.y + geom.height;
-
-                max_width = (max_width > total_width) ? max_width : total_width;
-                max_height = (max_height > total_height) ? max_height : total_height;
-            }
-
-            ui_group.set_size (max_width, max_height);
         }
 
         public void launch_action (string action_key) {
@@ -584,7 +432,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            multitasking_view.switch_to_next_workspace (direction);
+            layout_manager.switch_to_next_workspace (direction);
         }
 
         private void update_input_area () {
@@ -605,7 +453,7 @@ namespace Gala {
             }
 
             if (is_modal ()) {
-                var area = multitasking_view.opened ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
+                var area = layout_manager.is_mtv_opened () ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
                 InternalUtils.set_input_area (display, area);
             } else {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
@@ -637,7 +485,7 @@ namespace Gala {
                 return;
             }
 
-            multitasking_view.move_window (window, workspace);
+            layout_manager.move_window (window, workspace);
         }
 
         /**
@@ -796,7 +644,7 @@ namespace Gala {
                         break;
                     }
 
-                    multitasking_view.toggle ();
+                    layout_manager.toggle_multitasking_view ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
@@ -884,7 +732,7 @@ namespace Gala {
                         break;
                     }
 
-                    window_overview.toggle ();
+                    layout_manager.toggle_window_overview ();
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
@@ -892,7 +740,7 @@ namespace Gala {
                         break;
                     }
 
-                    window_overview.toggle ();
+                    layout_manager.toggle_window_overview ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
                     if (filter_action (SWITCH_WORKSPACE)) {
@@ -1042,23 +890,12 @@ namespace Gala {
             window.unmanaged.connect ((_window) => overridden_window_group.unset (_window));
 
             InternalUtils.wait_for_window_actor_visible (window, (actor) => {
-                InternalUtils.clutter_actor_reparent (actor, get_window_group_actor (new_group));
+                layout_manager.change_window_group (actor, new_group);
 
                 // FIXME: workaround for https://github.com/elementary/dock/issues/537
                 actor.set_scale (1.0, 1.0);
                 actor.opacity = 255;
             });
-        }
-
-        private Clutter.Actor get_window_group_actor (WindowGroup group) {
-            switch (group) {
-                case DESKTOP_SHELL: return shell_group;
-                case LOCK_SCREEN: return lock_screen.window_group;
-                case LOCK_SCREEN_SHELL: return lock_screen.shell_group;
-                case MODAL: return modal_group.window_group;
-                case OVERLAY: return overlay_group;
-                default: assert_not_reached ();
-            }
         }
 
         private void check_window_group (Meta.WindowActor actor) {
@@ -1103,7 +940,7 @@ namespace Gala {
                 window.window_type == POPUP_MENU ||
                 window.window_type == TOOLTIP
             ) {
-                InternalUtils.clutter_actor_reparent (actor, menu_group);
+                layout_manager.change_window_group (actor, MENU);
             }
 
             // Workaround for X11 bug: https://github.com/elementary/dock/issues/479
@@ -1589,11 +1426,11 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            multitasking_view.kill_switch_workspace ();
+            layout_manager.kill_switch_workspace ();
         }
 
         public override void locate_pointer () {
-            pointer_locator.show_ripple ();
+            layout_manager.locate_pointer ();
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
