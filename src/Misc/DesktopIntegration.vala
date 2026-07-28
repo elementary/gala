@@ -255,8 +255,8 @@ public class Gala.DesktopIntegration : GLib.Object {
         var hints = new HashTable<string, Variant> (str_hash, str_equal);
         hints["windows"] = window_ids;
 
-        wm.window_overview.close ();
-        wm.window_overview.open (hints);
+        //  wm.window_overview.close ();
+        //  wm.window_overview.open (hints);
     }
 
     public void reorder_workspace (int index, int new_index) throws DBusError, IOError {
