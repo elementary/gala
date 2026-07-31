@@ -228,9 +228,9 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
 
-            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.toggle_multitasking_view);
+            display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.multitasking_view.toggle);
 
-            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.toggle_window_overview);
+            display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.window_overview.toggle);
 
             display.overlay_key.connect (() => {
                 // Showing panels in fullscreen is broken in X11
@@ -432,7 +432,7 @@ namespace Gala {
          * {@inheritDoc}
          */
         public void switch_to_next_workspace (Meta.MotionDirection direction, uint32 timestamp) {
-            layout_manager.switch_to_next_workspace (direction);
+            layout_manager.multitasking_view.switch_to_next_workspace (direction);
         }
 
         private void update_input_area () {
@@ -453,7 +453,7 @@ namespace Gala {
             }
 
             if (is_modal ()) {
-                var area = layout_manager.is_mtv_opened () ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
+                var area = layout_manager.multitasking_view.opened ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
                 InternalUtils.set_input_area (display, area);
             } else {
                 InternalUtils.set_input_area (display, InputArea.DEFAULT);
@@ -485,7 +485,7 @@ namespace Gala {
                 return;
             }
 
-            layout_manager.move_window (window, workspace);
+            layout_manager.multitasking_view.move_window (window, workspace);
         }
 
         /**
@@ -644,7 +644,7 @@ namespace Gala {
                         break;
                     }
 
-                    layout_manager.toggle_multitasking_view ();
+                    layout_manager.multitasking_view.toggle ();
                     break;
                 case ActionType.MAXIMIZE_CURRENT:
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
@@ -732,7 +732,7 @@ namespace Gala {
                         break;
                     }
 
-                    layout_manager.toggle_window_overview ();
+                    layout_manager.window_overview.toggle ();
                     critical ("Window overview is deprecated");
                     break;
                 case ActionType.WINDOW_OVERVIEW_ALL:
@@ -740,7 +740,7 @@ namespace Gala {
                         break;
                     }
 
-                    layout_manager.toggle_window_overview ();
+                    layout_manager.window_overview.toggle ();
                     break;
                 case ActionType.SWITCH_TO_WORKSPACE_LAST:
                     if (filter_action (SWITCH_WORKSPACE)) {
@@ -1426,11 +1426,11 @@ namespace Gala {
         }
 
         public override void kill_switch_workspace () {
-            layout_manager.kill_switch_workspace ();
+            layout_manager.multitasking_view.kill_switch_workspace ();
         }
 
         public override void locate_pointer () {
-            layout_manager.locate_pointer ();
+            layout_manager.pointer_locator.show_ripple ();
         }
 
         public override bool keybinding_filter (Meta.KeyBinding binding) {
