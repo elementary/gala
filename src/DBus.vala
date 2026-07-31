@@ -11,7 +11,10 @@ public class Gala.DBus {
     private static WindowManagerGala wm;
 
     [DBus (visible = false)]
-    public static void init (WindowManagerGala _wm, NotificationsManager notifications_manager, ScreenshotManager screenshot_manager) {
+    public static void init (
+        WindowManagerGala _wm, NotificationsManager notifications_manager,
+        ScreenshotManager screenshot_manager, WindowOverview window_overview
+    ) {
         wm = _wm;
 
         Bus.own_name (
@@ -35,7 +38,7 @@ public class Gala.DBus {
 
                 try {
                     connection.register_object ("/org/pantheon/gala", instance);
-                    connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm));
+                    connection.register_object ("/org/pantheon/gala/DesktopInterface", new DesktopIntegration (wm, window_overview));
                 } catch (Error e) {
                     warning (e.message);
                 }
