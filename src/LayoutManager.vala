@@ -15,18 +15,18 @@ public class Gala.LayoutManager : Object {
     public Meta.BackgroundGroup background_group { get; private set; }
     public Clutter.Actor top_window_group { get; private set; }
 
+    public MultitaskingView multitasking_view { get; private set; }
+    public WindowOverview window_overview { get; private set; }
     public LockScreen lock_screen { get; private set; }
     public SessionLocker session_locker { get; private set; }
+    public PointerLocator pointer_locator { get; private set; }
 
     private SystemBackground system_background;
-    private MultitaskingView multitasking_view;
     private WindowSwitcher window_switcher;
-    private WindowOverview window_overview;
     private Clutter.Actor shell_group;
     private Clutter.Actor menu_group;
     private ModalGroup modal_group;
     private Clutter.Actor overlay_group;
-    private PointerLocator pointer_locator;
 
     public LayoutManager (Meta.Display display, DaemonManager daemon_manager) {
         Object (display: display, daemon_manager: daemon_manager);
@@ -172,35 +172,6 @@ public class Gala.LayoutManager : Object {
         ui_group.set_size (max_width, max_height);
     }
 
-    public void switch_to_next_workspace (Meta.MotionDirection direction) {
-        multitasking_view.switch_to_next_workspace (direction);
-    }
-
-    public void move_window (Meta.Window window, Meta.Workspace workspace) {
-        multitasking_view.move_window (window, workspace);
-    }
-
-    public void toggle_multitasking_view () {
-        multitasking_view.toggle ();
-    }
-
-    public void toggle_window_overview () {
-        window_overview.toggle ();
-    }
-
-    public void open_window_overview (HashTable<string, Variant>? hints) {
-        window_overview.close ();
-        window_overview.open (hints);
-    }
-
-    public void kill_switch_workspace () {
-        multitasking_view.kill_switch_workspace ();
-    }
-
-    public void locate_pointer () {
-        pointer_locator.show_ripple ();
-    }
-
     public void change_window_group (Meta.WindowActor actor, WindowGroup new_group) {
         InternalUtils.clutter_actor_reparent (actor, get_window_group_actor (new_group));
     }
@@ -215,9 +186,5 @@ public class Gala.LayoutManager : Object {
             case OVERLAY: return overlay_group;
             default: assert_not_reached ();
         }
-    }
-
-    public bool is_mtv_opened () {
-        return multitasking_view.opened;
     }
 }
