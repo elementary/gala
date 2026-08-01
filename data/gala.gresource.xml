@@ -29,4 +29,15 @@
   <gresource prefix="/io/elementary/desktop/gala-daemon">
     <file compressed="true">gala-daemon.css</file>
   </gresource>
+  <gresource prefix="/org/pantheon/desktop/gala-daemon/icons">
+    <file alias="scalable/actions/osk-caps-lock-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-caps-lock-symbolic.svg</file>
+    <file alias="scalable/actions/osk-delete-symbolic-rtl.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-delete-symbolic-rtl.svg</file>
+    <file alias="scalable/actions/osk-delete-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-delete-symbolic.svg</file>
+    <file alias="scalable/actions/osk-emoji-picker-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-emoji-picker-symbolic.svg</file>
+    <!--<file alias="scalable/actions/osk-enter-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-enter-symbolic.svg</file>-->
+    <file alias="scalable/actions/osk-hide-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-hide-symbolic.svg</file>
+    <file alias="scalable/actions/osk-layout-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-layout-symbolic.svg</file>
+    <!--<file alias="scalable/actions/osk-shift-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-shift-symbolic.svg</file>-->
+    <!--<file alias="scalable/actions/osk-zwnj-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-zwnj-symbolic.svg</file>-->
+  </gresource>
 </gresources>
