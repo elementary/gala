@@ -8,7 +8,7 @@ public class Gala.Daemon.Application : Gtk.Application {
     private OSKManager osk_manager;
 
     public Application () {
-        Object (application_id: "org.pantheon.gala.daemon");
+        Object (application_id: "io.elementary.desktop.gala-daemon");
     }
 
     construct {
