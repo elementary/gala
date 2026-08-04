@@ -74,6 +74,14 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
         event.get_gesture_motion_delta_unaccelerated (out delta_x, out delta_y);
 
         if (state != ONGOING) {
+            foreach (var instance in instances) {
+                if (instance != this && (instance.group == NONE || instance.group != group) && instance.state == ONGOING) {
+                    /* Another instance is already recognizing this gesture, make sure we don't steal it */
+                    state = IGNORED;
+                    return Clutter.EVENT_PROPAGATE;
+                }
+            }
+
             distance_x += delta_x;
             distance_y += delta_y;
 
