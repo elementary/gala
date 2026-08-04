@@ -1,6 +1,7 @@
 gala_bin_sources = files(
     'DBus.vala',
     'InternalUtils.vala',
+    'LayoutManager.vala',
     'Main.vala',
     'PantheonShell.vala',
     'SuperScrollAction.vala',

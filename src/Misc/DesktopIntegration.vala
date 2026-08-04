@@ -23,10 +23,12 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void workspace_removed (int index);
 
     private unowned WindowManagerGala wm;
+    private WindowOverview window_overview;
     private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
-    public DesktopIntegration (WindowManagerGala wm) {
+    public DesktopIntegration (WindowManagerGala wm, WindowOverview window_overview) {
         this.wm = wm;
+        this.window_overview = window_overview;
         time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
 
         wm.window_tracker.windows_changed.connect (() => {
@@ -255,8 +257,8 @@ public class Gala.DesktopIntegration : GLib.Object {
         var hints = new HashTable<string, Variant> (str_hash, str_equal);
         hints["windows"] = window_ids;
 
-        wm.window_overview.close ();
-        wm.window_overview.open (hints);
+        window_overview.close ();
+        window_overview.open (hints);
     }
 
     public void reorder_workspace (int index, int new_index) throws DBusError, IOError {
