@@ -204,6 +204,16 @@
       <summary>The shortcut to enable picture-in-picture window</summary>
       <description>The shortcut to show the selection area to choose a window.</description>
     </key>
+    <key type="as" name="brightness-brighter">
+      <default><![CDATA[['XF86MonBrightnessUp']]]></default>
+      <summary>Monitor brightness up</summary>
+      <description>Increase monitor brightness on supported panels</description>
+    </key>
+    <key type="as" name="brightness-dimmer">
+      <default><![CDATA[['XF86MonBrightnessDown']]]></default>
+      <summary>Monitor brightness down</summary>
+      <description>Decrease monitor brightness on supported panels</description>
+    </key>
   </schema>
 
   <schema path="/io/elementary/desktop/wm/animations/" id="io.elementary.desktop.wm.animations">
