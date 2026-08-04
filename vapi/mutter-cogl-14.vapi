@@ -950,12 +950,10 @@ namespace Cogl {
 		public Color.from_hsl (float hue, float saturation, float luminance);
 #if HAS_MUTTER47
 		[CCode (cname = "_vala_cogl_color_from_string")]
-		public static Cogl.Color? from_string (string str) {
+		public static Cogl.Color from_string (string str) {
 			Cogl.Color color = { };
-			if (color.init_from_string (str)) {
-				return color;
-			}
-			return null;
+			color.init_from_string (str);
+			return color;
 		}
 #endif
 		public float get_alpha ();

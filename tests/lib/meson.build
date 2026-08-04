@@ -1,4 +1,5 @@
 tests = [
+    'CustomCoglVapiTest',
     'GestureControllerTest',
     'PropertyTargetTest',
     'SetupTest',
