@@ -26,3 +26,38 @@ listview > row {
     padding: 3px;
     border-radius: 4px;
 }
+
+window.keyboard {
+    background: alpha(shade(@bg_color, 0.75), 0.8);
+    box-shadow:
+        inset 0 -1px 0 0 alpha(@highlight_color, 0.4),
+        inset 0 1px 0 0 alpha(@highlight_color, 0.6),
+        inset 1px 0 0 0 alpha(@highlight_color, 0.14),
+        inset -1px 0 0 0 alpha(@highlight_color, 0.14),
+        0 0 0 1px @borders,
+        0 1px 3px alpha(black, 0.2),
+        0 3px 9px alpha(black, 0.3);
+
+    border-radius: 9px 9px 0;
+    /* This is required to correctly get border-radius
+     * If the size on startup is < border-radius * 2, the blur radius will be set incorrectly
+     */
+    min-width: 18px;
+    min-height: 18px;
+}
+
+.keycap {
+    background: @bg_color;
+    border: none;
+    border-radius: 6px;
+    box-shadow:
+        0 1px 0 0 alpha(black, 0.15),
+        0 1px 3px alpha(black, 0.2);
+    color: alpha(@fg_color, 0.78);
+    font-size: 1.25em;
+    padding: 3px 6px 2px;
+}
+
+.keycap:active {
+    background: shade(@bg_color, 0.75);
+}
