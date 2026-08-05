@@ -23,7 +23,6 @@ public class Gala.Daemon.KeyButton : Granite.Bin {
     private Key? _key;
 
     class construct {
-        // TODO: Style as a keycap? Though button style looks fitting already
         set_css_name ("button");
     }
 
@@ -32,6 +31,8 @@ public class Gala.Daemon.KeyButton : Granite.Bin {
         click_gesture.pressed.connect (on_pressed);
         click_gesture.released.connect (on_released);
         add_controller (click_gesture);
+
+        add_css_class ("keycap");
     }
 
     private void on_pressed () {

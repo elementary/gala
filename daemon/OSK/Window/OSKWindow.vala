@@ -23,6 +23,8 @@ public class Gala.Daemon.OSKWindow : Gtk.Window {
         titlebar = new Gtk.Grid () { visible = false };
         title = "OSK";
 
+        add_css_class ("keyboard");
+
         ((Gtk.Widget) this).realize.connect (update_size);
     }
 
