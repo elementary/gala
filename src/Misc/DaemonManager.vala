@@ -32,7 +32,6 @@ public class Gala.DaemonManager : GLib.Object {
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
-            ManagedClient.make_dock (window);
             window.notify["title"].connect ((obj, pspec) => handle_daemon_window ((Meta.Window) obj));
         });
     }
@@ -70,6 +69,7 @@ public class Gala.DaemonManager : GLib.Object {
                 break;
 
             case "IBUS_CANDIDATE":
+                ManagedClient.make_dock (window);
                 ShellClientsManager.get_instance ().make_ibus_candidate_window (window);
                 break;
 
