@@ -1135,45 +1135,32 @@ namespace Gala {
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.show ();
+            animate_unminimize.begin (actor);
+        }
+
+        private async void animate_unminimize (Meta.WindowActor actor) {
+            actor.show ();
+
+            if (actor.meta_window.window_type != NORMAL) {
                 unminimize_completed (actor);
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-            unowned var window = actor.get_meta_window ();
-
             actor.remove_all_transitions ();
-            actor.show ();
 
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                    unminimizing.add (actor);
+            unminimizing.add (actor);
 
-                    actor.set_pivot_point (0.5f, 1.0f);
-                    actor.set_scale (0.01f, 0.1f);
-                    actor.opacity = 0U;
+            actor.set_pivot_point (0.5f, 1.0f);
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
+            var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
+            builder.add_property_with_from ("scale-x", 0.01, 1.0);
+            builder.add_property_with_from ("scale-y", 0.1, 1.0);
+            builder.add_property_with_from ("opacity", 0U, 255U);
 
-                    ulong unminimize_handler_id = 0UL;
-                    unminimize_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (unminimize_handler_id);
-                        unminimizing.remove (actor);
-                        unminimize_completed (actor);
-                    });
+            yield builder.run ();
 
-                    break;
-                default:
-                    unminimize_completed (actor);
-                    break;
-            }
+            unminimizing.remove (actor);
+            unminimize_completed (actor);
         }
 
         public override void map (Meta.WindowActor actor) {
@@ -1400,9 +1387,7 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
-            if (end_animation (ref unminimizing, actor))
-                unminimize_completed (actor);
-
+            end_animation (ref unminimizing, actor);
             end_animation (ref minimizing, actor);
             end_animation (ref mapping, actor);
             end_animation (ref destroying, actor);
