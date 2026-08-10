@@ -19,7 +19,7 @@ internal class Gala.MockTrigger : Object, GestureTrigger {
         return true;
     }
 
-    public override void enable_backends (GestureController controller) {
+    public void enable_backends (GestureController controller) {
         controller.enable_backend (backend);
     }
 }
