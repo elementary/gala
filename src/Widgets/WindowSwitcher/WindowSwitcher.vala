@@ -57,7 +57,7 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         container.button_release_event.connect (container_mouse_release);
     }
 
-    public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
+    public void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         if (update_type != UPDATE || container.get_n_children () == 0) {
             return;
         }
