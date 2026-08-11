@@ -163,17 +163,15 @@ public class Gala.NotificationStack : Object {
         }
     }
 
-    public void destroy_notification (Meta.WindowActor notification) {
-        notification.save_easing_state ();
-        notification.set_easing_duration (Utils.get_animation_duration (AnimationDuration.CLOSE));
-        notification.set_easing_mode (Clutter.AnimationMode.EASE_IN_QUAD);
-        notification.opacity = 0;
-
-        notification.x += stack_width;
-        notification.restore_easing_state ();
+    public async void destroy_notification (Meta.WindowActor notification) {
+        var builder = new TransitionBuilder (notification, AnimationDuration.CLOSE, EASE_IN_QUAD);
+        builder.add_property ("opacity", 0u);
+        builder.add_property ("x", (float) (notification.x + stack_width));
 
         notifications.remove (notification);
         update_positions ();
+
+        yield builder.run ();
     }
 
     /**

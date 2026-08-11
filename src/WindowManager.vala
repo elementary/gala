@@ -30,6 +30,8 @@ namespace Gala {
             }
         }
 
+        private const Meta.WindowType[] ANIMATABLE_WINDOW_TYPES = { NORMAL, MODAL_DIALOG, DIALOG };
+
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
         private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
@@ -128,12 +130,8 @@ namespace Gala {
 
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
-        private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
+        private WindowEffects window_effects;
         private Gee.HashMap<Meta.WindowActor, SizeChangeInfo> pending_size_change = new Gee.HashMap<Meta.WindowActor, SizeChangeInfo> ();
-        private Gee.HashSet<Meta.WindowActor> changing_size = new Gee.HashSet<Meta.WindowActor> ();
 
         private GLib.Settings behavior_settings;
 
@@ -165,6 +163,7 @@ namespace Gala {
 
             AccessDialog.watch_portal ();
 
+            window_effects = new WindowEffects (ui_group, notification_stack);
 
             filter_manager = new FilterManager (this);
             notifications_manager = new NotificationsManager ();
@@ -740,29 +739,6 @@ namespace Gala {
             display.unset_input_focus (display.get_current_time ());
         }
 
-        private void dim_parent_window (Meta.Window window) {
-            if (window.window_type != MODAL_DIALOG) {
-                return;
-            }
-
-            unowned var transient = window.get_transient_for ();
-            if (transient == null || transient == window) {
-                warning ("No transient found");
-                return;
-            }
-
-            unowned var transient_actor = (Meta.WindowActor) transient.get_compositor_private ();
-            var dark_effect = new Clutter.BrightnessContrastEffect ();
-            dark_effect.set_brightness (-0.4f);
-            transient_actor.add_effect_with_name ("dim-parent", dark_effect);
-
-            window.unmanaged.connect (() => {
-                if (transient_actor != null && transient_actor.get_effect ("dim-parent") != null) {
-                    transient_actor.remove_effect_by_name ("dim-parent");
-                }
-            });
-        }
-
         private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
             var proxy = push_modal (stage, true);
 
@@ -1170,11 +1146,11 @@ namespace Gala {
                         }
                     }
 
-                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
+                    window_effects.animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 case Meta.SizeChange.UNMAXIMIZE:
                 case Meta.SizeChange.UNFULLSCREEN:
-                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
+                    window_effects.animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 default:
                     break;
@@ -1184,113 +1160,21 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            animate_minimize.begin (actor);
-        }
-
-        private async void animate_minimize (Meta.WindowActor actor) {
-            if (actor.get_meta_window ().window_type != NORMAL) {
+            if (!can_animate (actor)) {
                 minimize_completed (actor);
                 return;
             }
 
-            kill_window_effects (actor);
-            minimizing.add (actor);
-
-            var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_IN_EXPO);
-
-            Mtk.Rectangle icon = {};
-            if (actor.get_meta_window ().get_icon_geometry (out icon)) {
-                // Fix icon position and size according to ui scaling factor.
-                var ui_scale = get_display ().get_monitor_scale (get_display ().get_monitor_index_for_rect (icon));
-                icon.x = Utils.scale_to_int (icon.x, ui_scale);
-                icon.y = Utils.scale_to_int (icon.y, ui_scale);
-                icon.width = Utils.scale_to_int (icon.width, ui_scale);
-                icon.height = Utils.scale_to_int (icon.height, ui_scale);
-
-                actor.set_pivot_point (
-                    (actor.x - icon.x) / (icon.width - actor.width),
-                    (actor.y - icon.y) / (icon.height - actor.height)
-                );
-
-                builder.add_property ("scale-x", (double) (icon.width / actor.width));
-                builder.add_property ("scale-y", (double) (icon.height / actor.height));
-            } else {
-                actor.set_pivot_point (0.5f, 1.0f);
-
-                builder.add_property ("scale-x", 0.0);
-                builder.add_property ("scale-y", 0.0);
-            }
-
-            builder.add_property ("opacity", 0u);
-
-            yield builder.run ();
-
-            actor.set_pivot_point (0.0f, 0.0f);
-            minimizing.remove (actor);
-            minimize_completed (actor);
-        }
-
-        private async void animate_size_change (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
-            kill_window_effects (actor);
-
-            changing_size.add (actor);
-
-            snapshot.set_position (old_rect.x, old_rect.y);
-
-            ui_group.add_child (snapshot);
-
-            var scale_x = (double) new_rect.width / old_rect.width;
-            var scale_y = (double) new_rect.height / old_rect.height;
-
-            snapshot.save_easing_state ();
-            snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            snapshot.set_easing_duration (AnimationDuration.SNAP);
-            snapshot.set_position (new_rect.x, new_rect.y);
-            snapshot.set_scale (scale_x, scale_y);
-            snapshot.opacity = 0;
-            snapshot.restore_easing_state ();
-
-            actor.set_pivot_point (0.0f, 0.0f);
-
-            var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
-            actor_transition_builder.add_property_with_from ("scale-x", 1.0 / scale_x, 1.0);
-            actor_transition_builder.add_property_with_from ("scale-y", 1.0 / scale_y, 1.0);
-            actor_transition_builder.add_property_with_from ("translation-x", (float) (old_rect.x - new_rect.x), 0.0f);
-            actor_transition_builder.add_property_with_from ("translation-y", (float) (old_rect.y - new_rect.y), 0.0f);
-
-            yield actor_transition_builder.run ();
-
-            ui_group.remove_child (snapshot);
-            changing_size.remove (actor);
+            window_effects.animate_minimize.begin (actor, () => minimize_completed (actor));
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            animate_unminimize.begin (actor);
-        }
-
-        private async void animate_unminimize (Meta.WindowActor actor) {
-            actor.show ();
-
-            if (actor.meta_window.window_type != NORMAL) {
+            if (!can_animate (actor)) {
                 unminimize_completed (actor);
                 return;
             }
 
-            actor.remove_all_transitions ();
-
-            unminimizing.add (actor);
-
-            actor.set_pivot_point (0.5f, 1.0f);
-
-            var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-            builder.add_property_with_from ("scale-x", 0.01, 1.0);
-            builder.add_property_with_from ("scale-y", 0.1, 1.0);
-            builder.add_property_with_from ("opacity", 0U, 255U);
-
-            yield builder.run ();
-
-            unminimizing.remove (actor);
-            unminimize_completed (actor);
+            window_effects.animate_unminimize.begin (actor, () => unminimize_completed (actor));
         }
 
         public override void map (Meta.WindowActor actor) {
@@ -1302,141 +1186,30 @@ namespace Gala {
             actor.show ();
 
             // Notifications initial animation is handled by the notification stack
-            if (NotificationStack.is_notification (window) || !Meta.Prefs.get_gnome_animations ()) {
-                dim_parent_window (window);
+            if (NotificationStack.is_notification (window) || !can_animate (actor)) {
                 map_completed (actor);
                 return;
             }
 
-            animate_map.begin (actor);
-        }
-
-        private async void animate_map (Meta.WindowActor actor) {
-            var window = actor.meta_window;
-
-            mapping.add (actor);
-
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                    if (window.maximized_vertically || window.maximized_horizontally) {
-                        var outer_rect = window.get_frame_rect ();
-                        actor.set_position (outer_rect.x, outer_rect.y);
-                    }
-
-                    actor.set_pivot_point (0.5f, 1.0f);
-
-                    var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
-                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
-                    yield builder.run ();
-                    break;
-
-                case Meta.WindowType.MODAL_DIALOG:
-                case Meta.WindowType.DIALOG:
-                    dim_parent_window (window);
-                    actor.set_pivot_point (0.5f, 0.5f);
-
-                    var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
-                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
-                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
-                    yield builder.run ();
-                    break;
-
-                default:
-                    break;
-            }
-
-            mapping.remove (actor);
-            map_completed (actor);
+            window_effects.animate_map.begin (actor, () => map_completed (actor));
         }
 
         public override void destroy (Meta.WindowActor actor) {
-            unowned var window = actor.get_meta_window ();
-
             actor.remove_all_transitions ();
 
-            if (NotificationStack.is_notification (window)) {
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    destroying.add (actor);
-                }
-
-                notification_stack.destroy_notification (actor);
-
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
-                } else {
-                    destroy_completed (actor);
-                }
-
+            if (!can_animate (actor)) {
+                destroy_completed (actor);
                 return;
             }
 
-            animate_destroy.begin (actor);
+            window_effects.animate_destroy.begin (actor, () => destroy_completed (actor));
         }
 
-        private async void animate_destroy (Meta.WindowActor actor) {
-            var window = actor.meta_window;
-
-            destroying.add (actor);
-
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                    actor.set_pivot_point (0.5f, 0.5f);
-                    actor.show ();
-
-                    var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
-                    builder.add_property ("scale-x", 0.8);
-                    builder.add_property ("scale-y", 0.8);
-                    builder.add_property ("opacity", 0U);
-                    yield builder.run ();
-
-                    Utils.clear_window_cache (window);
-                    break;
-
-                case Meta.WindowType.MODAL_DIALOG:
-                case Meta.WindowType.DIALOG:
-                    actor.set_pivot_point (0.5f, 0.5f);
-
-                    var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
-                    builder.add_property ("scale-x", 1.05);
-                    builder.add_property ("scale-y", 1.05);
-                    builder.add_property ("opacity", 0U);
-                    yield builder.run ();
-                    break;
-
-                default:
-                    break;
-            }
-
-            destroying.remove (actor);
-            destroy_completed (actor);
-        }
-
-        // Cancel attached animation of an actor and reset it
-        private bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
-            if (!list.contains (actor))
-                return false;
-
-            if (actor.is_destroyed ()) {
-                list.remove (actor);
-                return false;
-            }
-
-            actor.remove_all_transitions ();
-            actor.opacity = 255U;
-            actor.set_scale (1.0f, 1.0f);
-            actor.rotation_angle_x = 0.0f;
-            actor.set_pivot_point (0.0f, 0.0f);
-
-            list.remove (actor);
-            return true;
+        private bool can_animate (Meta.WindowActor actor) {
+            /* For other window types mutter expects that we call the corresponding completed method
+               immediately otherwise it can lead to crashes. However async methods will always
+               only return in the next main loop iteration. So we have to guard here already. */
+            return actor.meta_window.window_type in ANIMATABLE_WINDOW_TYPES;
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
@@ -1444,11 +1217,7 @@ namespace Gala {
                 size_change_completed (actor);
             }
 
-            end_animation (ref unminimizing, actor);
-            end_animation (ref minimizing, actor);
-            end_animation (ref mapping, actor);
-            end_animation (ref destroying, actor);
-            end_animation (ref changing_size, actor);
+            window_effects.kill_window_effects (actor);
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
