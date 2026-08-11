@@ -79,6 +79,8 @@ namespace Gala {
 
         private DaemonManager daemon_manager;
 
+        private WindowMenuManager window_menu_manager;
+
         private NotificationStack notification_stack;
 
         private LockScreenManager lock_screen_manager;
@@ -118,6 +120,7 @@ namespace Gala {
             ShellClientsManager.init (this, input_method);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
+            window_menu_manager = new WindowMenuManager (this, daemon_manager);
 
             show_stage ();
 
@@ -774,59 +777,7 @@ namespace Gala {
                 return;
             }
 
-            WindowFlags flags = WindowFlags.NONE;
-            if (window.can_minimize ())
-                flags |= WindowFlags.CAN_HIDE;
-
-            if (window.can_maximize ())
-                flags |= WindowFlags.CAN_MAXIMIZE;
-
-#if HAS_MUTTER49
-            if (window.is_maximized ())
-                flags |= WindowFlags.IS_MAXIMIZED;
-
-            if (window.maximized_vertically && !window.maximized_horizontally)
-                flags |= WindowFlags.IS_TILED;
-#else
-            var maximize_flags = window.get_maximized ();
-            if (maximize_flags > 0) {
-                flags |= WindowFlags.IS_MAXIMIZED;
-
-                if (Meta.MaximizeFlags.VERTICAL in maximize_flags && !(Meta.MaximizeFlags.HORIZONTAL in maximize_flags)) {
-                    flags |= WindowFlags.IS_TILED;
-                }
-            }
-#endif
-
-            if (window.allows_move ())
-                flags |= WindowFlags.ALLOWS_MOVE;
-
-            if (window.allows_resize ())
-                flags |= WindowFlags.ALLOWS_RESIZE;
-
-            if (window.is_above ())
-                flags |= WindowFlags.ALWAYS_ON_TOP;
-
-            if (window.on_all_workspaces)
-                flags |= WindowFlags.ON_ALL_WORKSPACES;
-
-            if (window.can_close ())
-                flags |= WindowFlags.CAN_CLOSE;
-
-            unowned var workspace = window.get_workspace ();
-            if (workspace != null) {
-                unowned var manager = window.display.get_workspace_manager ();
-                var workspace_index = workspace.workspace_index;
-                if (workspace_index != 0) {
-                    flags |= WindowFlags.ALLOWS_MOVE_LEFT;
-                }
-
-                if (workspace_index != manager.n_workspaces - 2 || Utils.get_n_windows (workspace) != 1) {
-                    flags |= WindowFlags.ALLOWS_MOVE_RIGHT;
-                }
-            }
-
-            daemon_manager.show_window_menu.begin (flags, x, y);
+            window_menu_manager.show_window_menu (window, x, y);
         }
 
         public override void show_tile_preview (Meta.Window window, Mtk.Rectangle tile_rect, int tile_monitor_number) {
