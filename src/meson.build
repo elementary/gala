@@ -38,6 +38,7 @@ gala_bin_sources = files(
     'Misc/SessionManager.vala',
     'Misc/WindowAttentionTracker.vala',
     'Misc/WindowDragProvider.vala',
+    'Misc/WindowEffects.vala',
     'Misc/WindowListener.vala',
     'Misc/WindowMover.vala',
     'Misc/WindowStateSaver.vala',
