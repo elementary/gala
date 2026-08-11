@@ -129,12 +129,11 @@ namespace Gala {
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashMap<Meta.WindowActor, SizeChangeInfo> pending_size_change = new Gee.HashMap<Meta.WindowActor, SizeChangeInfo> ();
+        private Gee.HashSet<Meta.WindowActor> changing_size = new Gee.HashSet<Meta.WindowActor> ();
 
         private GLib.Settings behavior_settings;
 
@@ -1171,11 +1170,11 @@ namespace Gala {
                         }
                     }
 
-                    maximize.begin (actor, old_rect, new_rect, info.snapshot);
+                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 case Meta.SizeChange.UNMAXIMIZE:
                 case Meta.SizeChange.UNFULLSCREEN:
-                    unmaximize.begin (actor, old_rect, new_rect, info.snapshot);
+                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 default:
                     break;
@@ -1241,10 +1240,11 @@ namespace Gala {
             }
         }
 
-        private async void maximize (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
+        private async void animate_size_change (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
             kill_window_effects (actor);
 
-            maximizing.add (actor);
+            changing_size.add (actor);
+
             snapshot.set_position (old_rect.x, old_rect.y);
 
             ui_group.add_child (snapshot);
@@ -1271,7 +1271,7 @@ namespace Gala {
             yield actor_transition_builder.run ();
 
             ui_group.remove_child (snapshot);
-            maximizing.remove (actor);
+            changing_size.remove (actor);
         }
 
         public override void unminimize (Meta.WindowActor actor) {
@@ -1442,38 +1442,6 @@ namespace Gala {
             destroy_completed (actor);
         }
 
-        private async void unmaximize (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
-            kill_window_effects (actor);
-
-            unmaximizing.add (actor);
-
-            snapshot.set_position (old_rect.x, old_rect.y);
-
-            ui_group.add_child (snapshot);
-
-            var scale_x = (float) new_rect.width / old_rect.width;
-            var scale_y = (float) new_rect.height / old_rect.height;
-
-            snapshot.save_easing_state ();
-            snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            snapshot.set_easing_duration (AnimationDuration.SNAP);
-            snapshot.set_position (new_rect.x, new_rect.y);
-            snapshot.set_scale (scale_x, scale_y);
-            snapshot.opacity = 0U;
-            snapshot.restore_easing_state ();
-
-            var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
-            actor_transition_builder.add_property_with_from ("scale-x", 1.0 / scale_x, 1.0);
-            actor_transition_builder.add_property_with_from ("scale-y", 1.0 / scale_y, 1.0);
-            actor_transition_builder.add_property_with_from ("translation-x", (float) (old_rect.x - new_rect.x), 0.0f);
-            actor_transition_builder.add_property_with_from ("translation-y", (float) (old_rect.y - new_rect.y), 0.0f);
-
-            yield actor_transition_builder.run ();
-
-            ui_group.remove_child (snapshot);
-            unmaximizing.remove (actor);
-        }
-
         // Cancel attached animation of an actor and reset it
         private bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
             if (!list.contains (actor))
@@ -1506,8 +1474,7 @@ namespace Gala {
 
             end_animation (ref mapping, actor);
             end_animation (ref destroying, actor);
-            end_animation (ref unmaximizing, actor);
-            end_animation (ref maximizing, actor);
+            end_animation (ref changing_size, actor);
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {
