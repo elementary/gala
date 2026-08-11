@@ -25,3 +25,7 @@ session-type=greeter
 [Greeter Settings Daemon]
 args=io.elementary.settings-daemon
 session-type=greeter
+
+[Installer wingpanel]
+args=io.elementary.wingpanel;-g
+session-type=installer
