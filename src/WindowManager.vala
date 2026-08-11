@@ -1002,14 +1002,19 @@ namespace Gala {
         }
 
         public override void minimize (Meta.WindowActor actor) {
-            if (!Meta.Prefs.get_gnome_animations () ||
-                actor.get_meta_window ().window_type != Meta.WindowType.NORMAL) {
+            animate_minimize.begin (actor);
+        }
+
+        private async void animate_minimize (Meta.WindowActor actor) {
+            if (actor.get_meta_window ().window_type != NORMAL) {
                 minimize_completed (actor);
                 return;
             }
 
             kill_window_effects (actor);
             minimizing.add (actor);
+
+            var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_IN_EXPO);
 
             Mtk.Rectangle icon = {};
             if (actor.get_meta_window ().get_icon_geometry (out icon)) {
@@ -1025,37 +1030,22 @@ namespace Gala {
                     (actor.y - icon.y) / (icon.height - actor.height)
                 );
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (AnimationDuration.HIDE);
-                actor.set_scale (icon.width / actor.width, icon.height / actor.height);
-                actor.opacity = 0;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
+                builder.add_property ("scale-x", (double) (icon.width / actor.width));
+                builder.add_property ("scale-y", (double) (icon.height / actor.height));
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
-                actor.save_easing_state ();
-                actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_EXPO);
-                actor.set_easing_duration (AnimationDuration.HIDE);
-                actor.set_scale (0.0, 0.0);
-                actor.opacity = 0;
-                actor.restore_easing_state ();
-
-                ulong minimize_handler_id = 0;
-                minimize_handler_id = actor.transitions_completed.connect (() => {
-                    actor.disconnect (minimize_handler_id);
-                    actor.set_pivot_point (0.0f, 0.0f);
-                    minimize_completed (actor);
-                    minimizing.remove (actor);
-                });
+                builder.add_property ("scale-x", 0.0);
+                builder.add_property ("scale-y", 0.0);
             }
+
+            builder.add_property ("opacity", 0u);
+
+            yield builder.run ();
+
+            actor.set_pivot_point (0.0f, 0.0f);
+            minimizing.remove (actor);
+            minimize_completed (actor);
         }
 
         private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
@@ -1145,45 +1135,32 @@ namespace Gala {
         }
 
         public override void unminimize (Meta.WindowActor actor) {
-            if (!Meta.Prefs.get_gnome_animations ()) {
-                actor.show ();
+            animate_unminimize.begin (actor);
+        }
+
+        private async void animate_unminimize (Meta.WindowActor actor) {
+            actor.show ();
+
+            if (actor.meta_window.window_type != NORMAL) {
                 unminimize_completed (actor);
                 return;
             }
 
-            var duration = AnimationDuration.HIDE;
-            unowned var window = actor.get_meta_window ();
-
             actor.remove_all_transitions ();
-            actor.show ();
 
-            switch (window.window_type) {
-                case Meta.WindowType.NORMAL:
-                    unminimizing.add (actor);
+            unminimizing.add (actor);
 
-                    actor.set_pivot_point (0.5f, 1.0f);
-                    actor.set_scale (0.01f, 0.1f);
-                    actor.opacity = 0U;
+            actor.set_pivot_point (0.5f, 1.0f);
 
-                    actor.save_easing_state ();
-                    actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_EXPO);
-                    actor.set_easing_duration (duration);
-                    actor.set_scale (1.0f, 1.0f);
-                    actor.opacity = 255U;
-                    actor.restore_easing_state ();
+            var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
+            builder.add_property_with_from ("scale-x", 0.01, 1.0);
+            builder.add_property_with_from ("scale-y", 0.1, 1.0);
+            builder.add_property_with_from ("opacity", 0U, 255U);
 
-                    ulong unminimize_handler_id = 0UL;
-                    unminimize_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (unminimize_handler_id);
-                        unminimizing.remove (actor);
-                        unminimize_completed (actor);
-                    });
+            yield builder.run ();
 
-                    break;
-                default:
-                    unminimize_completed (actor);
-                    break;
-            }
+            unminimizing.remove (actor);
+            unminimize_completed (actor);
         }
 
         public override void map (Meta.WindowActor actor) {
@@ -1410,11 +1387,8 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
-            if (end_animation (ref unminimizing, actor))
-                unminimize_completed (actor);
-            if (end_animation (ref minimizing, actor))
-                minimize_completed (actor);
-
+            end_animation (ref unminimizing, actor);
+            end_animation (ref minimizing, actor);
             end_animation (ref mapping, actor);
             end_animation (ref destroying, actor);
             end_animation (ref unmaximizing, actor);
