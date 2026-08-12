@@ -70,8 +70,17 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         width = screen_width;
         height = screen_height;
 
+#if HAS_MUTTER49
+        var click_action = new Clutter.ClickGesture ();
+#else
         var click_action = new Clutter.ClickAction ();
+#endif
+
+#if HAS_MUTTER49
+        click_action.recognize.connect (capture_selected_area);
+#else
         click_action.clicked.connect (capture_selected_area);
+#endif
 
         confirm_button = new Clutter.Actor () {
             reactive = true
@@ -101,7 +110,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     private static Gdk.Pixbuf? get_confirm_button_pixbuf (float scale) {
         try {
             return new Gdk.Pixbuf.from_resource_at_scale (
-                Config.RESOURCEPATH + "/buttons/confirm.svg",
+                "/org/pantheon/desktop/gala/buttons/confirm.svg",
                 -1,
                 Utils.scale_to_int (CONFIRM_BUTTON_SIZE, scale),
                 true
@@ -164,8 +173,9 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         if (dragging) {
             drag_x = event_x - selection.x;
             drag_y = event_y - selection.y;
-
-#if HAS_MUTTER48
+#if HAS_MUTTER50
+            set_cursor_type (MOVE);
+#elif HAS_MUTTER48
             wm.get_display ().set_cursor (MOVE);
 #else
             wm.get_display ().set_cursor (MOVE_OR_RESIZE_WINDOW);
@@ -202,7 +212,11 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
 
         dragging = false;
         resizing = false;
+#if HAS_MUTTER50
+        set_cursor_type (DEFAULT);
+#else
         wm.get_display ().set_cursor (DEFAULT);
+#endif
 
         return Clutter.EVENT_STOP;
     }
@@ -282,19 +296,40 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         var right = is_close_to_coord (event_x, selection.x + selection.width, RESIZE_THRESHOLD);
 
         if (top && left) {
+#if HAS_MUTTER50
+            set_cursor_type (NW_RESIZE);
+#else
             wm.get_display ().set_cursor (NW_RESIZE);
+#endif
         } else if (top && right) {
+#if HAS_MUTTER50
+            set_cursor_type (NE_RESIZE);
+#else
             wm.get_display ().set_cursor (NE_RESIZE);
+#endif
         } else if (bottom && left) {
+#if HAS_MUTTER50
+            set_cursor_type (SW_RESIZE);
+#else
             wm.get_display ().set_cursor (SW_RESIZE);
+#endif
         } else if (bottom && right) {
+#if HAS_MUTTER50
+            set_cursor_type (SE_RESIZE);
+#else
             wm.get_display ().set_cursor (SE_RESIZE);
+#endif
         } else {
+#if HAS_MUTTER50
+            set_cursor_type (DEFAULT);
+#else
             wm.get_display ().set_cursor (DEFAULT);
+#endif
         }
     }
 
     public void close () {
+#if HAS_MUTTER50
         set_cursor_type (Clutter.CursorType.DEFAULT);
 #else
         wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
