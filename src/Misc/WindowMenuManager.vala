@@ -75,8 +75,14 @@ public class Gala.WindowMenuManager : Object {
         var window_ws = window.get_workspace ();
         var window_ws_index = window_ws.index ();
         var n_ws = window.display.get_workspace_manager ().n_workspaces;
+
+        /* Always allow move left except on the first one */
         var can_move_left = window_ws_index != 0;
-        var can_move_right = window_ws_index != n_ws - 2 && Utils.get_n_windows (window_ws) != 1;
+
+        /* Always allow move right except if we are the only window on
+           the last not empty workspace (last one is always empty) */
+        var can_move_right = !(window_ws_index == n_ws - 2 && Utils.get_n_windows (window_ws) == 1);
+
         ((SimpleAction) action_group.lookup_action (ACTION_MOVE_LEFT)).set_enabled (can_move_left);
         ((SimpleAction) action_group.lookup_action (ACTION_MOVE_RIGHT)).set_enabled (can_move_right);
 
