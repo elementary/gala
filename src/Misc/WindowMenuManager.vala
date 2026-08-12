@@ -180,11 +180,27 @@ public class Gala.WindowMenuManager : Object {
     }
 
     private void on_move (SimpleAction action, Variant? parameters) {
-        wm.perform_action (START_MOVE_CURRENT);
+        begin_grab_op (KEYBOARD_MOVING);
     }
 
     private void on_resize (SimpleAction action, Variant? parameters) {
-        wm.perform_action (START_RESIZE_CURRENT);
+        begin_grab_op (KEYBOARD_RESIZING_UNKNOWN);
+    }
+
+    private void begin_grab_op (Meta.GrabOp op) {
+#if HAS_MUTTER49
+        var device = Clutter.get_default_backend ().get_pointer_sprite (wm.stage);
+#else
+        var device = Clutter.get_default_backend ().get_default_seat ().get_pointer ();
+#endif
+
+        current_window.begin_grab_op (
+            op, device,
+#if !HAS_MUTTER49
+            null,
+#endif
+            wm.get_display ().get_current_time (), null
+        );
     }
 
     private void on_maximize (SimpleAction action, Variant? parameters) {

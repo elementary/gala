@@ -605,35 +605,6 @@ namespace Gala {
             });
         }
 
-        private void set_grab_trigger (Meta.Window window, Meta.GrabOp op) {
-            var proxy = push_modal (stage, true);
-
-            ulong handler = 0;
-            handler = stage.captured_event.connect ((event) => {
-                if (event.get_type () == MOTION || event.get_type () == ENTER ||
-                    event.get_type () == TOUCHPAD_HOLD || event.get_type () == TOUCH_BEGIN) {
-                    window.begin_grab_op (
-                        op,
-                        null,
-#if !HAS_MUTTER49
-                        event.get_event_sequence (),
-#endif
-                        event.get_time ()
-                        , null
-                    );
-                } else if (event.get_type () == LEAVE) {
-                    /* We get leave emitted when beginning a grab op, so we have
-                       to filter it in order to avoid disconnecting and popping twice */
-                    return Clutter.EVENT_PROPAGATE;
-                }
-
-                pop_modal (proxy);
-                stage.disconnect (handler);
-
-                return Clutter.EVENT_PROPAGATE;
-            });
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -672,12 +643,10 @@ namespace Gala {
                         current.minimize ();
                     break;
                 case ActionType.START_MOVE_CURRENT:
-                    if (current != null && current.allows_move ())
-                        set_grab_trigger (current, KEYBOARD_MOVING);
+                    warning ("Action START_MOVE_CURRENT is deprecated");
                     break;
                 case ActionType.START_RESIZE_CURRENT:
-                    if (current != null && current.allows_resize ())
-                        set_grab_trigger (current, KEYBOARD_RESIZING_UNKNOWN);
+                    warning ("Action START_RESIZE_CURRENT is deprecated");
                     break;
                 case ActionType.TOGGLE_ALWAYS_ON_TOP_CURRENT:
                     if (current == null)
