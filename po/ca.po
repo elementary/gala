@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2026-05-14 10:12+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -27,73 +27,25 @@ msgstr ""
 msgid "Unknown Key"
 msgstr "Desconegut"
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Canvia el fons de pantalla…"
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Paràmetres de la pantalla…"
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Paràmetres del sistema…"
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Ha fallat obrir els paràmetres del sistema."
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Cal instal·lar un gestor per a l'esquema d'URI \"settings://\"."
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr "Amaga"
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "Mou"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "Canvia'n la mida"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "Sempre al davant"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "Sempre a l'espai de treball visible"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "Mou a l'espai de treball de l'esquerra"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "Mou a l'espai de treball de la dreta"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-msgid "Take Screenshot"
-msgstr "Fes una captura"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "Tanca"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr "No en mosaic"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "Desmaximitza"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "Maximitza"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -352,28 +304,79 @@ msgstr "Captura de pantalla desada a la carpeta de captures de pantalla"
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
+#: src/Misc/WindowMenuManager.vala:85
+msgid "Take Screenshot"
+msgstr "Fes una captura"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "Sempre al davant"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "Sempre a l'espai de treball visible"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "Mou a l'espai de treball de l'esquerra"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "Mou a l'espai de treball de la dreta"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "Mou"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "Canvia'n la mida"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "Maximitza"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr "No en mosaic"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "Desmaximitza"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "Minimitza"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "Tanca"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr "Canviador de finestres"
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
+
+#~ msgid "Hide"
+#~ msgstr "Amaga"
 
 #, c-format
 #~ msgid "Open in %s"
@@ -572,9 +575,6 @@ msgstr "Usa la configuració anterior"
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "Restaura la configuració anterior"
-
-#~ msgid "Minimize"
-#~ msgstr "Minimitza"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Acció per al cantó de dalt a l'esquerra"

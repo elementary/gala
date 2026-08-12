@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2025-12-04 10:55+0000\n"
 "Last-Translator: lenify <lenify@tutanota.com>\n"
 "Language-Team: Belarusian <https://l10n.elementaryos.org/projects/desktop/"
@@ -28,73 +28,25 @@ msgstr ""
 msgid "Unknown Key"
 msgstr "Невядома"
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Змяніць шпалеры…"
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Налады дысплэя…"
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Налады сістэмы…"
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Не ўдалося адкрыць налады сістэмы"
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Патрэбны быць усталяваны апрацоўшчык для схемы URI \"settings://\"."
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr "Схаваць"
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "Перамясціць"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "Змяніць памер"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "Заўсёды па-над іншымі"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "Заўсёды на бачнай прасторы"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "Перамясціць на працоўную прастору злева"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "Перамясціць на працоўную прастору справа"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-msgid "Take Screenshot"
-msgstr "Зрабіць здымак экрана"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "Закрыць"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr "Адмацаваць"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "Зменшыць"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "Разгарнуць"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -351,11 +303,59 @@ msgstr "Здымак экрана захаваны ў папку са здымк
 msgid "Screenshots"
 msgstr "Здымкі экрана"
 
+#: src/Misc/WindowMenuManager.vala:85
+msgid "Take Screenshot"
+msgstr "Зрабіць здымак экрана"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "Заўсёды па-над іншымі"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "Заўсёды на бачнай прасторы"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "Перамясціць на працоўную прастору злева"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "Перамясціць на працоўную прастору справа"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "Перамясціць"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "Змяніць памер"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "Разгарнуць"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr "Адмацаваць"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "Зменшыць"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "Згарнуць"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "Закрыць"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr "Пераключальнік акон"
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -363,17 +363,20 @@ msgstr[0] "Змены будуць скасаваныя праз %i секунд
 msgstr[1] "Змены будуць скасаваныя праз %i секунды."
 msgstr[2] "Змены будуць скасаваныя праз %i секунд."
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 msgid "Keep new display settings?"
 msgstr "Захаваць новыя налады дысплэя?"
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 msgid "Keep Settings"
 msgstr "Захаваць налады"
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr "Выкарыстаць папярэднія налады"
+
+#~ msgid "Hide"
+#~ msgstr "Схаваць"
 
 #~ msgid "Does the display look OK?"
 #~ msgstr "Ці выглядае выява на дысплеі як мае быць?"
@@ -383,9 +386,6 @@ msgstr "Выкарыстаць папярэднія налады"
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "Аднавіць мінулыя налады"
-
-#~ msgid "Minimize"
-#~ msgstr "Згарнуць"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Дзеянне для верхняга левага вугла"

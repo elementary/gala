@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2024-10-05 18:16+0000\n"
 "Last-Translator: JohnDumpling <john_dumpling@protonmail.com>\n"
 "Language-Team: Slovak <https://l10n.elementary.io/projects/desktop/gala/sk/"
@@ -28,73 +28,25 @@ msgstr ""
 msgid "Unknown Key"
 msgstr "Neznáme"
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "Zmeniť tapetu plochy…"
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "Nastavenia obrazovky…"
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "Nastavenia systému…"
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "Nepodarilo sa otvoriť Nastavenia systému"
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr "Spracovač pre URI schému „settings://“ musí byť nainštalovaný."
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr "Skryť"
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "Presunúť"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "Zmeniť veľkosť"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "Vždy navrchu"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "Vždy na viditeľnej pracovnej ploche"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "Presunúť na plochu vľavo"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "Presunúť na plochu vpravo"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-msgid "Take Screenshot"
-msgstr "Zachytiť snímku obrazovky"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "Zatvoriť"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr "Zrušiť zarovnanie"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "Zrušiť maximalizáciu"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "Maximalizovať"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -353,11 +305,59 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
+#: src/Misc/WindowMenuManager.vala:85
+msgid "Take Screenshot"
+msgstr "Zachytiť snímku obrazovky"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "Vždy navrchu"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "Vždy na viditeľnej pracovnej ploche"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "Presunúť na plochu vľavo"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "Presunúť na plochu vpravo"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "Presunúť"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "Zmeniť veľkosť"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "Maximalizovať"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr "Zrušiť zarovnanie"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "Zrušiť maximalizáciu"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "Minimalizovať"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "Zatvoriť"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr "Prepínač okien"
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -365,17 +365,20 @@ msgstr[0] "Za %i sekundu sa zmeny automaticky vrátia späť."
 msgstr[1] "Za %i sekundy sa zmeny automaticky vrátia späť."
 msgstr[2] "Za %i sekúnd sa zmeny automaticky vrátia späť."
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 msgid "Keep new display settings?"
 msgstr "Ponechať nové nastavenia obrazovky?"
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 msgid "Keep Settings"
 msgstr "Ponechať nastavenia"
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr "Použiť predchádzajúce nastavenia"
+
+#~ msgid "Hide"
+#~ msgstr "Skryť"
 
 #, fuzzy
 #~| msgid "Enable rounded corner mask"
@@ -452,9 +455,6 @@ msgstr "Použiť predchádzajúce nastavenia"
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "Obnoviť pôvodné nastavenie"
-
-#~ msgid "Minimize"
-#~ msgstr "Minimalizovať"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Akcia pre ľavý horný roh"

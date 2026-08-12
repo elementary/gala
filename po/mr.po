@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2021-07-05 11:21+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Marathi <https://l10n.elementary.io/projects/desktop/gala/mr/"
@@ -23,77 +23,27 @@ msgstr ""
 msgid "Unknown Key"
 msgstr ""
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "वॉलपेपर बदला…"
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "प्रदर्शन सेटिंग्ज…"
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "प्रणाली संयोजना …"
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Failed to open System Settings"
 msgstr "प्रणाली संयोजना …"
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr "लपवा"
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "हलवा"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "आकार बदला"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "नेहमी वरच्या बाजूला"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "नेहमीच दृश्यमान कार्यक्षेत्रात"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "डावीकडील वर्कस्पेस मध्ये हलवा"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "उजवीकडील वर्कस्पेस मध्ये हलवा"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-#, fuzzy
-#| msgid "Screenshots"
-msgid "Take Screenshot"
-msgstr "स्क्रीनशॉट"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "बंद करा"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr ""
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "अनमॅक्सिमाइझ करा"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "वाढवा"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -359,32 +309,85 @@ msgstr ""
 msgid "Screenshots"
 msgstr "स्क्रीनशॉट"
 
+#: src/Misc/WindowMenuManager.vala:85
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Take Screenshot"
+msgstr "स्क्रीनशॉट"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "नेहमी वरच्या बाजूला"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "नेहमीच दृश्यमान कार्यक्षेत्रात"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "डावीकडील वर्कस्पेस मध्ये हलवा"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "उजवीकडील वर्कस्पेस मध्ये हलवा"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "हलवा"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "आकार बदला"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "वाढवा"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr ""
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "अनमॅक्सिमाइझ करा"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "कमीतकमी करा"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "बंद करा"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "प्रदर्शन सेटिंग्ज…"
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "प्रणाली संयोजना …"
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr ""
+
+#~ msgid "Hide"
+#~ msgstr "लपवा"
 
 #~ msgid "applications-other"
 #~ msgstr "applications-other"
@@ -449,6 +452,3 @@ msgstr ""
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "मागील कॉन्फिगरेशन पुनर्संचयित करा"
-
-#~ msgid "Minimize"
-#~ msgstr "कमीतकमी करा"

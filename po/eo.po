@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2020-03-14 21:09+0000\n"
 "Last-Translator: Shtonchjo <shtonchjo@gmail.com>\n"
 "Language-Team: Esperanto <https://l10n.elementary.io/projects/desktop/gala/"
@@ -24,75 +24,25 @@ msgstr ""
 msgid "Unknown Key"
 msgstr ""
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr ""
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr ""
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr ""
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr ""
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr ""
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "Movi"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "Ŝanĝi grandecon"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "Ĉiam supre"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "Ĉiam je vidata laborspaco"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "Movu maldekstren de laborspaco"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "Movu dekstren de laborspaco"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-#, fuzzy
-#| msgid "Screenshots"
-msgid "Take Screenshot"
-msgstr "Ekrankopioj"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "Fermi"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr ""
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "Malmaksimumigi"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "Maksimumigi"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -358,26 +308,76 @@ msgstr ""
 msgid "Screenshots"
 msgstr "Ekrankopioj"
 
+#: src/Misc/WindowMenuManager.vala:85
+#, fuzzy
+#| msgid "Screenshots"
+msgid "Take Screenshot"
+msgstr "Ekrankopioj"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "Ĉiam supre"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "Ĉiam je vidata laborspaco"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "Movu maldekstren de laborspaco"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "Movu dekstren de laborspaco"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "Movi"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "Ŝanĝi grandecon"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "Maksimumigi"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr ""
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "Malmaksimumigi"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "Minimumigi"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "Fermi"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 msgid "Keep new display settings?"
 msgstr ""
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 msgid "Keep Settings"
 msgstr ""
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr ""
 
@@ -429,9 +429,6 @@ msgstr ""
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "Restaŭri la Antaŭajn Agordojn"
-
-#~ msgid "Minimize"
-#~ msgstr "Minimumigi"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "Ago por la supra-maldekstra angulo"

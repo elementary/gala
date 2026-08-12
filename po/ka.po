@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 14:50+0000\n"
+"POT-Creation-Date: 2026-08-12 16:20+0000\n"
 "PO-Revision-Date: 2024-08-16 15:16+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
@@ -27,73 +27,25 @@ msgstr ""
 msgid "Unknown Key"
 msgstr "უცნობი"
 
-#: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
+#: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
 msgstr "ფონის სურათის შეცვლა…"
 
-#: daemon/DBus.vala:50 daemon-gtk3/BackgroundMenu.vala:16
+#: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
 msgstr "ეკრანის მორგება…"
 
-#: daemon/DBus.vala:56 daemon-gtk3/BackgroundMenu.vala:22
+#: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
 msgstr "სისტემის მორგება…"
 
-#: daemon/DBus.vala:180 daemon-gtk3/BackgroundMenu.vala:47
+#: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
 msgstr "სისტემის მორგების ფანჯრის გახსნა ჩავარდა"
 
-#: daemon/DBus.vala:181 daemon-gtk3/BackgroundMenu.vala:48
+#: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
 msgstr ""
-
-#: daemon/WindowMenu.vala:38 daemon-gtk3/WindowMenu.vala:36
-msgid "Hide"
-msgstr "დამალვა"
-
-#: daemon/WindowMenu.vala:54 daemon-gtk3/WindowMenu.vala:49
-msgid "Move"
-msgstr "გადატანა"
-
-#: daemon/WindowMenu.vala:64 daemon-gtk3/WindowMenu.vala:57
-msgid "Resize"
-msgstr "ზომის შეცვლა"
-
-#: daemon/WindowMenu.vala:74 daemon-gtk3/WindowMenu.vala:65
-msgid "Always on Top"
-msgstr "ყოველთვის ყველაზე ზემოთ"
-
-#: daemon/WindowMenu.vala:84 daemon-gtk3/WindowMenu.vala:73
-msgid "Always on Visible Workspace"
-msgstr "ყოველთვის ხილულ სამუშაო გარემოში"
-
-#: daemon/WindowMenu.vala:94 daemon-gtk3/WindowMenu.vala:81
-msgid "Move to Workspace Left"
-msgstr "მარცხენა სამუშაო სივრცეში გადატანა"
-
-#: daemon/WindowMenu.vala:104 daemon-gtk3/WindowMenu.vala:89
-msgid "Move to Workspace Right"
-msgstr "მარჯვენა სამუშაო სივრცეში გადატანა"
-
-#: daemon/WindowMenu.vala:114 daemon-gtk3/WindowMenu.vala:97
-msgid "Take Screenshot"
-msgstr "ეკრანის ანაბეჭდის გადაღება"
-
-#: daemon/WindowMenu.vala:124 daemon-gtk3/WindowMenu.vala:105
-msgid "Close"
-msgstr "დახურვა"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Untile"
-msgstr "მოხსნა"
-
-#: daemon/WindowMenu.vala:167 daemon-gtk3/WindowMenu.vala:138
-msgid "Unmaximize"
-msgstr "საწყის ზომაზე დაბრუნება"
-
-#: daemon/WindowMenu.vala:169 daemon-gtk3/WindowMenu.vala:140
-msgid "Maximize"
-msgstr "გადიდება"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
@@ -338,28 +290,79 @@ msgstr ""
 msgid "Screenshots"
 msgstr "ეკრანის ანაბეჭდები"
 
+#: src/Misc/WindowMenuManager.vala:85
+msgid "Take Screenshot"
+msgstr "ეკრანის ანაბეჭდის გადაღება"
+
+#: src/Misc/WindowMenuManager.vala:91
+msgid "Always on Top"
+msgstr "ყოველთვის ყველაზე ზემოთ"
+
+#: src/Misc/WindowMenuManager.vala:93
+msgid "Always on Visible Workspace"
+msgstr "ყოველთვის ხილულ სამუშაო გარემოში"
+
+#: src/Misc/WindowMenuManager.vala:95
+msgid "Move to Workspace Left"
+msgstr "მარცხენა სამუშაო სივრცეში გადატანა"
+
+#: src/Misc/WindowMenuManager.vala:97
+msgid "Move to Workspace Right"
+msgstr "მარჯვენა სამუშაო სივრცეში გადატანა"
+
+#: src/Misc/WindowMenuManager.vala:109
+msgid "Move"
+msgstr "გადატანა"
+
+#: src/Misc/WindowMenuManager.vala:115
+msgid "Resize"
+msgstr "ზომის შეცვლა"
+
+#: src/Misc/WindowMenuManager.vala:121
+msgid "Maximize"
+msgstr "გადიდება"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Untile"
+msgstr "მოხსნა"
+
+#: src/Misc/WindowMenuManager.vala:125
+msgid "Unmaximize"
+msgstr "საწყის ზომაზე დაბრუნება"
+
+#: src/Misc/WindowMenuManager.vala:136
+msgid "Minimize"
+msgstr "ჩაკეცვა"
+
+#: src/Misc/WindowMenuManager.vala:142
+msgid "Close"
+msgstr "დახურვა"
+
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:55
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1496
+#: src/WindowManager.vala:1447
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 msgstr[1] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 
-#: src/WindowManager.vala:1503
+#: src/WindowManager.vala:1454
 msgid "Keep new display settings?"
 msgstr "დავიტოვო ეკრანის ახალი პარამეტრები?"
 
-#: src/WindowManager.vala:1507
+#: src/WindowManager.vala:1458
 msgid "Keep Settings"
 msgstr "პარამეტრების შენარჩუნება"
 
-#: src/WindowManager.vala:1508
+#: src/WindowManager.vala:1459
 msgid "Use Previous Settings"
 msgstr "წინა პარამეტრების გამოყენება"
+
+#~ msgid "Hide"
+#~ msgstr "დამალვა"
 
 #~ msgid "Performance improvements"
 #~ msgstr "წარმადობის გაუმჯობესებები"
@@ -393,9 +396,6 @@ msgstr "წინა პარამეტრების გამოყენ�
 
 #~ msgid "Restore Previous Configuration"
 #~ msgstr "წინა კონფიგურაციის აღდგენა"
-
-#~ msgid "Minimize"
-#~ msgstr "ჩაკეცვა"
 
 #~ msgid "Action for the top left corner"
 #~ msgstr "მოქმედება ზედა მარცხენა კუთხისთვის"
