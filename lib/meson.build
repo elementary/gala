@@ -1,9 +1,6 @@
-gala_common_enums = files(
-  'CommonEnums.vala',
-)
-
 gala_lib_sources = files(
     'BackgroundManager.vala',
+    'CommonEnums.vala',
     'Constants.vala',
     'DragDropAction.vala',
     'Plugin.vala',
@@ -49,7 +46,7 @@ gala_lib_sources = files(
     'Widgets/Text.vala',
     'Widgets/Widget.vala',
     'Widgets/WindowIcon.vala'
-) + gala_common_enums
+)
 
 gala_resources = gnome.compile_resources(
     'gala-resources',

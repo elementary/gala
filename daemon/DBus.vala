@@ -3,11 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-[DBus (name = "org.pantheon.gala")]
-public interface Gala.WMDBus : GLib.Object {
-    public abstract void perform_action (Gala.ActionType type) throws DBusError, IOError;
-}
-
 public struct Gala.Daemon.MonitorLabelInfo {
     public int monitor;
     public string label;
@@ -19,26 +14,16 @@ public struct Gala.Daemon.MonitorLabelInfo {
 
 [DBus (name = "org.pantheon.gala.daemon")]
 public class Gala.Daemon.DBus : GLib.Object {
-    private const string DBUS_NAME = "org.pantheon.gala";
-    private const string DBUS_OBJECT_PATH = "/org/pantheon/gala";
-
-    private const string DAEMON_DBUS_NAME = "org.pantheon.gala.daemon";
-    private const string DAEMON_DBUS_OBJECT_PATH = "/org/pantheon/gala/daemon";
-
     private const string BG_MENU_ACTION_GROUP_PREFIX = "background-menu";
     private const string BG_MENU_ACTION_PREFIX = BG_MENU_ACTION_GROUP_PREFIX + ".";
 
-    private WMDBus? wm_proxy = null;
-
     private Window window;
-    private WindowMenu? window_menu;
+    private Gtk.PopoverMenu? window_menu;
     private Gtk.PopoverMenu background_menu;
 
     private List<MonitorLabel> monitor_labels = new List<MonitorLabel> ();
 
     construct {
-        Bus.watch_name (BusType.SESSION, DBUS_NAME, BusNameWatcherFlags.NONE, gala_appeared, lost_gala);
-
         window = new Window ();
 
         var background_menu_top_section = new Menu ();
@@ -78,48 +63,35 @@ public class Gala.Daemon.DBus : GLib.Object {
 
         background_menu.insert_action_group (BG_MENU_ACTION_GROUP_PREFIX, action_group);
 
-        window_menu = new WindowMenu ();
+        load_window_menu.begin ();
+    }
+
+    private async void load_window_menu () {
+        DBusConnection connection;
+        try {
+            connection = yield Bus.get (SESSION, null);
+        } catch (Error e) {
+            warning ("Failed to get DBus connection: %s", e.message);
+            return;
+        }
+
+        var menu_model = DBusMenuModel.get (connection, "io.elementary.gala", "/io/elementary/gala/WindowMenu");
+        var action_group = DBusActionGroup.get (connection, "io.elementary.gala", "/io/elementary/gala/WindowMenu");
+
+        window_menu = new Gtk.PopoverMenu.from_model (menu_model) {
+            halign = START,
+            position = BOTTOM,
+            autohide = false,
+            has_arrow = false,
+        };
+        window_menu.insert_action_group ("window-menu", action_group);
         window_menu.set_parent (window.child);
         window_menu.closed.connect (window.close);
-        window_menu.perform_action.connect ((type) => {
-            Idle.add (() => {
-                perform_action (type);
-                return Source.REMOVE;
-            });
-        });
     }
 
-    private void on_gala_get (GLib.Object? obj, GLib.AsyncResult? res) {
-        try {
-            wm_proxy = Bus.get_proxy.end (res);
-        } catch (Error e) {
-            warning ("Failed to get Gala proxy: %s", e.message);
-        }
-    }
-
-    private void lost_gala () {
-        wm_proxy = null;
-    }
-
-    private void gala_appeared () {
-        if (wm_proxy == null) {
-            Bus.get_proxy.begin<WMDBus> (BusType.SESSION, DBUS_NAME, DBUS_OBJECT_PATH, 0, null, on_gala_get);
-        }
-    }
-
-    private void perform_action (Gala.ActionType type) {
-        if (wm_proxy != null) {
-            try {
-                wm_proxy.perform_action (type);
-            } catch (Error e) {
-                warning ("Failed to perform Gala action over DBus: %s", e.message);
-            }
-        }
-    }
-
-    public void show_window_menu (Gala.WindowFlags flags, int display_width, int display_height, int x, int y) throws DBusError, IOError {
-        window_menu.update (flags);
-
+    public void show_window_menu (
+        int display_width, int display_height, int x, int y
+    ) throws DBusError, IOError requires (window_menu != null) {
         show_menu (window_menu, display_width, display_height, x, y);
     }
 

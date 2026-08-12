@@ -4,7 +4,6 @@ gala_daemon_sources = files(
     'DBus.vala',
     'MonitorLabel.vala',
     'Window.vala',
-    'WindowMenu.vala',
     'IBus' / 'Candidate.vala',
     'IBus' / 'CandidateArea.vala',
     'IBus' / 'CandidateBox.vala',
@@ -32,7 +31,6 @@ json_dep = dependency('json-glib-1.0')
 executable(
     'gala-daemon',
     gala_daemon_sources,
-    gala_common_enums,
     config_header,
     gala_resources,
     osk_resources,
