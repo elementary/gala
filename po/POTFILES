@@ -9,14 +9,12 @@ daemon/DisplayConfig.vala
 daemon/Main.vala
 daemon/MonitorLabel.vala
 daemon/Window.vala
-daemon/WindowMenu.vala
 
 daemon-gtk3/BackgroundMenu.vala
 daemon-gtk3/DBus.vala
 daemon-gtk3/Main.vala
 daemon-gtk3/MonitorLabel.vala
 daemon-gtk3/Window.vala
-daemon-gtk3/WindowMenu.vala
 
 data/gala-multitaskingview.desktop.in
 data/gala-other.desktop.in
@@ -111,6 +109,7 @@ src/Misc/SessionManager.vala
 src/Misc/WindowAttentionTracker.vala
 src/Misc/WindowDragProvider.vala
 src/Misc/WindowListener.vala
+src/Misc/WindowMenuManager.vala
 src/Misc/WindowMover.vala
 src/Misc/WindowStateSaver.vala
 src/Misc/WindowTracker.vala
