@@ -940,6 +940,57 @@ namespace Gala {
             size_change_completed (actor);
         }
 
+        private async void animate_size_change (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
+            kill_window_effects (actor);
+
+            changing_size.add (actor);
+
+            snapshot.set_position (old_rect.x, old_rect.y);
+
+            ui_group.add_child (snapshot);
+
+            var snapshot_scale_x = (double) new_rect.width / old_rect.width;
+            var snapshot_scale_y = (double) new_rect.height / old_rect.height;
+
+            snapshot.save_easing_state ();
+            snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            snapshot.set_easing_duration (AnimationDuration.SNAP);
+            snapshot.set_position (new_rect.x, new_rect.y);
+            snapshot.set_scale (snapshot_scale_x, snapshot_scale_y);
+            snapshot.opacity = 0U;
+            snapshot.restore_easing_state ();
+
+            var actor_scale_x = (double) old_rect.width / new_rect.width;
+            var actor_scale_y = (double) old_rect.height / new_rect.height;
+
+            /* Since we scale the actor, the difference between the actor origin and where the content actually
+               starts (i.e. the difference between buffer rect and frame rect origins) is now scaled too.
+               Therefore calculate the position where the content starts (i.e. where the frame rect would be)
+               at this size. With the snapshot we don't have this problem because when we take it, we clip it
+               to the frame rect so the actor origin is always the content origin there. */
+
+            var new_buffer_rect = actor.meta_window.get_buffer_rect ();
+
+            var scaled_frame_rect_x = new_buffer_rect.x + (new_rect.x - new_buffer_rect.x) * actor_scale_x;
+            var scaled_frame_rect_y = new_buffer_rect.y + (new_rect.y - new_buffer_rect.y) * actor_scale_y;
+
+            var translation_x = (float) (old_rect.x - scaled_frame_rect_x);
+            var translation_y = (float) (old_rect.y - scaled_frame_rect_y);
+
+            actor.set_pivot_point (0.0f, 0.0f);
+
+            var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
+            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0);
+            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0);
+            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f);
+            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f);
+
+            yield actor_transition_builder.run ();
+
+            ui_group.remove_child (snapshot);
+            changing_size.remove (actor);
+        }
+
         public override void minimize (Meta.WindowActor actor) {
             animate_minimize.begin (actor);
         }
@@ -1140,57 +1191,6 @@ namespace Gala {
 
             destroying.remove (actor);
             destroy_completed (actor);
-        }
-
-        private async void animate_size_change (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
-            kill_window_effects (actor);
-
-            changing_size.add (actor);
-
-            snapshot.set_position (old_rect.x, old_rect.y);
-
-            ui_group.add_child (snapshot);
-
-            var snapshot_scale_x = (double) new_rect.width / old_rect.width;
-            var snapshot_scale_y = (double) new_rect.height / old_rect.height;
-
-            snapshot.save_easing_state ();
-            snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            snapshot.set_easing_duration (AnimationDuration.SNAP);
-            snapshot.set_position (new_rect.x, new_rect.y);
-            snapshot.set_scale (snapshot_scale_x, snapshot_scale_y);
-            snapshot.opacity = 0U;
-            snapshot.restore_easing_state ();
-
-            var actor_scale_x = (double) old_rect.width / new_rect.width;
-            var actor_scale_y = (double) old_rect.height / new_rect.height;
-
-            /* Since we scale the actor, the difference between the actor origin and where the content actually
-               starts (i.e. the difference between buffer rect and frame rect origins) is now scaled too.
-               Therefore calculate the position where the content starts (i.e. where the frame rect would be)
-               at this size. With the snapshot we don't have this problem because when we take it, we clip it
-               to the frame rect so the actor origin is always the content origin there. */
-
-            var new_buffer_rect = actor.meta_window.get_buffer_rect ();
-
-            var scaled_frame_rect_x = new_buffer_rect.x + (new_rect.x - new_buffer_rect.x) * actor_scale_x;
-            var scaled_frame_rect_y = new_buffer_rect.y + (new_rect.y - new_buffer_rect.y) * actor_scale_y;
-
-            var translation_x = (float) (old_rect.x - scaled_frame_rect_x);
-            var translation_y = (float) (old_rect.y - scaled_frame_rect_y);
-
-            actor.set_pivot_point (0.0f, 0.0f);
-
-            var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
-            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0);
-            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0);
-            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f);
-            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f);
-
-            yield actor_transition_builder.run ();
-
-            ui_group.remove_child (snapshot);
-            changing_size.remove (actor);
         }
 
         // Cancel attached animation of an actor and reset it
