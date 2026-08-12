@@ -22,11 +22,23 @@
     <file alias="buttons/confirm.svg" compressed="true" preprocess="xml-stripblanks">confirm.svg</file>
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala">
-    <file compressed="true">shaders/colorblindness-correction.vert</file>
-    <file compressed="true">shaders/monochrome.vert</file>
-    <file compressed="true">shaders/rounded-corners.vert</file>
+    <file compressed="true">shaders/box-blur.frag</file>
+    <file compressed="true">shaders/colorblindness-correction.frag</file>
+    <file compressed="true">shaders/monochrome.frag</file>
+    <file compressed="true">shaders/rounded-corners.frag</file>
   </gresource>
   <gresource prefix="/io/elementary/desktop/gala-daemon">
     <file compressed="true">gala-daemon.css</file>
+  </gresource>
+  <gresource prefix="/io/elementary/desktop/gala-daemon/icons">
+    <file alias="scalable/status/osk-caps-lock-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-caps-lock-symbolic.svg</file>
+    <file alias="scalable/status/osk-delete-symbolic-rtl.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-delete-symbolic-rtl.svg</file>
+    <file alias="scalable/status/osk-delete-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-delete-symbolic.svg</file>
+    <file alias="scalable/status/osk-emoji-picker-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-emoji-picker-symbolic.svg</file>
+    <file alias="scalable/status/osk-enter-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-enter-symbolic.svg</file>
+    <file alias="scalable/status/osk-hide-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-hide-symbolic.svg</file>
+    <file alias="scalable/status/osk-layout-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-layout-symbolic.svg</file>
+    <file alias="scalable/status/osk-shift-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-shift-symbolic.svg</file>
+    <file alias="scalable/status/osk-zwnj-symbolic.svg" compressed="true" preprocess="xml-stripblanks">icons/osk-zwnj-symbolic.svg</file>
   </gresource>
 </gresources>

@@ -1,9 +1,8 @@
 /*
- * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * Copyright 2024-2026 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: LGPL-2.0-or-later
  */
 
-#if HAS_MUTTER46
 public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     private int width = -1;
     private int height = -1;
@@ -135,44 +134,3 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
         }
     }
 }
-#else
-public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
-    public Clutter.Canvas canvas;
-
-    construct {
-        canvas = new Clutter.Canvas ();
-        canvas.draw.connect (on_draw);
-    }
-
-    public signal void draw (Cairo.Context cr, int width, int height);
-
-    public bool get_preferred_size (out float out_width, out float out_height) {
-        return canvas.get_preferred_size (out out_width, out out_height);
-    }
-
-    public void invalidate () {
-        canvas.invalidate ();
-    }
-
-    public void invalidate_size () {
-        canvas.invalidate_size ();
-    }
-
-    public void paint_content (Clutter.Actor actor, Clutter.PaintNode root, Clutter.PaintContext paint_context) {
-        canvas.paint_content (actor, root, paint_context);
-    }
-
-    public void set_size (int new_width, int new_height) requires (new_width >= -1 && new_height >= -1) {
-        canvas.set_size (new_width, new_height);
-    }
-
-    public void set_scale_factor (float new_scale_factor) requires (new_scale_factor > 0.0f) {
-        canvas.set_scale_factor (new_scale_factor);
-    }
-
-    private bool on_draw (Cairo.Context cr, int width, int height) {
-        draw (cr, width, height);
-        return true;
-    }
-}
-#endif

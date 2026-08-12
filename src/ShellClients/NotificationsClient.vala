@@ -21,11 +21,7 @@ public class Gala.NotificationsClient : Object {
             window.set_data (NOTIFICATION_DATA_KEY, true);
             window.make_above ();
             window.stick ();
-#if HAS_MUTTER49
-            window.set_type (Meta.WindowType.DOCK);
-#elif HAS_MUTTER46
-            client.wayland_client.make_dock (window);
-#endif
+            ManagedClient.make_dock (window);
         });
     }
 }

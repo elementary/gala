@@ -38,10 +38,10 @@ public class Gala.MonochromeEffect : Clutter.ShaderEffect {
         );
 
         try {
-            var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/monochrome.vert", GLib.ResourceLookupFlags.NONE);
+            var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/monochrome.frag", GLib.ResourceLookupFlags.NONE);
             set_shader_source ((string) bytes.get_data ());
         } catch (Error e) {
-            critical ("Unable to load monochrome.vert: %s", e.message);
+            critical ("Unable to load monochrome.frag: %s", e.message);
         }
 
         pause_for_screenshot = false;

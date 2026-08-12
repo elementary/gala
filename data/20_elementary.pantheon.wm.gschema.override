@@ -2,6 +2,7 @@
 dynamic-workspaces = true
 attach-modal-dialogs = false
 edge-tiling = true
+experimental-features = ['scale-monitor-framebuffer']
 
 [org.gnome.desktop.wm.preferences:Pantheon]
 button-layout='close:maximize'

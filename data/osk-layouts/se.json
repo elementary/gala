@@ -1,0 +1,1048 @@
+{
+  "levels": [
+    {
+      "level": "default",
+      "mode": "default",
+      "rows": [
+        [
+          {
+            "strings": [
+              "q"
+            ]
+          },
+          {
+            "strings": [
+              "w"
+            ]
+          },
+          {
+            "strings": [
+              "e",
+              "é",
+              "è",
+              "ê",
+              "ë",
+              "ę"
+            ]
+          },
+          {
+            "strings": [
+              "r",
+              "ř"
+            ]
+          },
+          {
+            "strings": [
+              "t",
+              "ť",
+              "þ"
+            ]
+          },
+          {
+            "strings": [
+              "y",
+              "ý",
+              "ÿ",
+              "ü"
+            ]
+          },
+          {
+            "strings": [
+              "u",
+              "ü",
+              "ú",
+              "ù",
+              "û",
+              "ū"
+            ]
+          },
+          {
+            "strings": [
+              "i",
+              "í",
+              "ì",
+              "î",
+              "ï"
+            ]
+          },
+          {
+            "strings": [
+              "o",
+              "ó",
+              "ò",
+              "ô",
+              "õ",
+              "ō"
+            ]
+          },
+          {
+            "strings": [
+              "p"
+            ]
+          },
+          {
+            "strings": [
+              "å"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "strings": [
+              "a",
+              "á",
+              "à",
+              "â",
+              "ą",
+              "ã"
+            ]
+          },
+          {
+            "strings": [
+              "s",
+              "ś",
+              "š",
+              "ş",
+              "ß"
+            ]
+          },
+          {
+            "strings": [
+              "d",
+              "ð",
+              "ď"
+            ]
+          },
+          {
+            "strings": [
+              "f"
+            ]
+          },
+          {
+            "strings": [
+              "g"
+            ]
+          },
+          {
+            "strings": [
+              "h"
+            ]
+          },
+          {
+            "strings": [
+              "j"
+            ]
+          },
+          {
+            "strings": [
+              "k"
+            ]
+          },
+          {
+            "strings": [
+              "l",
+              "ł"
+            ]
+          },
+          {
+            "strings": [
+              "ö",
+              "ø",
+              "œ"
+            ]
+          },
+          {
+            "strings": [
+              "ä",
+              "æ"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "iconName": "osk-shift-symbolic",
+            "level": "shift",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "z",
+              "ź",
+              "ž",
+              "ż"
+            ]
+          },
+          {
+            "strings": [
+              "x"
+            ]
+          },
+          {
+            "strings": [
+              "c",
+              "ç",
+              "ć",
+              "č"
+            ]
+          },
+          {
+            "strings": [
+              "v"
+            ]
+          },
+          {
+            "strings": [
+              "b"
+            ]
+          },
+          {
+            "strings": [
+              "n",
+              "ń",
+              "ñ",
+              "ň"
+            ]
+          },
+          {
+            "strings": [
+              "m"
+            ]
+          },
+          {
+            "strings": [
+              ","
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "#",
+              "!",
+              ",",
+              "?",
+              "-",
+              ":",
+              "'",
+              "@"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "iconName": "osk-shift-symbolic",
+            "level": "shift",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 1.5
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 6
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic",
+            "width": 1.5
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic",
+            "width": 2
+          }
+        ]
+      ]
+    },
+    {
+      "level": "shift",
+      "mode": "latched",
+      "rows": [
+        [
+          {
+            "strings": [
+              "Q"
+            ]
+          },
+          {
+            "strings": [
+              "W"
+            ]
+          },
+          {
+            "strings": [
+              "E",
+              "É",
+              "È",
+              "Ê",
+              "Ë",
+              "Ę"
+            ]
+          },
+          {
+            "strings": [
+              "R",
+              "Ř"
+            ]
+          },
+          {
+            "strings": [
+              "T",
+              "Ť",
+              "Þ"
+            ]
+          },
+          {
+            "strings": [
+              "Y",
+              "Ý",
+              "Ÿ",
+              "Ü"
+            ]
+          },
+          {
+            "strings": [
+              "U",
+              "Ü",
+              "Ú",
+              "Ù",
+              "Û",
+              "Ū"
+            ]
+          },
+          {
+            "strings": [
+              "I",
+              "Í",
+              "Ì",
+              "Î",
+              "Ï"
+            ]
+          },
+          {
+            "strings": [
+              "O",
+              "Ó",
+              "Ò",
+              "Ô",
+              "Õ",
+              "Ō"
+            ]
+          },
+          {
+            "strings": [
+              "P"
+            ]
+          },
+          {
+            "strings": [
+              "Å"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "strings": [
+              "A",
+              "Á",
+              "À",
+              "Â",
+              "Ą",
+              "Ã"
+            ]
+          },
+          {
+            "strings": [
+              "S",
+              "Ś",
+              "Š",
+              "Ş",
+              "ẞ"
+            ]
+          },
+          {
+            "strings": [
+              "D",
+              "Ð",
+              "Ď"
+            ]
+          },
+          {
+            "strings": [
+              "F"
+            ]
+          },
+          {
+            "strings": [
+              "G"
+            ]
+          },
+          {
+            "strings": [
+              "H"
+            ]
+          },
+          {
+            "strings": [
+              "J"
+            ]
+          },
+          {
+            "strings": [
+              "K"
+            ]
+          },
+          {
+            "strings": [
+              "L",
+              "Ł"
+            ]
+          },
+          {
+            "strings": [
+              "Ö",
+              "Ø",
+              "Œ"
+            ]
+          },
+          {
+            "strings": [
+              "Ä",
+              "Æ"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "iconName": "osk-shift-symbolic",
+            "level": "default",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "Z",
+              "Ź",
+              "Ž",
+              "Ż"
+            ]
+          },
+          {
+            "strings": [
+              "X"
+            ]
+          },
+          {
+            "strings": [
+              "C",
+              "Ç",
+              "Ć",
+              "Č"
+            ]
+          },
+          {
+            "strings": [
+              "V"
+            ]
+          },
+          {
+            "strings": [
+              "B"
+            ]
+          },
+          {
+            "strings": [
+              "N",
+              "Ń",
+              "Ñ",
+              "Ň"
+            ]
+          },
+          {
+            "strings": [
+              "M"
+            ]
+          },
+          {
+            "strings": [
+              ","
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "#",
+              "!",
+              ",",
+              "?",
+              "-",
+              ":",
+              "'",
+              "@"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "iconName": "osk-shift-symbolic",
+            "level": "default",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 1.5
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 6
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic",
+            "width": 1.5
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic",
+            "width": 2
+          }
+        ]
+      ]
+    },
+    {
+      "level": "opt",
+      "mode": "locked",
+      "rows": [
+        [
+          {
+            "strings": [
+              "1",
+              "¹",
+              "½",
+              "⅓",
+              "¼",
+              "⅛"
+            ]
+          },
+          {
+            "strings": [
+              "2",
+              "²",
+              "⅔"
+            ]
+          },
+          {
+            "strings": [
+              "3",
+              "³",
+              "¾",
+              "⅜"
+            ]
+          },
+          {
+            "strings": [
+              "4",
+              "⁴"
+            ]
+          },
+          {
+            "strings": [
+              "5",
+              "⅝"
+            ]
+          },
+          {
+            "strings": [
+              "6"
+            ]
+          },
+          {
+            "strings": [
+              "7",
+              "⅞"
+            ]
+          },
+          {
+            "strings": [
+              "8"
+            ]
+          },
+          {
+            "strings": [
+              "9"
+            ]
+          },
+          {
+            "strings": [
+              "0",
+              "ⁿ",
+              "∅"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "leftOffset": 0.5,
+            "strings": [
+              "@"
+            ]
+          },
+          {
+            "strings": [
+              "#"
+            ]
+          },
+          {
+            "strings": [
+              "€",
+              "¢",
+              "£",
+              "$",
+              "¥",
+              "₱"
+            ]
+          },
+          {
+            "strings": [
+              "%",
+              "‰"
+            ]
+          },
+          {
+            "strings": [
+              "&"
+            ]
+          },
+          {
+            "strings": [
+              "-",
+              "_",
+              "–",
+              "—",
+              "·"
+            ]
+          },
+          {
+            "strings": [
+              "+",
+              "±"
+            ]
+          },
+          {
+            "strings": [
+              "(",
+              "<",
+              "{",
+              "["
+            ]
+          },
+          {
+            "strings": [
+              ")",
+              ">",
+              "}",
+              "]"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "=/<",
+            "level": "opt+shift",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "*",
+              "†",
+              "‡",
+              "★"
+            ]
+          },
+          {
+            "strings": [
+              "\"",
+              "“",
+              "”",
+              "«",
+              "»"
+            ]
+          },
+          {
+            "strings": [
+              "'",
+              "‘",
+              "’",
+              "‹",
+              "›"
+            ]
+          },
+          {
+            "strings": [
+              ":"
+            ]
+          },
+          {
+            "strings": [
+              ";"
+            ]
+          },
+          {
+            "strings": [
+              "!",
+              "¡"
+            ]
+          },
+          {
+            "strings": [
+              "?",
+              "¿"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "label": "=/<",
+            "level": "opt+shift",
+            "width": 3
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "ABC",
+            "level": "default",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "_"
+            ]
+          },
+          {
+            "strings": [
+              "/"
+            ]
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 3
+          },
+          {
+            "strings": [
+              ","
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "…"
+            ]
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic"
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic"
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic"
+          }
+        ]
+      ]
+    },
+    {
+      "level": "opt+shift",
+      "mode": "locked",
+      "rows": [
+        [
+          {
+            "strings": [
+              "~"
+            ]
+          },
+          {
+            "strings": [
+              "`"
+            ]
+          },
+          {
+            "strings": [
+              "|"
+            ]
+          },
+          {
+            "strings": [
+              "•",
+              "♪",
+              "♥",
+              "♠",
+              "♦",
+              "♣"
+            ]
+          },
+          {
+            "strings": [
+              "√"
+            ]
+          },
+          {
+            "strings": [
+              "Π",
+              "π"
+            ]
+          },
+          {
+            "strings": [
+              "÷"
+            ]
+          },
+          {
+            "strings": [
+              "×"
+            ]
+          },
+          {
+            "strings": [
+              "¶",
+              "§"
+            ]
+          },
+          {
+            "strings": [
+              "∆"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "leftOffset": 0.5,
+            "strings": [
+              "£"
+            ]
+          },
+          {
+            "strings": [
+              "¥"
+            ]
+          },
+          {
+            "strings": [
+              "$",
+              "¢"
+            ]
+          },
+          {
+            "strings": [
+              "¢"
+            ]
+          },
+          {
+            "strings": [
+              "^",
+              "↑",
+              "↓",
+              "←",
+              "→"
+            ]
+          },
+          {
+            "strings": [
+              "°",
+              "′",
+              "″"
+            ]
+          },
+          {
+            "strings": [
+              "=",
+              "≠",
+              "≈",
+              "∞"
+            ]
+          },
+          {
+            "strings": [
+              "{"
+            ]
+          },
+          {
+            "strings": [
+              "}"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "\\"
+            ]
+          },
+          {
+            "strings": [
+              "©"
+            ]
+          },
+          {
+            "strings": [
+              "®"
+            ]
+          },
+          {
+            "strings": [
+              "™"
+            ]
+          },
+          {
+            "strings": [
+              "℅"
+            ]
+          },
+          {
+            "strings": [
+              "["
+            ]
+          },
+          {
+            "strings": [
+              "]"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 3
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "ABC",
+            "level": "default",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "<",
+              "‹",
+              "≤",
+              "«"
+            ]
+          },
+          {
+            "strings": [
+              ">",
+              "›",
+              "≥",
+              "»"
+            ]
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 3
+          },
+          {
+            "strings": [
+              ","
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "…"
+            ]
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic"
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic"
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic"
+          }
+        ]
+      ]
+    }
+  ],
+  "locale": "sv",
+  "name": "Swedish"
+}

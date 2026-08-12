@@ -101,13 +101,6 @@ public class Gala.Background : Object {
 #else
         var color = Clutter.Color.from_string (color_string);
 #endif
-        if (color == null) {
-#if HAS_MUTTER47
-            color = Cogl.Color.from_string ("black");
-#else
-            color = Clutter.Color.from_string ("black");
-#endif
-        }
 
         var shading_type = settings.get_enum ("color-shading-type");
 
@@ -120,13 +113,6 @@ public class Gala.Background : Object {
 #else
             var second_color = Clutter.Color.from_string (color_string);
 #endif
-            if (second_color == null) {
-#if HAS_MUTTER47
-                second_color = Cogl.Color.from_string ("black");
-#else
-                second_color = Clutter.Color.from_string ("black");
-#endif
-            }
 
             background.set_gradient ((GDesktop.BackgroundShading) shading_type, color, second_color);
         }

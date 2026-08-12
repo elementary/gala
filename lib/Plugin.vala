@@ -18,8 +18,7 @@
 namespace Gala {
     public enum PluginFunction {
         ADDITION,
-        WINDOW_SWITCHER,
-        WINDOW_OVERVIEW
+        WINDOW_SWITCHER
     }
 
     public enum LoadPriority {
@@ -82,48 +81,18 @@ namespace Gala {
          * the stage, which means your actors, instead of the windows.
          *
          * It is calculated by the system whenever update_region is called.
-         * You can influce it with the custom_region and the track_actor function.
+         * You can influence it with the track_actor function.
          */
         private Mtk.Rectangle[] region;
         public unowned Mtk.Rectangle[] get_region () {
             return region;
         }
-        /**
-         * This list will be merged with the region property. See region for
-         * more details. Changing this property will cause update_region to be
-         * called. Default to null.
-         */
-        private Mtk.Rectangle[]? _custom_region = null;
-        protected unowned Mtk.Rectangle[]? get_custom_region () {
-            return _custom_region;
-        }
-        protected void set_custom_region (Mtk.Rectangle[]? custom_region) {
-            _custom_region = custom_region;
-            update_region ();
-        }
-        /**
-         * Set this property to true while animating an actor if you have tracked
-         * actors to prevent constant recalculations of the regions during an
-         * animation.
-         */
-        protected bool freeze_track {
-            get {
-                return _freeze_track;
-            }
-            set {
-                _freeze_track = value;
 
-                if (!_freeze_track)
-                  update_region ();
-            }
-        }
-
-        private bool _freeze_track = false;
         private List<Clutter.Actor> tracked_actors = new List<Clutter.Actor> ();
 
         /**
          * Once this method is called you can start adding actors to the stage
-         * via the windowmanager instance that is given to you.
+         * via the window manager instance that is given to you.
          *
          * @param wm The window manager.
          */
@@ -146,7 +115,7 @@ namespace Gala {
          */
         public void track_actor (Clutter.Actor actor) {
             tracked_actors.prepend (actor);
-            actor.notify["allocation"].connect (on_actor_allocation_changed);
+            actor.notify["allocation"].connect (update_region);
 
             update_region ();
         }
@@ -159,38 +128,21 @@ namespace Gala {
          */
         public void untrack_actor (Clutter.Actor actor) {
             tracked_actors.remove (actor);
-            actor.notify["allocation"].disconnect (on_actor_allocation_changed);
+            actor.notify["allocation"].disconnect (update_region);
         }
 
         /**
          * You can call this method to force the system to update the region that
-         * is used by the window manager. It will automatically upon changes to
-         * the custom_region property and when a tracked actor's allocation changes
-         * unless freeze_track is set to true. You may need to call this function
-         * after setting freeze_track back to false after an animation to make the
-         * wm aware of the new position of the actor in question.
+         * is used by the window manager. It will automatically be called when a tracked actor's allocation changes.
          */
         public void update_region () {
-            unowned var custom_region = get_custom_region ();
-            var has_custom = custom_region != null;
-            var len = tracked_actors.length () + (has_custom ? custom_region.length : 0);
-
-            var regions = new Mtk.Rectangle[len];
+            var regions = new Mtk.Rectangle[tracked_actors.length ()];
             var i = 0;
-
-            if (has_custom) {
-                for (var j = 0; j < custom_region.length; j++) {
-                    regions[i++] = custom_region[j];
-                }
-            }
 
             foreach (var actor in tracked_actors) {
                 float x, y, w, h;
                 actor.get_transformed_position (out x, out y);
                 actor.get_transformed_size (out w, out h);
-
-                if (w == 0 || h == 0)
-                    continue;
 
                 regions[i++] = { (int) x, (int) y, (int) w, (int) h };
             }
@@ -198,11 +150,6 @@ namespace Gala {
             region = regions;
 
             region_changed ();
-        }
-
-        private void on_actor_allocation_changed (GLib.Object actor_object, GLib.ParamSpec pspec) {
-            if (!freeze_track)
-                update_region ();
         }
     }
 }

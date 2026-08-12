@@ -18,6 +18,7 @@ namespace Gala {
          * set the area where clutter can receive events
          **/
         public static void set_input_area (Meta.Display display, InputArea area) {
+#if !HAS_MUTTER50
             if (Meta.Util.is_wayland_compositor ()) {
                 return;
             }
@@ -83,6 +84,7 @@ namespace Gala {
 #else
             var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
             x11display.set_stage_input_region (xregion);
+#endif
 #endif
         }
 
@@ -210,17 +212,19 @@ namespace Gala {
             });
 
             foreach (var window in list) {
-                if (!ShellClientsManager.get_instance ().is_positioned_window (window)) {
-                    if (any_window == null) {
-                        any_window = window;
-                    }
-
-                    if (!Utils.get_window_is_normal (window)) {
-                        continue;
-                    }
-
-                    return window;
+                if (window.find_root_ancestor ().window_type == DOCK) {
+                    continue;
                 }
+
+                if (any_window == null) {
+                    any_window = window;
+                }
+
+                if (!Utils.get_window_is_normal (window)) {
+                    continue;
+                }
+
+                return window;
             }
 
             return null;

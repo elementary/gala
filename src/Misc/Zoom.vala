@@ -1,0 +1,173 @@
+/*
+ * Copyright 2022-2026 elementary, Inc. (https://elementary.io)
+ * Copyright 2013 Tom Beckmann
+ * Copyright 2013 Rico Tzschichholz
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+public class Gala.Zoom : Object, GestureTarget, RootTarget {
+    private const float MIN_ZOOM = 1.0f;
+    private const float MAX_ZOOM = 10.0f;
+    private const float SHORTCUT_DELTA = 0.5f;
+
+    public WindowManager wm { get; construct; }
+
+    public Clutter.Actor? actor { get { return wm.ui_group; } }
+
+    private uint mouse_poll_later = 0;
+    private float current_zoom = MIN_ZOOM;
+    private ulong wins_handler_id = 0UL;
+
+    private GestureController gesture_controller;
+    private double current_commit = 0;
+
+    private GLib.Settings behavior_settings;
+
+    public Zoom (WindowManager wm) {
+        Object (wm: wm);
+    }
+
+    construct {
+        unowned var display = wm.get_display ();
+        var schema = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
+
+        display.add_keybinding ("zoom-in", schema, NONE, zoom_in);
+        display.add_keybinding ("zoom-out", schema, NONE, zoom_out);
+
+        gesture_controller = new GestureController (ZOOM) {
+            snap = false
+        };
+        gesture_controller.add_trigger (new GlobalTrigger (ZOOM, wm));
+        add_gesture_controller (gesture_controller);
+
+        behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
+
+        var scroll_action = new SuperScrollAction (display);
+        scroll_action.triggered.connect (handle_super_scroll);
+#if HAS_MUTTER48
+        display.get_compositor ().get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
+#else
+        display.get_stage ().add_action_full ("zoom-super-scroll-action", CAPTURE, scroll_action);
+#endif
+    }
+
+    private void zoom_in (Meta.Display display, Meta.Window? window,
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
+        zoom (SHORTCUT_DELTA, true);
+    }
+
+    private void zoom_out (Meta.Display display, Meta.Window? window,
+        Clutter.KeyEvent? event, Meta.KeyBinding binding) {
+        zoom (-SHORTCUT_DELTA, true);
+    }
+
+    private bool handle_super_scroll (uint32 timestamp, double dx, double dy) {
+        if (behavior_settings.get_enum ("super-scroll-action") != 2) {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        var d = dx.abs () > dy.abs () ? dx : dy;
+
+        if (d > 0) {
+            zoom (SHORTCUT_DELTA, true);
+        } else if (d < 0) {
+            zoom (-SHORTCUT_DELTA, true);
+        }
+
+        return Clutter.EVENT_STOP;
+    }
+
+    private void zoom (float delta, bool play_sound) {
+        // Nothing to do if zooming out of our bounds is requested
+        if ((current_zoom <= MIN_ZOOM && delta < 0) || (current_zoom >= MAX_ZOOM && delta >= 0)) {
+            if (play_sound) {
+                InternalUtils.bell_notify (wm.get_display ());
+            }
+            return;
+        }
+
+        gesture_controller.goto (current_commit + (delta / 10));
+    }
+
+    public void propagate (UpdateType update_type, GestureAction action, double progress) {
+        switch (update_type) {
+            case COMMIT:
+                current_commit = progress;
+                break;
+
+            case UPDATE:
+                var target_zoom = (float) progress * 10 + 1;
+                if (!Meta.Prefs.get_gnome_animations ()) {
+                    var delta = target_zoom - current_zoom;
+                    if (delta.abs () >= SHORTCUT_DELTA - float.EPSILON) {
+                        target_zoom = current_zoom + ((delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA);
+                    } else {
+                        return;
+                    }
+                }
+
+                current_zoom = target_zoom;
+                update_ui ();
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private inline Graphene.Point compute_new_pivot_point () {
+        unowned var wins = wm.ui_group;
+        Graphene.Point coords;
+#if HAS_MUTTER48
+        unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
+#else
+        unowned var tracker = wm.get_display ().get_cursor_tracker ();
+#endif
+        tracker.get_pointer (out coords, null);
+        var new_pivot = Graphene.Point () {
+            x = coords.x / wins.width,
+            y = coords.y / wins.height
+        };
+
+        return new_pivot;
+    }
+
+    private void update_ui () {
+        unowned var wins = wm.ui_group;
+        // Add meta later to poll current mouse position to reposition window-group
+        // to show requested zoomed area
+        if (mouse_poll_later == 0) {
+            wins.pivot_point = compute_new_pivot_point ();
+
+            unowned var laters = wm.get_display ().get_compositor ().get_laters ();
+            mouse_poll_later = laters.add (BEFORE_REDRAW, () => {
+                wins.pivot_point = compute_new_pivot_point ();
+
+                return Source.CONTINUE;
+            });
+        }
+
+        if (wins_handler_id > 0) {
+            wins.disconnect (wins_handler_id);
+            wins_handler_id = 0;
+        }
+
+        if (current_zoom <= MIN_ZOOM) {
+            current_zoom = MIN_ZOOM;
+
+            if (mouse_poll_later > 0) {
+                unowned var laters = wm.get_display ().get_compositor ().get_laters ();
+                laters.remove (mouse_poll_later);
+                mouse_poll_later = 0;
+            }
+
+            wins.set_scale (MIN_ZOOM, MIN_ZOOM);
+            wins.set_pivot_point (0.0f, 0.0f);
+
+            return;
+        }
+
+        wins.set_scale (current_zoom, current_zoom);
+    }
+}

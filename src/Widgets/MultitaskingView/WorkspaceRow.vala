@@ -5,18 +5,24 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-public class Gala.WorkspaceRow : ActorTarget {
+public class Gala.WorkspaceRow : Widget {
     public const int WORKSPACE_GAP = 24;
 
-    public Meta.Display display { get; construct; }
+    public WindowManager wm { get; construct; }
 
-    public WorkspaceRow (Meta.Display display) {
-        Object (display: display);
+    public WorkspaceRow (WindowManager wm) {
+        Object (wm: wm);
     }
 
     construct {
-        unowned var manager = display.get_workspace_manager ();
+        unowned var manager = wm.get_display ().get_workspace_manager ();
+        manager.workspace_added.connect (add_workspace);
+        manager.workspace_removed.connect (remove_workspace);
         manager.workspaces_reordered.connect (update_order);
+
+        for (int i = 0; i < manager.n_workspaces; i++) {
+            add_workspace (i);
+        }
     }
 
     public override void allocate (Clutter.ActorBox allocation) {
@@ -42,10 +48,24 @@ public class Gala.WorkspaceRow : ActorTarget {
         }
     }
 
+    private void add_workspace (int index) {
+        var workspace = wm.get_display ().get_workspace_manager ().get_workspace_by_index (index);
+        insert_child_at_index (new WorkspaceClone (wm, workspace), index);
+    }
+
+    private void remove_workspace (int index) {
+        remove_child (get_child_at_index (index));
+    }
+
     private void update_order () {
         for (var child = get_first_child (); child != null; child = child.get_next_sibling ()) {
             unowned var workspace_clone = (WorkspaceClone) child;
             set_child_at_index (workspace_clone, workspace_clone.workspace.index ());
         }
+    }
+
+    public override bool move_focus (FocusDirection direction) {
+        var widget = (Widget) get_child_at_index ((int) (-get_current_commit (SWITCH_WORKSPACE)));
+        return widget.focus (direction);
     }
 }

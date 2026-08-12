@@ -76,7 +76,11 @@ namespace Gala {
 
         try {
             ctx.start ();
+#if HAS_MUTTER50
+            if (true) {
+#else
             if (ctx.get_compositor_type () == Meta.CompositorType.WAYLAND) {
+#endif
                 Gala.init_pantheon_shell (ctx);
             }
         } catch (Error e) {

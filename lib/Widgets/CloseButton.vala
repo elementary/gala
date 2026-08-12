@@ -1,0 +1,63 @@
+/*
+ * Copyright 2024 elementary, Inc. (https://elementary.io)
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+public class Gala.CloseButton : Clutter.Actor {
+    private const uint ANIMATION_DURATION = 100;
+
+    public signal void triggered (uint32 timestamp);
+
+    public float monitor_scale { get; construct set; }
+
+    private Icon icon;
+#if HAS_MUTTER49
+    private Clutter.ClickGesture click_action;
+#else
+    private Clutter.ClickAction click_action;
+#endif
+
+    public CloseButton (float monitor_scale) {
+        Object (monitor_scale: monitor_scale);
+    }
+
+    construct {
+        reactive = true;
+
+        icon = new Icon.from_resource (
+            Utils.BUTTON_SIZE, monitor_scale,
+            "/org/pantheon/desktop/gala/buttons/close.svg"
+        ) {
+            pivot_point = { 0.5f, 0.5f }
+        };
+        add_child (icon);
+
+#if HAS_MUTTER49
+        click_action = new Clutter.ClickGesture ();
+#else
+        click_action = new Clutter.ClickAction ();
+#endif
+        add_action (click_action);
+#if HAS_MUTTER49
+        click_action.recognize.connect (on_clicked);
+#else
+        click_action.clicked.connect (on_clicked);
+#endif
+        click_action.notify["pressed"].connect (on_pressed_changed);
+    }
+
+    private void on_clicked () {
+        triggered (Meta.CURRENT_TIME);
+    }
+
+    private void on_pressed_changed () {
+        var estimated_duration = Utils.get_animation_duration ((uint) (ANIMATION_DURATION * (scale_x - 0.8) / 0.2));
+        var scale = click_action.pressed ? 0.8 : 1.0;
+
+        icon.save_easing_state ();
+        icon.set_easing_duration (estimated_duration);
+        icon.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT);
+        icon.set_scale (scale, scale);
+        icon.restore_easing_state ();
+    }
+}

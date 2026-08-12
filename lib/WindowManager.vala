@@ -23,48 +23,29 @@ namespace Gala {
         public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
     }
 
-    public enum ActionType {
-        NONE = 0,
-        SHOW_MULTITASKING_VIEW,
-        MAXIMIZE_CURRENT,
-        HIDE_CURRENT,
-        OPEN_LAUNCHER,
-        CUSTOM_COMMAND,
-        WINDOW_OVERVIEW,
-        WINDOW_OVERVIEW_ALL,
-        SWITCH_TO_WORKSPACE_PREVIOUS,
-        SWITCH_TO_WORKSPACE_NEXT,
-        SWITCH_TO_WORKSPACE_LAST,
-        START_MOVE_CURRENT,
-        START_RESIZE_CURRENT,
-        TOGGLE_ALWAYS_ON_TOP_CURRENT,
-        TOGGLE_ALWAYS_ON_VISIBLE_WORKSPACE_CURRENT,
-        MOVE_CURRENT_WORKSPACE_LEFT,
-        MOVE_CURRENT_WORKSPACE_RIGHT,
-        CLOSE_CURRENT,
-        SCREENSHOT_CURRENT
-    }
-
     [Flags]
-    public enum WindowFlags {
+    public enum ModalActions {
         NONE = 0,
-        CAN_HIDE,
-        CAN_MAXIMIZE,
-        IS_MAXIMIZED,
-        ALLOWS_MOVE,
-        ALLOWS_RESIZE,
-        ALWAYS_ON_TOP,
-        ON_ALL_WORKSPACES,
-        CAN_CLOSE,
-        IS_TILED,
-        ALLOWS_MOVE_LEFT,
-        ALLOWS_MOVE_RIGHT
+        SWITCH_WORKSPACE,
+        SWITCH_WINDOWS,
+        MULTITASKING_VIEW,
+        WINDOW_OVERVIEW,
+        ZOOM,
+        LOCATE_POINTER,
+        SCREENSHOT,
+        SCREENSHOT_AREA,
+        SCREENSHOT_WINDOW,
+        MEDIA_KEYS
     }
 
-    /**
-     * Function that should return true if the given shortcut should be blocked.
-     */
-    public delegate bool KeybindingFilter (Meta.KeyBinding binding);
+    public enum WindowGroup {
+        DESKTOP_SHELL,
+        MENU,
+        LOCK_SCREEN,
+        LOCK_SCREEN_SHELL,
+        MODAL,
+        OVERLAY,
+    }
 
     /**
      * A minimal class mostly used to identify your call to {@link WindowManager.push_modal} and used
@@ -73,39 +54,26 @@ namespace Gala {
     public class ModalProxy : Object {
         public Clutter.Grab? grab { get; set; }
 
-        private GestureAction[] allowed_actions;
-
-        /**
-         * A function which is called whenever a keybinding is pressed. If you supply a custom
-         * one you can filter out those that'd you like to be passed through and block all others.
-         * Defaults to blocking all.
-         * @see KeybindingFilter
-         */
-        private KeybindingFilter? _keybinding_filter = () => true;
-        public unowned KeybindingFilter? get_keybinding_filter () {
-            return _keybinding_filter;
-        }
-
-        public void set_keybinding_filter (KeybindingFilter? filter) {
-            _keybinding_filter = filter;
-        }
+        private ModalActions allowed_actions;
+        private WindowGroup[] allowed_window_groups;
 
         public ModalProxy () {
         }
 
-        /**
-         * Small utility to allow all keybindings
-         */
-        public void allow_all_keybindings () {
-            _keybinding_filter = null;
-        }
-
-        public void allow_actions (GestureAction[] actions) {
+        public void allow_actions (ModalActions actions) {
             allowed_actions = actions;
         }
 
-        public bool filter_action (GestureAction action) {
+        public bool filter_action (ModalActions action) {
             return !(action in allowed_actions);
+        }
+
+        public void allow_window_groups (WindowGroup[] window_groups) requires (grab == null) {
+            allowed_window_groups = window_groups;
+        }
+
+        public bool is_window_group_allowed (WindowGroup window_group) {
+            return window_group in allowed_window_groups;
         }
     }
 
@@ -210,6 +178,6 @@ namespace Gala {
          * Checks whether the action should currently be prohibited.
          * @return true if the action should be prohibited, false otherwise
          */
-        public abstract bool filter_action (GestureAction action);
+        public abstract bool filter_action (ModalActions action);
     }
 }

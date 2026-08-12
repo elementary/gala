@@ -295,7 +295,10 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     }
 
     public void close () {
-        wm.get_display ().set_cursor (DEFAULT);
+        set_cursor_type (Clutter.CursorType.DEFAULT);
+#else
+        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
+#endif
         wm.ui_group.remove_child (clone);
 
         if (modal_proxy != null) {

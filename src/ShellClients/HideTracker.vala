@@ -14,26 +14,18 @@ public class Gala.HideTracker : Object {
     public signal void show ();
 
     public Meta.Display display { get; construct; }
-    public unowned PanelWindow panel { get; construct; }
-    public Pantheon.Desktop.HideMode hide_mode { get; set; }
+    public unowned PanelWindow? panel { get; construct; }
 
     private static GLib.Settings behavior_settings;
 
-    private Clutter.PanAction pan_action;
-
     private bool hovered = false;
 
-    private bool overlap = false;
-    private bool focus_overlap = false;
-    private bool focus_maximized_overlap = false;
-    private bool fullscreen_overlap = false;
-
-    private Meta.Window current_focus_window;
+    private uint num_transients = 0;
+    private bool has_transients { get { return num_transients > 0; } }
 
     private Barrier? barrier;
 
     private uint hide_timeout_id = 0;
-    private uint update_timeout_id = 0;
 
     public HideTracker (Meta.Display display, PanelWindow panel) {
         Object (display: display, panel: panel);
@@ -45,26 +37,14 @@ public class Gala.HideTracker : Object {
 
     construct {
         panel.window.unmanaging.connect_after (() => {
+            /* The window was unmanaged so the panel will be freed because we only hold a weak reference,
+               therefore set it to null to avoid a dangling pointer */
+            panel = null;
+
             // The timeouts hold refs on us so we stay connected to signal handlers that might
             // access the panel which was already freed. To prevent that make sure we reset
             // the timeouts so that we get freed immediately
             reset_hide_timeout ();
-            reset_update_timeout ();
-        });
-
-        // Can't be local otherwise we get a memory leak :(
-        // See https://gitlab.gnome.org/GNOME/vala/-/issues/1548
-        current_focus_window = display.focus_window;
-        track_focus_window (current_focus_window);
-        display.notify["focus-window"].connect (() => {
-            untrack_focus_window (current_focus_window);
-            current_focus_window = display.focus_window;
-            track_focus_window (current_focus_window);
-        });
-
-        display.window_created.connect ((window) => {
-            schedule_update ();
-            window.unmanaged.connect (schedule_update);
         });
 
 #if HAS_MUTTER48
@@ -73,172 +53,66 @@ public class Gala.HideTracker : Object {
         unowned var cursor_tracker = display.get_cursor_tracker ();
 #endif
         cursor_tracker.position_invalidated.connect (() => {
+            if (panel == null) {
+                return;
+            }
+
             var has_pointer = panel.window.has_pointer ();
 
             if (hovered != has_pointer) {
                 hovered = has_pointer;
-                schedule_update ();
+                check_trigger_conditions ();
             }
         });
 
-        display.get_workspace_manager ().active_workspace_changed.connect (schedule_update);
-
-        pan_action = new Clutter.PanAction () {
-            n_touch_points = 1,
-            pan_axis = X_AXIS
-        };
-        pan_action.gesture_begin.connect (check_valid_gesture);
-        pan_action.pan.connect (on_pan);
-
-#if HAS_MUTTER48
-        display.get_compositor ().get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
-#else
-        display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
-#endif
+        display.window_created.connect (on_window_created);
+        display.notify["focus-window"].connect (check_trigger_conditions);
 
         panel.notify["anchor"].connect (setup_barrier);
 
         var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (() => {
-            setup_barrier (); //Make sure barriers are still on the primary monitor
-            schedule_update ();
+            setup_barrier (); // Make sure barriers are still on the primary monitor
         });
 
         setup_barrier ();
     }
 
+    private void on_window_created (Meta.Window new_window) {
+        InternalUtils.wait_for_window_actor (new_window, (new_window_actor) => {
+            if (panel == null) {
+                return;
+            }
 
-    private void track_focus_window (Meta.Window? window) {
-        if (window == null) {
-            return;
-        }
+            if (!panel.window.is_ancestor_of_transient (new_window_actor.meta_window)) {
+                return;
+            }
 
-        window.position_changed.connect (schedule_update);
-        window.size_changed.connect (schedule_update);
-        schedule_update ();
-    }
+            num_transients++;
+            check_trigger_conditions ();
 
-    private void untrack_focus_window (Meta.Window? window) {
-        if (window == null) {
-            return;
-        }
-
-        window.position_changed.disconnect (schedule_update);
-        window.size_changed.disconnect (schedule_update);
-        schedule_update ();
-    }
-
-    public void schedule_update () {
-        if (update_timeout_id != 0) {
-            return;
-        }
-
-        update_timeout_id = Timeout.add (UPDATE_TIMEOUT, () => {
-            update_overlap ();
-            update_timeout_id = 0;
-            return Source.REMOVE;
+            new_window_actor.meta_window.unmanaged.connect (() => {
+                num_transients--;
+                check_trigger_conditions ();
+            });
         });
     }
 
-    private void reset_update_timeout () {
-        if (update_timeout_id != 0) {
-            Source.remove (update_timeout_id);
-            update_timeout_id = 0;
-        }
-    }
-
-    public void update_overlap () {
-        overlap = false;
-        focus_overlap = false;
-        focus_maximized_overlap = false;
-        fullscreen_overlap = display.get_monitor_in_fullscreen (panel.window.get_monitor ());
-
-        unowned var active_workspace = display.get_workspace_manager ().get_active_workspace ();
-
-        Meta.Window? normal_mru_window, any_mru_window;
-        normal_mru_window = InternalUtils.get_mru_window (active_workspace, out any_mru_window);
-
-        foreach (var window in active_workspace.list_windows ()) {
-            if (window == panel.window) {
-                continue;
-            }
-
-            if (window.minimized) {
-                continue;
-            }
-
-            var type = window.get_window_type ();
-            if (type == DESKTOP || type == DOCK || type == MENU || type == SPLASHSCREEN) {
-                continue;
-            }
-
-            if (!panel.get_custom_window_rect ().overlap (window.get_frame_rect ())) {
-                continue;
-            }
-
-            overlap = true;
-
-            if (window != normal_mru_window && window != any_mru_window) {
-                continue;
-            }
-
-            focus_overlap = true;
-            focus_maximized_overlap = window.maximized_vertically;
+    private void check_trigger_conditions () {
+        if (panel == null) {
+            return;
         }
 
-        update_hidden ();
-    }
-
-    private void update_hidden () {
-        switch (hide_mode) {
-            case MAXIMIZED_FOCUS_WINDOW:
-                toggle_display (focus_maximized_overlap);
-                break;
-
-            case OVERLAPPING_FOCUS_WINDOW:
-                toggle_display (focus_overlap);
-                break;
-
-            case OVERLAPPING_WINDOW:
-                toggle_display (overlap);
-                break;
-
-            case ALWAYS:
-                toggle_display (true);
-                break;
-
-            case NEVER:
-                toggle_display (fullscreen_overlap);
-                break;
-        }
-    }
-
-    private void toggle_display (bool should_hide) {
-        hovered = panel.window.has_pointer ();
-
-        // Showing panels in fullscreen is broken in X11
-        if (should_hide && !hovered && !panel.window.has_focus () || InternalUtils.get_x11_in_fullscreen (display)) {
-            trigger_hide ();
-        } else {
+        if (hovered || has_transients || panel.window.has_focus ()) {
             trigger_show ();
+        } else {
+            trigger_hide ();
         }
     }
 
     private void trigger_hide () {
         if (hide_timeout_id != 0) {
-            return;
-        }
-
-        // Don't hide if we have transients, e.g. an open popover, dialog, etc.
-        var has_transients = false;
-        panel.window.foreach_transient (() => {
-            has_transients = true;
-            return false;
-        });
-
-        if (has_transients) {
-            reset_hide_timeout ();
-
+            /* Hide is already queued */
             return;
         }
 
@@ -260,38 +134,13 @@ public class Gala.HideTracker : Object {
         show ();
     }
 
-    private bool check_valid_gesture () {
-        if (panel.anchor != BOTTOM) {
-            debug ("Swipe to reveal is currently only supported for bottom anchors");
-            return false;
-        }
-
-        float y;
-        pan_action.get_press_coords (0, null, out y);
-
-        var monitor_geom = display.get_monitor_geometry (panel.window.get_monitor ());
-        if ((y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool on_pan () {
-        float delta_y;
-        pan_action.get_motion_delta (0, null, out delta_y);
-
-        if (delta_y < 0) { // Only allow swipes upwards
-            panel.window.focus (pan_action.get_last_event (0).get_time ());
-            trigger_show ();
-        }
-
-        return false;
-    }
-
     private void setup_barrier () {
+        if (panel == null) {
+            return;
+        }
+
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        var scale = display.get_monitor_scale (display.get_primary_monitor ());
+        var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
         var offset = Utils.scale_to_int (BARRIER_OFFSET, scale);
 
         switch (panel.anchor) {
@@ -345,13 +194,18 @@ public class Gala.HideTracker : Object {
 
     private void on_barrier_triggered () {
         // Showing panels in fullscreen is broken in X11
-        if (InternalUtils.get_x11_in_fullscreen (display)) {
+        if (InternalUtils.get_x11_in_fullscreen (display) || panel == null) {
             return;
         }
 
-        if (hide_mode != NEVER || behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")) {
+        if (!display.get_monitor_in_fullscreen (panel.window.get_monitor ()) ||
+            behavior_settings.get_boolean ("enable-hotcorners-in-fullscreen")
+        ) {
             trigger_show ();
-            schedule_update ();
+            // This handles the case that the user triggered the barrier but never hovered
+            // the panel e.g. when triggering the barrier at a point where the dock doesnt
+            // reach. In that case once the pointer is moved it'll recheck the hovered state.
+            hovered = true;
         }
     }
 }
