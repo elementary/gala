@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-07-24 10:59+0000\n"
+"POT-Creation-Date: 2026-08-12 14:50+0000\n"
 "PO-Revision-Date: 2025-03-20 07:55+0000\n"
 "Last-Translator: Carmina16 <mistresssilvara@hotmail.com>\n"
 "Language-Team: Occidental <https://l10n.elementaryos.org/projects/desktop/"
@@ -18,6 +18,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.10.4\n"
+
+#: daemon/OSK/Window/Keyboard/KeyButton.vala:16
+msgid "Unknown Key"
+msgstr ""
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -294,7 +298,7 @@ msgstr ""
 msgid "Deny"
 msgstr ""
 
-#: src/Misc/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:212
 msgid "Window has already focus"
 msgstr ""
 
@@ -310,7 +314,7 @@ msgstr ""
 msgid "Show in %s"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr ""
 
@@ -322,7 +326,7 @@ msgstr ""
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:468
 msgid "Screenshots"
 msgstr ""
 
@@ -330,21 +334,21 @@ msgstr ""
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1718
+#: src/WindowManager.vala:1496
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Li modificationes va esser revertet pos %i seconde."
 msgstr[1] "Li modificationes va esser revertet pos %i secondes."
 
-#: src/WindowManager.vala:1725
+#: src/WindowManager.vala:1503
 msgid "Keep new display settings?"
 msgstr "Reterner li nov parametres del ecran?"
 
-#: src/WindowManager.vala:1729
+#: src/WindowManager.vala:1507
 msgid "Keep Settings"
 msgstr "Retener"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1508
 msgid "Use Previous Settings"
 msgstr "Usar li precedent"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-07-24 10:59+0000\n"
+"POT-Creation-Date: 2026-08-12 14:50+0000\n"
 "PO-Revision-Date: 2026-02-24 09:55+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -20,6 +20,13 @@ msgstr ""
 "X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Poedit-Language: Swedish\n"
+
+#: daemon/OSK/Window/Keyboard/KeyButton.vala:16
+#, fuzzy
+#| msgctxt "program"
+#| msgid "Unknown"
+msgid "Unknown Key"
+msgstr "Okänd"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -303,7 +310,7 @@ msgstr "Tillåt"
 msgid "Deny"
 msgstr "Neka"
 
-#: src/Misc/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:212
 msgid "Window has already focus"
 msgstr "Fönstret har redan fokus"
 
@@ -319,7 +326,7 @@ msgstr "Skärmdump från %s"
 msgid "Show in %s"
 msgstr "Visa i %s"
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr "Skärmdump tagen"
 
@@ -331,7 +338,7 @@ msgstr "Skärmdump sparas till urklipp"
 msgid "Screenshot saved to screenshots folder"
 msgstr "Skärmdump sparas i skärmdumpsmappen"
 
-#: src/Misc/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:468
 msgid "Screenshots"
 msgstr "Skärmdumpar"
 
@@ -339,22 +346,22 @@ msgstr "Skärmdumpar"
 msgid "Window switcher"
 msgstr "Fönsterväxlare"
 
-#: src/WindowManager.vala:1718
+#: src/WindowManager.vala:1496
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Ändringar återställs automatiskt efter %i sekund."
 msgstr[1] "Ändringar återställs automatiskt efter %i sekunder."
 
-#: src/WindowManager.vala:1725
+#: src/WindowManager.vala:1503
 msgid "Keep new display settings?"
 msgstr "Behåll nya skärminställningar?"
 
-#: src/WindowManager.vala:1729
+#: src/WindowManager.vala:1507
 msgid "Keep Settings"
 msgstr "Behåll inställningar"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1508
 msgid "Use Previous Settings"
 msgstr "Använd tidigare inställningar"
 

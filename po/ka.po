@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-07-24 10:59+0000\n"
+"POT-Creation-Date: 2026-08-12 14:50+0000\n"
 "PO-Revision-Date: 2024-08-16 15:16+0000\n"
 "Last-Translator: NorwayFun <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <https://l10n.elementary.io/projects/desktop/gala/ka/"
@@ -19,6 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.6.2\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
+
+#: daemon/OSK/Window/Keyboard/KeyButton.vala:16
+#, fuzzy
+#| msgctxt "program"
+#| msgid "Unknown"
+msgid "Unknown Key"
+msgstr "უცნობი"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -299,7 +306,7 @@ msgstr "დაშვება"
 msgid "Deny"
 msgstr "აკრძალვა"
 
-#: src/Misc/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:212
 msgid "Window has already focus"
 msgstr ""
 
@@ -315,7 +322,7 @@ msgstr "ეკრანის ანაბეჭდი %s-დან"
 msgid "Show in %s"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr "ეკრანის ანაბეჭდი აღებულია"
 
@@ -327,7 +334,7 @@ msgstr ""
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:468
 msgid "Screenshots"
 msgstr "ეკრანის ანაბეჭდები"
 
@@ -335,22 +342,22 @@ msgstr "ეკრანის ანაბეჭდები"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1718
+#: src/WindowManager.vala:1496
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 msgstr[1] "ცვლილებები ავტომატურად დაბრუნება %i წამის შემდეგ."
 
-#: src/WindowManager.vala:1725
+#: src/WindowManager.vala:1503
 msgid "Keep new display settings?"
 msgstr "დავიტოვო ეკრანის ახალი პარამეტრები?"
 
-#: src/WindowManager.vala:1729
+#: src/WindowManager.vala:1507
 msgid "Keep Settings"
 msgstr "პარამეტრების შენარჩუნება"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1508
 msgid "Use Previous Settings"
 msgstr "წინა პარამეტრების გამოყენება"
 

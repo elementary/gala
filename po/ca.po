@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-07-24 10:59+0000\n"
+"POT-Creation-Date: 2026-08-12 14:50+0000\n"
 "PO-Revision-Date: 2026-05-14 10:12+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -19,6 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-04-05 07:08+0000\n"
+
+#: daemon/OSK/Window/Keyboard/KeyButton.vala:16
+#, fuzzy
+#| msgctxt "program"
+#| msgid "Unknown"
+msgid "Unknown Key"
+msgstr "Desconegut"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -313,7 +320,7 @@ msgstr "Permet-ho"
 msgid "Deny"
 msgstr "Denega-ho"
 
-#: src/Misc/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:212
 msgid "Window has already focus"
 msgstr "La finestra ja té el focus."
 
@@ -329,7 +336,7 @@ msgstr "Captura de %s"
 msgid "Show in %s"
 msgstr "Mostra-ho a %s"
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr "Captura feta"
 
@@ -341,7 +348,7 @@ msgstr "La captura de pantalla es desa al porta-retalls"
 msgid "Screenshot saved to screenshots folder"
 msgstr "Captura de pantalla desada a la carpeta de captures de pantalla"
 
-#: src/Misc/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:468
 msgid "Screenshots"
 msgstr "Captures de pantalla"
 
@@ -349,22 +356,22 @@ msgstr "Captures de pantalla"
 msgid "Window switcher"
 msgstr "Canviador de finestres"
 
-#: src/WindowManager.vala:1718
+#: src/WindowManager.vala:1496
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "Els canvis es revertiran automàticament després d'%i segon."
 msgstr[1] "Els canvis es revertiran automàticament després de %i segons."
 
-#: src/WindowManager.vala:1725
+#: src/WindowManager.vala:1503
 msgid "Keep new display settings?"
 msgstr "Voleu mantenir la configuració nova de la pantalla?"
 
-#: src/WindowManager.vala:1729
+#: src/WindowManager.vala:1507
 msgid "Keep Settings"
 msgstr "Mantén la configuració"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1508
 msgid "Use Previous Settings"
 msgstr "Usa la configuració anterior"
 

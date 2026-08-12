@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-07-24 10:59+0000\n"
+"POT-Creation-Date: 2026-08-12 14:50+0000\n"
 "PO-Revision-Date: 2025-07-07 19:55+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -20,6 +20,13 @@ msgstr ""
 "|| n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.11.4\n"
 "X-Launchpad-Export-Date: 2017-04-20 06:29+0000\n"
+
+#: daemon/OSK/Window/Keyboard/KeyButton.vala:16
+#, fuzzy
+#| msgctxt "program"
+#| msgid "Unknown"
+msgid "Unknown Key"
+msgstr "Nieznane"
 
 #: daemon/DBus.vala:46 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -321,7 +328,7 @@ msgstr "Zezwól"
 msgid "Deny"
 msgstr "Odmów"
 
-#: src/Misc/DesktopIntegration.vala:210
+#: src/Misc/DesktopIntegration.vala:212
 msgid "Window has already focus"
 msgstr "Okno ma już fokus"
 
@@ -337,7 +344,7 @@ msgstr "Zrzut ekranu z %s"
 msgid "Show in %s"
 msgstr "Pokaż w %s"
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:555
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
@@ -349,7 +356,7 @@ msgstr "Zrzut ekranu zapisany do schowka"
 msgid "Screenshot saved to screenshots folder"
 msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
 
-#: src/Misc/ScreenshotManager.vala:470
+#: src/Misc/ScreenshotManager.vala:468
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
 
@@ -357,7 +364,7 @@ msgstr "Zrzuty ekranu"
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:1718
+#: src/WindowManager.vala:1496
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -365,15 +372,15 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:1725
+#: src/WindowManager.vala:1503
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:1729
+#: src/WindowManager.vala:1507
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:1730
+#: src/WindowManager.vala:1508
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
