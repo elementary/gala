@@ -3,6 +3,7 @@ daemon/IBus/CandidateArea.vala
 daemon/IBus/CandidateBox.vala
 daemon/IBus/IBusCandidateWindow.vala
 daemon/IBus/IBusService.vala
+daemon/OSK/Window/Keyboard/KeyButton.vala
 daemon/DBus.vala
 daemon/DisplayConfig.vala
 daemon/Main.vala
@@ -65,6 +66,7 @@ lib/Constants.vala
 lib/DragDropAction.vala
 lib/Plugin.vala
 lib/SessionSettings.vala
+lib/TransitionBuilder.vala
 lib/Utils.vala
 lib/WindowManager.vala
 
@@ -151,6 +153,5 @@ src/InternalUtils.vala
 src/Main.vala
 src/PantheonShell.vala
 src/SuperScrollAction.vala
-src/TransitionBuilder.vala
 src/WindowListModel.vala
 src/WindowManager.vala

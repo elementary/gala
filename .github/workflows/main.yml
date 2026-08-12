@@ -103,3 +103,14 @@ jobs:
         io.elementary.vala-lint -d plugins
         io.elementary.vala-lint -d src
         io.elementary.vala-lint -d tests
+
+  potfiles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v6
+
+      - name: Check POTFILES
+        run: bash .github/workflows/check-potfiles.sh
+
