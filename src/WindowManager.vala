@@ -18,6 +18,18 @@
 
 namespace Gala {
     public class WindowManagerGala : Meta.Plugin, WindowManager {
+        private class SizeChangeInfo {
+            public Meta.SizeChange change;
+            public Mtk.Rectangle old_rect;
+            public Clutter.Actor snapshot;
+
+            public SizeChangeInfo (Meta.SizeChange change, Mtk.Rectangle old_rect, Clutter.Actor snapshot) {
+                this.change = change;
+                this.old_rect = old_rect;
+                this.snapshot = snapshot;
+            }
+        }
+
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
         private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
 
@@ -88,14 +100,11 @@ namespace Gala {
         private Gee.LinkedList<ModalProxy> modal_stack = new Gee.LinkedList<ModalProxy> ();
 
         private Gee.HashSet<Meta.WindowActor> minimizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> maximizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Gee.HashSet<Meta.WindowActor> unmaximizing = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> mapping = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> destroying = new Gee.HashSet<Meta.WindowActor> ();
         private Gee.HashSet<Meta.WindowActor> unminimizing = new Gee.HashSet<Meta.WindowActor> ();
-        private Meta.SizeChange? which_change = null;
-        private Mtk.Rectangle old_rect_size_change;
-        private Clutter.Actor? latest_window_snapshot;
+        private Gee.HashMap<Meta.WindowActor, SizeChangeInfo> pending_size_change = new Gee.HashMap<Meta.WindowActor, SizeChangeInfo> ();
+        private Gee.HashSet<Meta.WindowActor> changing_size = new Gee.HashSet<Meta.WindowActor> ();
 
         private GLib.Settings behavior_settings;
 
@@ -875,50 +884,111 @@ namespace Gala {
 
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
-        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change_local, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-            which_change = which_change_local;
-            old_rect_size_change = old_frame_rect;
-
-            if (Meta.Prefs.get_gnome_animations ()) {
-                latest_window_snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+        public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
+            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations ()) {
+                size_change_completed (actor);
+                return;
             }
+
+            var snapshot = Utils.get_window_actor_snapshot (actor, old_frame_rect);
+
+            if (snapshot == null) {
+                size_change_completed (actor);
+                return;
+            }
+
+            var info = new SizeChangeInfo (which_change, old_frame_rect, snapshot);
+            pending_size_change[actor] = info;
         }
 
         // size_changed gets called after frame_rect has updated
         public override void size_changed (Meta.WindowActor actor) {
-            if (which_change == null) {
+            SizeChangeInfo info;
+            if (!pending_size_change.unset (actor, out info)) {
                 return;
             }
 
             unowned var window = actor.get_meta_window ();
             var new_rect = window.get_frame_rect ();
 
-            switch (which_change) {
+            var old_rect = info.old_rect;
+
+            switch (info.change) {
                 case Meta.SizeChange.MAXIMIZE:
                 case Meta.SizeChange.FULLSCREEN:
                     // don't animate resizing of two tiled windows with mouse drag
                     if (window.get_tile_match () != null && !window.maximized_horizontally) {
-                        var old_end = old_rect_size_change.x + old_rect_size_change.width;
+                        var old_end = old_rect.x + old_rect.width;
                         var new_end = new_rect.x + new_rect.width;
 
                         // a tiled window is just resized (and not moved) if its start_x or its end_x stays the same
-                        if (old_rect_size_change.x == new_rect.x || old_end == new_end) {
+                        if (old_rect.x == new_rect.x || old_end == new_end) {
                             break;
                         }
                     }
 
-                    maximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 case Meta.SizeChange.UNMAXIMIZE:
                 case Meta.SizeChange.UNFULLSCREEN:
-                    unmaximize (actor, new_rect.x, new_rect.y, new_rect.width, new_rect.height);
+                    animate_size_change.begin (actor, old_rect, new_rect, info.snapshot);
                     break;
                 default:
                     break;
             }
 
-            which_change = null;
             size_change_completed (actor);
+        }
+
+        private async void animate_size_change (Meta.WindowActor actor, Mtk.Rectangle old_rect, Mtk.Rectangle new_rect, Clutter.Actor snapshot) {
+            kill_window_effects (actor);
+
+            changing_size.add (actor);
+
+            snapshot.set_position (old_rect.x, old_rect.y);
+
+            ui_group.add_child (snapshot);
+
+            var snapshot_scale_x = (double) new_rect.width / old_rect.width;
+            var snapshot_scale_y = (double) new_rect.height / old_rect.height;
+
+            snapshot.save_easing_state ();
+            snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
+            snapshot.set_easing_duration (AnimationDuration.SNAP);
+            snapshot.set_position (new_rect.x, new_rect.y);
+            snapshot.set_scale (snapshot_scale_x, snapshot_scale_y);
+            snapshot.opacity = 0U;
+            snapshot.restore_easing_state ();
+
+            var actor_scale_x = (double) old_rect.width / new_rect.width;
+            var actor_scale_y = (double) old_rect.height / new_rect.height;
+
+            /* Since we scale the actor, the difference between the actor origin and where the content actually
+               starts (i.e. the difference between buffer rect and frame rect origins) is now scaled too.
+               Therefore calculate the position where the content starts (i.e. where the frame rect would be)
+               at this size. With the snapshot we don't have this problem because when we take it, we clip it
+               to the frame rect so the actor origin is always the content origin there. */
+
+            var new_buffer_rect = actor.meta_window.get_buffer_rect ();
+
+            var scaled_frame_rect_x = new_buffer_rect.x + (new_rect.x - new_buffer_rect.x) * actor_scale_x;
+            var scaled_frame_rect_y = new_buffer_rect.y + (new_rect.y - new_buffer_rect.y) * actor_scale_y;
+
+            var translation_x = (float) (old_rect.x - scaled_frame_rect_x);
+            var translation_y = (float) (old_rect.y - scaled_frame_rect_y);
+
+            actor.set_pivot_point (0.0f, 0.0f);
+
+            var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
+            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0);
+            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0);
+            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f);
+            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f);
+
+            yield actor_transition_builder.run ();
+
+            ui_group.remove_child (snapshot);
+            changing_size.remove (actor);
         }
 
         public override void minimize (Meta.WindowActor actor) {
@@ -966,92 +1036,6 @@ namespace Gala {
             actor.set_pivot_point (0.0f, 0.0f);
             minimizing.remove (actor);
             minimize_completed (actor);
-        }
-
-        private void maximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            unowned var window = actor.get_meta_window ();
-
-            kill_window_effects (actor);
-
-            if (!Meta.Prefs.get_gnome_animations () ||
-                latest_window_snapshot == null ||
-                window.window_type != Meta.WindowType.NORMAL) {
-                return;
-            }
-
-            var duration = AnimationDuration.SNAP;
-
-            maximizing.add (actor);
-            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
-
-            ui_group.add_child (latest_window_snapshot);
-
-            // FIMXE that's a hacky part. There is a short moment right after maximized_completed
-            //       where the texture is screwed up and shows things it's not supposed to show,
-            //       resulting in flashing. Waiting here transparently shortly fixes that issue. There
-            //       appears to be no signal that would inform when that moment happens.
-            //       We can't spend arbitrary amounts of time transparent since the overlay fades away,
-            //       about a third has proven to be a solid time. So this fix will only apply for
-            //       durations >= FLASH_PREVENT_TIMEOUT*3
-            const int FLASH_PREVENT_TIMEOUT = 80;
-            var delay = 0;
-            if (FLASH_PREVENT_TIMEOUT <= duration / 3) {
-                actor.opacity = 0;
-                delay = FLASH_PREVENT_TIMEOUT;
-                Timeout.add (FLASH_PREVENT_TIMEOUT, () => {
-                    actor.opacity = 255;
-                    return false;
-                });
-            }
-
-            var scale_x = (double) ew / old_rect_size_change.width;
-            var scale_y = (double) eh / old_rect_size_change.height;
-
-            latest_window_snapshot.save_easing_state ();
-            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            latest_window_snapshot.set_easing_duration (duration);
-            latest_window_snapshot.set_position (ex, ey);
-            latest_window_snapshot.set_scale (scale_x, scale_y);
-            latest_window_snapshot.restore_easing_state ();
-
-            // the opacity animation is special, since we have to wait for the
-            // FLASH_PREVENT_TIMEOUT to be done before we can safely fade away
-            latest_window_snapshot.save_easing_state ();
-            latest_window_snapshot.set_easing_delay (delay);
-            latest_window_snapshot.set_easing_duration (duration - delay);
-            latest_window_snapshot.opacity = 0;
-            latest_window_snapshot.restore_easing_state ();
-
-            ulong maximize_old_handler_id = 0;
-            maximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
-                snapshot.disconnect (maximize_old_handler_id);
-
-                actor.set_translation (0.0f, 0.0f, 0.0f);
-
-                unowned var parent = snapshot.get_parent ();
-                if (parent != null) {
-                    parent.remove_child (snapshot);
-                }
-            });
-
-            latest_window_snapshot = null;
-
-            actor.set_pivot_point (0.0f, 0.0f);
-            actor.set_translation (old_rect_size_change.x - ex, old_rect_size_change.y - ey, 0.0f);
-            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-            actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            actor.set_easing_duration (duration);
-            actor.set_scale (1.0f, 1.0f);
-            actor.set_translation (0.0f, 0.0f, 0.0f);
-            actor.restore_easing_state ();
-
-            ulong handler_id = 0UL;
-            handler_id = actor.transitions_completed.connect (() => {
-                actor.disconnect (handler_id);
-                maximizing.remove (actor);
-            });
         }
 
         public override void unminimize (Meta.WindowActor actor) {
@@ -1143,30 +1127,7 @@ namespace Gala {
         }
 
         public override void destroy (Meta.WindowActor actor) {
-            unowned var window = actor.get_meta_window ();
-
             actor.remove_all_transitions ();
-
-            if (NotificationStack.is_notification (window)) {
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    destroying.add (actor);
-                }
-
-                notification_stack.destroy_notification (actor);
-
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
-                } else {
-                    destroy_completed (actor);
-                }
-
-                return;
-            }
 
             animate_destroy.begin (actor);
         }
@@ -1202,88 +1163,14 @@ namespace Gala {
                     break;
 
                 default:
+                    if (NotificationStack.is_notification (window)) {
+                        yield notification_stack.destroy_notification (actor);
+                    }
                     break;
             }
 
             destroying.remove (actor);
             destroy_completed (actor);
-        }
-
-        private void unmaximize (Meta.WindowActor actor, int ex, int ey, int ew, int eh) {
-            unowned var window = actor.get_meta_window ();
-
-            kill_window_effects (actor);
-
-            if (!Meta.Prefs.get_gnome_animations () ||
-                latest_window_snapshot == null ||
-                window.window_type != Meta.WindowType.NORMAL) {
-                return;
-            }
-
-            var duration = AnimationDuration.SNAP;
-
-            float offset_x, offset_y;
-            var unmaximized_window_geometry = WindowListener.get_default ().get_unmaximized_state_geometry (window);
-
-            if (unmaximized_window_geometry != null) {
-                offset_x = unmaximized_window_geometry.outer.x - unmaximized_window_geometry.inner.x;
-                offset_y = unmaximized_window_geometry.outer.y - unmaximized_window_geometry.inner.y;
-            } else {
-                offset_x = 0;
-                offset_y = 0;
-            }
-
-            unmaximizing.add (actor);
-
-            latest_window_snapshot.set_position (old_rect_size_change.x, old_rect_size_change.y);
-
-            ui_group.add_child (latest_window_snapshot);
-
-            var scale_x = (float) ew / old_rect_size_change.width;
-            var scale_y = (float) eh / old_rect_size_change.height;
-
-            latest_window_snapshot.save_easing_state ();
-            latest_window_snapshot.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            latest_window_snapshot.set_easing_duration (duration);
-            latest_window_snapshot.set_position (ex, ey);
-            latest_window_snapshot.set_scale (scale_x, scale_y);
-            latest_window_snapshot.opacity = 0U;
-            latest_window_snapshot.restore_easing_state ();
-
-            ulong unmaximize_old_handler_id = 0;
-            unmaximize_old_handler_id = latest_window_snapshot.transition_stopped.connect ((snapshot, name, is_finished) => {
-                snapshot.disconnect (unmaximize_old_handler_id);
-
-                unowned var parent = snapshot.get_parent ();
-                if (parent != null) {
-                    parent.remove_child (snapshot);
-                }
-            });
-
-            latest_window_snapshot = null;
-
-            var buffer_rect = window.get_buffer_rect ();
-            var frame_rect = window.get_frame_rect ();
-            var real_actor_offset_x = frame_rect.x - buffer_rect.x;
-            var real_actor_offset_y = frame_rect.y - buffer_rect.y;
-
-            actor.set_pivot_point (0.0f, 0.0f);
-            actor.set_position (ex - real_actor_offset_x, ey - real_actor_offset_y);
-            actor.set_translation (-ex + offset_x * (1.0f / scale_x - 1.0f) + old_rect_size_change.x, -ey + offset_y * (1.0f / scale_y - 1.0f) + old_rect_size_change.y, 0.0f);
-            actor.set_scale (1.0f / scale_x, 1.0f / scale_y);
-
-            actor.save_easing_state ();
-            actor.set_easing_mode (Clutter.AnimationMode.EASE_IN_OUT_QUAD);
-            actor.set_easing_duration (duration);
-            actor.set_scale (1.0f, 1.0f);
-            actor.set_translation (0.0f, 0.0f, 0.0f);
-            actor.restore_easing_state ();
-
-            ulong handler_id = 0UL;
-            handler_id = actor.transitions_completed.connect (() => {
-                actor.disconnect (handler_id);
-                unmaximizing.remove (actor);
-            });
         }
 
         // Cancel attached animation of an actor and reset it
@@ -1307,12 +1194,15 @@ namespace Gala {
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
+            if (pending_size_change.unset (actor)) {
+                size_change_completed (actor);
+            }
+
             end_animation (ref unminimizing, actor);
             end_animation (ref minimizing, actor);
             end_animation (ref mapping, actor);
             end_animation (ref destroying, actor);
-            end_animation (ref unmaximizing, actor);
-            end_animation (ref maximizing, actor);
+            end_animation (ref changing_size, actor);
         }
 
         public override void switch_workspace (int from, int to, Meta.MotionDirection direction) {

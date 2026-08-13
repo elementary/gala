@@ -32,8 +32,8 @@ public class Gala.Daemon.DBus : GLib.Object {
             return;
         }
 
-        var menu_model = DBusMenuModel.get (connection, "org.pantheon.gala", "/io/elementary/gala/window_menu");
-        var action_group = DBusActionGroup.get (connection, "org.pantheon.gala", "/io/elementary/gala/window_menu");
+        var menu_model = DBusMenuModel.get (connection, "io.elementary.gala.WindowMenu", "/io/elementary/gala/WindowMenu");
+        var action_group = DBusActionGroup.get (connection, "io.elementary.gala.WindowMenu", "/io/elementary/gala/WindowMenu");
 
         window_menu = new Gtk.Menu.from_model (menu_model);
         window_menu.insert_action_group ("window-menu", action_group);
