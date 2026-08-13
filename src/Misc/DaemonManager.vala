@@ -32,7 +32,6 @@ public class Gala.DaemonManager : GLib.Object {
         client = new ManagedClient (display, args);
 
         client.window_created.connect ((window) => {
-            ManagedClient.make_dock (window);
             window.notify["title"].connect ((obj, pspec) => handle_daemon_window ((Meta.Window) obj));
         });
     }
@@ -54,6 +53,8 @@ public class Gala.DaemonManager : GLib.Object {
                 if (info.length < 2) {
                     return;
                 }
+
+                ManagedClient.make_dock (window);
 
                 var index = int.parse (info[1]);
 

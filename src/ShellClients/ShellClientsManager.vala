@@ -240,6 +240,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_ibus_candidate_window (Meta.Window window) requires (ibus_candidate_window == null) {
+        ManagedClient.make_dock (window);
+
         ibus_candidate_window = new IBusCandidateWindow (im, window);
 
         wm.override_window_group (window, OVERLAY);
@@ -254,6 +256,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     }
 
     public void make_osk_window (Meta.Window window) requires (osk_window == null) {
+        ManagedClient.make_dock (window);
+
         osk_window = new OSKWindow (im, window);
 
         wm.override_window_group (window, OVERLAY);
