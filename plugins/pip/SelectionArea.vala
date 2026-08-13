@@ -9,7 +9,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
     private const int HANDLER_RADIUS = 6;
     private const int BORDER_WIDTH = 2;
     private const int RESIZE_THRESHOLD = 10;
-    private const int CONFIRM_BUTTON_SIZE = 60;
+    private const int CONFIRM_BUTTON_SIZE = 48;
 
     public signal void captured (Mtk.Rectangle selection);
     public signal void closed ();
@@ -64,6 +64,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         wm.ui_group.add_child (clone);
 
         unowned var display = wm.get_display ();
+        monitor_scale = display.get_monitor_scale (window.get_monitor ());
 
         int screen_width, screen_height;
         display.get_size (out screen_width, out screen_height);
@@ -82,43 +83,17 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         click_action.clicked.connect (capture_selected_area);
 #endif
 
-        confirm_button = new Clutter.Actor () {
+        confirm_button = new Gala.Icon.from_resource (
+            CONFIRM_BUTTON_SIZE,
+            monitor_scale,
+            "/org/pantheon/desktop/gala/buttons/confirm.svg"
+        ) {
             reactive = true
         };
         confirm_button.add_action (click_action);
         add_child (confirm_button);
 
-        monitor_scale = display.get_monitor_scale (window.get_monitor ());
-
-        var confirm_button_pixbuf = get_confirm_button_pixbuf (monitor_scale);
-        if (confirm_button_pixbuf != null) {
-            var image = new Image.from_pixbuf (confirm_button_pixbuf);
-            confirm_button.set_content (image);
-            confirm_button.set_size (confirm_button_pixbuf.width, confirm_button_pixbuf.height);
-        } else {
-            // we'll just make this red so there's at least something as an
-            // indicator that loading failed. Should never happen and this
-            // works as good as some weird fallback-image-failed-to-load pixbuf
-            var size = Utils.scale_to_int (CONFIRM_BUTTON_SIZE, monitor_scale);
-            confirm_button.set_size (size, size);
-            confirm_button.background_color = { 255, 0, 0, 255 };
-        }
-
         update_confirm_button_position ();
-    }
-
-    private static Gdk.Pixbuf? get_confirm_button_pixbuf (float scale) {
-        try {
-            return new Gdk.Pixbuf.from_resource_at_scale (
-                "/org/pantheon/desktop/gala/buttons/confirm.svg",
-                -1,
-                Utils.scale_to_int (CONFIRM_BUTTON_SIZE, scale),
-                true
-            );
-        } catch (Error e) {
-            critical (e.message);
-            return null;
-        }
     }
 
     public override bool key_press_event (Clutter.Event event) {
@@ -374,7 +349,7 @@ public class Gala.Plugins.PIP.SelectionArea : CanvasActor {
         ctx.save ();
 
         var accent_color = Drawing.StyleManager.get_instance ().theme_accent_color;
-        ctx.set_source_rgba (accent_color.red, accent_color.green, accent_color.blue, 1.0);
+        ctx.set_source_rgba (accent_color.red / 255.0, accent_color.green / 255.0, accent_color.blue / 255.0, 1.0);
 
         // Border
         ctx.set_operator (Cairo.Operator.OVER);

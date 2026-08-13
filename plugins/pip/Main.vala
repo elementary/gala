@@ -77,7 +77,7 @@ public class Gala.Plugins.PIP.Plugin : Gala.Plugin {
         // Don't clip if the entire window was selected
         if (!frame.equal (selection)) {
             selection.x -= frame.x;
-            selection.x -= frame.y;
+            selection.y -= frame.y;
 
             // FIXME: Mtk.Rectangle.to_graphene_rect is broken in Vala
             popup_window.set_container_clip ({ { selection.x, selection.y }, { selection.width, selection.height } });
