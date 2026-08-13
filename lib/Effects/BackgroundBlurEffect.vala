@@ -112,7 +112,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         round_actor_size_location = round_pipeline.get_uniform_location ("actor_size");
 
         update_clip_radius ();
-        update_actor_size ();
 
         notify["monitor-scale"].connect (update_clip_radius);
     }
