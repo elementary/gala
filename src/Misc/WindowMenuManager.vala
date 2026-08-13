@@ -36,11 +36,11 @@ public class Gala.WindowMenuManager : Object {
     public WindowManager wm { private get; construct; }
     public DaemonManager daemon_manager { private get; construct; }
 
+    public SimpleActionGroup action_group { get; private set; }
+    public Menu menu { get; private set; }
+
     private static GLib.Settings gala_keybind_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
     private static GLib.Settings keybind_settings = new GLib.Settings ("org.gnome.desktop.wm.keybindings");
-
-    private SimpleActionGroup action_group;
-    private Menu menu;
 
     private Meta.Window? current_window;
 
@@ -53,17 +53,6 @@ public class Gala.WindowMenuManager : Object {
         action_group.add_action_entries (ACTION_ENTRIES, this);
 
         menu = new Menu ();
-
-        Bus.own_name (SESSION, "io.elementary.gala", NONE, null, on_name_acquired, null);
-    }
-
-    private void on_name_acquired (DBusConnection connection, string name) {
-        try {
-            connection.export_action_group ("/io/elementary/gala/WindowMenu", action_group);
-            connection.export_menu_model ("/io/elementary/gala/WindowMenu", menu);
-        } catch (Error e) {
-            warning ("Failed to export window menu model and action group: %s", e.message);
-        }
     }
 
     public void show_window_menu (Meta.Window window, int x, int y) {

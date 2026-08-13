@@ -13,7 +13,8 @@ public class Gala.DBus {
     [DBus (visible = false)]
     public static void init (
         WindowManagerGala _wm, NotificationsManager notifications_manager,
-        ScreenshotManager screenshot_manager, WindowOverview window_overview
+        ScreenshotManager screenshot_manager, WindowOverview window_overview,
+        WindowMenuManager window_menu_manager
     ) {
         wm = _wm;
 
@@ -24,6 +25,13 @@ public class Gala.DBus {
                     connection.register_object ("/io/elementary/gala", WindowDragProvider.get_instance ());
                 } catch (Error e) {
                     warning (e.message);
+                }
+
+                try {
+                    connection.export_menu_model ("/io/elementary/gala/WindowMenu", window_menu_manager.menu);
+                    connection.export_action_group ("/io/elementary/gala/WindowMenu", window_menu_manager.action_group);
+                } catch (Error e) {
+                    warning ("Failed to export window menu and action group: %s", e.message);
                 }
             },
             on_name_lost

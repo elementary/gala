@@ -132,7 +132,11 @@ namespace Gala {
             filter_manager = new FilterManager (this);
             notifications_manager = new NotificationsManager ();
             screenshot_manager = new ScreenshotManager (this, notifications_manager, filter_manager);
-            DBus.init (this, notifications_manager, screenshot_manager, layout_manager.window_overview);
+
+            DBus.init (
+                this, notifications_manager, screenshot_manager,
+                layout_manager.window_overview, window_menu_manager
+            );
 
             unowned Meta.Display display = get_display ();
             display.gl_video_memory_purged.connect (() => {
