@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-08-12 16:20+0000\n"
-"PO-Revision-Date: 2026-05-20 15:48+0000\n"
+"PO-Revision-Date: 2026-08-14 07:01+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -21,11 +21,8 @@ msgstr ""
 "X-Launchpad-Export-Date: 2017-03-02 05:47+0000\n"
 
 #: daemon/OSK/Window/Keyboard/KeyButton.vala:16
-#, fuzzy
-#| msgctxt "program"
-#| msgid "Unknown"
 msgid "Unknown Key"
-msgstr "不明なプログラム"
+msgstr "不明なキー"
 
 #: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
