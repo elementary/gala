@@ -1164,24 +1164,21 @@ namespace Gala {
             destroy_completed (actor);
         }
 
-        // Cancel attached animation of an actor and reset it
-        private bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
-            if (!list.contains (actor))
-                return false;
-
-            if (actor.is_destroyed ()) {
-                list.remove (actor);
-                return false;
+        /**
+         * Cancel attached animation of an actor and reset its animation properties.
+         */
+        private void end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
+            if (!list.contains (actor)) {
+                return;
             }
 
             actor.remove_all_transitions ();
             actor.opacity = 255U;
-            actor.set_scale (1.0f, 1.0f);
-            actor.rotation_angle_x = 0.0f;
+            actor.set_scale (1.0, 1.0);
+            actor.rotation_angle_x = 0.0;
             actor.set_pivot_point (0.0f, 0.0f);
 
             list.remove (actor);
-            return true;
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
