@@ -75,8 +75,8 @@ public class Gala.Daemon.DBus : GLib.Object {
             return;
         }
 
-        var menu_model = DBusMenuModel.get (connection, "io.elementary.gala", "/io/elementary/gala/WindowMenu");
-        var action_group = DBusActionGroup.get (connection, "io.elementary.gala", "/io/elementary/gala/WindowMenu");
+        var menu_model = DBusMenuModel.get (connection, "io.elementary.gala.WindowMenu", "/io/elementary/gala/WindowMenu");
+        var action_group = DBusActionGroup.get (connection, "io.elementary.gala.WindowMenu", "/io/elementary/gala/WindowMenu");
 
         window_menu = new Gtk.PopoverMenu.from_model (menu_model) {
             halign = START,

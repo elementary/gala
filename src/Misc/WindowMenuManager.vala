@@ -54,7 +54,7 @@ public class Gala.WindowMenuManager : Object {
 
         menu = new Menu ();
 
-        Bus.own_name (SESSION, "io.elementary.gala", NONE, null, on_name_acquired, null);
+        Bus.own_name (SESSION, "io.elementary.gala.WindowMenu", NONE, null, on_name_acquired, null);
     }
 
     private void on_name_acquired (DBusConnection connection, string name) {
