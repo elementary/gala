@@ -13,7 +13,7 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
     public bool opened { get; private set; default = false; }
 
     private GestureController gesture_controller;
-    private int modifier_mask;
+    private Clutter.ModifierType modifier_mask;
     private Gala.ModalProxy? modal_proxy;
     private int previous_icon_index = 0;
 
@@ -109,21 +109,10 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             return;
         }
 
-        var workspace = display.get_workspace_manager ().get_active_workspace ();
-
-        // copied from gnome-shell, finds the primary modifier in the mask
-        var mask = binding.get_mask ();
-        if (mask == 0) {
-            modifier_mask = 0;
-        } else {
-            modifier_mask = 1;
-            while (mask > 1) {
-                mask >>= 1;
-                modifier_mask <<= 1;
-            }
-        }
+        modifier_mask = binding.get_modifiers ();
 
         if (!opened) {
+            unowned var workspace = display.get_workspace_manager ().get_active_workspace ();
             bool windows_exist;
             if (binding.get_name ().has_prefix ("switch-group")) {
                 windows_exist = collect_current_windows (display, workspace);
