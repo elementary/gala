@@ -1143,30 +1143,7 @@ namespace Gala {
         }
 
         public override void destroy (Meta.WindowActor actor) {
-            unowned var window = actor.get_meta_window ();
-
             actor.remove_all_transitions ();
-
-            if (NotificationStack.is_notification (window)) {
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    destroying.add (actor);
-                }
-
-                notification_stack.destroy_notification (actor);
-
-                if (Meta.Prefs.get_gnome_animations ()) {
-                    ulong destroy_handler_id = 0UL;
-                    destroy_handler_id = actor.transitions_completed.connect (() => {
-                        actor.disconnect (destroy_handler_id);
-                        destroying.remove (actor);
-                        destroy_completed (actor);
-                    });
-                } else {
-                    destroy_completed (actor);
-                }
-
-                return;
-            }
 
             animate_destroy.begin (actor);
         }
@@ -1202,6 +1179,9 @@ namespace Gala {
                     break;
 
                 default:
+                    if (NotificationStack.is_notification (window)) {
+                        yield notification_stack.destroy_notification (actor);
+                    }
                     break;
             }
 
