@@ -206,7 +206,6 @@ namespace Gala {
             // plugin manager
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
-            plugin_manager.regions_changed.connect (update_input_area);
 
             /* Then once we have the layout structures that we expose to widgets
                and initialized the plugins, init the rest of the UI */
@@ -215,10 +214,6 @@ namespace Gala {
             lock_screen_manager = new LockScreenManager (layout_manager.lock_screen);
 
             screensaver = new ScreenSaverManager (layout_manager.session_locker);
-            // Due to a bug which enables access to the stage when using multiple monitors
-            // in the screensaver, we have to listen for changes and make sure the input area
-            // is set to NONE when we are in locked mode
-            screensaver.active_changed.connect (update_input_area);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
@@ -266,12 +261,9 @@ namespace Gala {
             }
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
-            hot_corner_manager.on_configured.connect (update_input_area);
             hot_corner_manager.configure ();
 
             zoom = new Zoom (this);
-
-            update_input_area ();
 
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
@@ -438,31 +430,6 @@ namespace Gala {
             layout_manager.multitasking_view.switch_to_next_workspace (direction);
         }
 
-        private void update_input_area () {
-            unowned Meta.Display display = get_display ();
-
-            if (screensaver != null) {
-                try {
-                    if (screensaver.get_active ()) {
-                        InternalUtils.set_input_area (display, InputArea.NONE);
-                        return;
-                    }
-                } catch (Error e) {
-                    // the screensaver object apparently won't be null even though
-                    // it is unavailable. This error will be thrown however, so we
-                    // can just ignore it, because if it is thrown, the screensaver
-                    // is unavailable.
-                }
-            }
-
-            if (is_modal ()) {
-                var area = layout_manager.multitasking_view.opened ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
-                InternalUtils.set_input_area (display, area);
-            } else {
-                InternalUtils.set_input_area (display, InputArea.DEFAULT);
-            }
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -510,8 +477,6 @@ namespace Gala {
                 return proxy;
             }
 
-            update_input_area ();
-
 #if HAS_MUTTER48
             get_display ().get_compositor ().disable_unredirect ();
 #else
@@ -538,8 +503,6 @@ namespace Gala {
             if (is_modal ()) {
                 return;
             }
-
-            update_input_area ();
 
             unowned var display = get_display ();
 #if HAS_MUTTER48
