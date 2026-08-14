@@ -10,12 +10,6 @@ daemon/Main.vala
 daemon/MonitorLabel.vala
 daemon/Window.vala
 
-daemon-gtk3/BackgroundMenu.vala
-daemon-gtk3/DBus.vala
-daemon-gtk3/Main.vala
-daemon-gtk3/MonitorLabel.vala
-daemon-gtk3/Window.vala
-
 data/gala-multitaskingview.desktop.in
 data/gala-other.desktop.in
 data/gala.metainfo.xml.in
