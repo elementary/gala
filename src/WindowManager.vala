@@ -229,13 +229,6 @@ namespace Gala {
             display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.window_overview.toggle);
 
             display.overlay_key.connect (() => {
-                // Showing panels in fullscreen is broken in X11
-                if (InternalUtils.get_x11_in_fullscreen (display) &&
-                    behavior_settings.get_string ("overlay-action") == OPEN_APPLICATIONS_MENU
-                ) {
-                    return;
-                }
-
                 launch_action (ActionKeys.OVERLAY_ACTION);
             });
 
