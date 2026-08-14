@@ -87,16 +87,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         foreach (var group in key_file.get_groups ()) {
-            if (!Meta.Util.is_wayland_compositor ()) {
-                try {
-                    if (!key_file.get_boolean (group, "launch-on-x")) {
-                        continue;
-                    }
-                } catch (Error e) {
-                    warning ("Failed to check whether client should be launched on x, assuming yes: %s", e.message);
-                }
-            }
-
             try {
                 var type = key_file.get_string (group, "session-type");
                 if (type != SessionSettings.get_shell_clients_type ()) {
