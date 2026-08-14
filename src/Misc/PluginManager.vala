@@ -12,14 +12,7 @@ public class Gala.PluginManager : Object {
 
     public delegate PluginInfo RegisterPluginFunction ();
 
-    public signal void regions_changed ();
-
     public bool initialized { get; private set; default = false; }
-
-    private X.Xrectangle[] _regions = {};
-    public unowned X.Xrectangle[] get_regions () {
-        return _regions;
-    }
 
     public string? window_switcher_provider { get; private set; default = null; }
 
@@ -112,13 +105,11 @@ public class Gala.PluginManager : Object {
 
         if (initialized) {
             initialize_plugin (info.module_name, plugin);
-            recalculate_regions ();
         }
     }
 
     private void initialize_plugin (string plugin_name, Plugin plugin) {
         plugin.initialize (wm);
-        plugin.region_changed.connect (recalculate_regions);
     }
 
     private bool check_provides (string name, PluginFunction provides) {
@@ -143,7 +134,6 @@ public class Gala.PluginManager : Object {
         wm = _wm;
 
         plugins.@foreach (initialize_plugin);
-        recalculate_regions ();
 
         initialized = true;
     }
@@ -158,29 +148,5 @@ public class Gala.PluginManager : Object {
 
     public Plugin? get_plugin (string id) {
         return plugins.lookup (id);
-    }
-
-    /**
-     * Iterate over all plugins and grab their regions, update the regions
-     * array accordingly and emit the regions_changed signal.
-     */
-    private void recalculate_regions () {
-        X.Xrectangle[] regions = {};
-
-        plugins.@foreach ((name, plugin) => {
-            foreach (var region in plugin.get_region ()) {
-                X.Xrectangle rect = {
-                    (short) region.x,
-                    (short) region.y,
-                    (ushort) region.width,
-                    (ushort) region.height
-                };
-
-                regions += rect;
-            }
-        });
-
-        this._regions = regions;
-        regions_changed ();
     }
 }
