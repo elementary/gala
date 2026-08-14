@@ -261,7 +261,6 @@ namespace Gala {
             }
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
-            hot_corner_manager.configure ();
 
             zoom = new Zoom (this);
 
