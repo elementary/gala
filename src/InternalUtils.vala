@@ -106,12 +106,6 @@ namespace Gala {
 #endif
         }
 
-        public static bool get_x11_in_fullscreen (Meta.Display display) {
-            var primary_monitor = display.get_primary_monitor ();
-            var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
-            return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
-        }
-
         /**
          * Returns the most recently used "normal" window (as gotten via {@link get_window_is_normal}) in the given workspace.
          * If there is a not normal but more recent window (e.g. a menu/tooltip) any_window will be set to that window otherwise
