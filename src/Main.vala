@@ -76,6 +76,14 @@ namespace Gala {
 
         try {
             ctx.start ();
+
+#if !HAS_MUTTER50
+            if (ctx.get_compositor_type () != WAYLAND) {
+                critical ("Gala only supports Wayland");
+                return Posix.EXIT_FAILURE;
+            }
+#endif
+
 #if HAS_MUTTER50
             if (true) {
 #else
