@@ -2,14 +2,18 @@
 public interface DesktopIntegration : Object {
     public struct Window {
         uint64 uid;
-        GLib.HashTable<unowned string, Variant> properties;
+        GLib.HashTable<string, Variant> properties;
     }
 
     public abstract Window[] get_windows () throws IOError, DBusError;
     public abstract void focus_window (uint64 uid) throws GLib.DBusError, GLib.IOError;
+    public abstract int get_active_workspace () throws GLib.DBusError, GLib.IOError;
 }
 
-public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, PantheonWayland.ExtendedBehavior {
+[DBus (name="io.elementary.WindowSwitcher")]
+public class Gala.Daemon.WindowSwitcher : Gtk.Window {
+    private const double GESTURE_STEP = 0.2;
+
     private DesktopIntegration? desktop_integration;
 
     private Gtk.FlowBox flow_box;
@@ -17,14 +21,8 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
 
     private int n_windows = 0;
 
-    private bool active = false;
+    private bool opened = false;
     private bool only_current = false;
-
-    public WindowSwitcher (Application application) {
-        Object (
-            application: application
-        );
-    }
 
     construct {
         flow_box = new Gtk.FlowBox () {
@@ -51,33 +49,27 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
         titlebar = new Gtk.Grid () { visible = false };
         child = box;
 
-        child.realize.connect (connect_to_shell);
+        //  child.realize.connect (connect_to_shell);
 
         /*
          * Because we hide, our surface doesn't get destroyed.
          * But Gala "forgets" about us so every time we present we have to keep above and center again.
          */
-        child.map.connect (() => {
-            set_keep_above ();
-            make_centered ();
+        //  child.map.connect (() => {
+        //      //  set_keep_above ();
+        //      //  make_centered ();
 
-            var surface = get_surface ();
-            if (surface is Gdk.Toplevel) {
-                ((Gdk.Toplevel) surface).inhibit_system_shortcuts (null);
-            }
+        //      var surface = get_surface ();
+        //      if (surface is Gdk.Toplevel) {
+        //          ((Gdk.Toplevel) surface).inhibit_system_shortcuts (null);
+        //      }
 
-            update_default_size ();
-        });
+        //      update_default_size ();
+        //  });
 
         var key_controller = new Gtk.EventControllerKey () {
             propagation_phase = CAPTURE
         };
-
-        key_controller.key_released.connect ((val) => {
-            if (val == Gdk.Key.Alt_L) {
-                close_switcher ();
-            }
-        });
 
         key_controller.key_pressed.connect ((val, code, modifier_state) => {
             if (val == Gdk.Key.Right) {
@@ -101,12 +93,12 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
             warning ("Failed to get the desktop integration: %s", e.message);
         }
 
-        flow_box.child_activated.connect (() => close_switcher ());
+        flow_box.child_activated.connect (() => close ());
     }
 
-    public void activate_switcher (bool only_current) {
-        active = true;
-        this.only_current = only_current;
+    public void open () throws DBusError, IOError {
+        opened = true;
+        this.only_current = false;
 
         n_windows = 0;
 
@@ -114,6 +106,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
 
         try {
             var windows = desktop_integration.get_windows ();
+            warning ("Got %d windows", windows.length);
             var current_app_id = only_current ? get_current_app_id (windows) : null;
             foreach (var window in windows) {
                 if (is_eligible_window (window, current_app_id)) {
@@ -130,7 +123,8 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
         }
 
         if (n_windows == 0) {
-            get_surface ().beep ();
+            opened = false;
+            //  get_surface ().beep ();
             return;
         }
 
@@ -158,7 +152,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
         default_height = 1;
     }
 
-    public void close_switcher () {
+    public new void close () throws DBusError, IOError {
         hide ();
 
         var icon = (WindowSwitcherIcon) flow_box.get_focus_child ();
@@ -169,35 +163,49 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
             warning ("Failed to focus window");
         }
 
-        active = false;
+        opened = false;
     }
 
-    public void cycle (bool only_current, bool backwards) {
-        if (!active) {
-            activate_switcher (only_current);
-            return;
-        }
+    public void set_progress (double progress) throws DBusError, IOError {
+        var new_index = ((int) Math.round (progress / GESTURE_STEP)) % n_windows;
 
-        if (this.only_current != only_current) {
-            //todo: gdk beep?
-            return;
-        }
-
-        if (backwards) {
-            if (!(flow_box.get_focus_child ().get_prev_sibling () is WindowSwitcherIcon)) {
-                flow_box.set_focus_child (flow_box.get_last_child ());
+        for (var child = flow_box.get_first_child (); child != null; child = child.get_next_sibling ()) {
+            if (new_index == 0) {
+                flow_box.set_focus_child (child);
+                break;
             }
 
-            flow_box.child_focus (TAB_BACKWARD);
-        } else {
-            if (!(flow_box.get_focus_child ().get_next_sibling () is WindowSwitcherIcon)) {
-                flow_box.set_focus_child (flow_box.get_first_child ());
-            }
-
-            flow_box.child_focus (TAB_FORWARD);
+            new_index--;
         }
 
         update_title ();
+    }
+
+    private void cycle (bool only_current, bool backwards) {
+        //  return;
+        //  if (!active) {
+        //      activate_switcher (only_current);
+        //      return;
+        //  }
+
+        //  if (this.only_current != only_current) {
+        //      //todo: gdk beep?
+        //      return;
+        //  }
+
+        //  if (backwards) {
+        //      if (!(flow_box.get_focus_child ().get_prev_sibling () is WindowSwitcherIcon)) {
+        //          flow_box.set_focus_child (flow_box.get_last_child ());
+        //      }
+
+        //      flow_box.child_focus (TAB_BACKWARD);
+        //  } else {
+        //      if (!(flow_box.get_focus_child ().get_next_sibling () is WindowSwitcherIcon)) {
+        //          flow_box.set_focus_child (flow_box.get_first_child ());
+        //      }
+
+        //      flow_box.child_focus (TAB_FORWARD);
+        //  }
     }
 
     private void update_title () {
@@ -210,7 +218,7 @@ public class Gala.WindowSwitcher.WindowSwitcher : Gtk.ApplicationWindow, Pantheo
     }
 
     private bool is_eligible_window (DesktopIntegration.Window window, string? current_app_id) {
-        if (!(bool) window.properties["on-active-workspace"]) {
+        if (window.properties["workspace-index"].get_int32 () != desktop_integration.get_active_workspace ()) {
             return false;
         }
 

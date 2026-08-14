@@ -22,6 +22,9 @@ gala_daemon_sources = files(
     'OSK' / 'Window' / 'Keyboard' / 'Keyboard.vala',
     'OSK' / 'Window' / 'Keyboard' / 'KeyButton.vala',
     'OSK' / 'Window' / 'Keyboard' / 'ViewContainer.vala',
+    'WindowSwitcher' / 'WindowSwitcher.vala',
+    'WindowSwitcher' / 'WindowSwitcherIcon.vala',
+    'WindowSwitcher' / 'WindowSwitcherManager.vala',
 )
 
 gtk4_dep = dependency('gtk4')
@@ -34,6 +37,6 @@ executable(
     config_header,
     gala_resources,
     osk_resources,
-    dependencies: [gtk4_dep, granite7_dep, ibus_dep, json_dep],
+    dependencies: [gtk4_dep, granite7_dep, ibus_dep, json_dep, m_dep],
     install: true
 )

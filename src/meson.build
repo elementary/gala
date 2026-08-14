@@ -49,6 +49,8 @@ gala_bin_sources = files(
     'Misc/OSK/OSKManager.vala',
     'Misc/OSK/OSKProxy.vala',
     'Misc/OSK/OSKReceiver.vala',
+    'Misc/WindowSwitcher/WindowSwitcherManager.vala',
+    'Misc/WindowSwitcher/WindowSwitcherProxy.vala',
     'ShellClients/ExtendedBehaviorWindow.vala',
     'ShellClients/HideTracker.vala',
     'ShellClients/IBusCandidateWindow.vala',

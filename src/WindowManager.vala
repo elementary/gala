@@ -60,6 +60,8 @@ namespace Gala {
 
         private LayoutManager layout_manager;
 
+        private WindowSwitcherManager window_switcher_manager;
+
         public ScreenSaverManager? screensaver { get; private set; }
 
         private HotCornerManager? hot_corner_manager = null;
@@ -128,6 +130,7 @@ namespace Gala {
 
             AccessDialog.watch_portal ();
 
+            window_switcher_manager = new WindowSwitcherManager (this);
 
             filter_manager = new FilterManager (this);
             notifications_manager = new NotificationsManager ();

@@ -111,15 +111,15 @@ public class Gala.LayoutManager : Object {
         // Add default window switcher if no plugin overrides it
         unowned var plugin_manager = PluginManager.get_default ();
         if (plugin_manager.window_switcher_provider == null) {
-            window_switcher = new WindowSwitcher (wm);
-            ui_group.add_child (window_switcher);
+        //      window_switcher = new WindowSwitcher (wm);
+        //      ui_group.add_child (window_switcher);
 
-            Meta.KeyBinding.set_custom_handler ("switch-applications", window_switcher.handle_switch_windows);
-            Meta.KeyBinding.set_custom_handler ("switch-applications-backward", window_switcher.handle_switch_windows);
-            Meta.KeyBinding.set_custom_handler ("switch-windows", window_switcher.handle_switch_windows);
-            Meta.KeyBinding.set_custom_handler ("switch-windows-backward", window_switcher.handle_switch_windows);
-            Meta.KeyBinding.set_custom_handler ("switch-group", window_switcher.handle_switch_windows);
-            Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-applications", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-applications-backward", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-windows", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-windows-backward", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-group", window_switcher.handle_switch_windows);
+        //      Meta.KeyBinding.set_custom_handler ("switch-group-backward", window_switcher.handle_switch_windows);
         }
 
         window_overview = new WindowOverview (wm);

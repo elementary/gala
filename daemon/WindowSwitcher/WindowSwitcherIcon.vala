@@ -1,4 +1,4 @@
-public class WindowSwitcherIcon : Gtk.FlowBoxChild {
+public class Gala.Daemon.WindowSwitcherIcon : Gtk.FlowBoxChild {
     public uint64 uid { get; construct; }
     public string title { get; construct; }
     public string app_id { get; construct; }

@@ -6,6 +6,7 @@
 public class Gala.Daemon.Application : Gtk.Application {
     private IBusService ibus_service;
     private OSKManager osk_manager;
+    private WindowSwitcherManager window_switcher_manager;
 
     public Application () {
         Object (application_id: "org.pantheon.gala.daemon");
@@ -34,6 +35,8 @@ public class Gala.Daemon.Application : Gtk.Application {
 
         var icon_theme = Gtk.IconTheme.get_for_display (Gdk.Display.get_default ());
         icon_theme.add_resource_path ("/io/elementary/desktop/gala-daemon/icons");
+
+        window_switcher_manager = new WindowSwitcherManager ();
     }
 
     public override void activate () {
