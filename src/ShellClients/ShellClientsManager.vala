@@ -43,13 +43,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         start_clients.begin ();
 
-        if (!Meta.Util.is_wayland_compositor ()) {
-            wm.get_display ().window_created.connect ((window) => {
-                window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
-                parse_mutter_hints (window);
-            });
-        }
-
         Timeout.add_seconds_once (5, on_failsafe_timeout);
     }
 
@@ -307,110 +300,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window in positioned_windows && positioned_windows[window].modal
     ) {
         return positioned_windows[window].dim;
-    }
-
-    //X11 only
-    private void parse_mutter_hints (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
-        if (window.mutter_hints == null) {
-            return;
-        }
-
-        var mutter_hints = window.mutter_hints.split (":");
-        foreach (var mutter_hint in mutter_hints) {
-            var split = mutter_hint.split ("=");
-
-            if (split.length != 2) {
-                continue;
-            }
-
-            var key = split[0];
-            var val = split[1];
-
-            switch (key) {
-                case "anchor":
-                    int meta_side_parsed; // Will be used as Meta.Side which is a 4 value bitfield so check bounds for that
-                    if (int.try_parse (val, out meta_side_parsed) && 0 <= meta_side_parsed && meta_side_parsed <= 15) {
-                        //FIXME: Next major release change dock and wingpanel calls to get rid of this
-                        Pantheon.Desktop.Anchor parsed = TOP;
-                        switch ((Meta.Side) meta_side_parsed) {
-                            case BOTTOM:
-                                parsed = BOTTOM;
-                                break;
-
-                            case LEFT:
-                                parsed = LEFT;
-                                break;
-
-                            case RIGHT:
-                                parsed = RIGHT;
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                        set_anchor (window, parsed);
-                        // We need to set a second time because the intention is to call this before the window is shown which it is on wayland
-                        // but on X the window was already shown when we get here so we have to call again to instantly apply it.
-                        set_anchor (window, parsed);
-                    } else {
-                        warning ("Failed to parse %s as anchor", val);
-                    }
-                    break;
-
-                case "hide-mode":
-                    int parsed; // Will be used as Pantheon.Desktop.HideMode which is a 5 value enum so check bounds for that
-                    if (int.try_parse (val, out parsed) && 0 <= parsed && parsed <= 4) {
-                        set_hide_mode (window, parsed);
-                    } else {
-                        warning ("Failed to parse %s as hide mode", val);
-                    }
-                    break;
-
-                case "size":
-                    var split_val = val.split (",");
-                    if (split_val.length != 2) {
-                        break;
-                    }
-                    int parsed_width, parsed_height = 0; //set to 0 because vala doesn't realize height will be set too
-                    if (int.try_parse (split_val[0], out parsed_width) && int.try_parse (split_val[1], out parsed_height)) {
-                        set_size (window, parsed_width, parsed_height);
-                    } else {
-                        warning ("Failed to parse %s as width and height", val);
-                    }
-                    break;
-
-                case "visible-in-multitasking-view":
-                    request_visible_in_multitasking_view (window);
-                    break;
-
-                case "centered":
-                    make_centered (window);
-                    break;
-
-                case "restore-previous-region":
-                    set_restore_previous_x11_region (window);
-                    break;
-
-                case "monitor-label":
-                    int parsed;
-                    if (int.try_parse (val, out parsed)) {
-                        make_monitor_label (window, parsed);
-                    } else {
-                        warning ("Failed to parse %s as monitor label", val);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void set_restore_previous_x11_region (Meta.Window window)
-    requires (!Meta.Util.is_wayland_compositor ())
-    requires (window in panel_windows) {
-        panel_windows[window].restore_previous_x11_region = true;
     }
 
     public Mtk.Rectangle? get_shell_client_rect () {
