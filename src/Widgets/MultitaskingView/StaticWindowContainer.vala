@@ -4,7 +4,7 @@
  */
 
 /**
- * Holds clones of static windows (e.g. on all workspaces or being moved)
+ * Holds clones of static windows (e.g. grabbed or being moved)
  * in the multitasking view and fades them out while opening the multitasking view.
  * The window container use this to know whether a window became static (they shouldn't show it anymore)
  * or isn't static anymore (they have to show it now).
@@ -29,8 +29,6 @@ public class Gala.StaticWindowContainer : Widget {
     construct {
         display.grab_op_begin.connect (on_grab_op_begin);
         display.grab_op_end.connect (on_grab_op_end);
-
-        WindowListener.get_default ().window_on_all_workspaces_changed.connect (on_all_workspaces_changed);
     }
 
     private void on_grab_op_begin (Meta.Window window, Meta.GrabOp op) {
@@ -45,14 +43,6 @@ public class Gala.StaticWindowContainer : Widget {
     private void on_grab_op_end (Meta.Window window, Meta.GrabOp op) {
         grabbed_window = null;
         check_window_changed (window);
-    }
-
-    private void on_all_workspaces_changed (Meta.Window window) {
-        // We have to wait for shell clients here
-        Idle.add (() => {
-            check_window_changed (window);
-            return Source.REMOVE;
-        });
     }
 
     public void notify_window_moving (Meta.Window window) {
@@ -83,7 +73,7 @@ public class Gala.StaticWindowContainer : Widget {
 
         if (!is_static && clone != null) {
             remove_child (clone);
-        } else if (is_static && !window.on_all_workspaces && clone == null) {
+        } else if (is_static && clone == null) {
             add_child (new StaticWindowClone (window));
         }
 
@@ -91,6 +81,6 @@ public class Gala.StaticWindowContainer : Widget {
     }
 
     public bool is_static (Meta.Window window) {
-        return window == grabbed_window || window == moving_window || window.on_all_workspaces;
+        return window == grabbed_window || window == moving_window;
     }
 }
