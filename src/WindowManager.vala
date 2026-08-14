@@ -142,12 +142,10 @@ namespace Gala {
             display.notify["focus-window"].connect (on_focus_window_changed);
 
 #if WITH_SYSTEMD
-            if (Meta.Util.is_wayland_compositor ()) {
-                display.init_xserver.connect ((task) => {
-                    start_x11_services.begin (task);
-                    return true;
-                });
-            }
+            display.init_xserver.connect ((task) => {
+                start_x11_services.begin (task);
+                return true;
+            });
 #endif
         }
 
