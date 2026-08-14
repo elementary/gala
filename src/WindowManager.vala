@@ -58,10 +58,6 @@ namespace Gala {
          */
         public Meta.BackgroundGroup background_group { get; protected set; }
 
-#if !HAS_MUTTER48
-        private Meta.PluginInfo info;
-#endif
-
         private LayoutManager layout_manager;
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -111,11 +107,6 @@ namespace Gala {
         private Gee.Map<Meta.Window, WindowGroup> overridden_window_group = new Gee.HashMap<Meta.Window, WindowGroup> ();
 
         construct {
-#if !HAS_MUTTER48
-            info = Meta.PluginInfo () {name = "Gala", version = Config.VERSION, author = "Gala Developers",
-                license = "GPLv3", description = "A nice elementary window manager"};
-#endif
-
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
             //Make it start watching the settings daemon bus
@@ -1173,24 +1164,21 @@ namespace Gala {
             destroy_completed (actor);
         }
 
-        // Cancel attached animation of an actor and reset it
-        private bool end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
-            if (!list.contains (actor))
-                return false;
-
-            if (actor.is_destroyed ()) {
-                list.remove (actor);
-                return false;
+        /**
+         * Cancel attached animation of an actor and reset its animation properties.
+         */
+        private void end_animation (ref Gee.HashSet<Meta.WindowActor> list, Meta.WindowActor actor) {
+            if (!list.contains (actor)) {
+                return;
             }
 
             actor.remove_all_transitions ();
             actor.opacity = 255U;
-            actor.set_scale (1.0f, 1.0f);
-            actor.rotation_angle_x = 0.0f;
+            actor.set_scale (1.0, 1.0);
+            actor.rotation_angle_x = 0.0;
             actor.set_pivot_point (0.0f, 0.0f);
 
             list.remove (actor);
-            return true;
         }
 
         public override void kill_window_effects (Meta.WindowActor actor) {
@@ -1346,11 +1334,5 @@ namespace Gala {
         public override Meta.InhibitShortcutsDialog create_inhibit_shortcuts_dialog (Meta.Window window) {
             return new InhibitShortcutsDialog (window_tracker.get_app_for_window (window), window);
         }
-
-#if !HAS_MUTTER48
-        public override unowned Meta.PluginInfo? plugin_info () {
-            return info;
-        }
-#endif
     }
 }
