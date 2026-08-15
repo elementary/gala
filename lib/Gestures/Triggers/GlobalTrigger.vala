@@ -30,5 +30,6 @@ public class Gala.GlobalTrigger : Object, GestureTrigger {
         var group = action == MULTITASKING_VIEW || action == SWITCH_WORKSPACE ? TouchpadSwipeBackend.Group.MULTITASKING_VIEW : TouchpadSwipeBackend.Group.NONE;
         controller.enable_backend (ToucheggBackend.get_default ());
         controller.enable_backend (new TouchpadSwipeBackend (wm.stage, group));
+        controller.enable_backend (new TouchpadPinchBackend (wm.stage));
     }
 }
