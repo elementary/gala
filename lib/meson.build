@@ -22,7 +22,7 @@ gala_lib_sources = files(
     'Effects/ShadowEffect.vala',
     'Gestures/Backends/GestureBackend.vala',
     'Gestures/Backends/ToucheggBackend.vala',
-    'Gestures/Backends/TouchpadBackend.vala',
+    'Gestures/Backends/TouchpadSwipeBackend.vala',
     'Gestures/Backends/ScrollBackend.vala',
     'Gestures/Targets/ActorTarget.vala',
     'Gestures/Targets/GestureTarget.vala',
