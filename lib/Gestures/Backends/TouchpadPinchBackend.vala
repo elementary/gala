@@ -58,7 +58,7 @@ private class Gala.TouchpadPinchBackend : Object, GestureBackend {
             state = ONGOING;
         }
 
-        if (event.get_gesture_phase () != END) {
+        if (event.get_gesture_phase () == UPDATE) {
             /* When the gesture ends the pinch scale is already reset */
             percentage = event.get_gesture_pinch_scale () - 1.0;
         }
