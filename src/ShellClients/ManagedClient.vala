@@ -8,7 +8,6 @@
 /**
  * Utility class that takes care of launching and restarting a subprocess.
  * On wayland this uses a WaylandClient and emits window_created if a window for the client was created.
- * On X this just launches a normal subprocess and never emits window_created.
  */
 public class Gala.ManagedClient : Object {
     public signal void window_created (Meta.Window window);
@@ -31,42 +30,34 @@ public class Gala.ManagedClient : Object {
     construct {
         instances.add (this);
 
-        if (Meta.Util.is_wayland_compositor ()) {
-            start_wayland.begin ();
+        start_wayland.begin ();
 
-            display.window_created.connect ((window) => {
-                if (wayland_client != null && wayland_client.owns_window (window)) {
-                    window_created (window);
+        display.window_created.connect ((window) => {
+            if (wayland_client != null && wayland_client.owns_window (window)) {
+                window_created (window);
 
-                    // We have to manage is alive manually since windows created by WaylandClients have our pid
-                    // and we don't want to end our own process
-                    window.notify["is-alive"].connect (() => {
-                        if (!window.is_alive && subprocess != null) {
-                            subprocess.force_exit ();
-                            warning ("WaylandClient window became unresponsive, killing the client.");
-                        }
-                    });
-                }
-            });
-        } else {
-            start_x.begin ();
-        }
+                // We have to manage is alive manually since windows created by WaylandClients have our pid
+                // and we don't want to end our own process
+                window.notify["is-alive"].connect (() => {
+                    if (!window.is_alive && subprocess != null) {
+                        subprocess.force_exit ();
+                        warning ("WaylandClient window became unresponsive, killing the client.");
+                    }
+                });
+            }
+        });
     }
 
     public static void make_dock (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
 #else
-        if (Meta.Util.is_wayland_compositor ()) {
-            make_dock_wayland (window);
-        } else {
-            make_dock_x11 (window);
-        }
+        make_dock_wayland (window);
 #endif
     }
 
 #if !HAS_MUTTER49
-    private static void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
+    private static void make_dock_wayland (Meta.Window window) {
         foreach (var client in instances) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_dock (window);
@@ -74,35 +65,18 @@ public class Gala.ManagedClient : Object {
             }
         }
     }
-
-    private static void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
-        unowned var x11_display = window.display.get_x11_display ();
-
-        var x_window = x11_display.lookup_xwindow (window);
-        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
-        unowned var xdisplay = x11_display.get_xdisplay ();
-        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
-        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
-
-        // 32 is format
-        xdisplay.change_property (x_window, atom, X.XA_ATOM, 32, X.PropMode.Replace, (uchar[]) dock_atom, 1);
-    }
 #endif
 
     public static void make_desktop (Meta.Window window) {
 #if HAS_MUTTER49
         window.set_type (Meta.WindowType.DESKTOP);
 #else
-        if (Meta.Util.is_wayland_compositor ()) {
-            make_desktop_wayland (window);
-        } else {
-            critical ("Making desktop window on X11 is not supported.");
-        }
+        make_desktop_wayland (window);
 #endif
     }
 
 #if !HAS_MUTTER49
-    private static void make_desktop_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
+    private static void make_desktop_wayland (Meta.Window window) {
         foreach (var client in instances) {
             if (client.wayland_client.owns_window (window)) {
                 client.wayland_client.make_desktop (window);
@@ -133,21 +107,6 @@ public class Gala.ManagedClient : Object {
         } catch (Error e) {
             warning ("Failed to create dock client: %s", e.message);
             return;
-        }
-    }
-
-    private async void start_x () {
-        try {
-            subprocess = new Subprocess.newv (args, NONE);
-            yield subprocess.wait_async ();
-
-            //Restart the daemon if it crashes
-            Timeout.add_seconds (1, () => {
-                start_x.begin ();
-                return Source.REMOVE;
-            });
-        } catch (Error e) {
-            warning ("Failed to create daemon subprocess with x: %s", e.message);
         }
     }
 }

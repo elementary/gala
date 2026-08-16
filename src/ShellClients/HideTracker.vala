@@ -193,8 +193,7 @@ public class Gala.HideTracker : Object {
     }
 
     private void on_barrier_triggered () {
-        // Showing panels in fullscreen is broken in X11
-        if (InternalUtils.get_x11_in_fullscreen (display) || panel == null) {
+        if (panel == null) {
             return;
         }
 

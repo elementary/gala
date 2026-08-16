@@ -7,4 +7,3 @@ PartOf=gnome-session-initialized.target
 Before=gnome-session-initialized.target
 
 Wants=io.elementary.gala@wayland.service
-Wants=io.elementary.gala@x11.service
