@@ -43,6 +43,12 @@ private class Gala.TouchpadPinchBackend : Object, GestureBackend {
             return Clutter.EVENT_PROPAGATE;
         }
 
+        if (state == NONE && event.get_gesture_phase () != BEGIN) {
+            /* We never got a begin phase so something else initially handled the gesture
+               but disappeared. Don't start handling it now. Will probably never happen */
+            return Clutter.EVENT_PROPAGATE;
+        }
+
         if (state != ONGOING) {
             var gesture = new Gesture ();
             gesture.direction = OUT;
