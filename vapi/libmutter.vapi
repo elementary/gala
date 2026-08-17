@@ -29,8 +29,10 @@ namespace Meta {
 		public static bool get_center_new_windows ();
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static uint get_check_alive_timeout ();
+#if !HAS_MUTTER51
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static bool get_compositing_manager ();
+#endif
 		[CCode (cheader_filename = "meta/prefs.h")]
 		public static int get_cursor_size ();
 		[CCode (cheader_filename = "meta/prefs.h")]
@@ -1050,10 +1052,16 @@ namespace Meta {
 		public bool get_icon_geometry (out Mtk.Rectangle rect);
 		public uint64 get_id ();
 		public Meta.StackLayer get_layer ();
+#if HAS_MUTTER51
+		public bool get_max_size (out int width, out int height);
+#endif
 #if HAS_MUTTER49
 		public Meta.MaximizeFlags get_maximize_flags ();
 #else
 		public Meta.MaximizeFlags get_maximized ();
+#endif
+#if HAS_MUTTER51
+		public bool get_min_size (out int width, out int height);
 #endif
 		public int get_monitor ();
 		public unowned string? get_mutter_hints ();
