@@ -5,7 +5,7 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-private class Gala.TouchpadBackend : Object, GestureBackend {
+private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     public enum Group {
         NONE,
         MULTITASKING_VIEW,
@@ -26,7 +26,7 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     public Clutter.Actor actor { get; construct; }
     public Group group { get; construct; }
 
-    private static List<TouchpadBackend> instances = new List<TouchpadBackend> ();
+    private static List<TouchpadSwipeBackend> instances = new List<TouchpadSwipeBackend> ();
 
     private State state = NONE;
     private GestureDirection direction = UNKNOWN;
@@ -34,11 +34,11 @@ private class Gala.TouchpadBackend : Object, GestureBackend {
     private double distance_y = 0;
     private double distance = 0;
 
-    public TouchpadBackend (Clutter.Actor actor, Group group) {
+    public TouchpadSwipeBackend (Clutter.Actor actor, Group group) {
         Object (actor: actor, group: group);
     }
 
-    ~TouchpadBackend () {
+    ~TouchpadSwipeBackend () {
         instances.remove (this);
     }
 

@@ -27,8 +27,12 @@ public class Gala.GlobalTrigger : Object, GestureTrigger {
     }
 
     internal void enable_backends (GestureController controller) {
-        var group = action == MULTITASKING_VIEW || action == SWITCH_WORKSPACE ? TouchpadBackend.Group.MULTITASKING_VIEW : TouchpadBackend.Group.NONE;
+        var group = action == MULTITASKING_VIEW || action == SWITCH_WORKSPACE ? TouchpadSwipeBackend.Group.MULTITASKING_VIEW : TouchpadSwipeBackend.Group.NONE;
         controller.enable_backend (ToucheggBackend.get_default ());
-        controller.enable_backend (new TouchpadBackend (wm.stage, group));
+        controller.enable_backend (new TouchpadSwipeBackend (wm.stage, group));
+#if HAS_MUTTER49
+        // On mutter < 49 there is a bug that pinch gestures aren't delivered when over a window so rely on touch egg there
+        controller.enable_backend (new TouchpadPinchBackend (wm.stage));
+#endif
     }
 }
