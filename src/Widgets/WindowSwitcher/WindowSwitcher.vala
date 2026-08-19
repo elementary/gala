@@ -16,6 +16,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
     private int modifier_mask;
     private Gala.ModalProxy? modal_proxy;
     private int previous_icon_index = 0;
+    private bool mouse_active = true;
+    private uint hover_timeout_id = 0;
 
     private WindowSwitcherIcon? _current_icon = null;
     private WindowSwitcherIcon? current_icon {
@@ -138,6 +140,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
             open_switcher ();
         }
 
+        disable_hover ();
+
         var binding_name = binding.get_name ();
         var backward = binding_name.has_suffix ("-backward");
 
@@ -223,7 +227,7 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         icon.get_accessible ().accessible_parent = container.get_accessible ();
 
         icon.motion_event.connect ((_icon, event) => {
-            if (current_icon != _icon && !gesture_controller.recognizing) {
+            if (mouse_active && current_icon != _icon && !gesture_controller.recognizing) {
                 select_icon ((WindowSwitcherIcon) _icon);
             }
 
@@ -242,6 +246,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         if (opened) {
             return;
         }
+
+        disable_hover ();
 
         //Although we are setting visible via the opacity notify handler anyway
         //we have to set it here manually otherwise the size gotten via get_preferred_size is wrong
@@ -331,6 +337,8 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
     }
 
     public override bool key_press_event (Clutter.Event event) {
+        disable_hover ();
+
         switch (event.get_key_symbol ()) {
             case Clutter.Key.Right:
                 if (!gesture_controller.recognizing) {
@@ -364,5 +372,18 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         tracker.get_pointer (null, out modifiers);
 
         return modifiers & Clutter.ModifierType.MODIFIER_MASK;
+    }
+
+    private void disable_hover () {
+        mouse_active = false;
+
+        if (hover_timeout_id != 0) {
+            Source.remove (hover_timeout_id);
+        }
+
+        hover_timeout_id = Timeout.add_once (300, () => {
+            mouse_active = true;
+            hover_timeout_id = 0;
+        });
     }
 }
