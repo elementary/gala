@@ -56,7 +56,7 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public Meta.BackgroundGroup background_group { get; protected set; }
+        public Clutter.Actor background_group { get; protected set; }
 
         private LayoutManager layout_manager;
 
