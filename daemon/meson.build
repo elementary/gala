@@ -4,6 +4,10 @@ gala_daemon_sources = files(
     'DBus.vala',
     'MonitorLabel.vala',
     'Window.vala',
+    'Background' / 'Background.vala',
+    'Background' / 'BackgroundManager.vala',
+    'Background' / 'BackgroundWindow.vala',
+    'Background' / 'Utils.vala',
     'IBus' / 'Candidate.vala',
     'IBus' / 'CandidateArea.vala',
     'IBus' / 'CandidateBox.vala',
@@ -24,6 +28,7 @@ gala_daemon_sources = files(
     'OSK' / 'Window' / 'Keyboard' / 'ViewContainer.vala',
 )
 
+adw_dep = dependency('libadwaita-1')
 gtk4_dep = dependency('gtk4')
 granite7_dep = dependency('granite-7')
 json_dep = dependency('json-glib-1.0')
@@ -34,6 +39,6 @@ executable(
     config_header,
     gala_resources,
     osk_resources,
-    dependencies: [gtk4_dep, granite7_dep, ibus_dep, json_dep],
+    dependencies: [adw_dep, gnome_desktop_dep, gnome_bg_dep, gtk4_dep, granite7_dep, ibus_dep, json_dep],
     install: true
 )

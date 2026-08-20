@@ -4,6 +4,7 @@
  */
 
 public class Gala.Daemon.Application : Gtk.Application {
+    private BackgroundManager background_manager;
     private IBusService ibus_service;
     private OSKManager osk_manager;
 
@@ -47,6 +48,10 @@ public class Gala.Daemon.Application : Gtk.Application {
         Gtk.init ();
 
         connection.register_object (object_path, new DBus ());
+
+        background_manager = new BackgroundManager ();
+
+        connection.register_object (object_path, background_manager);
 
         return true;
     }
