@@ -4,6 +4,7 @@
  */
 
 public class Gala.Daemon.Application : Gtk.Application {
+    private BackgroundManager background_manager;
     private IBusService ibus_service;
     private OSKManager osk_manager;
 
@@ -34,6 +35,8 @@ public class Gala.Daemon.Application : Gtk.Application {
 
         var icon_theme = Gtk.IconTheme.get_for_display (Gdk.Display.get_default ());
         icon_theme.add_resource_path ("/io/elementary/desktop/gala-daemon/icons");
+
+        background_manager = new BackgroundManager ();
     }
 
     public override void activate () {
