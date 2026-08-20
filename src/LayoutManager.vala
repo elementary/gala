@@ -12,7 +12,7 @@ public class Gala.LayoutManager : Object {
     public Clutter.Stage stage { get; private set; }
     public Clutter.Actor ui_group { get; private set; }
     public Clutter.Actor window_group { get; private set; }
-    public Meta.BackgroundGroup background_group { get; private set; }
+    public Clutter.Actor background_group { get; private set; }
     public Clutter.Actor top_window_group { get; private set; }
 
     public MultitaskingView multitasking_view { get; private set; }
@@ -90,8 +90,7 @@ public class Gala.LayoutManager : Object {
         stage.remove_child (window_group);
         ui_group.add_child (window_group);
 
-        background_group = new BackgroundContainer (display);
-        ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
+        background_group = new Clutter.Actor ();
         window_group.add_child (background_group);
         window_group.set_child_below_sibling (background_group, null);
 
@@ -178,6 +177,7 @@ public class Gala.LayoutManager : Object {
 
     private Clutter.Actor get_window_group_actor (WindowGroup group) {
         switch (group) {
+            case BACKGROUND: return background_group;
             case DESKTOP_SHELL: return shell_group;
             case MENU: return menu_group;
             case LOCK_SCREEN: return lock_screen.window_group;

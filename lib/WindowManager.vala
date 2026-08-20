@@ -39,6 +39,7 @@ namespace Gala {
     }
 
     public enum WindowGroup {
+        BACKGROUND,
         DESKTOP_SHELL,
         MENU,
         LOCK_SCREEN,
@@ -104,7 +105,7 @@ namespace Gala {
         /**
          * The background group is a container for the background actors forming the wallpaper
          */
-        public abstract Meta.BackgroundGroup background_group { get; protected set; }
+        public abstract Clutter.Actor background_group { get; protected set; }
 
         /**
          * Enters the modal mode, which will block keybindings and gestures. See {@link ModalProxy} for
