@@ -7,7 +7,6 @@
 
 public class Gala.LayoutManager : Object {
     public Meta.Display display { private get; construct; }
-    public DaemonManager daemon_manager { private get; construct; }
 
     public Clutter.Stage stage { get; private set; }
     public Clutter.Actor ui_group { get; private set; }
@@ -28,8 +27,8 @@ public class Gala.LayoutManager : Object {
     private ModalGroup modal_group;
     private Clutter.Actor overlay_group;
 
-    public LayoutManager (Meta.Display display, DaemonManager daemon_manager) {
-        Object (display: display, daemon_manager: daemon_manager);
+    public LayoutManager (Meta.Display display) {
+        Object (display: display);
     }
 
     construct {

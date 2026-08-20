@@ -194,7 +194,7 @@ namespace Gala {
 
             /* First create the layout manager. That will set up the initial structure
                with the stage and UI group that we need for the properties on the WM */
-            layout_manager = new LayoutManager (display, daemon_manager);
+            layout_manager = new LayoutManager (display);
 
             stage = layout_manager.stage;
             ui_group = layout_manager.ui_group;
