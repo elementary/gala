@@ -57,6 +57,7 @@ namespace Gala {
             focus_extended_behavior,
             make_modal,
             make_monitor_label,
+            make_background,
         };
 
         wayland_pantheon_greeter_interface = {
@@ -462,6 +463,21 @@ namespace Gala {
         }
 
         ShellClientsManager.get_instance ().make_monitor_label (window, monitor_index);
+    }
+
+    internal static void make_background (Wl.Client client, Wl.Resource resource) {
+        unowned ExtendedBehaviorSurface? eb_surface = resource.get_user_data<ExtendedBehaviorSurface> ();
+        if (eb_surface.wayland_surface == null) {
+            return;
+        }
+
+        Meta.Window? window;
+        eb_surface.wayland_surface.get ("window", out window, null);
+        if (window == null) {
+            return;
+        }
+
+        ShellClientsManager.get_instance ().make_background (window);
     }
 
     internal static void make_greeter (Wl.Client client, Wl.Resource resource) {
