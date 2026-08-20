@@ -40,7 +40,7 @@ public class Gala.MultitaskingView : Root, RootTarget {
     private Widget workspaces;
     private Clutter.Actor primary_monitor_container;
     private Clutter.BrightnessContrastEffect brightness_effect;
-    private BackgroundManager? blurred_bg = null;
+    private BackgroundClone? blurred_bg = null;
 
     private GLib.Settings gala_behavior_settings;
     private Drawing.StyleManager style_manager;
@@ -193,7 +193,12 @@ public class Gala.MultitaskingView : Root, RootTarget {
         brightness_effect = new Clutter.BrightnessContrastEffect ();
         update_brightness_effect ();
 
-        blurred_bg = new BackgroundManager (display, display.get_primary_monitor (), true, false);
+        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
+
+        blurred_bg = new BackgroundClone (display, wm.background_group, display.get_primary_monitor ()) {
+            x = monitor_geom.x,
+            y = monitor_geom.y,
+        };
         blurred_bg.add_effect (new BlurEffect (blurred_bg, 18));
         blurred_bg.add_effect (brightness_effect);
 
