@@ -239,6 +239,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
     }
 
+    public void make_background (Meta.Window window) requires (!is_itself_shell_window (window)) {
+        ManagedClient.make_desktop (window);
+
+        wm.override_window_group (window, BACKGROUND);
+    }
+
     public void make_ibus_candidate_window (Meta.Window window) requires (ibus_candidate_window == null) {
         ibus_candidate_window = new IBusCandidateWindow (im, window);
 
