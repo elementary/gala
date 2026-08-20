@@ -235,6 +235,11 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         window.unmanaged.connect_after (() => osk_window = null);
     }
 
+    public void make_background (Meta.Window window) requires (!is_itself_shell_window (window)) {
+        window.set_type (DESKTOP);
+        window.move_frame (false, 0, 0);
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         foreach (var window in positioned_windows.get_values ()) {
             window.propagate (update_type, action, progress);
