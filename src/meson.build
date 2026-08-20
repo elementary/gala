@@ -60,6 +60,7 @@ gala_bin_base_sources = files(
     'ShellClients/PositionedWindow.vala',
     'ShellClients/ShellClientsManager.vala',
     'ShellClients/ShellWindow.vala',
+    'Widgets/BackgroundClone.vala',
     'Widgets/DwellClickTimer.vala',
     'Widgets/LockScreen.vala',
     'Widgets/MultitaskingView/MonitorClone.vala',

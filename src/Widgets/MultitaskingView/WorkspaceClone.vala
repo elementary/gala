@@ -7,7 +7,7 @@
 /**
  * Utility class which adds a border and a shadow to a Background
  */
-private class Gala.FramedBackground : BackgroundManager {
+private class Gala.FramedBackground : BackgroundClone {
     private Cogl.Pipeline pipeline;
     private Cairo.ImageSurface cached_surface;
     private Cairo.Context cached_context;
@@ -18,9 +18,7 @@ private class Gala.FramedBackground : BackgroundManager {
     public FramedBackground (Meta.Display display) {
         Object (
             display: display,
-            monitor_index: display.get_primary_monitor (),
-            control_position: false,
-            rounded_corners: true
+            monitor_index: display.get_primary_monitor ()
         );
     }
 
@@ -114,7 +112,7 @@ public class Gala.WorkspaceClone : Widget {
 
     public WindowCloneContainer window_container { get; private set; }
 
-    private BackgroundManager background;
+    private FramedBackground background;
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
