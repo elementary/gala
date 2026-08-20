@@ -63,6 +63,7 @@ namespace Pantheon.Desktop {
         public Focus focus;
         public MakeModal make_modal;
         public MakeMonitorLabel make_monitor_label;
+        public MakeBackground make_background;
     }
 
     [CCode (cheader_filename = "pantheon-desktop-shell-server-protocol.h", cname = "struct io_elementary_pantheon_greeter_v1_interface")]
@@ -103,6 +104,8 @@ namespace Pantheon.Desktop {
     public delegate void MakeModal (Wl.Client client, Wl.Resource resource, uint dim);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void MakeMonitorLabel (Wl.Client client, Wl.Resource resource, int monitor_index);
+    [CCode (has_target = false, has_typedef = false)]
+    public delegate void MakeBackground (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]
     public delegate void MakeGreeter (Wl.Client client, Wl.Resource resource);
     [CCode (has_target = false, has_typedef = false)]

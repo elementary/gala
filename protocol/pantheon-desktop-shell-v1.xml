@@ -176,6 +176,16 @@
 
       <arg name="monitor_index" type="int" summary="the index of the monitor this surface should label"/>
     </request>
+
+    <request name="make_background">
+      <description summary="make the surface a background surface">
+        Request to make the surface a background surface. The surface will be placed
+        in the background group and will not be focused unless clicked. After this request
+        was called the surface will have been moved to a monitor it is meant to provide
+        the background for. Now you can call Gdk.Display.get_monitor_at_surface to get
+        the geometry you should use.
+      </description>
+    </request>
   </interface>
 
   <interface name="io_elementary_pantheon_greeter_v1" version="1">
