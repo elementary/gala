@@ -54,7 +54,6 @@ public class Gala.WindowListener : Object {
     }
 
     public signal void window_workspace_changed (Meta.Window window);
-    public signal void window_on_all_workspaces_changed (Meta.Window window);
     public signal void window_maximized_changed (Meta.Window window) {
         WindowGeometry window_geometry = {};
         window_geometry.inner = window.get_frame_rect ();
@@ -86,9 +85,6 @@ public class Gala.WindowListener : Object {
             case "maximized-horizontally":
             case "maximized-vertically":
                 window_maximized_changed (window);
-                break;
-            case "on-all-workspaces":
-                window_on_all_workspaces_changed (window);
                 break;
             case "fullscreen":
                 window_fullscreen_changed (window);
