@@ -96,7 +96,7 @@ public class Gala.WindowMenuManager : Object {
 
         var always_on_top_item = new MenuItem (_("Always on Top"), ACTION_PREFIX + ACTION_ALWAYS_ON_TOP);
         set_accel_attribute (always_on_top_item, keybind_settings, "always-on-top");
-        var always_on_visible_workspace_item = new MenuItem (_("Always on Visible Workspace"), ACTION_PREFIX + ACTION_ALWAYS_ON_VISIBLE_WORKSPACE);
+        var always_on_visible_workspace_item = new MenuItem (_("Show on all Workspaces"), ACTION_PREFIX + ACTION_ALWAYS_ON_VISIBLE_WORKSPACE);
         set_accel_attribute (always_on_visible_workspace_item, keybind_settings, "toggle-on-all-workspaces");
         var move_left_item = new MenuItem (_("Move to Workspace Left"), ACTION_PREFIX + ACTION_MOVE_LEFT);
         set_accel_attribute (move_left_item, keybind_settings, "move-to-workspace-left");
