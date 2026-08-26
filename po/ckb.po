@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 16:20+0000\n"
+"POT-Creation-Date: 2026-08-26 16:55+0000\n"
 "PO-Revision-Date: 2022-09-09 03:11+0000\n"
 "Last-Translator: Aga Ismael <agaesmaeel@gmail.com>\n"
 "Language-Team: Kurdish (Central) <https://l10n.elementary.io/projects/"
@@ -298,7 +298,7 @@ msgstr "سکرینشوت لە %s"
 msgid "Show in %s"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:616
 msgid "Screenshot taken"
 msgstr "سکرینشوت کرا"
 
@@ -310,57 +310,59 @@ msgstr ""
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:468
+#: src/Misc/ScreenshotManager.vala:531
 msgid "Screenshots"
 msgstr "سکرینشوتەکان"
 
-#: src/Misc/WindowMenuManager.vala:85
+#: src/Misc/WindowMenuManager.vala:91
 msgid "Take Screenshot"
 msgstr "سکرینشوت بکە"
 
-#: src/Misc/WindowMenuManager.vala:91
+#: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
 msgstr "هەمیشە لەسەرەوە بە"
 
-#: src/Misc/WindowMenuManager.vala:93
-msgid "Always on Visible Workspace"
+#: src/Misc/WindowMenuManager.vala:99
+#, fuzzy
+#| msgid "Always on Visible Workspace"
+msgid "Show on all Workspaces"
 msgstr "هەمیشە کارابە لە ناوچەکاری دیار"
 
-#: src/Misc/WindowMenuManager.vala:95
+#: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
 msgstr "جوڵاندنی بۆ ناوچەکاری لای چەپ"
 
-#: src/Misc/WindowMenuManager.vala:97
+#: src/Misc/WindowMenuManager.vala:103
 msgid "Move to Workspace Right"
 msgstr "جوڵاندنی بۆ ناوچەکاری لای ڕاست"
 
-#: src/Misc/WindowMenuManager.vala:109
+#: src/Misc/WindowMenuManager.vala:115
 msgid "Move"
 msgstr "جوڵاندن"
 
-#: src/Misc/WindowMenuManager.vala:115
+#: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
 msgstr "ڕیسایز"
 
-#: src/Misc/WindowMenuManager.vala:121
+#: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
 msgstr "گەورەکردن"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Untile"
 msgstr "ئەنتایڵ"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
 msgstr "بچوککردنەوە"
 
-#: src/Misc/WindowMenuManager.vala:136
+#: src/Misc/WindowMenuManager.vala:142
 #, fuzzy
 #| msgid "Maximize"
 msgid "Minimize"
 msgstr "گەورەکردن"
 
-#: src/Misc/WindowMenuManager.vala:142
+#: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
 msgstr "داخستن"
 
@@ -368,7 +370,7 @@ msgstr "داخستن"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1447
+#: src/WindowManager.vala:1294
 #, fuzzy, c-format
 #| msgid "Changes will automatically revert after 30 seconds."
 msgid "Changes will automatically revert after %i second."
@@ -376,15 +378,15 @@ msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 msgstr[1] "هەموو گۆڕانکارییەکان خۆکارانە دوای ٣٠ چرکە هەڵدەوەشێنەوە."
 
-#: src/WindowManager.vala:1454
+#: src/WindowManager.vala:1301
 msgid "Keep new display settings?"
 msgstr "هێشتنەوەی ڕێکخستنە تازەکانی ڕونما؟"
 
-#: src/WindowManager.vala:1458
+#: src/WindowManager.vala:1305
 msgid "Keep Settings"
 msgstr "هێشتنەوەی ڕێکخستنەکان"
 
-#: src/WindowManager.vala:1459
+#: src/WindowManager.vala:1306
 msgid "Use Previous Settings"
 msgstr "بەکارهێنانی ڕێکخستنەکانی پێشوو"
 

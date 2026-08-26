@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 16:20+0000\n"
+"POT-Creation-Date: 2026-08-26 16:55+0000\n"
 "PO-Revision-Date: 2021-03-11 08:40+0000\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <https://l10n.elementary.io/projects/desktop/gala/sr/"
@@ -294,7 +294,7 @@ msgstr "Снимак екрана из „%s“"
 msgid "Show in %s"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:616
 #, fuzzy
 #| msgid "Screenshots"
 msgid "Screenshot taken"
@@ -308,55 +308,57 @@ msgstr ""
 msgid "Screenshot saved to screenshots folder"
 msgstr ""
 
-#: src/Misc/ScreenshotManager.vala:468
+#: src/Misc/ScreenshotManager.vala:531
 msgid "Screenshots"
 msgstr "Снимци екрана"
 
-#: src/Misc/WindowMenuManager.vala:85
+#: src/Misc/WindowMenuManager.vala:91
 msgid "Take Screenshot"
 msgstr "Направи снимак екрана"
 
-#: src/Misc/WindowMenuManager.vala:91
+#: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
 msgstr "Увек на врху"
 
-#: src/Misc/WindowMenuManager.vala:93
-msgid "Always on Visible Workspace"
+#: src/Misc/WindowMenuManager.vala:99
+#, fuzzy
+#| msgid "Always on Visible Workspace"
+msgid "Show on all Workspaces"
 msgstr "Увек на видљивом радном простору"
 
-#: src/Misc/WindowMenuManager.vala:95
+#: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
 msgstr "Премести на леви радни простор"
 
-#: src/Misc/WindowMenuManager.vala:97
+#: src/Misc/WindowMenuManager.vala:103
 msgid "Move to Workspace Right"
 msgstr "Премести на десни радни простор"
 
-#: src/Misc/WindowMenuManager.vala:109
+#: src/Misc/WindowMenuManager.vala:115
 msgid "Move"
 msgstr "Премести"
 
-#: src/Misc/WindowMenuManager.vala:115
+#: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
 msgstr "Промени величину"
 
-#: src/Misc/WindowMenuManager.vala:121
+#: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
 msgstr "Увећај"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Untile"
 msgstr ""
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
 msgstr "Поништи увећање"
 
-#: src/Misc/WindowMenuManager.vala:136
+#: src/Misc/WindowMenuManager.vala:142
 msgid "Minimize"
 msgstr "Умањи"
 
-#: src/Misc/WindowMenuManager.vala:142
+#: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
 msgstr "Затвори"
 
@@ -364,7 +366,7 @@ msgstr "Затвори"
 msgid "Window switcher"
 msgstr ""
 
-#: src/WindowManager.vala:1447
+#: src/WindowManager.vala:1294
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -372,19 +374,19 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/WindowManager.vala:1454
+#: src/WindowManager.vala:1301
 #, fuzzy
 #| msgid "Display Settings…"
 msgid "Keep new display settings?"
 msgstr "Поставке екрана…"
 
-#: src/WindowManager.vala:1458
+#: src/WindowManager.vala:1305
 #, fuzzy
 #| msgid "System Settings…"
 msgid "Keep Settings"
 msgstr "Системска подешавања…"
 
-#: src/WindowManager.vala:1459
+#: src/WindowManager.vala:1306
 msgid "Use Previous Settings"
 msgstr ""
 

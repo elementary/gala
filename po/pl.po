@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 16:20+0000\n"
+"POT-Creation-Date: 2026-08-26 16:55+0000\n"
 "PO-Revision-Date: 2025-07-07 19:55+0000\n"
 "Last-Translator: Marcin Serwin <marcin@serwin.dev>\n"
 "Language-Team: Polish <https://l10n.elementaryos.org/projects/desktop/gala/"
@@ -296,7 +296,7 @@ msgstr "Zrzut ekranu z %s"
 msgid "Show in %s"
 msgstr "Pokaż w %s"
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:616
 msgid "Screenshot taken"
 msgstr "Zrzut ekranu wykonany"
 
@@ -308,55 +308,57 @@ msgstr "Zrzut ekranu zapisany do schowka"
 msgid "Screenshot saved to screenshots folder"
 msgstr "Zrzut ekranu zapisany do folderu ze zrzutami ekranu"
 
-#: src/Misc/ScreenshotManager.vala:468
+#: src/Misc/ScreenshotManager.vala:531
 msgid "Screenshots"
 msgstr "Zrzuty ekranu"
 
-#: src/Misc/WindowMenuManager.vala:85
+#: src/Misc/WindowMenuManager.vala:91
 msgid "Take Screenshot"
 msgstr "Zrób zrzut ekranu"
 
-#: src/Misc/WindowMenuManager.vala:91
+#: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
 msgstr "Zawsze na wierzchu"
 
-#: src/Misc/WindowMenuManager.vala:93
-msgid "Always on Visible Workspace"
+#: src/Misc/WindowMenuManager.vala:99
+#, fuzzy
+#| msgid "Always on Visible Workspace"
+msgid "Show on all Workspaces"
 msgstr "Zawsze na aktywnym obszarze roboczym"
 
-#: src/Misc/WindowMenuManager.vala:95
+#: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
 msgstr "Przesuń do lewej części obszaru roboczego"
 
-#: src/Misc/WindowMenuManager.vala:97
+#: src/Misc/WindowMenuManager.vala:103
 msgid "Move to Workspace Right"
 msgstr "Przesuń do prawej części obszaru roboczego"
 
-#: src/Misc/WindowMenuManager.vala:109
+#: src/Misc/WindowMenuManager.vala:115
 msgid "Move"
 msgstr "Przenieś"
 
-#: src/Misc/WindowMenuManager.vala:115
+#: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
 msgstr "Zmień rozmiar"
 
-#: src/Misc/WindowMenuManager.vala:121
+#: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
 msgstr "Zmaksymalizuj"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Untile"
 msgstr "Odsąsiaduj"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
 msgstr "Cofnij maksymalizację"
 
-#: src/Misc/WindowMenuManager.vala:136
+#: src/Misc/WindowMenuManager.vala:142
 msgid "Minimize"
 msgstr "Zminimalizuj"
 
-#: src/Misc/WindowMenuManager.vala:142
+#: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
 msgstr "Zamknij"
 
@@ -364,7 +366,7 @@ msgstr "Zamknij"
 msgid "Window switcher"
 msgstr "Przełącznik okien"
 
-#: src/WindowManager.vala:1447
+#: src/WindowManager.vala:1294
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
@@ -372,15 +374,15 @@ msgstr[0] "Zmiany zostaną automatycznie wycofane po %i sekundzie."
 msgstr[1] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 msgstr[2] "Zmiany zostaną automatycznie wycofane po %i sekundach."
 
-#: src/WindowManager.vala:1454
+#: src/WindowManager.vala:1301
 msgid "Keep new display settings?"
 msgstr "Zachować nowe ustawienia ekranu?"
 
-#: src/WindowManager.vala:1458
+#: src/WindowManager.vala:1305
 msgid "Keep Settings"
 msgstr "Zachowaj ustawienia"
 
-#: src/WindowManager.vala:1459
+#: src/WindowManager.vala:1306
 msgid "Use Previous Settings"
 msgstr "Użyj poprzednich ustawień"
 
