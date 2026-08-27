@@ -75,7 +75,6 @@ gnome_bg_dep = dependency('gnome-bg-4')
 m_dep = cc.find_library('m', required: false)
 posix_dep = vala.find_library('posix', required: false)
 sqlite3_dep = dependency('sqlite3')
-wingpanel_dep = dependency('wingpanel-9')
 xext_dep = cc.find_library('Xext', required: true)
 if get_option('systemd')
     systemd_dep = dependency('libsystemd')
@@ -83,6 +82,17 @@ endif
 
 mutter_dep = []
 libmutter_dep = []
+wingpanel_dep = []
+
+wingpanel7_dep = dependency('wingpanel-7', required: false)
+if wingpanel7_dep.found()
+    wingpanel_dep = wingpanel7_dep
+endif
+
+wingpanel9_dep = dependency('wingpanel-9', required: false)
+if wingpanel9_dep.found()
+    wingpanel_dep = wingpanel9_dep
+endif
 
 vala_flags = []
 
