@@ -111,6 +111,7 @@ public class Gala.DesktopIntegration : GLib.Object {
                 properties.insert ("is-hidden", new GLib.Variant.boolean (window.is_hidden ()));
                 properties.insert ("has-focus", new GLib.Variant.boolean (window.has_focus ()));
                 properties.insert ("workspace-index", new GLib.Variant.int32 (window.get_workspace ().index ()));
+                properties.insert ("on-all-workspaces", new GLib.Variant.boolean (window.on_all_workspaces));
                 properties.insert ("width", new GLib.Variant.uint32 (frame_rect.width));
                 properties.insert ("height", new GLib.Variant.uint32 (frame_rect.height));
 
