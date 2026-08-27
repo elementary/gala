@@ -20,6 +20,7 @@ namespace Gala {
         public const string INTERACTIVE_SCREENSHOT_ACTION = "interactive-screenshot-action";
         public const string OVERLAY_ACTION = "overlay-action";
         public const string PANEL_MAIN_MENU_ACTION = "panel-main-menu-action";
+        public const string PANEL_NOTIFICATIONS_MENU_ACTION = "panel-notifications-menu-action";
         public const string TOGGLE_RECORDING_ACTION = "toggle-recording-action";
     }
 

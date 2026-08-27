@@ -11,6 +11,7 @@ namespace Gala {
         MAXIMIZE_CURRENT,
         HIDE_CURRENT,
         OPEN_LAUNCHER,
+        OPEN_NOTIFICATIONS,
         CUSTOM_COMMAND,
         WINDOW_OVERVIEW,
         WINDOW_OVERVIEW_ALL,

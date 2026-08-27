@@ -12,6 +12,7 @@
     <value nick="switch-to-workspace-previous" value="8" />
     <value nick="switch-to-workspace-next" value="9" />
     <value nick="switch-to-workspace-last" value="10" />
+    <value nick="open-notifications" value="11" />
   </enum>
 
   <enum id="SuperScrollAction">
@@ -71,6 +72,11 @@
       <default>'io.elementary.wingpanel --toggle-indicator=app-launcher'</default>
       <summary>Panel main menu action</summary>
       <description>Sets the command to run when the panel-main-menu keybinding is pressed.</description>
+    </key>
+    <key type="s" name="panel-notifictions-menu-action">
+      <default>'io.elementary.wingpanel --toggle-indicator=messages'</default>
+      <summary>Panel notifications menu action</summary>
+      <description>Sets the command to run when the panel-notifications-menu keybinding is pressed.</description>
     </key>
     <key type="s" name="toggle-recording-action">
       <default>''</default>
@@ -155,6 +161,10 @@
     <key type="as" name="panel-main-menu">
       <default><![CDATA[['<Alt>F2']]]></default>
       <summary>Open the applications menu</summary>
+    </key>
+    <key type="as" name="panel-notifications-menu">
+      <default><![CDATA[['<Super>N']]]></default>
+      <summary>Open the notifications menu</summary>
     </key>
     <key name="screenshot" type="as">
       <default><![CDATA[['Print']]]></default>

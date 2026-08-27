@@ -31,7 +31,8 @@ namespace Gala {
         }
 
         private const string OPEN_MULTITASKING_VIEW = "dbus-send --session --dest=org.pantheon.gala --print-reply /org/pantheon/gala org.pantheon.gala.PerformAction int32:1";
-        private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=app-launcher";
+        private const string OPEN_APPLICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=" + Wingpanel.Indicator.APP_LAUNCHER;
+        private const string OPEN_NOTIFICATIONS_MENU = "io.elementary.wingpanel --toggle-indicator=" + Wingpanel.Indicator.MESSAGES;
 
         /**
          * {@inheritDoc}
@@ -230,6 +231,7 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
+            display.add_keybinding ("panel-notifications", keybinding_settings, IGNORE_AUTOREPEAT, handle_notifications_menu);
 
             display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.multitasking_view.toggle);
 
@@ -429,6 +431,11 @@ namespace Gala {
         private void handle_applications_menu (Meta.Display display, Meta.Window? window,
             Clutter.KeyEvent? event, Meta.KeyBinding binding) {
             launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
+        }
+
+        private void handle_notifications_menu (Meta.Display display, Meta.Window? window,
+            Clutter.KeyEvent? event, Meta.KeyBinding binding) {
+            launch_action (ActionKeys.PANEL_NOTIFICATIONS_MENU_ACTION);
         }
 
         /**
@@ -698,6 +705,9 @@ namespace Gala {
                     break;
                 case ActionType.OPEN_LAUNCHER:
                     launch_action (ActionKeys.PANEL_MAIN_MENU_ACTION);
+                    break;
+                case ActionType.OPEN_NOTIFICATIONS:
+                    launch_action (ActionKeys.PANEL_NOTIFICATIONS_MENU_ACTION);
                     break;
                 case ActionType.WINDOW_OVERVIEW:
                     if (filter_action (WINDOW_OVERVIEW)) {
