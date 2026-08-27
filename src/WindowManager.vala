@@ -231,7 +231,7 @@ namespace Gala {
             display.add_keybinding ("cycle-workspaces-next", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("cycle-workspaces-previous", keybinding_settings, NONE, handle_cycle_workspaces);
             display.add_keybinding ("panel-main-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_applications_menu);
-            display.add_keybinding ("panel-notifications", keybinding_settings, IGNORE_AUTOREPEAT, handle_notifications_menu);
+            display.add_keybinding ("panel-notifications-menu", keybinding_settings, IGNORE_AUTOREPEAT, handle_notifications_menu);
 
             display.add_keybinding ("toggle-multitasking-view", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.multitasking_view.toggle);
 

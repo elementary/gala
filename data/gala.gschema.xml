@@ -73,7 +73,7 @@
       <summary>Panel main menu action</summary>
       <description>Sets the command to run when the panel-main-menu keybinding is pressed.</description>
     </key>
-    <key type="s" name="panel-notifictions-menu-action">
+    <key type="s" name="panel-notifications-menu-action">
       <default>'io.elementary.wingpanel --toggle-indicator=messages'</default>
       <summary>Panel notifications menu action</summary>
       <description>Sets the command to run when the panel-notifications-menu keybinding is pressed.</description>
