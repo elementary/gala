@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
-"POT-Creation-Date: 2026-08-12 16:20+0000\n"
+"POT-Creation-Date: 2026-08-26 16:55+0000\n"
 "PO-Revision-Date: 2026-08-15 17:01+0000\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://"
@@ -268,7 +268,7 @@ msgstr "%s 的畫面快照"
 msgid "Show in %s"
 msgstr "在《%s》中顯示"
 
-#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:553
+#: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:616
 msgid "Screenshot taken"
 msgstr "已拍攝畫面快照"
 
@@ -280,55 +280,57 @@ msgstr "畫面快照已儲存到剪貼簿中"
 msgid "Screenshot saved to screenshots folder"
 msgstr "畫面快照已儲存到畫面快照資料夾"
 
-#: src/Misc/ScreenshotManager.vala:468
+#: src/Misc/ScreenshotManager.vala:531
 msgid "Screenshots"
 msgstr "畫面快照"
 
-#: src/Misc/WindowMenuManager.vala:85
+#: src/Misc/WindowMenuManager.vala:91
 msgid "Take Screenshot"
 msgstr "拍攝畫面快照"
 
-#: src/Misc/WindowMenuManager.vala:91
+#: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
 msgstr "永遠在最上層"
 
-#: src/Misc/WindowMenuManager.vala:93
-msgid "Always on Visible Workspace"
+#: src/Misc/WindowMenuManager.vala:99
+#, fuzzy
+#| msgid "Always on Visible Workspace"
+msgid "Show on all Workspaces"
 msgstr "永遠在顯示的工作區"
 
-#: src/Misc/WindowMenuManager.vala:95
+#: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
 msgstr "向左移動工作區"
 
-#: src/Misc/WindowMenuManager.vala:97
+#: src/Misc/WindowMenuManager.vala:103
 msgid "Move to Workspace Right"
 msgstr "向右移動工作區"
 
-#: src/Misc/WindowMenuManager.vala:109
+#: src/Misc/WindowMenuManager.vala:115
 msgid "Move"
 msgstr "移動"
 
-#: src/Misc/WindowMenuManager.vala:115
+#: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
 msgstr "調整大小"
 
-#: src/Misc/WindowMenuManager.vala:121
+#: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
 msgstr "最大化"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Untile"
 msgstr "解除鋪排"
 
-#: src/Misc/WindowMenuManager.vala:125
+#: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
 msgstr "取消最大化"
 
-#: src/Misc/WindowMenuManager.vala:136
+#: src/Misc/WindowMenuManager.vala:142
 msgid "Minimize"
 msgstr "最小化"
 
-#: src/Misc/WindowMenuManager.vala:142
+#: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
 msgstr "關閉"
 
@@ -336,21 +338,21 @@ msgstr "關閉"
 msgid "Window switcher"
 msgstr "視窗切換器"
 
-#: src/WindowManager.vala:1447
+#: src/WindowManager.vala:1294
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] "變更將會在 %i 秒後自動復原。"
 
-#: src/WindowManager.vala:1454
+#: src/WindowManager.vala:1301
 msgid "Keep new display settings?"
 msgstr "要保留新的顯示器設定嗎？"
 
-#: src/WindowManager.vala:1458
+#: src/WindowManager.vala:1305
 msgid "Keep Settings"
 msgstr "保留設定"
 
-#: src/WindowManager.vala:1459
+#: src/WindowManager.vala:1306
 msgid "Use Previous Settings"
 msgstr "使用先前的設定"
 
