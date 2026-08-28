@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-08-26 16:55+0000\n"
-"PO-Revision-Date: 2026-08-14 07:01+0000\n"
+"PO-Revision-Date: 2026-08-29 15:01+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -301,8 +301,6 @@ msgid "Always on Top"
 msgstr "最前面に維持"
 
 #: src/Misc/WindowMenuManager.vala:99
-#, fuzzy
-#| msgid "Always on Visible Workspace"
 msgid "Show on all Workspaces"
 msgstr "すべてのワークスペースに表示"
 
