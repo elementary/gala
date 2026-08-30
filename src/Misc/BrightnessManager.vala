@@ -6,97 +6,117 @@
  */
 
 #if HAS_MUTTER50
+public struct Gala.Monitor {
+    unowned Meta.Monitor meta_mointor;
+    unowned Meta.Backlight backlight;
+    ulong connection_id;
+}
+
 [DBus (name = "io.elementary.gala.BrightnessManager")]
 public class Gala.BrightnessManager : GLib.Object {
-    [DBus (visible = false)]
-    public signal uint? monitor_added (MonitorBrightness monitor_brightness);
-    [DBus (visible = false)]
-    public signal void monitor_removed (uint connection_id);
-
-    private int _brightness;
-    public int brightness {
-        get {
-            if (exposed_monitors.size () == 0)
-                return -1;
-
-
-            return _brightness;
-        }
-        set {
-            if (_brightness == value || exposed_monitors.size () == 0)
-                return;
-
-            foreach (var monitor_brightness in exposed_monitors.get_values ())
-                monitor_brightness.brightness = value;
-
-            _brightness = value;
-        }
-    }
+    public signal void monitors_changed ();
+    public signal void monitor_brightness_changed (uint index, uint value);
 
     [DBus (visible = false)]
     public unowned Meta.Display display { private get; construct; }
 
-    private GLib.HashTable<unowned Meta.Monitor, MonitorBrightness> exposed_monitors;
-    private GLib.HashTable<unowned Meta.Monitor, uint> connection_ids;
     private unowned Meta.MonitorManager monitor_manager;
+    private GLib.List<Gala.Monitor?> monitors;
 
     public BrightnessManager (Meta.Display display) {
         Object (
-            display: display
+                display: display
         );
     }
 
     construct {
         monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.connect (update_available_backlights);
-        exposed_monitors = new GLib.HashTable<unowned Meta.Monitor, MonitorBrightness> (null, null);
-        connection_ids = new GLib.HashTable<unowned Meta.Monitor, uint> (null, null);
-
-        // TODO: bind to value from gschema
-        _brightness = 100;
+        monitor_manager.monitors_changed.connect (monitors_changed_cb);
+        monitors = new GLib.List<Gala.Monitor?> ();
+        monitors_changed_cb ();
 
         var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
         display.add_keybinding ("brightness-brighter", keybinding_settings, Meta.KeyBindingFlags.NONE, () => {
-            brightness += 5;
+            try {
+                set_monitor_brightness (0, get_monitor_brightness (0) + 5);
+            } catch {}
         });
         display.add_keybinding ("brightness-dimmer", keybinding_settings, Meta.KeyBindingFlags.NONE, () => {
-            brightness -= 5;
+            try {
+                int delta = get_monitor_brightness (0) - 5;
+                if (delta < 0)
+                    delta = 0;
+
+                set_monitor_brightness (0, delta);
+            } catch {}
         });
     }
 
-    [DBus (visible = false)]
-    public void update_available_backlights () {
-        unowned var monitors = monitor_manager.get_monitors ();
-        var new_monitors = monitors.copy ();
-        var old_monitors = exposed_monitors.get_keys ();
-        foreach (unowned var monitor in monitors) {
-            if (monitor.get_backlight () == null)
-                continue;
+    public void set_monitor_brightness (uint index, uint value) throws GLib.Error {
+        if (index < monitors.length ()) {
+            var backlight = monitors.nth_data (index).backlight;
+            int min, max;
+            backlight.get_brightness_info (out min, out max);
+            backlight.set_brightness ((int) (value * (max - min) / 100) + min);
+        }
+    }
 
-            if (old_monitors.find (monitor) != null) {
-                old_monitors.remove (monitor);
-                new_monitors.remove (monitor);
-            }
+    public int get_monitor_brightness (uint index) throws GLib.Error {
+        if (index < monitors.length ()) {
+            var backlight = monitors.nth_data (index).backlight;
+            int min, max;
+            int value;
+            backlight.get_brightness_info (out min, out max);
+            value = backlight.get_brightness ();
+            return (((value - min) * 100) / (max - min)).clamp (0, 100);
+        } else
+            return -1;
+    }
+
+    public string get_monitor_data (uint index) throws GLib.Error {
+        if (index < monitors.length ())
+            return monitors.nth_data (index).meta_mointor.get_display_name ();
+        else
+            return "";
+    }
+
+    public uint get_monitor_count () throws GLib.Error {
+        return monitors.length ();
+    }
+
+    private void monitors_changed_cb () {
+        foreach (var data in monitors) {
+            data.backlight.disconnect (data.connection_id);
+            monitors.remove (data);
         }
 
-        if (new_monitors.length () > 0) {
-            foreach (var monitor in new_monitors) {
-                var monitor_brightness = new MonitorBrightness (monitor);
-                var connection_id = monitor_added (monitor_brightness);
-                if (connection_id != null) {
-                    exposed_monitors.insert (monitor, monitor_brightness);
-                    connection_ids.insert (monitor, connection_id);
-                }
-            }
+        var meta_monitors = monitor_manager.get_monitors ().copy ();
+        foreach (var meta_monitor in meta_monitors) {
+            var backlight = meta_monitor.get_backlight ();
+            var connection_id = backlight.notify["brightness"].connect (monitor_brightness_changed_cb);
+            if (meta_monitor.is_primary ())
+                monitors.insert ({ meta_monitor, backlight, connection_id }, 0);
+            else
+                monitors.append ({ meta_monitor, backlight, connection_id });
         }
 
-        if (old_monitors.length () > 0) {
-            foreach (var monitor in old_monitors) {
-                monitor_removed (connection_ids.get (monitor));
-                exposed_monitors.remove (monitor);
-                connection_ids.remove (monitor);
-            }
-        }
+        monitors_changed ();
+    }
+
+    private void monitor_brightness_changed_cb (GLib.Object sender, GLib.ParamSpec prop) {
+        var backlight = (Meta.Backlight) sender;
+        var list = monitors.search<unowned Meta.Backlight> (backlight, (monitor, backlight) => {
+            if (monitor.backlight == backlight)
+                return 0;
+            else
+                return -1;
+        }).copy ();
+
+        if (list == null || list.is_empty ())
+            return;
+
+        var index = monitors.index (list.data);
+        monitor_brightness_changed (index, get_monitor_brightness (index));
     }
 }
 #endif
