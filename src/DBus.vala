@@ -30,6 +30,18 @@ public class Gala.DBus {
         );
 
         Bus.own_name (
+            SESSION, "io.elementary.gala.BrightnessManager", NONE, null,
+            (connection, name) => {
+                try {
+                    connection.register_object ("/io/elementary/gala/BrightnessManager", new BrightnessManager (wm.get_display ()));
+                } catch (Error e) {
+                    warning (e.message);
+                }
+            },
+            on_name_lost
+        );
+
+        Bus.own_name (
             SESSION, "org.pantheon.gala", NONE, null,
             (connection, name) => {
                 if (instance == null) {
