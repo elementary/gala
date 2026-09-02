@@ -168,8 +168,8 @@ public class Gala.NotificationStack : Object {
         update_positions ();
 
         var builder = new TransitionBuilder (notification, AnimationDuration.CLOSE, EASE_IN_QUAD);
-        builder.add_property ("opacity", 0u);
-        builder.add_property ("x", notification.x + stack_width);
+        builder.add_property ("opacity", 0u, RUN);
+        builder.add_property ("x", notification.x + stack_width, IGNORE);
 
         yield builder.run ();
     }
