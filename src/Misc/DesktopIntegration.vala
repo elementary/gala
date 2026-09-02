@@ -201,9 +201,9 @@ public class Gala.DesktopIntegration : GLib.Object {
         unowned var display = wm.get_display ();
 
 #if HAS_MUTTER49
-        if (window.is_maximized () || !Meta.Prefs.get_gnome_animations ()) {
+        if (window.is_maximized () || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
 #else
-        if (window.get_maximized () == BOTH || !Meta.Prefs.get_gnome_animations ()) {
+        if (window.get_maximized () == BOTH || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
 #endif
             // If user has "Flash screen" enabled, make sure to respect it when shake animation is not played
             InternalUtils.bell_notify (display);

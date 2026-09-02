@@ -876,7 +876,7 @@ namespace Gala {
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations ()) {
+            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
                 size_change_completed (actor);
                 return;
             }
