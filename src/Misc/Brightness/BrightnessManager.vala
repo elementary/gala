@@ -45,11 +45,15 @@ public class Gala.BrightnessManager : Object {
         unowned var logical_monitors = monitor_manager.get_logical_monitors ();
 
         foreach (var logical_monitor in logical_monitors) {
+            bool has_primary = false;
             bool has_backlight = false;
             foreach (var monitor in logical_monitor.get_monitors ()) {
+                if (monitor.is_primary ()) {
+                    has_primary = true;
+                }
+
                 if (monitor.get_backlight () != null && monitor.is_active ()) {
                     has_backlight = true;
-                    break;
                 }
             }
 
@@ -60,7 +64,11 @@ public class Gala.BrightnessManager : Object {
             var brightness = new MonitorBrightness (logical_monitor, supported_monitors.size);
             brightness.notify["value"].connect (on_brightness_changed);
 
-            supported_monitors.add (brightness);
+            if (has_primary) {
+                supported_monitors.insert (0, brightness);
+            } else {
+                supported_monitors.add (brightness);
+            }
         }
 
         monitors_changed ();
