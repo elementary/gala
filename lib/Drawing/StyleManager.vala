@@ -12,6 +12,11 @@ public class Gala.Drawing.StyleManager : Object {
         LIGHT
     }
 
+    public enum ReducedMotion {
+        NO_PREFERENCE,
+        REDUCE,
+    }
+
     [DBus (name="org.freedesktop.Accounts")]
     private interface Accounts : Object {
         public abstract async string find_user_by_name (string name) throws IOError, DBusError;
@@ -28,8 +33,16 @@ public class Gala.Drawing.StyleManager : Object {
         public abstract int accent_color { get; set; }
     }
 
+    [DBus (name = "org.freedesktop.portal.Settings")]
+    interface Portal : Object {
+        public signal void setting_changed (string namespace, string key, Variant value);
+        public abstract async Variant read_one (string namespace, string key) throws DBusError, IOError;
+    }
+
     private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
     private const string FDO_ACCOUNTS_PATH = "/org/freedesktop/Accounts";
+    private const string PORTAL_NAME = "org.freedesktop.portal.Desktop";
+    private const string PORTAL_PATH = "/org/freedesktop/portal/desktop";
     private const uint8 ACCENT_COLOR_ALPHA = 64;
 
     private static GLib.Once<StyleManager> instance;
@@ -43,9 +56,11 @@ public class Gala.Drawing.StyleManager : Object {
 #else
     public Cogl.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
 #endif
+    public ReducedMotion reduced_motion { get; private set; default = NO_PREFERENCE; }
 
     private PantheonAccountsService? pantheon_proxy;
     private SettingsDaemonAccountsService? settings_daemon_proxy;
+    private Portal? portal_proxy;
 
     construct {
         Bus.watch_name (
@@ -55,6 +70,12 @@ public class Gala.Drawing.StyleManager : Object {
                 pantheon_proxy = null;
                 settings_daemon_proxy = null;
             }
+        );
+
+        Bus.watch_name (
+            SESSION, PORTAL_NAME, NONE,
+            () => on_portal_appeared.begin (),
+            () => portal_proxy = null
         );
     }
 
@@ -140,5 +161,38 @@ public class Gala.Drawing.StyleManager : Object {
         }
 
         return 0;
+    }
+
+    private async void on_portal_appeared () {
+        try {
+            portal_proxy = yield Bus.get_proxy<Portal> (SESSION, PORTAL_NAME, PORTAL_PATH);
+        } catch (Error e) {
+            warning ("Could not connect to portal: %s", e.message);
+            return;
+        }
+
+        portal_proxy.setting_changed.connect (on_setting_changed);
+
+        try {
+            var variant = yield portal_proxy.read_one ("org.freedesktop.appearance", "reduced-motion");
+            reduced_motion = (ReducedMotion) variant.get_uint32 ();
+        } catch (Error e) {
+            warning ("Could not read reduced-motion setting from portal: %s", e.message);
+        }
+    }
+
+    private void on_setting_changed (string namespace, string key, Variant value) {
+        if (namespace != "org.freedesktop.appearance") {
+            return;
+        }
+
+        switch (key) {
+            case "reduced-motion":
+                reduced_motion = (ReducedMotion) value.get_uint32 ();
+                break;
+
+            default:
+                break;
+        }
     }
 }
