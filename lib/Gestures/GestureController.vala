@@ -260,7 +260,7 @@ public class Gala.GestureController : Object {
             return;
         }
 
-        if (!Meta.Prefs.get_gnome_animations ()) {
+        if (!Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
             target.propagate (COMMIT, action, clamped_to);
             progress = clamped_to;
             finished ();
