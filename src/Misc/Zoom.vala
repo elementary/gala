@@ -97,7 +97,7 @@ public class Gala.Zoom : Object, GestureTarget, RootTarget {
 
             case UPDATE:
                 var target_zoom = (float) progress * 10 + 1;
-                if (!Meta.Prefs.get_gnome_animations ()) {
+                if (!Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
                     var delta = target_zoom - current_zoom;
                     if (delta.abs () >= SHORTCUT_DELTA - float.EPSILON) {
                         target_zoom = current_zoom + ((delta > 0) ? SHORTCUT_DELTA : -SHORTCUT_DELTA);

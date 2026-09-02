@@ -61,7 +61,7 @@ public class Gala.NotificationStack : Object {
         var window_rect = window.get_frame_rect ();
         window.stick ();
 
-        if (Meta.Prefs.get_gnome_animations ()) {
+        if (Meta.Prefs.get_gnome_animations () && !Utils.should_reduce_motion ()) {
             // Don't flicker at the beginning of the animation
             notification.opacity = 0;
             notification.rotation_angle_x = 90;
@@ -134,7 +134,7 @@ public class Gala.NotificationStack : Object {
                 continue;
             }
 
-            if (Meta.Prefs.get_gnome_animations ()) {
+            if (Meta.Prefs.get_gnome_animations () && !Utils.should_reduce_motion ()) {
                 actor.save_easing_state ();
                 actor.set_easing_mode (Clutter.AnimationMode.EASE_OUT_BACK);
                 actor.set_easing_duration (200);
@@ -143,7 +143,7 @@ public class Gala.NotificationStack : Object {
 
             move_window (actor, -1, (int)y);
 
-            if (Meta.Prefs.get_gnome_animations ()) {
+            if (Meta.Prefs.get_gnome_animations () && !Utils.should_reduce_motion ()) {
                 actor.restore_easing_state ();
             }
 
