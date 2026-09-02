@@ -7,7 +7,17 @@
 
 [DBus (name = "io.elementary.gala.BrightnessManager")]
 public class Gala.BrightnessManager : Object {
+    /**
+     * The monitors changed, you should treat everything as invalid
+     * and re-query the number of monitors and their brightness.
+     */
     public signal void monitors_changed ();
+
+    /**
+     * The brightness of the monitor with the given index changed.
+     * Note that this might change the global brightness so it should
+     * be re-queried as well.
+     */
     public signal void monitor_brightness_changed (int index, double brightness);
 
     [DBus (visible = false)]
@@ -93,6 +103,11 @@ public class Gala.BrightnessManager : Object {
         supported_monitors[index].value = brightness;
     }
 
+    /**
+     * Gets the percentage that represents the "global" brightness.
+     * This is currently the maximum brightness of all monitors.
+     * See {@link set_global_brightness} for more information.
+     */
     public double get_global_brightness () throws IOError, DBusError {
         if (supported_monitors.size == 0) {
             throw new IOError.INVALID_ARGUMENT ("No supported monitors found.");
@@ -102,6 +117,11 @@ public class Gala.BrightnessManager : Object {
         return max.value;
     }
 
+    /**
+     * Sets a new "global" brightness.
+     * This will adjust the brightness of all monitors in a way that
+     * their relative brightness is kept.
+     */
     public void set_global_brightness (double scale) throws IOError, DBusError {
         if (supported_monitors.size == 0) {
             throw new IOError.INVALID_ARGUMENT ("No supported monitors found.");
