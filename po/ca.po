@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-01 12:51+0000\n"
-"PO-Revision-Date: 2026-08-28 10:01+0000\n"
+"PO-Revision-Date: 2026-09-03 09:01+0000\n"
 "Last-Translator: David M <rbndavid@gmail.com>\n"
 "Language-Team: Catalan <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ca/>\n"
@@ -100,30 +100,32 @@ msgstr "Millores:"
 #: data/gala.metainfo.xml.in:34
 msgid "Show transient windows over their parents in the multitasking view"
 msgstr ""
+"Mostra les finestres transitòries sobre les finestres mare a la vista de "
+"multitasca."
 
 #: data/gala.metainfo.xml.in:35
 msgid "Added a brand new on screen keyboard for the secure session"
-msgstr ""
+msgstr "S'ha afegit un teclat en pantalla totalment nou per a la sessió segura."
 
 #: data/gala.metainfo.xml.in:36
-#, fuzzy
-#| msgid "Add Take Screenshot to window context menu"
 msgid "Screenshotting a window now includes open menus"
-msgstr ""
-"Afegeix l'opció de fer una captura de pantalla al menú contextual de la "
-"finestra"
+msgstr "Fer una captura de pantalla d'una finestra ara inclou els menús oberts."
 
 #: data/gala.metainfo.xml.in:37
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"A les pantalles tàctils, lliscar cap amunt des de la part inferior ara "
+"obrirà la vista de multitasca."
 
 #: data/gala.metainfo.xml.in:38
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"S'han corregit diversos casos límit que podien provocar errors en les "
+"animacions de minimització i maximització."
 
 #: data/gala.metainfo.xml.in:39 data/gala.metainfo.xml.in:53
 #: data/gala.metainfo.xml.in:65 data/gala.metainfo.xml.in:83
