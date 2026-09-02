@@ -370,5 +370,9 @@ namespace Gala {
             return display.get_context ().get_backend ().get_stage ().get_context ().get_backend ();
         }
 #endif
+
+        public static bool should_reduce_motion () {
+            return Drawing.StyleManager.get_instance ().reduced_motion == REDUCE;
+        }
     }
 }
