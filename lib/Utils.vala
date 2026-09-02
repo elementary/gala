@@ -357,5 +357,9 @@ namespace Gala {
                 return display.get_monitor_scale (monitor_index);
             }
         }
+
+        public static bool should_reduce_motion () {
+            return Drawing.StyleManager.get_instance ().reduced_motion == REDUCE;
+        }
     }
 }
