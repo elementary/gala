@@ -23,6 +23,9 @@ public class Gala.BrightnessManager : Object {
     [DBus (visible = false)]
     public Meta.Display display { private get; construct; }
 
+    public bool dimming_enabled { get; set; default = false; }
+    public double auto_brightness_target { get; set; default = -1; }
+
     private Gee.ArrayList<MonitorBrightness> supported_monitors;
 
     [DBus (visible = false)]
@@ -63,6 +66,9 @@ public class Gala.BrightnessManager : Object {
 
             var brightness = new MonitorBrightness (logical_monitor, supported_monitors.size);
             brightness.notify["value"].connect (on_brightness_changed);
+
+            bind_property ("dimming-enabled", brightness, "dimming-enabled", SYNC_CREATE);
+            bind_property ("auto-brightness-target", brightness, "auto-brightness-target", SYNC_CREATE);
 
             if (has_primary) {
                 supported_monitors.insert (0, brightness);

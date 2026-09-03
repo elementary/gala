@@ -47,6 +47,7 @@ gala_bin_sources = files(
     'Misc/WorkspaceManager.vala',
     'Misc/Zoom.vala',
     'Misc/Brightness/BrightnessManager.vala',
+    'Misc/Brightness/GSDBrightnessAdapter.vala',
     'Misc/Brightness/MonitorBrightness.vala',
     'Misc/OSK/OSKManager.vala',
     'Misc/OSK/OSKProxy.vala',
