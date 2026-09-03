@@ -48,17 +48,28 @@ public class Gala.TransitionBuilder : Object {
         group.add_transition (property_transition);
     }
 
-    public async void run () {
+    /**
+     * Runs the transitions added to #this. Returns true if the transitions
+     * fully completed and false if they were somehow interrupted (e.g.
+     * the actor was destroyed or remove all transitions was called).
+     */
+    public async bool run () {
         if (!Meta.Prefs.get_gnome_animations ()) {
-            return;
+            return true;
         }
 
-        var stopped_handler_id = group.stopped.connect (() => run.callback ());
+        bool is_finished = false;
+        var stopped_handler_id = group.stopped.connect ((_is_finished) => {
+            is_finished = _is_finished;
+            run.callback ();
+        });
 
         actor.add_transition (Uuid.string_random (), group);
 
         yield;
 
         group.disconnect (stopped_handler_id);
+
+        return is_finished;
     }
 }
