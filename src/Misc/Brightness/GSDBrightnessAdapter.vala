@@ -10,7 +10,7 @@
  * Implements the interface that the gnome settings daemon
  * expects from gnome shell for things like dimming on idle and
  * auto brightness.
- * See: https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/data/dbus-interfaces/org.gnome.Shell.Brightness.xml
+ * See: [[https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/main/data/dbus-interfaces/org.gnome.Shell.Brightness.xml]]
  */
 [DBus (name = "org.gnome.Shell.Brightness")]
 public class Gala.GSDBrightnessAdapter : Object {
