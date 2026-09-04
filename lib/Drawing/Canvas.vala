@@ -34,7 +34,11 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
         int real_width = (int) Math.ceilf (width * scale_factor);
         int real_height = (int) Math.ceilf (height * scale_factor);
         if (bitmap == null) {
+#if HAS_MUTTER51
+            bitmap = new Cogl.Bitmap.with_size (cogl_context, real_width, real_height, Cogl.PixelFormat.ARGB32_NATIVE);
+#else
             bitmap = new Cogl.Bitmap.with_size (cogl_context, real_width, real_height, Cogl.PixelFormat.CAIRO_ARGB32_COMPAT);
+#endif
         }
 
         unowned Cogl.Buffer? buffer = bitmap.get_buffer ();
