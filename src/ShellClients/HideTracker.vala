@@ -7,7 +7,6 @@
 
 public class Gala.HideTracker : Object {
     private const int BARRIER_OFFSET = 50; // Allow hot corner trigger
-    private const int UPDATE_TIMEOUT = 200;
     private const int HIDE_DELAY = 500;
 
     public signal void hide ();
