@@ -146,10 +146,13 @@ public class Gala.BrightnessManager : Object {
             throw new IOError.INVALID_ARGUMENT ("Invalid scale value: %f".printf (scale));
         }
 
-        var max = get_global_brightness ();
+        /* Make sure we don't divide by zero */
+        var max = double.max (get_global_brightness (), 0.01);
 
         foreach (var monitor in supported_monitors) {
-            monitor.value = (monitor.value / max) * scale;
+            /* Make sure we don't get trapped at zero */
+            var monitor_val = double.max (monitor.value, 0.01);
+            monitor.value = (monitor_val / max) * scale;
         }
     }
 }
