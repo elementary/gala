@@ -6,30 +6,23 @@
  */
 
 public class Gala.Drawing.StyleManager : Object {
+    private const string DBUS_DESKTOP_NAME = "org.freedesktop.portal.Desktop";
+    private const string DBUS_DESKTOP_PATH = "/org/freedesktop/portal/desktop";
+
     public enum ColorScheme {
         NO_PREFERENCE,
         DARK,
         LIGHT
     }
 
-    [DBus (name="org.freedesktop.Accounts")]
-    private interface Accounts : Object {
-        public abstract async string find_user_by_name (string name) throws IOError, DBusError;
+    [DBus (name = "org.freedesktop.portal.Settings")]
+    private interface SettingsPortal : Object {
+        public abstract HashTable<string, HashTable<string, Variant>> read_all (string[] namespaces) throws DBusError, IOError;
+        public abstract Variant read (string namespace, string key) throws DBusError, IOError;
+
+        public signal void setting_changed (string namespace, string key, Variant value);
     }
 
-    [DBus (name="io.elementary.pantheon.AccountsService")]
-    private interface PantheonAccountsService : DBusProxy {
-        public abstract int prefers_color_scheme { get; set; }
-        public abstract int prefers_accent_color { get; set; }
-    }
-
-    [DBus (name="io.elementary.SettingsDaemon.AccountsService")]
-    private interface SettingsDaemonAccountsService : DBusProxy {
-        public abstract int accent_color { get; set; }
-    }
-
-    private const string FDO_ACCOUNTS_NAME = "org.freedesktop.Accounts";
-    private const string FDO_ACCOUNTS_PATH = "/org/freedesktop/Accounts";
     private const uint8 ACCENT_COLOR_ALPHA = 64;
 
     private static GLib.Once<StyleManager> instance;
@@ -39,106 +32,60 @@ public class Gala.Drawing.StyleManager : Object {
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
 #if !HAS_MUTTER47
-    public Clutter.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
+    public Clutter.Color theme_accent_color { get; private set; default = Clutter.Color.from_string ("#3689e6"); }
 #else
-    public Cogl.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
+    public Cogl.Color theme_accent_color { get; private set; default = Cogl.Color.from_string ("#3689e6"); }
 #endif
 
-    private PantheonAccountsService? pantheon_proxy;
-    private SettingsDaemonAccountsService? settings_daemon_proxy;
+    private SettingsPortal? settings_portal = null;
 
     construct {
         Bus.watch_name (
-            SYSTEM, FDO_ACCOUNTS_NAME, NONE,
-            () => connect_to_accounts_service.begin (),
-            () => {
-                pantheon_proxy = null;
-                settings_daemon_proxy = null;
-            }
+            SESSION, DBUS_DESKTOP_NAME, NONE,
+            () => connect_to_settings_portal.begin (),
+            () => settings_portal = null
         );
     }
 
-    private async void connect_to_accounts_service () {
+    private async void connect_to_settings_portal () {
         try {
-            var accounts = yield Bus.get_proxy<Accounts> (SYSTEM, FDO_ACCOUNTS_NAME, FDO_ACCOUNTS_PATH);
-
-            var path = yield accounts.find_user_by_name (Environment.get_user_name ());
-
-            pantheon_proxy = yield Bus.get_proxy<PantheonAccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
-            settings_daemon_proxy = yield Bus.get_proxy<SettingsDaemonAccountsService> (SYSTEM, FDO_ACCOUNTS_NAME, path, GET_INVALIDATED_PROPERTIES);
+            settings_portal = yield Bus.get_proxy<SettingsPortal> (SESSION, DBUS_DESKTOP_NAME, DBUS_DESKTOP_PATH);
         } catch {
-            warning ("Could not connect to AccountsService. Default accent color will be used");
+            warning ("Could not connect to settings portal. Default accent color will be used");
             return;
         }
 
-        update_color_scheme (pantheon_proxy.prefers_color_scheme);
-        update_color (settings_daemon_proxy.accent_color);
+        try {
+            update_color_scheme (settings_portal.read ("org.freedesktop.appearance", "color-scheme").get_uint32 ());
+            update_color (settings_portal.read ("org.freedesktop.appearance", "accent-color").get_variant ());
+        } catch (Error e) {
+            warning (e.message);
+        }
 
-        pantheon_proxy.g_properties_changed.connect ((changed, invalid) => {
-            var value = changed.lookup_value ("PrefersColorScheme", new VariantType ("i"));
-            if (value != null) {
-                update_color_scheme (value.get_int32 ());
+        settings_portal.setting_changed.connect ((scheme, key, variant) => {
+            if (scheme != "org.freedesktop.appearance") {
+                return;
             }
-        });
 
-        settings_daemon_proxy.g_properties_changed.connect ((changed, invalid) => {
-            var value = changed.lookup_value ("AccentColor", new VariantType ("i"));
-            if (value != null) {
-                update_color (value.get_int32 ());
+            switch (key) {
+                case "color-scheme":
+                    update_color_scheme (variant.get_uint32 ());
+                    break;
+                case "accent-color":
+                    update_color (variant);
+                    break;
             }
         });
     }
 
-    private void update_color_scheme (int color_scheme) {
+    private void update_color_scheme (uint32 color_scheme) {
         prefers_color_scheme = (ColorScheme) color_scheme;
     }
 
-    private void update_color (int color) {
-        var rgb = get_color (color);
+    private void update_color (Variant color) {
+        double r, g, b;
+        color.get ("(ddd)", out r, out g, out b);
 
-        var r = (uint8) ((rgb >> 16) & 255);
-        var g = (uint8) ((rgb >> 8) & 255);
-        var b = (uint8) (rgb & 255);
-
-        theme_accent_color = { r, g, b, ACCENT_COLOR_ALPHA };
-    }
-
-    private int get_color (int color) {
-        switch (color) {
-            case 1: // Strawberry
-                return 0xed5353;
-
-            case 2: // Orange
-                return 0xffa154;
-
-            case 3: // Banana
-                return 0xf9c440;
-
-            case 4: // Lime
-                return 0x68b723;
-
-            case 5: // Mint
-                return 0x28bca3;
-
-            case 6: // Blueberry
-                return 0x3689e6;
-
-            case 7: // Grape
-                return 0xa56de2;
-
-            case 8: // Bubblegum
-                return 0xde3e80;
-
-            case 9: // Cocoa
-                return 0x8a715e;
-
-            case 10: // Slate
-                return 0x667885;
-
-            case 11: // Latte
-                return 0xe7c591;
-        }
-
-        return 0;
+        theme_accent_color = { (uint8) (r * 255), (uint8) (g * 255), (uint8) (b * 255), ACCENT_COLOR_ALPHA };
     }
 }
