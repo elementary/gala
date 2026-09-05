@@ -331,8 +331,14 @@ namespace Gala {
             return Utils.scale_to_int (BUTTON_SIZE, monitor_scale);
         }
 
+#if !HAS_MUTTER50
         private static bool? framebuffer_is_logical = null;
+#endif
         public static bool get_framebuffer_is_logical () {
+#if HAS_MUTTER50
+            // Since mutter-50 all framebuffers are logical by default
+            return true;
+#else
             if (framebuffer_is_logical != null) {
                 return framebuffer_is_logical;
             }
@@ -348,6 +354,7 @@ namespace Gala {
             }
 
             return framebuffer_is_logical;
+#endif
         }
 
         public static float get_ui_scaling_factor (Meta.Display display, int monitor_index) {
