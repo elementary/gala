@@ -8,26 +8,25 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2023-05-20 17:07+0000\n"
-"Last-Translator: Faisal Rachmadin "
-"<frachmadin@users.noreply.l10n.elementary.io>\n"
-"Language-Team: Indonesian <https://l10n.elementary.io/projects/desktop/gala/"
-"id/>\n"
+"PO-Revision-Date: 2026-09-07 10:02+0000\n"
+"Last-Translator: Chairul Akmal <chairulakmal@protonmail.com>\n"
+"Language-Team: Indonesian <https://l10n.elementaryos.org/projects/desktop/"
+"gala/id/>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/OSK/Window/Keyboard/KeyButton.vala:16
 msgid "Unknown Key"
-msgstr ""
+msgstr "Tombol Tidak Dikenal"
 
 #: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr "Ubah Latar Belakang…"
+msgstr "Ubah Gambar Latar…"
 
 #: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
@@ -38,19 +37,17 @@ msgid "System Settings…"
 msgstr "Pengaturan Sistem…"
 
 #: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
-#, fuzzy
-#| msgid "System Settings…"
 msgid "Failed to open System Settings"
-msgstr "Pengaturan Sistem…"
+msgstr "Gagal membuka Pengaturan Sistem"
 
 #: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Penangan untuk skema URI “settings://” harus dipasang."
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
 msgid "Multitasking View"
-msgstr "Tampilan Multi Tugas"
+msgstr "Tampilan Multitugas"
 
 #: data/gala-multitaskingview.desktop.in:4
 msgid "View all open windows and workspaces"
@@ -62,31 +59,23 @@ msgstr "Lainnya"
 
 #: data/gala-other.desktop.in:4
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr "Sandaran berkas desktop untuk pemberitahuan dari aplikasi kadaluarsa."
+msgstr "Berkas desktop cadangan untuk notifikasi dari aplikasi usang."
 
 #: data/gala.metainfo.xml.in:11
-#, fuzzy
-#| msgid "Multitasking &amp; Window Management"
 msgid "Multitasking & Window Management"
-msgstr "Multi Tugas &amp; Manajemen Jendela"
+msgstr "Multitugas & Manajemen Jendela"
 
 #: data/gala.metainfo.xml.in:12
-#, fuzzy
-#| msgid "A window &amp; compositing manager for Pantheon"
 msgid "A window & compositing manager for Pantheon"
-msgstr "Manajer jendela &amp; pengomposisian untuk Pantheon"
+msgstr "Manajer jendela & pengomposisian untuk Pantheon"
 
 #: data/gala.metainfo.xml.in:14
-#, fuzzy
-#| msgid ""
-#| "A window &amp; compositing manager based on libmutter and designed by "
-#| "elementary for use with Pantheon."
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
 msgstr ""
-"Manajer jendela &amp; pengomposisian berdasarkan libmutter dan dirancang "
-"oleh elementary untuk digunakan dengan Pantheon."
+"Manajer jendela & pengomposisian berbasis libmutter dan dirancang oleh "
+"elementary untuk digunakan dengan Pantheon."
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
@@ -109,7 +98,7 @@ msgstr "Peningkatan:"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed a frequent crash when using the classic session"
-msgstr ""
+msgstr "Perbaiki mogok yang sering terjadi saat menggunakan sesi klasik"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:78
@@ -124,151 +113,147 @@ msgstr ""
 #: data/gala.metainfo.xml.in:438 data/gala.metainfo.xml.in:460
 #: data/gala.metainfo.xml.in:475
 msgid "Updated translations"
-msgstr "Terjemahan yang diperbarui"
+msgstr "Terjemahan diperbarui"
 
 #: data/gala.metainfo.xml.in:47
 msgid "Show transient windows over their parents in the multitasking view"
-msgstr ""
+msgstr "Tampilkan jendela sementara di atas induknya pada tampilan multitugas"
 
 #: data/gala.metainfo.xml.in:48
 msgid "Added a brand new on screen keyboard for the secure session"
-msgstr ""
+msgstr "Tambah papan ketik di layar yang serba baru untuk sesi aman"
 
 #: data/gala.metainfo.xml.in:49
 msgid "Screenshotting a window now includes open menus"
-msgstr ""
+msgstr "Menangkap layar jendela kini menyertakan menu yang terbuka"
 
 #: data/gala.metainfo.xml.in:50
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"Pada layar sentuh, mengusap ke atas dari bawah kini membuka tampilan "
+"multitugas"
 
 #: data/gala.metainfo.xml.in:51
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"Perbaiki berbagai kasus khusus yang dapat menyebabkan gangguan pada animasi "
+"minimalkan dan maksimalkan"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Fixed a frequent crash with multi monitor setups"
-msgstr ""
+msgstr "Perbaiki mogok yang sering terjadi pada penyiapan multi monitor"
 
 #: data/gala.metainfo.xml.in:111 data/gala.metainfo.xml.in:131
 #: data/gala.metainfo.xml.in:155
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Tingkatkan dukungan HiDPI"
 
 #: data/gala.metainfo.xml.in:132
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Tingkatkan perilaku Kurangi Gerakan"
 
 #: data/gala.metainfo.xml.in:156
-#, fuzzy
-#| msgid "Improve multitasking view animation performance"
 msgid "Improved render performance"
-msgstr "Meningkatkan performa animasi tampilan multi tugas"
+msgstr "Tingkatkan kinerja render"
 
 #: data/gala.metainfo.xml.in:157
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Tampilkan dock dan panel secara serempak saat memulai"
 
 #: data/gala.metainfo.xml.in:158
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Lama waktu animasi pertukaran ruang kerja"
+msgstr "Tingkatkan animasi dock saat berpindah ruang kerja"
 
 #: data/gala.metainfo.xml.in:159
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Jendela Gambar-dalam-Gambar kini memiliki sudut membulat"
 
 #: data/gala.metainfo.xml.in:269
 msgid "Window state is now saved on sleep and shutdown"
-msgstr ""
+msgstr "Keadaan jendela kini disimpan saat tidur dan matikan"
 
 #: data/gala.metainfo.xml.in:270
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Hapus efek penskalaan dari menu"
 
 #: data/gala.metainfo.xml.in:271
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Usap ke atas untuk menutup jendela di Tampilan Multitugas"
 
 #: data/gala.metainfo.xml.in:302
 msgid "Fixed rare crash when a dock window was killed"
-msgstr ""
+msgstr "Perbaiki mogok langka saat jendela dock dimatikan"
 
 #: data/gala.metainfo.xml.in:303
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Tambah pintasan tangkapan layar interaktif"
 
 #: data/gala.metainfo.xml.in:304
 msgid "Fixed crash when using tiling shortcuts"
-msgstr ""
+msgstr "Perbaiki mogok saat menggunakan pintasan perekatan"
 
 #: data/gala.metainfo.xml.in:333
-#, fuzzy
-#| msgid "Improve multitasking view animation performance"
 msgid "Improved shadows performance"
-msgstr "Meningkatkan performa animasi tampilan multi tugas"
+msgstr "Tingkatkan kinerja bayangan"
 
 #: data/gala.metainfo.xml.in:377
 msgid "Fix a potential crash when moving windows between workspaces"
-msgstr ""
+msgstr "Perbaiki potensi mogok saat memindahkan jendela antar ruang kerja"
 
 #: data/gala.metainfo.xml.in:378
 msgid "Fix notification animation when entering multitasking view"
-msgstr ""
+msgstr "Perbaiki animasi notifikasi saat memasuki tampilan multitugas"
 
 #: data/gala.metainfo.xml.in:393
-#, fuzzy
-#| msgid "Fix screenshot keyboard shortcuts while in Multitasking View"
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr ""
-"Perbaiki pintasan papan ketik tangkapan layar saat dalam Tampilan Multi Tugas"
+msgstr "Tingkatkan navigasi papan ketik di Tampilan Multitugas"
 
 #: data/gala.metainfo.xml.in:394
-#, fuzzy
-#| msgid "Update panel color after dimming the wallpaper"
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr "Perbarui warna panel setelah meredupkan latar belakang"
+msgstr "Ubah warna panel bersamaan dengan transisi gambar latar"
 
 #: data/gala.metainfo.xml.in:434
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Mengubah gambar latar atau masuk ke mode tidur menghormati opsi \"Kurangi "
+"Gerakan\""
 
 #: data/gala.metainfo.xml.in:435
 msgid "Use appropriate drag-and-drop pointers when moving windows"
-msgstr ""
+msgstr "Gunakan penunjuk seret-dan-lepas yang sesuai saat memindahkan jendela"
 
 #: data/gala.metainfo.xml.in:436
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Perbaiki masalah saat gestur di tampilan multitugas dapat berhenti berfungsi"
 
 #: data/gala.metainfo.xml.in:437
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
-msgstr ""
+msgstr "Tingkatkan perilaku ruang kerja dinamis dengan banyak monitor"
 
 #: data/gala.metainfo.xml.in:459
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Tingkatkan penanganan pintasan move-to-workspace"
 
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak Dikenal"
 
 #: src/Dialogs/CloseDialog.vala:23
 #, c-format
 msgid "“%s” is not responding"
-msgstr "“%s” tidak merespon"
+msgstr "“%s” tidak merespons"
 
 #: src/Dialogs/CloseDialog.vala:25
 msgid "Application is not responding"
-msgstr "Aplikasi tidak merespon"
+msgstr "Aplikasi tidak merespons"
 
 #: src/Dialogs/CloseDialog.vala:28
 msgid ""
@@ -289,27 +274,27 @@ msgstr "Tunggu"
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "“%s” ingin mengambil alih pintasan sistem"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Sebuah aplikasi ingin mengambil alih pintasan sistem"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Semua pintasan sistem akan dialihkan ke aplikasi."
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
-msgstr ""
+msgstr "Izinkan"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
-msgstr ""
+msgstr "Tolak"
 
 #: src/Misc/DesktopIntegration.vala:213
 msgid "Window has already focus"
-msgstr ""
+msgstr "Jendela sudah memiliki fokus"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/Misc/ScreenshotManager.vala:103
@@ -321,19 +306,19 @@ msgstr "Tangkapan layar dari %s"
 #: src/Misc/ScreenshotManager.vala:168
 #, c-format
 msgid "Show in %s"
-msgstr ""
+msgstr "Tampilkan di %s"
 
 #: src/Misc/ScreenshotManager.vala:175 src/Misc/ScreenshotManager.vala:616
 msgid "Screenshot taken"
-msgstr "Tangkapan Layar diambil"
+msgstr "Tangkapan layar diambil"
 
 #: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Tangkapan layar disimpan ke papan klip"
 
 #: src/Misc/ScreenshotManager.vala:176
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Tangkapan layar disimpan ke folder tangkapan layar"
 
 #: src/Misc/ScreenshotManager.vala:531
 msgid "Screenshots"
@@ -345,13 +330,11 @@ msgstr "Ambil Tangkapan Layar"
 
 #: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
-msgstr "Selalu di atas"
+msgstr "Selalu di Atas"
 
 #: src/Misc/WindowMenuManager.vala:99
-#, fuzzy
-#| msgid "Always on Visible Workspace"
 msgid "Show on all Workspaces"
-msgstr "Ruang Kerja Selalu Aktif Terlihat"
+msgstr "Tampilkan di Semua Ruang Kerja"
 
 #: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
@@ -367,7 +350,7 @@ msgstr "Pindahkan"
 
 #: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
-msgstr "Ganti ukuran"
+msgstr "Ubah Ukuran"
 
 #: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
@@ -379,11 +362,11 @@ msgstr "Lepas Rekatan"
 
 #: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
-msgstr "Batal Maksimalkan"
+msgstr "Kembalikan"
 
 #: src/Misc/WindowMenuManager.vala:142
 msgid "Minimize"
-msgstr "Sembunyikan"
+msgstr "Minimalkan"
 
 #: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
@@ -391,7 +374,7 @@ msgstr "Tutup"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:57
 msgid "Window switcher"
-msgstr ""
+msgstr "Pengalih jendela"
 
 #: src/WindowManager.vala:1302
 #, c-format
