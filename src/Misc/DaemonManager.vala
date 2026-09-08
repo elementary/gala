@@ -76,6 +76,10 @@ public class Gala.DaemonManager : GLib.Object {
             case "OSK":
                 ShellClientsManager.get_instance ().make_osk_window (window);
                 break;
+
+            case "BACKGROUND":
+                ShellClientsManager.get_instance ().make_background (window);
+                break;
         }
     }
 
