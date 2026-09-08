@@ -263,6 +263,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void make_background (Meta.Window window) requires (!is_itself_shell_window (window)) {
         wm.override_window_group (window, BACKGROUND);
+
+        window.move_frame (false, 0, 0);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
