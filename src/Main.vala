@@ -1,5 +1,6 @@
 //
 //  Copyright (C) 2012 Tom Beckmann, Rico Tzschichholz
+//  Copyright (C) 2026 elementary, Inc.
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,7 +23,7 @@ namespace Gala {
     };
 
     private void print_version () {
-        stdout.printf ("Gala %s\n", Config.VERSION);
+        stdout.printf ("Gala %s (%s)\n", Config.VERSION, Config.GIT_HASH);
         Meta.exit (Meta.ExitCode.SUCCESS);
     }
 
