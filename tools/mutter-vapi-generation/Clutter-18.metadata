@@ -95,10 +95,13 @@ Event
 FrameListenerIface skip
 FrameClock.new skip
 
+PaintContext.get_stage_view skip=false
+
 // Remove for clutter-2.0
 /////////////////////////
 
 StageView.layout skip
+StageView.get_layout.rect ref
 
 Stage
 	.paint_view.redraw_clip type="Cairo.Region"

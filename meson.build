@@ -182,11 +182,7 @@ if get_option('tests')
     subdir('tests')
 endif
 subdir('po')
-
-vapigen = find_program('vapigen', required: false)
-if vapigen.found()
-    subdir('vapi')
-endif
+subdir('tools')
 
 gnome.post_install(
     glib_compile_schemas: true,
