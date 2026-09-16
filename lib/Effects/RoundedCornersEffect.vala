@@ -33,12 +33,18 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
         }
     }
 
+#if HAS_MUTTER51
+    private string shader;
+#endif
+
     public RoundedCornersEffect (int clip_radius, float monitor_scale) {
         Object (
+#if !HAS_MUTTER51
 #if HAS_MUTTER48
             shader_type: Cogl.ShaderType.FRAGMENT,
 #else
             shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
+#endif
 #endif
             clip_radius: clip_radius,
             monitor_scale: monitor_scale
@@ -48,11 +54,22 @@ public class Gala.RoundedCornersEffect : Clutter.ShaderEffect {
     construct {
         try {
             var bytes = GLib.resources_lookup_data ("/io/elementary/desktop/gala/shaders/rounded-corners.frag", NONE);
+#if HAS_MUTTER51
+            shader = (string) bytes.get_data ();
+#else
             set_shader_source ((string) bytes.get_data ());
+#endif
         } catch (Error e) {
             critical ("Unable to load rounded-corners.frag: %s", e.message);
         }
     }
+
+#if HAS_MUTTER51
+    public override Cogl.Snippet get_static_snippet () {
+        // TODO: split declarations from shader code and put it here
+        return new Cogl.Snippet (Cogl.SnippetHook.FRAGMENT, null, shader);
+    }
+#endif
 
     public override void set_actor (Clutter.Actor? new_actor) {
         if (actor != null) {
