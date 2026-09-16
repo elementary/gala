@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2026-06-30 20:56+0000\n"
+"PO-Revision-Date: 2026-09-11 23:01+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/uk/>\n"
@@ -101,10 +101,8 @@ msgid "Improvements:"
 msgstr "Удосконалення:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fixed crash when using tiling shortcuts"
 msgid "Fixed a frequent crash when using the classic session"
-msgstr "Виправлено збій під час використання комбінацій клавіш на плитці"
+msgstr "Виправлено часті збої при використанні класичного режиму сеансу"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:78
@@ -130,10 +128,8 @@ msgid "Added a brand new on screen keyboard for the secure session"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:49
-#, fuzzy
-#| msgid "Add Take Screenshot to window context menu"
 msgid "Screenshotting a window now includes open menus"
-msgstr "Додано функцію знімку екрана до контекстного меню вікна"
+msgstr "При створенні знімка екрана вікна тепер враховуються відкриті меню"
 
 #: data/gala.metainfo.xml.in:50
 msgid ""
@@ -169,10 +165,8 @@ msgid "Reveal dock and panel in sync when starting"
 msgstr ""
 
 #: data/gala.metainfo.xml.in:158
-#, fuzzy
-#| msgid "Duration of the workspace switch animation"
 msgid "Improved workspace switch dock animation"
-msgstr "Тривалість анімації переключання робочого простору"
+msgstr "Покращена анімація перемикання робочих просторів у доці"
 
 #: data/gala.metainfo.xml.in:159
 msgid "Picture-in-Picture windows now have rounded corners"
@@ -345,10 +339,8 @@ msgid "Always on Top"
 msgstr "Завжди зверху"
 
 #: src/Misc/WindowMenuManager.vala:99
-#, fuzzy
-#| msgid "Always on Visible Workspace"
 msgid "Show on all Workspaces"
-msgstr "Завжди на видимому робочому просторі"
+msgstr "Показувати на всіх робочих просторах"
 
 #: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
