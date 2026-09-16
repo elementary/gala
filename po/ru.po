@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2026-08-14 07:01+0000\n"
+"PO-Revision-Date: 2026-09-17 17:03+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ru/>\n"
@@ -98,11 +98,8 @@ msgid "Improvements:"
 msgstr "Улучшения:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fixed a frequent crash with multi monitor setups"
 msgid "Fixed a frequent crash when using the classic session"
-msgstr ""
-"Исправлен часто случавшийся сбой при использовании нескольких мониторов"
+msgstr "Исправлен часто случавшийся сбой при использовании классического сеанса"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:78
@@ -122,28 +119,32 @@ msgstr "Обновлены переводы"
 #: data/gala.metainfo.xml.in:47
 msgid "Show transient windows over their parents in the multitasking view"
 msgstr ""
+"Отображение всплывающих окон поверх их родителей в режиме многозадачности"
 
 #: data/gala.metainfo.xml.in:48
 msgid "Added a brand new on screen keyboard for the secure session"
 msgstr ""
+"Добавлена новая экранная клавиатура при использовании защищённого сеанса"
 
 #: data/gala.metainfo.xml.in:49
-#, fuzzy
-#| msgid "Add Take Screenshot to window context menu"
 msgid "Screenshotting a window now includes open menus"
-msgstr "Добавлена функция снимка экрана в контекстном меню окна"
+msgstr "Снимок окна теперь также захватывает открытые меню"
 
 #: data/gala.metainfo.xml.in:50
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"Открытие режима многозадачности по проведению пальцами снизу вверх на "
+"сенсорных экранах"
 
 #: data/gala.metainfo.xml.in:51
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"Исправлены различные частные случаи, которые могли приводить к сбоям "
+"анимаций сворачивания и разворачивания"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Fixed a frequent crash with multi monitor setups"
@@ -337,10 +338,8 @@ msgid "Always on Top"
 msgstr "Поверх всех окон"
 
 #: src/Misc/WindowMenuManager.vala:99
-#, fuzzy
-#| msgid "Always on Visible Workspace"
 msgid "Show on all Workspaces"
-msgstr "Всегда на видимом рабочем столе"
+msgstr "Отображать на всех рабочих столах"
 
 #: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
