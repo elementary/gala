@@ -1103,15 +1103,7 @@ namespace Gala {
 
                 default:
                     if (NotificationStack.is_notification (window)) {
-                        if (!(yield notification_stack.destroy_notification (actor)) && window.window_type == NOTIFICATION) {
-                            /* This is a workaround for X11. On X11 notifications actually get the window type
-                               notification which is according to mutter not allowed to have any destroy animations.
-                               Therefore if the destroy animation didn't finish this means it was interrupted probably
-                               because mutter destroyed the actor already so don't call destroy_completed
-                               because that would lead to a use after free. */
-                            destroying.remove (actor);
-                            return;
-                        }
+                        yield notification_stack.destroy_notification (actor);
                     }
                     break;
             }

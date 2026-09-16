@@ -163,7 +163,7 @@ public class Gala.NotificationStack : Object {
         }
     }
 
-    public async bool destroy_notification (Meta.WindowActor notification) {
+    public async void destroy_notification (Meta.WindowActor notification) {
         notifications.remove (notification);
         update_positions ();
 
@@ -171,7 +171,7 @@ public class Gala.NotificationStack : Object {
         builder.add_property ("opacity", 0u);
         builder.add_property ("x", notification.x + stack_width);
 
-        return yield builder.run ();
+        yield builder.run ();
     }
 
     /**
