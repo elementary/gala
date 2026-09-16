@@ -202,6 +202,6 @@ public class Gala.NotificationStack : Object {
     }
 
     public static bool is_notification (Meta.Window window) {
-        return window.window_type == NOTIFICATION || window.get_data (NOTIFICATION_DATA_KEY);
+        return window.get_data (NOTIFICATION_DATA_KEY);
     }
 }
