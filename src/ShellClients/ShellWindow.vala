@@ -6,8 +6,6 @@
  */
 
 public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
-    public bool restore_previous_x11_region { private get; set; default = false; }
-
     /**
      * A gesture target that will receive a CUSTOM update every time a gesture
      * is propagated, with the progress gotten via {@link get_hidden_progress()}
@@ -73,14 +71,6 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 #else
             window.display.enable_unredirect ();
 #endif
-        }
-
-        if (!Meta.Util.is_wayland_compositor ()) {
-            if (window_actor.visible) {
-                Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
-            } else {
-                Utils.x11_set_window_pass_through (window);
-            }
         }
 
         unowned var manager = ShellClientsManager.get_instance ();

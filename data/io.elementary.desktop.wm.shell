@@ -1,11 +1,9 @@
 [io.elementary.wingpanel]
-launch-on-x=true
 args=io.elementary.wingpanel
 wait-for-n-panels=1
 session-type=desktop
 
 [io.elementary.dock]
-launch-on-x=true
 args=io.elementary.dock
 wait-for-n-panels=1
 session-type=desktop

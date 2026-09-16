@@ -36,7 +36,7 @@ You can set the `documentation` option to `true` to build the documentation. In 
 To install, run `ninja install`, then based on your session type do the following:
 
 - **Wayland**: Log out and log back in (or reboot) to start the newly installed Gala. (`gala --replace` is not supported for an already running Wayland session.)
-- **X11**: run `gala --replace` to replace the running Gala.
+- **X11**: Support for X11 was dropped in OS9
 
 ### Running the tests
 
