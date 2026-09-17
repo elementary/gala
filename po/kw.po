@@ -8,21 +8,30 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-09-15 13:03+0000\n"
+"Last-Translator: Flynn <flynn@users.noreply.l10n.elementaryos.org>\n"
+"Language-Team: Cornish <https://l10n.elementaryos.org/projects/desktop/gala/"
+"kw/>\n"
 "Language: kw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n == 0) ? 0 : ((n == 1) ? 1 : (((n % 100 "
+"== 2 || n % 100 == 22 || n % 100 == 42 || n % 100 == 62 || n % 100 == 82) || "
+"n % 1000 == 0 && (n % 100000 >= 1000 && n % 100000 <= 20000 || n % 100000 == "
+"40000 || n % 100000 == 60000 || n % 100000 == 80000) || n != 0 && n % "
+"1000000 == 100000) ? 2 : ((n % 100 == 3 || n % 100 == 23 || n % 100 == 43 || "
+"n % 100 == 63 || n % 100 == 83) ? 3 : ((n != 1 && (n % 100 == 1 || n % 100 "
+"== 21 || n % 100 == 41 || n % 100 == 61 || n % 100 == 81)) ? 4 : 5))));\n"
+"X-Generator: Weblate 2026.5\n"
 
 #: daemon/OSK/Window/Keyboard/KeyButton.vala:16
 msgid "Unknown Key"
-msgstr ""
+msgstr "Alhwedh Ankoth"
 
 #: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Chanjya Paper Fos…"
 
 #: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
@@ -365,12 +374,16 @@ msgstr ""
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
+msgstr[1] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
+msgstr[2] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
+msgstr[3] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
+msgstr[4] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
+msgstr[5] "Chanjyow a wra kildreylya yn awtomatek wosa %i eylen."
 
 #: src/WindowManager.vala:1309
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Gwithewgh settyansow displetyans nowydh?"
 
 #: src/WindowManager.vala:1313
 msgid "Keep Settings"

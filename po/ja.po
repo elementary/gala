@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2026-08-29 15:01+0000\n"
+"PO-Revision-Date: 2026-09-10 14:01+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -38,7 +38,7 @@ msgstr "システム設定…"
 
 #: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr "システム設定を開けませんでした"
+msgstr "“システム設定”を開けませんでした"
 
 #: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
@@ -99,10 +99,8 @@ msgid "Improvements:"
 msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:34
-#, fuzzy
-#| msgid "Fixed a frequent crash with multi monitor setups"
 msgid "Fixed a frequent crash when using the classic session"
-msgstr "マルチモニター環境で頻繁にクラッシュする不具合を修正"
+msgstr "クラシックセッション使用時に頻繁にクラッシュする不具合を修正"
 
 #: data/gala.metainfo.xml.in:35 data/gala.metainfo.xml.in:52
 #: data/gala.metainfo.xml.in:66 data/gala.metainfo.xml.in:78
@@ -122,28 +120,30 @@ msgstr "翻訳の更新"
 #: data/gala.metainfo.xml.in:47
 msgid "Show transient windows over their parents in the multitasking view"
 msgstr ""
+"“マルチタスク画面”で一時的 (transient) なウィンドウを親ウィンドウに重ねて表示"
+"するように修正"
 
 #: data/gala.metainfo.xml.in:48
 msgid "Added a brand new on screen keyboard for the secure session"
-msgstr ""
+msgstr "セキュアセッション用のまったく新しいオンスクリーンキーボードを追加"
 
 #: data/gala.metainfo.xml.in:49
-#, fuzzy
-#| msgid "Add Take Screenshot to window context menu"
 msgid "Screenshotting a window now includes open menus"
-msgstr "ウィンドウのコンテキストメニューに“スクリーンショットを撮る”を追加"
+msgstr "ウィンドウのスクリーンショットにメニューが含まれるように修正"
 
 #: data/gala.metainfo.xml.in:50
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"タッチスクリーンで画面下部からスワイプすると“マルチタスク画面”を開くように修"
+"正"
 
 #: data/gala.metainfo.xml.in:51
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
-msgstr ""
+msgstr "最小化/最大化のアニメーション時にグリッチを引き起こす複数のエッジケースを修正"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Fixed a frequent crash with multi monitor setups"
