@@ -50,8 +50,6 @@ public class Gala.NotificationStack : Object {
     public void show_notification (Meta.WindowActor notification)
         requires (notification != null && !notification.is_destroyed () && !notifications.contains (notification)) {
 
-        notification.set_pivot_point (0.5f, 0.5f);
-
         unowned var window = notification.get_meta_window ();
         if (window == null) {
             warning ("NotificationStack: Unable to show notification, window is null");
@@ -60,31 +58,6 @@ public class Gala.NotificationStack : Object {
 
         var window_rect = window.get_frame_rect ();
         window.stick ();
-
-        if (Meta.Prefs.get_gnome_animations ()) {
-            // Don't flicker at the beginning of the animation
-            notification.opacity = 0;
-            notification.rotation_angle_x = 90;
-
-            var opacity_transition = new Clutter.PropertyTransition ("opacity");
-            opacity_transition.set_from_value (0);
-            opacity_transition.set_to_value (255);
-
-            var flip_transition = new Clutter.KeyframeTransition ("rotation-angle-x");
-            flip_transition.set_from_value (90.0);
-            flip_transition.set_to_value (0.0);
-            flip_transition.set_key_frames ({ 0.6 });
-            flip_transition.set_values ({ -10.0 });
-
-            var entry = new Clutter.TransitionGroup () {
-                duration = 400
-            };
-            entry.add_transition (opacity_transition);
-            entry.add_transition (flip_transition);
-
-            notification.transitions_completed.connect (() => notification.remove_all_transitions ());
-            notification.add_transition (TRANSITION_ENTRY_NAME, entry);
-        }
 
         /**
          * We will make space for the incoming notification
