@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2026-09-18 04:08+0000\n"
+"PO-Revision-Date: 2026-09-22 00:03+0000\n"
 "Last-Translator: Ihor Hordiichuk <igor_ck@outlook.com>\n"
 "Language-Team: Ukrainian <https://l10n.elementaryos.org/projects/desktop/"
 "gala/uk/>\n"
@@ -119,10 +119,12 @@ msgstr "Оновлені переклади"
 #: data/gala.metainfo.xml.in:47
 msgid "Show transient windows over their parents in the multitasking view"
 msgstr ""
+"Показ тимчасових вікон поверх їхніх батьківських вікон у багатозадачному "
+"режимі"
 
 #: data/gala.metainfo.xml.in:48
 msgid "Added a brand new on screen keyboard for the secure session"
-msgstr ""
+msgstr "Додано нову екранну клавіатуру для захищеного сеансу"
 
 #: data/gala.metainfo.xml.in:49
 msgid "Screenshotting a window now includes open menus"
@@ -133,16 +135,21 @@ msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"На сенсорних екранах тепер при прокручуванні вгору від нижнього краю "
+"відкриватиметься вікно багатозадачності"
 
 #: data/gala.metainfo.xml.in:51
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"Виправлено різні крайні випадки, які могли призводити до збоїв в анімації "
+"мінімізації та максимізації вікон"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Fixed a frequent crash with multi monitor setups"
 msgstr ""
+"Виправлено часті збої при використанні конфігурацій з кількома моніторами"
 
 #: data/gala.metainfo.xml.in:111 data/gala.metainfo.xml.in:131
 #: data/gala.metainfo.xml.in:155
@@ -151,7 +158,7 @@ msgstr "Поліпшено підтримку HiDPI"
 
 #: data/gala.metainfo.xml.in:132
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Удосконалення поведінки при обмеженому русі"
 
 #: data/gala.metainfo.xml.in:156
 msgid "Improved render performance"
@@ -159,7 +166,7 @@ msgstr "Підвищено швидкість промальовування"
 
 #: data/gala.metainfo.xml.in:157
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Одночасний показ доку і панелі під час запуску"
 
 #: data/gala.metainfo.xml.in:158
 msgid "Improved workspace switch dock animation"
@@ -167,7 +174,7 @@ msgstr "Покращена анімація перемикання робочи�
 
 #: data/gala.metainfo.xml.in:159
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "Вікна «зображення в зображенні» тепер мають закруглені кути"
 
 #: data/gala.metainfo.xml.in:269
 msgid "Window state is now saved on sleep and shutdown"
