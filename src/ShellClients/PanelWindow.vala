@@ -164,7 +164,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         var focus_fullscreen_overlap = false;
 
         Meta.Window? normal_mru_window, any_mru_window;
-        normal_mru_window = InternalUtils.get_mru_window (workspace, out any_mru_window);
+        normal_mru_window = Utils.get_mru_window (workspace, out any_mru_window);
 
         foreach (var window in workspace.list_windows ()) {
             if (window == this.window) {

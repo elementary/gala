@@ -269,7 +269,7 @@ public class Gala.MultitaskingView : Root, RootTarget {
         if (action == SWITCH_WORKSPACE) {
             WorkspaceManager.get_default ().freeze_remove ();
 
-            var mru_window = InternalUtils.get_mru_window (display.get_workspace_manager ().get_active_workspace ());
+            var mru_window = Utils.get_mru_window (display.get_workspace_manager ().get_active_workspace ());
 
             if (workspaces_trigger.action_info != null
                 && (bool) workspaces_trigger.action_info
