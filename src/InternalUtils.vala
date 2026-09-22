@@ -6,88 +6,7 @@
  */
 
 namespace Gala {
-    public enum InputArea {
-        NONE,
-        FULLSCREEN,
-        MULTITASKING_VIEW,
-        DEFAULT
-    }
-
     public class InternalUtils {
-        /**
-         * set the area where clutter can receive events
-         **/
-        public static void set_input_area (Meta.Display display, InputArea area) {
-#if !HAS_MUTTER50
-            if (Meta.Util.is_wayland_compositor ()) {
-                return;
-            }
-
-            X.Xrectangle[] rects = {};
-
-            switch (area) {
-                case InputArea.FULLSCREEN:
-                    int width, height;
-                    display.get_size (out width, out height);
-
-                    X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
-                    rects = {rect};
-                    break;
-
-                case InputArea.MULTITASKING_VIEW:
-                    var shell_client_rect = ShellClientsManager.get_instance ().get_shell_client_rect ();
-
-                    int width, height;
-                    display.get_size (out width, out height);
-
-                    if (shell_client_rect != null) {
-                        X.Xrectangle left_rect = {0, 0, (ushort) shell_client_rect.x, (ushort) height};
-                        X.Xrectangle right_rect = {
-                            (short) (shell_client_rect.x + shell_client_rect.width), 0,
-                            (ushort) (width - shell_client_rect.x - shell_client_rect.width), (ushort) height
-                        };
-                        X.Xrectangle top_rect = {
-                            (short) shell_client_rect.x, 0,
-                            (ushort) shell_client_rect.width, (ushort) shell_client_rect.y
-                        };
-                        X.Xrectangle bottom_rect = {
-                            (short) shell_client_rect.x,
-                            (short) (shell_client_rect.y + shell_client_rect.height),
-                            (ushort) shell_client_rect.width,
-                            (ushort) (height - shell_client_rect.y - shell_client_rect.height)
-                        };
-                        rects = {left_rect, right_rect, top_rect, bottom_rect};
-                    } else {
-                        X.Xrectangle rect = {0, 0, (ushort)width, (ushort)height};
-                        rects = {rect};
-                    }
-
-                    break;
-
-                case InputArea.DEFAULT:
-                    // add plugin's requested areas
-                    foreach (var rect in PluginManager.get_default ().get_regions ()) {
-                        rects += rect;
-                    }
-
-                    break;
-
-                case InputArea.NONE:
-                default:
-                    rects = {};
-                    break;
-            }
-
-            unowned Meta.X11Display x11display = display.get_x11_display ();
-#if HAS_MUTTER47
-            x11display.set_stage_input_region (rects);
-#else
-            var xregion = X.Fixes.create_region (x11display.get_xdisplay (), rects);
-            x11display.set_stage_input_region (xregion);
-#endif
-#endif
-        }
-
         /**
          * Inserts a workspace at the given index. To ensure the workspace is not immediately
          * removed again when in dynamic workspaces, the window is first placed on it.
@@ -185,12 +104,6 @@ namespace Gala {
 #else
             Clutter.get_default_backend ().get_default_seat ().bell_notify ();
 #endif
-        }
-
-        public static bool get_x11_in_fullscreen (Meta.Display display) {
-            var primary_monitor = display.get_primary_monitor ();
-            var is_in_fullscreen = display.get_monitor_in_fullscreen (primary_monitor);
-            return !Meta.Util.is_wayland_compositor () && is_in_fullscreen;
         }
 
         /**
