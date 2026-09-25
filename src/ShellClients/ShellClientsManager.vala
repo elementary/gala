@@ -251,6 +251,14 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         ManagedClient.make_desktop (window);
 
         wm.override_window_group (window, LOCK_SCREEN);
+
+        // Mutter does not give keyboard focus to desktop windows when they map
+        window.shown.connect ((_window) => _window.focus (_window.display.get_current_time ()));
+#if HAS_MUTTER47
+        if (window.mapped) {
+            window.focus (window.display.get_current_time ());
+        }
+#endif
     }
 
     public void make_osk_window (Meta.Window window) requires (osk_window == null) {
