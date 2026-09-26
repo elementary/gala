@@ -480,7 +480,7 @@ public class Gala.WindowClone : Widget, RootTarget {
             check_confirm_dialog_cb = 0;
         }
 
-        child_clone_container.bind_model (null, (Clutter.ActorCreateChildFunc) null);
+        child_clone_container.bind_model (null, create_child_func);
     }
 
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {
