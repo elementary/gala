@@ -115,8 +115,11 @@ namespace Gala {
 
         public override void start () {
             input_method = new InputMethod (get_display ());
+#if HAS_MUTTER47
+            Utils.get_clutter_backend_from_display (get_display ()).set_input_method (input_method);
+#else
             Clutter.get_default_backend ().set_input_method (input_method);
-
+#endif
             ShellClientsManager.init (this, input_method);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
