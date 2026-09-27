@@ -19,11 +19,11 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     private int texture_height;
 
     private Cogl.Framebuffer background_framebuffer;
-    private Cogl.Pipeline background_pipeline;
+    private Cogl.Pipeline? background_pipeline;
     private Cogl.Texture background_texture;
 
     private Cogl.Framebuffer round_framebuffer;
-    private Cogl.Pipeline round_pipeline;
+    private Cogl.Pipeline? round_pipeline;
     private Cogl.Texture round_texture;
     private int round_clip_radius_location;
     private int round_actor_size_location;
@@ -35,8 +35,31 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         Object (blur_radius: blur_radius, clip_radius: clip_radius, monitor_scale: monitor_scale);
     }
 
-    construct {
+    public override void set_actor (Clutter.Actor? new_actor) {
+        if (actor != null) {
+            actor.notify["width"].disconnect (update_actor_size);
+            actor.notify["height"].disconnect (update_actor_size);
+        }
+
+        base.set_actor (new_actor);
+
+        if (actor != null) {
+            actor.notify["width"].connect (update_actor_size);
+            actor.notify["height"].connect (update_actor_size);
+            construct_pipelines ();
+            update_actor_size ();
+        } else {
+            background_pipeline = null;
+            round_pipeline = null;
+        }
+    }
+
+    private void construct_pipelines () {
+#if HAS_MUTTER47
+        unowned var ctx = actor.context.get_backend ().get_cogl_context ();
+#else
         unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
+#endif
 
         background_pipeline = new Cogl.Pipeline (ctx);
         background_pipeline.set_layer_null_texture (0);
@@ -114,21 +137,6 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
         update_clip_radius ();
 
         notify["monitor-scale"].connect (update_clip_radius);
-    }
-
-    public override void set_actor (Clutter.Actor? new_actor) {
-        if (actor != null) {
-            actor.notify["width"].disconnect (update_actor_size);
-            actor.notify["height"].disconnect (update_actor_size);
-        }
-
-        base.set_actor (new_actor);
-
-        if (actor != null) {
-            actor.notify["width"].connect (update_actor_size);
-            actor.notify["height"].connect (update_actor_size);
-            update_actor_size ();
-        }
     }
 
     private void update_clip_radius () {
