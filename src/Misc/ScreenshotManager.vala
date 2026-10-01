@@ -7,12 +7,13 @@
 
 [DBus (name = "org.freedesktop.DBus")]
 private interface DBusDaemon : Object {
-    public abstract string get_name_owner (string name) throws DBusError, IOError;
+    public abstract async string get_name_owner (string name) throws DBusError, IOError;
 }
 
 [DBus (name="org.gnome.Shell.Screenshot")]
 public class Gala.ScreenshotManager : Object {
     private const string PORTAL_BUS_NAME = "org.freedesktop.impl.portal.desktop.pantheon";
+    private const string SCREENSHOT_BUS_NAME = "io.elementary.screenshot";
     private const string EXTENSION = ".png";
     private const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
@@ -57,12 +58,21 @@ public class Gala.ScreenshotManager : Object {
         Object (wm: wm, notifications_manager: notifications_manager, filter_manager: filter_manager);
     }
 
-    private static void check_sender (GLib.BusName sender) throws DBusError, IOError {
-        var bus = Bus.get_proxy_sync<DBusDaemon> (SESSION, "org.freedesktop.DBus", "/org/freedesktop/DBus");
+    private static async void check_sender (GLib.BusName sender) throws DBusError, IOError {
+        var bus = yield Bus.get_proxy<DBusDaemon> (SESSION, "org.freedesktop.DBus", "/org/freedesktop/DBus");
 
-        if (bus.get_name_owner (PORTAL_BUS_NAME) != sender) {
-            throw new DBusError.ACCESS_DENIED ("Screenshot access is restricted to the portal backend");
+        foreach (var name in new string[] { PORTAL_BUS_NAME, SCREENSHOT_BUS_NAME }) {
+            try {
+                var owner = yield bus.get_name_owner (name);
+                if (owner == sender) {
+                    return;
+                }
+            } catch (DBusError.NAME_HAS_NO_OWNER e) {
+                continue;
+            }
         }
+
+        throw new DBusError.ACCESS_DENIED ("Screenshot access is restricted to the portal backend and Screenshot app");
     }
 
     construct {
@@ -239,8 +249,8 @@ public class Gala.ScreenshotManager : Object {
         }
     }
 
-    public void flash_area (int x, int y, int width, int height, GLib.BusName sender) throws DBusError, IOError {
-        check_sender (sender);
+    public async void flash_area (int x, int y, int width, int height, GLib.BusName sender) throws DBusError, IOError {
+        yield check_sender (sender);
         flash_area_internal (x, y, width, height);
     }
 
@@ -278,7 +288,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void screenshot (bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
         yield screenshot_internal (include_cursor, flash, filename, out success, out filename_used);
     }
 
@@ -311,7 +321,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
         yield screenshot_area_internal (x, y, width, height, flash, filename, out success, out filename_used);
     }
 
@@ -320,7 +330,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
         yield screenshot_area_with_cursor_internal (x, y, width, height, include_cursor, flash, filename, out success, out filename_used);
     }
 
@@ -353,7 +363,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
         yield screenshot_window_internal (include_frame, include_cursor, flash, filename, out success, out filename_used);
     }
 
@@ -465,7 +475,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void select_area (GLib.BusName sender, out int x, out int y, out int width, out int height) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
         yield select_area_internal (out x, out y, out width, out height);
     }
 
@@ -504,7 +514,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async void conceal_text (GLib.BusName sender) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
 
         if (!is_redacted_font_available) {
             throw new DBusError.FAILED ("Redacted font is not installed.");
@@ -529,7 +539,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     public async GLib.HashTable<string, Variant> pick_color (GLib.BusName sender) throws DBusError, IOError {
-        check_sender (sender);
+        yield check_sender (sender);
 
         var pixel_picker = new PixelPicker (wm);
         pixel_picker.closed.connect (() => Idle.add (pick_color.callback));
