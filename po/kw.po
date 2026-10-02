@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala 3.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-09-04 15:01+0000\n"
-"PO-Revision-Date: 2026-09-15 13:03+0000\n"
+"PO-Revision-Date: 2026-10-03 18:03+0000\n"
 "Last-Translator: Flynn <flynn@users.noreply.l10n.elementaryos.org>\n"
 "Language-Team: Cornish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "kw/>\n"
@@ -35,54 +35,56 @@ msgstr "Chanjya Paper Fos…"
 
 #: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "Settyansow Displetyans…"
 
 #: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "Settyansow Kevreyth…"
 
 #: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "Fyllys ygeri Settyansow Kevreyth"
 
 #: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Res yw bos leys handlell rag an skema URI “settings://”."
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
 msgid "Multitasking View"
-msgstr ""
+msgstr "Gwel Liesoberi"
 
 #: data/gala-multitaskingview.desktop.in:4
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "Gweles oll fenestri hag obervaow ygor"
 
 #: data/gala-other.desktop.in:3
 msgid "Other"
-msgstr ""
+msgstr "Erel"
 
 #: data/gala-other.desktop.in:4
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Restren dhesktop omskoodhyek rag gwarnyansow dhyworth appys anterrus."
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking & Window Management"
-msgstr ""
+msgstr "Liesober & Dyghtyans Fenestri"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window & compositing manager for Pantheon"
-msgstr ""
+msgstr "Dyghtyer fenestri hag olsettyer rag Pantheon"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
 msgstr ""
+"Dyghtyer fenestri hag olsettyer selys war libmutter ha desinys rag "
+"elementary rag devnydh gans Pantheon."
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:45
 #: data/gala.metainfo.xml.in:63 data/gala.metainfo.xml.in:76
@@ -97,7 +99,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:432 data/gala.metainfo.xml.in:457
 #: data/gala.metainfo.xml.in:473
 msgid "Improvements:"
-msgstr ""
+msgstr "Gwellheansow:"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed a frequent crash when using the classic session"
@@ -116,7 +118,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:438 data/gala.metainfo.xml.in:460
 #: data/gala.metainfo.xml.in:475
 msgid "Updated translations"
-msgstr ""
+msgstr "Treylyansow nowedhys"
 
 #: data/gala.metainfo.xml.in:47
 msgid "Show transient windows over their parents in the multitasking view"
@@ -364,7 +366,7 @@ msgstr ""
 
 #: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
-msgstr ""
+msgstr "Degea"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:57
 msgid "Window switcher"
