@@ -364,5 +364,11 @@ namespace Gala {
                 return display.get_monitor_scale (monitor_index);
             }
         }
+
+#if HAS_MUTTER47
+        public static Clutter.Backend get_clutter_backend_from_display (Meta.Display display) {
+            return display.get_context ().get_backend ().get_stage ().get_context ().get_backend ();
+        }
+#endif
     }
 }
