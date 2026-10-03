@@ -5,8 +5,15 @@
  *                         2025-2026 elementary, Inc. (https://elementary.io)
  */
 
+[DBus (name = "org.freedesktop.DBus")]
+private interface DBusDaemon : Object {
+    public abstract async string get_name_owner (string name) throws DBusError, IOError;
+}
+
 [DBus (name="org.gnome.Shell.Screenshot")]
 public class Gala.ScreenshotManager : Object {
+    private const string PORTAL_BUS_NAME = "org.freedesktop.impl.portal.desktop.pantheon";
+    private const string SCREENSHOT_BUS_NAME = "io.elementary.screenshot";
     private const string EXTENSION = ".png";
     private const int UNCONCEAL_TEXT_TIMEOUT = 2000;
 
@@ -49,6 +56,23 @@ public class Gala.ScreenshotManager : Object {
 
     public ScreenshotManager (WindowManager wm, NotificationsManager notifications_manager, FilterManager filter_manager) {
         Object (wm: wm, notifications_manager: notifications_manager, filter_manager: filter_manager);
+    }
+
+    private static async void check_sender (GLib.BusName sender) throws DBusError, IOError {
+        var bus = yield Bus.get_proxy<DBusDaemon> (SESSION, "org.freedesktop.DBus", "/org/freedesktop/DBus");
+
+        foreach (var name in new string[] { PORTAL_BUS_NAME, SCREENSHOT_BUS_NAME }) {
+            try {
+                var owner = yield bus.get_name_owner (name);
+                if (owner == sender) {
+                    return;
+                }
+            } catch (DBusError.NAME_HAS_NO_OWNER e) {
+                continue;
+            }
+        }
+
+        throw new DBusError.ACCESS_DENIED ("Screenshot access is restricted to the portal backend and Screenshot app");
     }
 
     construct {
@@ -108,7 +132,7 @@ public class Gala.ScreenshotManager : Object {
             string filename = clipboard ? "" : generate_screenshot_filename ();
             bool success = false;
             string filename_used = "";
-            yield screenshot (false, true, filename, out success, out filename_used);
+            yield screenshot_internal (false, true, filename, out success, out filename_used);
 
             if (success) {
                 send_screenshot_notification.begin (filename_used);
@@ -125,8 +149,8 @@ public class Gala.ScreenshotManager : Object {
             string filename_used = "";
 
             int x, y, w, h;
-            yield select_area (out x, out y, out w, out h);
-            yield screenshot_area (x, y, w, h, true, filename, out success, out filename_used);
+            yield select_area_internal (out x, out y, out w, out h);
+            yield screenshot_area_internal (x, y, w, h, true, filename, out success, out filename_used);
 
             if (success) {
                 send_screenshot_notification.begin (filename_used);
@@ -142,7 +166,7 @@ public class Gala.ScreenshotManager : Object {
             string filename = clipboard ? "" : generate_screenshot_filename ();
             bool success = false;
             string filename_used = "";
-            yield screenshot_window (true, false, true, filename, out success, out filename_used);
+            yield screenshot_window_internal (true, false, true, filename, out success, out filename_used);
 
             if (success) {
                 send_screenshot_notification.begin (filename_used);
@@ -225,7 +249,12 @@ public class Gala.ScreenshotManager : Object {
         }
     }
 
-    public void flash_area (int x, int y, int width, int height) throws DBusError, IOError {
+    public async void flash_area (int x, int y, int width, int height, GLib.BusName sender) throws DBusError, IOError {
+        yield check_sender (sender);
+        flash_area_internal (x, y, width, height);
+    }
+
+    private void flash_area_internal (int x, int y, int width, int height) {
         debug ("Flashing area");
 
         double[] keyframes = { 0.3f, 0.8f };
@@ -258,7 +287,12 @@ public class Gala.ScreenshotManager : Object {
         flash_actor.add_transition ("flash", transition);
     }
 
-    public async void screenshot (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
+    public async void screenshot (bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
+        yield check_sender (sender);
+        yield screenshot_internal (include_cursor, flash, filename, out success, out filename_used);
+    }
+
+    private async void screenshot_internal (bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
         debug ("Taking screenshot");
 
         unowned var display = wm.get_display ();
@@ -275,7 +309,7 @@ public class Gala.ScreenshotManager : Object {
         filter_manager.pause_for_screenshot = false;
 
         if (flash) {
-            flash_area (0, 0, width, height);
+            flash_area_internal (0, 0, width, height);
         }
 
         var scale = display.get_monitor_scale (display.get_primary_monitor ());
@@ -286,11 +320,21 @@ public class Gala.ScreenshotManager : Object {
         }
     }
 
-    public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
-        yield screenshot_area_with_cursor (x, y, width, height, false, flash, filename, out success, out filename_used);
+    public async void screenshot_area (int x, int y, int width, int height, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
+        yield check_sender (sender);
+        yield screenshot_area_internal (x, y, width, height, flash, filename, out success, out filename_used);
     }
 
-    public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
+    private async void screenshot_area_internal (int x, int y, int width, int height, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
+        yield screenshot_area_with_cursor_internal (x, y, width, height, false, flash, filename, out success, out filename_used);
+    }
+
+    public async void screenshot_area_with_cursor (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
+        yield check_sender (sender);
+        yield screenshot_area_with_cursor_internal (x, y, width, height, include_cursor, flash, filename, out success, out filename_used);
+    }
+
+    private async void screenshot_area_with_cursor_internal (int x, int y, int width, int height, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
         debug ("Taking area screenshot");
 
         filter_manager.pause_for_screenshot = true;
@@ -302,7 +346,7 @@ public class Gala.ScreenshotManager : Object {
         filter_manager.pause_for_screenshot = false;
 
         if (flash) {
-            flash_area (x, y, width, height);
+            flash_area_internal (x, y, width, height);
         }
 
         Mtk.Rectangle rect = { x, y, width, height };
@@ -318,7 +362,12 @@ public class Gala.ScreenshotManager : Object {
         }
     }
 
-    public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
+    public async void screenshot_window (bool include_frame, bool include_cursor, bool flash, string filename, GLib.BusName sender, out bool success, out string filename_used) throws DBusError, IOError {
+        yield check_sender (sender);
+        yield screenshot_window_internal (include_frame, include_cursor, flash, filename, out success, out filename_used);
+    }
+
+    private async void screenshot_window_internal (bool include_frame, bool include_cursor, bool flash, string filename, out bool success, out string filename_used) throws DBusError, IOError {
         debug ("Taking window screenshot");
 
         var window = wm.get_display ().get_focus_window ();
@@ -412,7 +461,7 @@ public class Gala.ScreenshotManager : Object {
         unconceal_text ();
 
         if (flash) {
-            flash_area (full_rect.x, full_rect.y, full_rect.width, full_rect.height);
+            flash_area_internal (full_rect.x, full_rect.y, full_rect.width, full_rect.height);
         }
 
         unowned var display = wm.get_display ();
@@ -425,9 +474,14 @@ public class Gala.ScreenshotManager : Object {
         }
     }
 
-    public async void select_area (out int x, out int y, out int width, out int height) throws DBusError, IOError {
+    public async void select_area (GLib.BusName sender, out int x, out int y, out int width, out int height) throws DBusError, IOError {
+        yield check_sender (sender);
+        yield select_area_internal (out x, out y, out width, out height);
+    }
+
+    private async void select_area_internal (out int x, out int y, out int width, out int height) throws DBusError, IOError {
         var selection_area = new SelectionArea (wm);
-        selection_area.closed.connect (() => Idle.add (select_area.callback));
+        selection_area.closed.connect (() => Idle.add (select_area_internal.callback));
         wm.ui_group.add_child (selection_area);
         selection_area.start_selection ();
 
@@ -459,7 +513,9 @@ public class Gala.ScreenshotManager : Object {
         conceal_timeout = 0;
     }
 
-    public async void conceal_text () throws DBusError, IOError {
+    public async void conceal_text (GLib.BusName sender) throws DBusError, IOError {
+        yield check_sender (sender);
+
         if (!is_redacted_font_available) {
             throw new DBusError.FAILED ("Redacted font is not installed.");
         }
@@ -482,7 +538,9 @@ public class Gala.ScreenshotManager : Object {
         });
     }
 
-    public async GLib.HashTable<string, Variant> pick_color () throws DBusError, IOError {
+    public async GLib.HashTable<string, Variant> pick_color (GLib.BusName sender) throws DBusError, IOError {
+        yield check_sender (sender);
+
         var pixel_picker = new PixelPicker (wm);
         pixel_picker.closed.connect (() => Idle.add (pick_color.callback));
         wm.ui_group.add_child (pixel_picker);
