@@ -7,6 +7,12 @@ uniform sampler2D tex;
 uniform float STRENGTH;
 uniform bool PAUSE_FOR_SCREENSHOT;
 
+const mat3 GRAY_MAT = mat3(
+    0.2126, 0.2126, 0.2126,
+    0.7152, 0.7152, 0.7152,
+    0.0722, 0.0722, 0.0722
+);
+
 void main() {
     vec4 sample = texture2D (tex, cogl_tex_coord0_in.xy);
 
@@ -15,12 +21,7 @@ void main() {
         return;
     }
 
-    vec3 luminance = vec3 (0.2126, 0.7512, 0.0722);
-    float gray = luminance.r * sample.r + luminance.g * sample.g + luminance.b * sample.b;
-    cogl_color_out = vec4 (
-        sample.r * (1.0 - STRENGTH) + gray * STRENGTH,
-        sample.g * (1.0 - STRENGTH) + gray * STRENGTH,
-        sample.b * (1.0 - STRENGTH) + gray * STRENGTH,
-        sample.a
-    ) ;
+    vec3 grayRGB = GRAY_MAT * sample.rgb;
+    vec3 result = mix(sample.rgb, grayRGB, STRENGTH);
+    cogl_color_out = vec4(result, sample.a);
 }
