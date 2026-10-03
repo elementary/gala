@@ -365,7 +365,16 @@ public class Gala.ScreenshotManager : Object {
         var resource_scale = window_actor.get_resource_scale ();
 
         Mtk.Rectangle main_clip = { main_rect.x - (int) window_actor.x, main_rect.y - (int) window_actor.y, main_rect.width, main_rect.height };
+#if HAS_MUTTER51
+        var bitmap = window_actor.paint_to_bitmap (null, Cogl.PixelFormat.ARGB32_NATIVE);
+        var bitmap_width = bitmap.get_width ();
+        var bitmap_height = bitmap.get_height ();
+        var bitmap_stride = bitmap.get_rowstride ();
+        var data = bitmap.map (Cogl.BufferAccess.READ, Cogl.BufferMapHint.DISCARD);
+        var window_image = new Cairo.ImageSurface.for_data ((uchar[]) data, Cairo.Format.ARGB32, bitmap_width, bitmap_height, bitmap_stride);
+#else
         var window_image = (Cairo.ImageSurface) window_actor.get_image (main_clip);
+#endif
 
         var image = new Cairo.ImageSurface (
             ARGB32,
@@ -391,7 +400,16 @@ public class Gala.ScreenshotManager : Object {
                 transient_rect.width,
                 transient_rect.height
             };
+#if HAS_MUTTER51
+            var transient_bitmap = transient_actor.paint_to_bitmap (transient_clip, Cogl.PixelFormat.ARGB32_NATIVE);
+            var transient_bitmap_width = bitmap.get_width ();
+            var transient_bitmap_height = bitmap.get_height ();
+            var transient_bitmap_stride = bitmap.get_rowstride ();
+            var transient_data = transient_bitmap.map (Cogl.BufferAccess.READ, Cogl.BufferMapHint.DISCARD);
+            var transient_image = new Cairo.ImageSurface.for_data ((uchar[]) transient_data, Cairo.Format.ARGB32, transient_bitmap_width, transient_bitmap_height, transient_bitmap_stride);
+#else
             var transient_image = (Cairo.ImageSurface) transient_actor.get_image (transient_clip);
+#endif
 
             cairo_context.set_source_surface (
                 transient_image,
