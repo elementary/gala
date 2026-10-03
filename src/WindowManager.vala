@@ -876,7 +876,7 @@ namespace Gala {
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations ()) {
+            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
                 size_change_completed (actor);
                 return;
             }
@@ -971,10 +971,10 @@ namespace Gala {
             actor.set_pivot_point (0.0f, 0.0f);
 
             var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
-            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0);
-            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0);
-            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f);
-            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f);
+            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0, APPLY);
+            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0, APPLY);
+            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f, APPLY);
+            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f, APPLY);
 
             yield actor_transition_builder.run ();
 
@@ -1011,16 +1011,16 @@ namespace Gala {
                     (actor.y - icon.y) / (icon.height - actor.height)
                 );
 
-                builder.add_property ("scale-x", (double) (icon.width / actor.width));
-                builder.add_property ("scale-y", (double) (icon.height / actor.height));
+                builder.add_property ("scale-x", (double) (icon.width / actor.width), IGNORE);
+                builder.add_property ("scale-y", (double) (icon.height / actor.height), IGNORE);
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
-                builder.add_property ("scale-x", 0.0);
-                builder.add_property ("scale-y", 0.0);
+                builder.add_property ("scale-x", 0.0, IGNORE);
+                builder.add_property ("scale-y", 0.0, IGNORE);
             }
 
-            builder.add_property ("opacity", 0u);
+            builder.add_property ("opacity", 0u, RUN);
 
             yield builder.run ();
 
@@ -1048,9 +1048,9 @@ namespace Gala {
             actor.set_pivot_point (0.5f, 1.0f);
 
             var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-            builder.add_property_with_from ("scale-x", 0.01, 1.0);
-            builder.add_property_with_from ("scale-y", 0.1, 1.0);
-            builder.add_property_with_from ("opacity", 0U, 255U);
+            builder.add_property_with_from ("scale-x", 0.01, 1.0, APPLY);
+            builder.add_property_with_from ("scale-y", 0.1, 1.0, APPLY);
+            builder.add_property_with_from ("opacity", 0U, 255U, RUN);
 
             yield builder.run ();
 
@@ -1091,9 +1091,9 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 1.0f);
 
                     var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
-                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    builder.add_property_with_from ("scale-x", 0.01, 1.0, APPLY);
+                    builder.add_property_with_from ("scale-y", 0.1, 1.0, APPLY);
+                    builder.add_property_with_from ("opacity", 0U, 255U, RUN);
                     yield builder.run ();
                     break;
 
@@ -1103,9 +1103,9 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
 
                     var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
-                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
-                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    builder.add_property_with_from ("scale-x", 1.05, 1.0, APPLY);
+                    builder.add_property_with_from ("scale-y", 1.05, 1.0, APPLY);
+                    builder.add_property_with_from ("opacity", 0U, 255U, RUN);
                     yield builder.run ();
                     break;
 
@@ -1134,9 +1134,9 @@ namespace Gala {
                     actor.show ();
 
                     var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
-                    builder.add_property ("scale-x", 0.8);
-                    builder.add_property ("scale-y", 0.8);
-                    builder.add_property ("opacity", 0U);
+                    builder.add_property ("scale-x", 0.8, IGNORE);
+                    builder.add_property ("scale-y", 0.8, IGNORE);
+                    builder.add_property ("opacity", 0U, RUN);
                     yield builder.run ();
 
                     Utils.clear_window_cache (window);
@@ -1147,9 +1147,9 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
 
                     var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
-                    builder.add_property ("scale-x", 1.05);
-                    builder.add_property ("scale-y", 1.05);
-                    builder.add_property ("opacity", 0U);
+                    builder.add_property ("scale-x", 1.05, IGNORE);
+                    builder.add_property ("scale-y", 1.05, IGNORE);
+                    builder.add_property ("opacity", 0U, RUN);
                     yield builder.run ();
                     break;
 
