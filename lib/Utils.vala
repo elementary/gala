@@ -269,46 +269,6 @@ namespace Gala {
             );
         }
 
-        private static HashTable<Meta.Window, X.Rectangle?> regions = new HashTable<Meta.Window, X.Rectangle?> (null, null);
-
-        public static void x11_set_window_pass_through (Meta.Window window) {
-            unowned var x11_display = window.display.get_x11_display ();
-
-            var x_window = x11_display.lookup_xwindow (window);
-            unowned var xdisplay = x11_display.get_xdisplay ();
-
-            int count, ordering;
-            regions[window] = X.Shape.get_rectangles (xdisplay, x_window, 2, out count, out ordering)[0];
-
-            X.Xrectangle rect = {};
-            var region = X.Fixes.create_region (xdisplay, {rect});
-
-            X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, region);
-
-            X.Fixes.destroy_region (xdisplay, region);
-        }
-
-        public static void x11_unset_window_pass_through (Meta.Window window, bool restore_previous_region) {
-            unowned var x11_display = window.display.get_x11_display ();
-
-            var x_window = x11_display.lookup_xwindow (window);
-            unowned var xdisplay = x11_display.get_xdisplay ();
-
-            if (restore_previous_region) {
-                var region = regions[window];
-                if (region == null) {
-                    debug ("Cannot unset pass through: window not found.");
-                    return;
-                }
-
-                X.Shape.combine_rectangles (xdisplay, x_window, 2, 0, 0, { region }, 0, 3);
-            } else {
-                X.Fixes.set_window_shape_region (xdisplay, x_window, 2, 0, 0, (X.XserverRegion) 0);
-            }
-
-            regions.remove (window);
-        }
-
         /**
          * Utility that returns the given duration or 0 if animations are disabled.
          */

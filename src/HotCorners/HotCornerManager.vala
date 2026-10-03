@@ -17,8 +17,6 @@
  */
 
 public class Gala.HotCornerManager : Object {
-    public signal void on_configured ();
-
     public WindowManager wm { get; construct; }
     public GLib.Settings behavior_settings { get; construct; }
 
@@ -31,9 +29,11 @@ public class Gala.HotCornerManager : Object {
         behavior_settings.changed.connect (configure);
         unowned var monitor_manager = wm.get_display ().get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (configure);
+
+        configure ();
     }
 
-    public void configure () {
+    private void configure () {
         unowned Meta.Display display = wm.get_display ();
 
         if (display.get_n_monitors () == 0) {
@@ -49,8 +49,6 @@ public class Gala.HotCornerManager : Object {
         add_hotcorner (geometry.x + geometry.width, geometry.y, scale, HotCorner.POSITION_TOP_RIGHT);
         add_hotcorner (geometry.x, geometry.y + geometry.height, scale, HotCorner.POSITION_BOTTOM_LEFT);
         add_hotcorner (geometry.x + geometry.width, geometry.y + geometry.height, scale, HotCorner.POSITION_BOTTOM_RIGHT);
-
-        this.on_configured ();
     }
 
     private void remove_all_hot_corners () {
