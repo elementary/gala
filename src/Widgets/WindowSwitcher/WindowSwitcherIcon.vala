@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 elementary, Inc. <https://elementary.io>
+ * Copyright 2023-2026 elementary, Inc. <https://elementary.io>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -46,7 +46,7 @@ public class Gala.WindowSwitcherIcon : Clutter.Actor {
     private void reload_icon () {
         remove_all_children ();
 
-        var margin = Utils.scale_to_int (WindowSwitcher.WRAPPER_PADDING, monitor_scale);
+        var margin = Utils.scale_to_int (AbstractSwitcher.WRAPPER_PADDING, monitor_scale);
         var icon = new WindowIcon (window, Utils.scale_to_int (ICON_SIZE, monitor_scale)) {
             margin_top = margin,
             margin_right = margin,

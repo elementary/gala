@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 elementary, Inc. (https://elementary.io)
+ * Copyright 2025-2026 elementary, Inc. (https://elementary.io)
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
@@ -14,6 +14,8 @@
  * instead to {@link window_group}.
  */
 public class Gala.ModalGroup : Clutter.Actor {
+    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { MODAL, OVERLAY };
+
     public WindowManager wm { private get; construct; }
     public ShellClientsManager shell_clients { private get; construct; }
 
@@ -51,13 +53,8 @@ public class Gala.ModalGroup : Clutter.Actor {
 
         visible = false;
         reactive = true;
-#if HAS_MUTTER46
         window_group.child_added.connect (on_child_added);
         window_group.child_removed.connect (on_child_removed);
-#else
-        window_group.actor_added.connect (on_child_added);
-        window_group.actor_removed.connect (on_child_removed);
-#endif
     }
 
     private void on_child_added (Clutter.Actor child) {
@@ -71,6 +68,7 @@ public class Gala.ModalGroup : Clutter.Actor {
             visible = true;
             modal_proxy = wm.push_modal (this, false);
             modal_proxy.allow_actions (ZOOM | LOCATE_POINTER | SCREENSHOT | SCREENSHOT_AREA | SCREENSHOT_WINDOW);
+            modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         }
 
         if (dimmed.size == 1) {

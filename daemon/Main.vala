@@ -4,8 +4,16 @@
  */
 
 public class Gala.Daemon.Application : Gtk.Application {
+    private IBusService ibus_service;
+    private OSKManager osk_manager;
+
     public Application () {
         Object (application_id: "org.pantheon.gala.daemon");
+    }
+
+    construct {
+        ibus_service = new IBusService ();
+        osk_manager = new OSKManager (ibus_service);
     }
 
     public override void startup () {
@@ -23,6 +31,9 @@ public class Gala.Daemon.Application : Gtk.Application {
         var app_provider = new Gtk.CssProvider ();
         app_provider.load_from_resource ("/io/elementary/desktop/gala-daemon/gala-daemon.css");
         Gtk.StyleContext.add_provider_for_display (Gdk.Display.get_default (), app_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+        var icon_theme = Gtk.IconTheme.get_for_display (Gdk.Display.get_default ());
+        icon_theme.add_resource_path ("/io/elementary/desktop/gala-daemon/icons");
     }
 
     public override void activate () {

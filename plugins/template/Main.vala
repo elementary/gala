@@ -56,12 +56,7 @@ namespace Gala.Plugins.Template {
             // windows, we need to mark the region where the quad is located.
             // The plugin class offers an utility function for this purpose, the track_actor
             // function. It will update the region with the allocation of the actor
-            // whenever its allocation changes. Make sure to set freeze_track to
-            // true while animating the actor to not make gala update the region
-            // every single frame.
-            // You can also handle the region manually by setting the custom_region
-            // property. The tracked actors and custom regions will be merged by
-            // the plugin.
+            // whenever its allocation changes.
             track_actor (red_box);
 
             // now we'll add our box into the ui_group. This is where all the shell

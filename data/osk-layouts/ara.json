@@ -1,0 +1,796 @@
+{
+  "levels": [
+    {
+      "level": "default",
+      "mode": "default",
+      "rows": [
+        [
+          {
+            "strings": [
+              "ض"
+            ]
+          },
+          {
+            "strings": [
+              "ص"
+            ]
+          },
+          {
+            "strings": [
+              "ث"
+            ]
+          },
+          {
+            "strings": [
+              "ق",
+              "ڨ"
+            ]
+          },
+          {
+            "strings": [
+              "ف",
+              "ڤ",
+              "ڢ",
+              "ڥ"
+            ]
+          },
+          {
+            "strings": [
+              "غ"
+            ]
+          },
+          {
+            "strings": [
+              "ع"
+            ]
+          },
+          {
+            "strings": [
+              "ه",
+              "ه‍"
+            ]
+          },
+          {
+            "strings": [
+              "خ"
+            ]
+          },
+          {
+            "strings": [
+              "ح"
+            ]
+          },
+          {
+            "strings": [
+              "ج",
+              "چ"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "strings": [
+              "ش",
+              "ڜ"
+            ]
+          },
+          {
+            "strings": [
+              "س"
+            ]
+          },
+          {
+            "strings": [
+              "ي",
+              "ئ",
+              "ى"
+            ]
+          },
+          {
+            "strings": [
+              "ب",
+              "پ"
+            ]
+          },
+          {
+            "strings": [
+              "ل",
+              "لا",
+              "لأ",
+              "لإ",
+              "لآ"
+            ]
+          },
+          {
+            "strings": [
+              "ا",
+              "آ",
+              "ء",
+              "أ",
+              "إ",
+              "ٱ"
+            ]
+          },
+          {
+            "strings": [
+              "ت"
+            ]
+          },
+          {
+            "strings": [
+              "ن"
+            ]
+          },
+          {
+            "strings": [
+              "م"
+            ]
+          },
+          {
+            "strings": [
+              "ك",
+              "گ",
+              "ک"
+            ]
+          },
+          {
+            "strings": [
+              "ط"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "leftOffset": 1,
+            "strings": [
+              "ذ"
+            ]
+          },
+          {
+            "strings": [
+              "ء"
+            ]
+          },
+          {
+            "strings": [
+              "ؤ"
+            ]
+          },
+          {
+            "strings": [
+              "ر"
+            ]
+          },
+          {
+            "strings": [
+              "ى",
+              "ئ"
+            ]
+          },
+          {
+            "strings": [
+              "ة"
+            ]
+          },
+          {
+            "strings": [
+              "و"
+            ]
+          },
+          {
+            "strings": [
+              "ز",
+              "ژ"
+            ]
+          },
+          {
+            "strings": [
+              "ظ"
+            ]
+          },
+          {
+            "strings": [
+              "د"
+            ]
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "،"
+            ]
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 6
+          },
+          {
+            "strings": [
+              ".",
+              "\"",
+              "'",
+              "#",
+              "-",
+              ":",
+              "!",
+              "،",
+              "؟",
+              "@",
+              "&",
+              "%",
+              "+",
+              "؛",
+              "/",
+              ")",
+              "("
+            ]
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic"
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic"
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic"
+          }
+        ]
+      ]
+    },
+    {
+      "level": "opt",
+      "mode": "locked",
+      "rows": [
+        [
+          {
+            "strings": [
+              "١",
+              "¹",
+              "½",
+              "⅓",
+              "¼",
+              "⅛"
+            ]
+          },
+          {
+            "strings": [
+              "٢",
+              "²",
+              "⅔"
+            ]
+          },
+          {
+            "strings": [
+              "٣",
+              "³",
+              "¾",
+              "⅜"
+            ]
+          },
+          {
+            "strings": [
+              "٤",
+              "⁴"
+            ]
+          },
+          {
+            "strings": [
+              "٥",
+              "⅝"
+            ]
+          },
+          {
+            "strings": [
+              "٦"
+            ]
+          },
+          {
+            "strings": [
+              "٧",
+              "⅞"
+            ]
+          },
+          {
+            "strings": [
+              "٨"
+            ]
+          },
+          {
+            "strings": [
+              "٩"
+            ]
+          },
+          {
+            "strings": [
+              "٠",
+              "ⁿ",
+              "∅"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "leftOffset": 0.5,
+            "strings": [
+              "@"
+            ]
+          },
+          {
+            "strings": [
+              "#"
+            ]
+          },
+          {
+            "strings": [
+              "$",
+              "¢",
+              "£",
+              "€",
+              "¥",
+              "₱"
+            ]
+          },
+          {
+            "strings": [
+              "٪",
+              "%",
+              "‰"
+            ]
+          },
+          {
+            "strings": [
+              "&"
+            ]
+          },
+          {
+            "strings": [
+              "-",
+              "_",
+              "–",
+              "—",
+              "·"
+            ]
+          },
+          {
+            "strings": [
+              "+",
+              "±"
+            ]
+          },
+          {
+            "strings": [
+              "(",
+              "﴿",
+              ">",
+              "}",
+              "]"
+            ]
+          },
+          {
+            "strings": [
+              ")",
+              "﴾",
+              "<",
+              "{",
+              "["
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "=/<",
+            "level": "opt+shift",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "*",
+              "★",
+              "٭"
+            ]
+          },
+          {
+            "strings": [
+              "\"",
+              "“",
+              "”",
+              "«",
+              "»"
+            ]
+          },
+          {
+            "strings": [
+              "'",
+              "‘",
+              "’",
+              "‹",
+              "›"
+            ]
+          },
+          {
+            "strings": [
+              ":"
+            ]
+          },
+          {
+            "strings": [
+              "؛",
+              ";"
+            ]
+          },
+          {
+            "strings": [
+              "!",
+              "¡"
+            ]
+          },
+          {
+            "strings": [
+              "؟",
+              "?"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "label": "=/<",
+            "level": "opt+shift",
+            "width": 3
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "ABC",
+            "level": "default",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "_"
+            ]
+          },
+          {
+            "strings": [
+              "/"
+            ]
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 3
+          },
+          {
+            "strings": [
+              "،",
+              "؟",
+              "؛",
+              "!",
+              ":",
+              "-",
+              "/",
+              "'",
+              "\""
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "ٕ",
+              "ٔ",
+              "ْ",
+              "ٍ",
+              "ٌ",
+              "ً",
+              "ّ",
+              "ٖ",
+              "ٰ",
+              "ٓ",
+              "ِ",
+              "ُ",
+              "َ",
+              "ـ"
+            ]
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic"
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic"
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic"
+          }
+        ]
+      ]
+    },
+    {
+      "level": "opt+shift",
+      "mode": "locked",
+      "rows": [
+        [
+          {
+            "strings": [
+              "~"
+            ]
+          },
+          {
+            "strings": [
+              "`"
+            ]
+          },
+          {
+            "strings": [
+              "|"
+            ]
+          },
+          {
+            "strings": [
+              "•",
+              "♪"
+            ]
+          },
+          {
+            "strings": [
+              "√"
+            ]
+          },
+          {
+            "strings": [
+              "Π",
+              "π"
+            ]
+          },
+          {
+            "strings": [
+              "÷"
+            ]
+          },
+          {
+            "strings": [
+              "×"
+            ]
+          },
+          {
+            "strings": [
+              "¶",
+              "§"
+            ]
+          },
+          {
+            "strings": [
+              "∆"
+            ]
+          },
+          {
+            "action": "delete",
+            "iconName": "osk-delete-symbolic",
+            "width": 1.5
+          }
+        ],
+        [
+          {
+            "leftOffset": 0.5,
+            "strings": [
+              "£"
+            ]
+          },
+          {
+            "strings": [
+              "¢"
+            ]
+          },
+          {
+            "strings": [
+              "€"
+            ]
+          },
+          {
+            "strings": [
+              "¥"
+            ]
+          },
+          {
+            "strings": [
+              "^",
+              "↑",
+              "↓",
+              "←",
+              "→"
+            ]
+          },
+          {
+            "strings": [
+              "°",
+              "′",
+              "″"
+            ]
+          },
+          {
+            "strings": [
+              "=",
+              "≠",
+              "≈",
+              "∞"
+            ]
+          },
+          {
+            "strings": [
+              "{"
+            ]
+          },
+          {
+            "strings": [
+              "}"
+            ]
+          },
+          {
+            "iconName": "osk-enter-symbolic",
+            "keyval": "0xff0d",
+            "width": 2
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "\\"
+            ]
+          },
+          {
+            "strings": [
+              "©"
+            ]
+          },
+          {
+            "strings": [
+              "®"
+            ]
+          },
+          {
+            "strings": [
+              "™"
+            ]
+          },
+          {
+            "strings": [
+              "℅"
+            ]
+          },
+          {
+            "strings": [
+              "["
+            ]
+          },
+          {
+            "strings": [
+              "]"
+            ]
+          },
+          {
+            "action": "levelSwitch",
+            "label": "?123",
+            "level": "opt",
+            "width": 3
+          }
+        ],
+        [
+          {
+            "action": "levelSwitch",
+            "label": "ABC",
+            "level": "default",
+            "width": 1.5
+          },
+          {
+            "strings": [
+              "<",
+              "›",
+              "≥",
+              "»"
+            ]
+          },
+          {
+            "strings": [
+              ">",
+              "‹",
+              "≤",
+              "«"
+            ]
+          },
+          {
+            "strings": [
+              " "
+            ],
+            "width": 3
+          },
+          {
+            "strings": [
+              "،",
+              "؟",
+              "؛",
+              "!",
+              ":",
+              "-",
+              "/",
+              "'",
+              "\""
+            ]
+          },
+          {
+            "strings": [
+              ".",
+              "ٕ",
+              "ٔ",
+              "ْ",
+              "ٍ",
+              "ٌ",
+              "ً",
+              "ّ",
+              "ٖ",
+              "ٰ",
+              "ٓ",
+              "ِ",
+              "ُ",
+              "َ",
+              "ـ"
+            ]
+          },
+          {
+            "action": "emoji",
+            "iconName": "osk-emoji-picker-symbolic"
+          },
+          {
+            "action": "languageMenu",
+            "iconName": "osk-layout-symbolic"
+          },
+          {
+            "action": "hide",
+            "iconName": "osk-hide-symbolic"
+          }
+        ]
+      ]
+    }
+  ],
+  "locale": "ar",
+  "name": "Arabic"
+}

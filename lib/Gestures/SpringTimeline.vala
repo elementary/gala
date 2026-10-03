@@ -12,7 +12,7 @@
  * For documentation about the params refer to [[https://valadoc.org/libadwaita-1/Adw.SpringAnimation.html]]
  * and [[https://valadoc.org/libadwaita-1/Adw.SpringParams.html]].
  */
-public class Gala.SpringTimeline : Clutter.Timeline {
+private class Gala.SpringTimeline : Clutter.Timeline {
     private const double DELTA = 0.001;
 
     public signal void progress (double value);

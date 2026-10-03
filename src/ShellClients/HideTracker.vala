@@ -14,15 +14,9 @@ public class Gala.HideTracker : Object {
     public signal void show ();
 
     public Meta.Display display { get; construct; }
-    public unowned PanelWindow panel { get; construct; }
+    public unowned PanelWindow? panel { get; construct; }
 
     private static GLib.Settings behavior_settings;
-
-#if HAS_MUTTER49
-    private Clutter.PanGesture pan_action;
-#else
-    private Clutter.PanAction pan_action;
-#endif
 
     private bool hovered = false;
 
@@ -43,6 +37,10 @@ public class Gala.HideTracker : Object {
 
     construct {
         panel.window.unmanaging.connect_after (() => {
+            /* The window was unmanaged so the panel will be freed because we only hold a weak reference,
+               therefore set it to null to avoid a dangling pointer */
+            panel = null;
+
             // The timeouts hold refs on us so we stay connected to signal handlers that might
             // access the panel which was already freed. To prevent that make sure we reset
             // the timeouts so that we get freed immediately
@@ -55,6 +53,10 @@ public class Gala.HideTracker : Object {
         unowned var cursor_tracker = display.get_cursor_tracker ();
 #endif
         cursor_tracker.position_invalidated.connect (() => {
+            if (panel == null) {
+                return;
+            }
+
             var has_pointer = panel.window.has_pointer ();
 
             if (hovered != has_pointer) {
@@ -64,29 +66,7 @@ public class Gala.HideTracker : Object {
         });
 
         display.window_created.connect (on_window_created);
-
-#if HAS_MUTTER49
-        pan_action = new Clutter.PanGesture () {
-            min_n_points = 1,
-            max_n_points = 1,
-            pan_axis = Clutter.PanAxis.X
-        };
-        pan_action.may_recognize.connect (check_valid_gesture);
-        pan_action.pan_update.connect (on_pan);
-#else
-        pan_action = new Clutter.PanAction () {
-            n_touch_points = 1,
-            pan_axis = X_AXIS
-        };
-        pan_action.gesture_begin.connect (check_valid_gesture);
-        pan_action.pan.connect (on_pan);
-#endif
-
-#if HAS_MUTTER48
-        display.get_compositor ().get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
-#else
-        display.get_stage ().add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
-#endif
+        display.notify["focus-window"].connect (check_trigger_conditions);
 
         panel.notify["anchor"].connect (setup_barrier);
 
@@ -100,6 +80,10 @@ public class Gala.HideTracker : Object {
 
     private void on_window_created (Meta.Window new_window) {
         InternalUtils.wait_for_window_actor (new_window, (new_window_actor) => {
+            if (panel == null) {
+                return;
+            }
+
             if (!panel.window.is_ancestor_of_transient (new_window_actor.meta_window)) {
                 return;
             }
@@ -115,7 +99,11 @@ public class Gala.HideTracker : Object {
     }
 
     private void check_trigger_conditions () {
-        if (hovered || has_transients) {
+        if (panel == null) {
+            return;
+        }
+
+        if (hovered || has_transients || panel.window.has_focus ()) {
             trigger_show ();
         } else {
             trigger_hide ();
@@ -123,7 +111,10 @@ public class Gala.HideTracker : Object {
     }
 
     private void trigger_hide () {
-        reset_hide_timeout ();
+        if (hide_timeout_id != 0) {
+            /* Hide is already queued */
+            return;
+        }
 
         hide_timeout_id = Timeout.add_once (HIDE_DELAY, () => {
             hide ();
@@ -143,54 +134,11 @@ public class Gala.HideTracker : Object {
         show ();
     }
 
-    private bool check_valid_gesture () {
-        if (panel.anchor != BOTTOM) {
-            debug ("Swipe to reveal is currently only supported for bottom anchors");
-            return false;
-        }
-
-        float y;
-#if HAS_MUTTER49
-        y = pan_action.get_point_begin_coords (0).y;
-#else
-        pan_action.get_press_coords (0, null, out y);
-#endif
-
-        var monitor_geom = display.get_monitor_geometry (panel.window.get_monitor ());
-        if ((y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
-            return true;
-        }
-
-        return false;
-    }
-
-#if HAS_MUTTER49
-    private void on_pan () {
-#else
-    private bool on_pan () {
-#endif
-        float delta_y;
-#if HAS_MUTTER49
-        delta_y = pan_action.get_delta ().get_y ();
-#else
-        pan_action.get_motion_delta (0, null, out delta_y);
-#endif
-
-        if (delta_y < 0) { // Only allow swipes upwards
-#if HAS_MUTTER49
-            panel.window.focus (pan_action.get_point_event (0).get_time ());
-#else
-            panel.window.focus (pan_action.get_last_event (0).get_time ());
-#endif
-            trigger_show ();
-        }
-
-#if !HAS_MUTTER49
-        return false;
-#endif
-    }
-
     private void setup_barrier () {
+        if (panel == null) {
+            return;
+        }
+
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         var scale = Utils.get_ui_scaling_factor (display, display.get_primary_monitor ());
         var offset = Utils.scale_to_int (BARRIER_OFFSET, scale);
@@ -246,7 +194,7 @@ public class Gala.HideTracker : Object {
 
     private void on_barrier_triggered () {
         // Showing panels in fullscreen is broken in X11
-        if (InternalUtils.get_x11_in_fullscreen (display)) {
+        if (InternalUtils.get_x11_in_fullscreen (display) || panel == null) {
             return;
         }
 

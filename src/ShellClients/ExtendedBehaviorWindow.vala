@@ -10,7 +10,7 @@ public class Gala.ExtendedBehaviorWindow : ShellWindow {
     public bool dim { get; private set; default = false; }
 
     public ExtendedBehaviorWindow (Meta.Window window) {
-        var target = new PropertyTarget (CUSTOM, window.get_compositor_private (), "opacity", typeof (uint), 255u, 0u);
+        var target = new PropertyTarget (CUSTOM, window.get_compositor_private (), "opacity", typeof (uint8), (uint8) 255u, (uint8) 0u);
         Object (window: window, hide_target: target);
     }
 

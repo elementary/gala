@@ -27,7 +27,51 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
-    <release version="8.4.2" date="2026-02-116" urgency="medium">
+    <release version="8.6.1" date="2026-09-04" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fixed a frequent crash when using the classic session</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2919">Recurring gala segfault in meta_window_get_buffer_rect</issue>
+      </issues>
+    </release>
+
+    <release version="8.6.0" date="2026-08-30" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Show transient windows over their parents in the multitasking view</li>
+          <li>Added a brand new on screen keyboard for the secure session</li>
+          <li>Screenshotting a window now includes open menus</li>
+          <li>On touchscreens swiping up from the bottom will now open the multitasking view</li>
+          <li>Fixed various edge cases that could lead to glitches with minimize and maximize animations</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2727">Task switcher is very sensitive to mouse movement</issue>
+        <issue url="https://github.com/elementary/gala/issues/824">"Current window" doesn't include children like popovers</issue>
+      </issues>
+    </release>
+
+    <release version="8.5.1" date="2026-05-12" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fixed a frequent crash with multi monitor setups</li>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2839">Semi-crash crash when alt-tabbing from secondary monitor to the first</issue>
+      </issues>
+    </release>
+
+    <release version="8.5.0" date="2026-05-04" urgency="medium">
       <description>
         <p>Improvements:</p>
           <ul>
@@ -35,8 +79,27 @@
         </ul>
       </description>
       <issues>
+        <issue url="https://github.com/elementary/gala/issues/1026">3/4 finger over-swiping down on the desktop should zoom the wallpaper a bit</issue>
+        <issue url="https://github.com/elementary/gala/issues/2648">Pressing Esc doesn't close multitasking view</issue>
+        <issue url="https://github.com/elementary/gala/issues/2651">Cannot select window by keyboard in multitasking view after workspace switching </issue>
+        <issue url="https://github.com/elementary/gala/issues/2696">There is a transparent overlay window/object that prevents interaction with whatever is underneath it</issue>
+        <issue url="https://github.com/elementary/gala/issues/2701">Moving away the only window of a workspace makes an unexpected workspace switch</issue>
+        <issue url="https://github.com/elementary/gala/issues/2724">When using wl-copy/wl-paste (wl-clipboard) the dock shows up although Terminal is maximized</issue>
+        <issue url="https://github.com/elementary/gala/issues/2814">Crash in meta_window_get_buffer_rect after switching workspace</issue>
+      </issues>
+    </release>
+
+    <release version="8.4.2" date="2026-04-02" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+          <ul>
+          <li>Updated translations</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2717">Flicker when focusing window from overview with Reduce Motion enabled</issue>
         <issue url="https://github.com/elementary/gala/issues/2767">Pinch gestures are switching between workspaces instead of zooming</issue>
-        <issue url="https://github.com/elementary/dock/issues/530">Dock background blinks when Greyscale filter is enabled</issue>
+        <issue url="https://github.com/elementary/gala/issues/2768">Can't fullscreen video's from Firefox</issue>
       </issues>
     </release>
 
@@ -171,7 +234,7 @@
         <issue url="https://github.com/elementary/gala/issues/2415">Wrong animation origin for windows on display 2 on workspace overview</issue>
       </issues>
     </release>
-  
+
     <release version="8.2.2" date="2025-05-17" urgency="medium">
       <description>
         <p>Improvements:</p>

@@ -5,12 +5,10 @@ namespace Cogl {
 		[CCode (cname="cogl_color_init_from_hsl")]
 		public Color.from_hsl (float hue, float saturation, float luminance);
 		[CCode (cname = "_vala_cogl_color_from_string")]
-		public static Cogl.Color? from_string (string str) {
+		public static Cogl.Color from_string (string str) {
 			Cogl.Color color = {};
-			if (color.init_from_string (str))
-				return color;
-
-			return null;
+			color.init_from_string (str);
+			return color;
 		}
 	}
 	[CCode (cheader_filename = "cogl/cogl.h", has_type_id = false)]

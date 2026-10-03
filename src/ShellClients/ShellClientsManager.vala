@@ -8,19 +8,20 @@
 public class Gala.ShellClientsManager : Object, GestureTarget {
     private static ShellClientsManager instance;
 
-    public static void init (WindowManager wm) {
+    public static void init (WindowManagerGala wm, InputMethod im) {
         if (instance != null) {
             return;
         }
 
-        instance = new ShellClientsManager (wm);
+        instance = new ShellClientsManager (wm, im);
     }
 
     public static unowned ShellClientsManager? get_instance () {
         return instance;
     }
 
-    public WindowManager wm { get; construct; }
+    public WindowManagerGala wm { get; construct; }
+    public InputMethod im { get; construct; }
 
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
@@ -29,9 +30,12 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     private GLib.HashTable<Meta.Window, PanelWindow> panel_windows = new GLib.HashTable<Meta.Window, PanelWindow> (null, null);
     private GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> positioned_windows = new GLib.HashTable<Meta.Window, ExtendedBehaviorWindow> (null, null);
+    private GLib.HashTable<Meta.Window, MonitorLabelWindow> monitor_label_windows = new GLib.HashTable<Meta.Window, MonitorLabelWindow> (null, null);
+    private IBusCandidateWindow? ibus_candidate_window = null;
+    private OSKWindow? osk_window = null;
 
-    private ShellClientsManager (WindowManager wm) {
-        Object (wm: wm);
+    private ShellClientsManager (WindowManagerGala wm, InputMethod im) {
+        Object (wm: wm, im: im);
     }
 
     construct {
@@ -101,14 +105,27 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             }
 
             try {
+                var type = key_file.get_string (group, "session-type");
+                if (type != SessionSettings.get_shell_clients_type ()) {
+                    continue;
+                }
+            } catch (Error e) {
+                warning ("Failed to check session type for client %s, assuming it should be launched: %s", group, e.message);
+            }
+
+            try {
+                starting_panels += key_file.get_integer (group, "wait-for-n-panels");
+            } catch (Error e) {
+                warning ("Failed to check how many panels should be awaited, assuming 0: %s", e.message);
+            }
+
+            try {
                 var args = key_file.get_string_list (group, "args");
                 protocol_clients += new ManagedClient (wm.get_display (), args);
             } catch (Error e) {
                 warning ("Failed to load launch args for client %s: %s", group, e.message);
             }
         }
-
-        starting_panels = protocol_clients.length;
     }
 
     private void on_failsafe_timeout () {
@@ -122,60 +139,22 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    public void make_dock (Meta.Window window) {
-#if HAS_MUTTER49
-        window.set_type (Meta.WindowType.DOCK);
-#else
-        if (Meta.Util.is_wayland_compositor ()) {
-            make_dock_wayland (window);
-        } else {
-            make_dock_x11 (window);
-        }
-#endif
-    }
-
-#if !HAS_MUTTER49
-    private void make_dock_wayland (Meta.Window window) requires (Meta.Util.is_wayland_compositor ()) {
-        foreach (var client in protocol_clients) {
-            if (client.wayland_client.owns_window (window)) {
-#if HAS_MUTTER46
-                client.wayland_client.make_dock (window);
-#endif
-                break;
-            }
-        }
-    }
-
-    private void make_dock_x11 (Meta.Window window) requires (!Meta.Util.is_wayland_compositor ()) {
-        unowned var x11_display = wm.get_display ().get_x11_display ();
-
-#if HAS_MUTTER46
-        var x_window = x11_display.lookup_xwindow (window);
-#else
-        var x_window = window.get_xwindow ();
-#endif
-        // gtk3's gdk_x11_window_set_type_hint() is used as a reference
-        unowned var xdisplay = x11_display.get_xdisplay ();
-        var atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE", false);
-        var dock_atom = xdisplay.intern_atom ("_NET_WM_WINDOW_TYPE_DOCK", false);
-
-        // (X.Atom) 4 is XA_ATOM
-        // 32 is format
-        // 0 means replace
-        xdisplay.change_property (x_window, atom, (X.Atom) 4, 32, 0, (uchar[]) dock_atom, 1);
-    }
-#endif
-
     public void set_anchor (Meta.Window window, Pantheon.Desktop.Anchor anchor) {
         if (window in panel_windows) {
             panel_windows[window].anchor = anchor;
             return;
         }
 
-        make_dock (window);
+        ManagedClient.make_dock (window);
         // TODO: Return if requested by window that's not a trusted client?
 
         panel_windows[window] = new PanelWindow (wm, window, anchor);
+
+        if (SessionSettings.is_greeter ()) {
+            wm.override_window_group (window, LOCK_SCREEN_SHELL);
+        } else {
+            wm.override_window_group (window, DESKTOP_SHELL);
+        }
 
         InternalUtils.wait_for_window_actor_visible (window, on_panel_ready);
 
@@ -226,7 +205,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void request_visible_in_multitasking_view (Meta.Window window) {
         if (!(window in panel_windows)) {
-            warning ("Set anchor for window before visible in mutltiasking view.");
+            warning ("Set anchor for window before visible in multitasking view.");
             return;
         }
 
@@ -242,6 +221,52 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
     public void make_modal (Meta.Window window, bool dim) requires (window in positioned_windows) {
         positioned_windows[window].make_modal (dim);
+
+        wm.override_window_group (window, MODAL);
+    }
+
+    public void make_monitor_label (Meta.Window window, int monitor_index) requires (!is_itself_shell_window (window)) {
+        if (monitor_index < 0 || monitor_index > wm.get_display ().get_n_monitors ()) {
+            warning ("Invalid monitor index provided: %d", monitor_index);
+            return;
+        }
+
+        monitor_label_windows[window] = new MonitorLabelWindow (window, monitor_index);
+
+        wm.override_window_group (window, DESKTOP_SHELL);
+
+        // connect_after so we make sure that any queued move is unqueued
+        window.unmanaging.connect_after ((_window) => monitor_label_windows.remove (_window));
+    }
+
+    public void make_ibus_candidate_window (Meta.Window window) requires (ibus_candidate_window == null) {
+        ibus_candidate_window = new IBusCandidateWindow (im, window);
+
+        wm.override_window_group (window, OVERLAY);
+
+        window.unmanaged.connect_after (() => ibus_candidate_window = null);
+    }
+
+    public void make_greeter (Meta.Window window) {
+        ManagedClient.make_desktop (window);
+
+        wm.override_window_group (window, LOCK_SCREEN);
+
+        // Mutter does not give keyboard focus to desktop windows when they map
+        window.shown.connect ((_window) => _window.focus (_window.display.get_current_time ()));
+#if HAS_MUTTER47
+        if (window.mapped) {
+            window.focus (window.display.get_current_time ());
+        }
+#endif
+    }
+
+    public void make_osk_window (Meta.Window window) requires (osk_window == null) {
+        osk_window = new OSKWindow (im, window);
+
+        wm.override_window_group (window, OVERLAY);
+
+        window.unmanaged.connect_after (() => osk_window = null);
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -258,7 +283,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return (
             (window in positioned_windows && positioned_windows[window].modal) ||
             (window in panel_windows) ||
-            NotificationStack.is_notification (window)
+            (window in monitor_label_windows) ||
+            NotificationStack.is_notification (window) ||
+            window == ibus_candidate_window?.window ||
+            window == osk_window?.window
         );
     }
 
@@ -283,25 +311,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         return positioned;
     }
 
-    private bool is_itself_system_modal (Meta.Window window) {
-        return (window in positioned_windows) && positioned_windows[window].modal;
-    }
-
-    public bool is_system_modal_window (Meta.Window window) {
-        var modal = is_itself_system_modal (window);
-        window.foreach_ancestor ((ancestor) => {
-            if (is_itself_system_modal (ancestor)) {
-                modal = true;
-            }
-
-            return !modal;
-        });
-
-        return modal;
-    }
-
-    public bool is_system_modal_dimmed (Meta.Window window) {
-        return is_itself_system_modal (window) && positioned_windows[window].dim;
+    public bool is_system_modal_dimmed (Meta.Window window) requires (
+        window in positioned_windows && positioned_windows[window].modal
+    ) {
+        return positioned_windows[window].dim;
     }
 
     //X11 only
@@ -385,6 +398,15 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
                 case "restore-previous-region":
                     set_restore_previous_x11_region (window);
+                    break;
+
+                case "monitor-label":
+                    int parsed;
+                    if (int.try_parse (val, out parsed)) {
+                        make_monitor_label (window, parsed);
+                    } else {
+                        warning ("Failed to parse %s as monitor label", val);
+                    }
                     break;
 
                 default:

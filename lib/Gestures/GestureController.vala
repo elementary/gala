@@ -61,8 +61,8 @@ public class Gala.GestureController : Object {
     public double progress {
         get { return _progress; }
         set {
-            _progress = value;
-            target?.propagate (UPDATE, action, value);
+            _progress = value.clamp (overshoot_lower_clamp, overshoot_upper_clamp);
+            target?.propagate (UPDATE, action, _progress);
         }
     }
 
@@ -76,6 +76,8 @@ public class Gala.GestureController : Object {
     }
 
     public bool recognizing { get; private set; }
+
+    private bool running = false;
 
     private Gee.List<GestureBackend> backends;
     private Gee.List<GestureTrigger> triggers;
@@ -126,11 +128,12 @@ public class Gala.GestureController : Object {
     }
 
     private void prepare () {
-        if (timeline != null) {
-            timeline = null;
-        } else {
+        if (!running) {
             target.propagate (START, action, progress);
+            running = true;
         }
+
+        remove_timeline ();
     }
 
     private bool gesture_detected (GestureBackend backend, Gesture gesture, uint32 timestamp) {
@@ -251,29 +254,50 @@ public class Gala.GestureController : Object {
     private void finish (double velocity, double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
 
-        target.propagate (COMMIT, action, clamped_to);
-
         if (progress == to) {
+            target.propagate (COMMIT, action, clamped_to);
             finished ();
             return;
         }
 
         if (!Meta.Prefs.get_gnome_animations ()) {
+            target.propagate (COMMIT, action, clamped_to);
             progress = clamped_to;
             finished ();
             return;
         }
 
         var spring = new SpringTimeline (target.actor, progress, clamped_to, velocity, 1, 1, 500);
-        spring.progress.connect ((value) => progress = value);
-        spring.stopped.connect_after (finished);
+        spring.progress.connect (on_timeline_progress);
+        spring.stopped.connect_after (on_timeline_stopped);
 
         timeline = spring;
+
+        target.propagate (COMMIT, action, clamped_to);
     }
 
-    private void finished (bool is_finished = true) requires (is_finished) {
+    private void on_timeline_progress (double value) {
+        progress = value;
+    }
+
+    private void on_timeline_stopped (bool is_finished) {
+        assert (is_finished);
+        finished ();
+    }
+
+    private void finished () {
+        assert (running);
+        running = false;
+        remove_timeline ();
         target.propagate (END, action, progress);
-        timeline = null;
+    }
+
+    private void remove_timeline () {
+        if (timeline != null) {
+            timeline.progress.disconnect (on_timeline_progress);
+            timeline.stopped.disconnect (on_timeline_stopped);
+            timeline = null;
+        }
     }
 
     /**
@@ -284,7 +308,8 @@ public class Gala.GestureController : Object {
      */
     public void goto (double to) {
         var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
-        if (progress == to || recognizing ||
+        if (progress == to && (timeline == null || timeline.value_to == to) ||
+            recognizing ||
             timeline != null && clamped_to == timeline.value_to // Only allow overshoot if there's no ongoing overshoot animation to prevent stacking
         ) {
             return;
@@ -292,6 +317,18 @@ public class Gala.GestureController : Object {
 
         prepare ();
         finish ((to > progress ? 1 : -1) * 1, to);
+    }
+
+    public void jump (double to) {
+        if (running && !recognizing) {
+            /* We are animating to a snap point so stop the animation */
+            finished ();
+        }
+
+        var clamped_to = to.clamp ((int) overshoot_lower_clamp, (int) overshoot_upper_clamp);
+
+        target?.propagate (COMMIT, action, clamped_to);
+        progress = clamped_to;
     }
 
     public void cancel_gesture () {
