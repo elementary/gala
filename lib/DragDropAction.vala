@@ -434,6 +434,10 @@ namespace Gala {
          * Abort the drag
          */
         public void cancel () {
+            if (!dragging) {
+                return;
+            }
+
             cleanup ();
 
             drag_canceled ();
