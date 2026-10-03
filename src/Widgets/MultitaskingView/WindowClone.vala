@@ -95,7 +95,6 @@ public class Gala.WindowClone : Widget, RootTarget {
         gesture_controller.add_trigger (new SwipeTrigger (this, VERTICAL));
         add_gesture_controller (gesture_controller);
 
-        window.unmanaged.connect (unmanaged);
         window.notify["fullscreen"].connect (check_shadow_requirements);
         window.notify["maximized-horizontally"].connect (check_shadow_requirements);
         window.notify["maximized-vertically"].connect (check_shadow_requirements);
@@ -166,7 +165,10 @@ public class Gala.WindowClone : Widget, RootTarget {
     }
 
     ~WindowClone () {
-        window.unmanaged.disconnect (unmanaged);
+        drag_action?.cancel ();
+
+        child_clone_container.bind_model (null, (Clutter.ActorCreateChildFunc) null);
+
         window.notify["fullscreen"].disconnect (check_shadow_requirements);
         window.notify["maximized-horizontally"].disconnect (check_shadow_requirements);
         window.notify["maximized-vertically"].disconnect (check_shadow_requirements);
@@ -461,26 +463,6 @@ public class Gala.WindowClone : Widget, RootTarget {
 
             return Source.REMOVE;
         });
-    }
-
-    /**
-     * The window unmanaged by the compositor, so we need to destroy ourselves too.
-     */
-    private void unmanaged () {
-        remove_all_transitions ();
-
-        if (drag_action != null && drag_action.dragging) {
-            drag_action.cancel ();
-        }
-
-        clone?.destroy ();
-
-        if (check_confirm_dialog_cb != 0) {
-            SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
-            check_confirm_dialog_cb = 0;
-        }
-
-        child_clone_container.bind_model (null, (Clutter.ActorCreateChildFunc) null);
     }
 
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {
