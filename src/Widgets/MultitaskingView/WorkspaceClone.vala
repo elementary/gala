@@ -92,15 +92,7 @@ private class Gala.FramedBackground : BackgroundManager {
  * of the MultitaskingView.
  */
 public class Gala.WorkspaceClone : Widget {
-    /**
-     * The offset of the scaled background to the bottom of the monitor bounds
-     */
-    private const int BOTTOM_OFFSET = 100;
-
-    /**
-     * The offset of the scaled background to the top of the monitor bounds
-     */
-    private const int TOP_OFFSET = 20;
+    private const int MARGIN = 20;
 
     /**
      * The amount of time a window has to be over the WorkspaceClone while in drag
@@ -117,6 +109,8 @@ public class Gala.WorkspaceClone : Widget {
     private BackgroundManager background;
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
+
+    private int dock_window_y = 0;
 
     public WorkspaceClone (WindowManager wm, Meta.Workspace workspace) {
         Object (wm: wm, workspace: workspace);
@@ -169,6 +163,8 @@ public class Gala.WorkspaceClone : Widget {
         add_child (background);
         add_child (window_container);
 
+        ShellClientsManager.get_instance ().notify["multitasking-view-dock"].connect (on_dock_window_changed);
+
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_targets);
         notify["monitor-scale"].connect (update_targets);
@@ -178,6 +174,23 @@ public class Gala.WorkspaceClone : Widget {
     ~WorkspaceClone () {
         background.destroy ();
         window_container.destroy ();
+    }
+
+    private void on_dock_window_changed () {
+        var window = ShellClientsManager.get_instance ().multitasking_view_dock;
+
+        if (window != null) {
+            window.position_changed.connect (on_dock_window_position_changed);
+        }
+
+        update_targets ();
+    }
+
+    private void on_dock_window_position_changed () {
+        var window = ShellClientsManager.get_instance ().multitasking_view_dock;
+        if (dock_window_y != window.get_frame_rect ().y) {
+            update_targets ();
+        }
     }
 
     private void update_targets () {
@@ -195,8 +208,17 @@ public class Gala.WorkspaceClone : Widget {
 
         monitor_scale = Utils.get_ui_scaling_factor (display, primary);
 
-        var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
-        var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
+        var top_offset = MARGIN;
+        var bottom_offset = MARGIN;
+
+        var dock_window = ShellClientsManager.get_instance ().multitasking_view_dock;
+        if (dock_window != null) {
+            dock_window_y = dock_window.get_frame_rect ().y;
+            bottom_offset = monitor.y + monitor.height - dock_window_y + MARGIN;
+        }
+
+        var scale = (float)(monitor.height - Utils.scale_to_int (top_offset + bottom_offset, monitor_scale)) / monitor.height;
+        var pivot_y = Utils.scale_to_int (top_offset, monitor_scale) / (monitor.height - monitor.height * scale);
         background.set_pivot_point (0.5f, pivot_y);
 
         var initial_width = monitor.width;
@@ -206,9 +228,9 @@ public class Gala.WorkspaceClone : Widget {
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
         add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
 
-        window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
+        window_container.padding_top = Utils.scale_to_int (top_offset, monitor_scale);
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
-        window_container.padding_bottom = Utils.scale_to_int (BOTTOM_OFFSET, monitor_scale);
+        window_container.padding_bottom = Utils.scale_to_int (bottom_offset, monitor_scale);
     }
 
     private void activate (bool close_view) {

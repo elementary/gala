@@ -23,6 +23,8 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     public WindowManagerGala wm { get; construct; }
     public InputMethod im { get; construct; }
 
+    public Meta.Window? multitasking_view_dock { get; private set; }
+
     private NotificationsClient notifications_client;
     private ManagedClient[] protocol_clients = {};
 
@@ -210,6 +212,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
 
         panel_windows[window].request_visible_in_multitasking_view ();
+
+        multitasking_view_dock = window;
+
+        window.unmanaged.connect (() => multitasking_view_dock = null);
     }
 
     public void make_centered (Meta.Window window) requires (!is_itself_shell_window (window)) {
