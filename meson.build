@@ -146,7 +146,7 @@ if mutter51_dep.found()
 	mutter_dep = [
 		libmutter_dep,
 		dependency('mutter-mtk-51'), dependency('mutter-cogl-51'),
-		dependency('mutter-clutter-51')
+		dependency('mutter-clutter-51'), dependency('glycin-2')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER43', '--define', 'HAS_MUTTER44', '--define', 'HAS_MUTTER45', '--define', 'HAS_MUTTER46', '--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50', '--define', 'HAS_MUTTER51']
 endif
