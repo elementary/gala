@@ -138,9 +138,11 @@ namespace Gala {
             DBus.init (this, notifications_manager, screenshot_manager, layout_manager.window_overview);
 
             unowned Meta.Display display = get_display ();
+#if !HAS_MUTTER51
             display.gl_video_memory_purged.connect (() => {
                 Meta.Background.refresh_all ();
             });
+#endif
 
             display.notify["focus-window"].connect (on_focus_window_changed);
 
