@@ -101,9 +101,8 @@ namespace Gala {
         private float last_y;
 
         private Clutter.Grab? grab = null;
-        private static unowned Clutter.Actor? grabbed_actor = null;
+        private static bool grabbed_actor = false;
         private Clutter.InputDevice? grabbed_device = null;
-        private ulong on_event_id = 0;
 
         static construct {
             sources = new Gee.HashMap<string,Gee.LinkedList<unowned Clutter.Actor>> ();
@@ -197,7 +196,7 @@ namespace Gala {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
-                    if (grabbed_actor != null) {
+                    if (grabbed_actor) {
                         return Clutter.EVENT_PROPAGATE;
                     }
 
@@ -289,18 +288,18 @@ namespace Gala {
         }
 
         private void grab_actor (Clutter.Actor actor, Clutter.InputDevice device) {
-            if (grabbed_actor != null) {
+            if (grabbed_actor) {
                 critical ("Tried to grab an actor with a grab already in progress");
             }
 
             grab = actor.get_stage ().grab (actor);
-            grabbed_actor = actor;
+            grabbed_actor = true;
             grabbed_device = device;
-            on_event_id = actor.event.connect (on_event);
+            actor.event.connect (on_event);
         }
 
         private void ungrab_actor () {
-            if (on_event_id == 0 || grabbed_actor == null) {
+            if (!grabbed_actor) {
                 return;
             }
 
@@ -309,10 +308,9 @@ namespace Gala {
                 grab = null;
             }
 
+            grabbed_actor = false;
             grabbed_device = null;
-            grabbed_actor.disconnect (on_event_id);
-            on_event_id = 0;
-            grabbed_actor = null;
+            actor.event.disconnect (on_event);
         }
 
         private bool on_event (Clutter.Event event) requires (dragging) {
