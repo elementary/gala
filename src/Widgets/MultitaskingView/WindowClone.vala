@@ -137,7 +137,10 @@ public class Gala.WindowClone : Widget, RootTarget {
         window_list_model.items_changed.connect_after (update_targets);
 
         child_clone_container = new Clutter.Actor ();
-        child_clone_container.bind_model (window_list_model, create_child_func);
+        /* We can't use Clutter.Actor.bind_model because it doesn't disconnect its items_changed
+           handler and that causes a crash. See https://github.com/elementary/gala/pull/2948 */
+        window_list_model.items_changed.connect (on_transient_windows_changed);
+        on_transient_windows_changed (0, 0, window_list_model.get_n_items ());
 
         clone_container = new Clutter.Actor ();
         clone_container.add_child (child_clone_container);
@@ -183,16 +186,17 @@ public class Gala.WindowClone : Widget, RootTarget {
         active_shape.restore_easing_state ();
     }
 
-    private static Clutter.Actor create_child_func (Object obj) requires (obj is Meta.Window) {
-        unowned var child_window = (Meta.Window) obj;
-        unowned var child_window_actor = (Meta.WindowActor) child_window.get_compositor_private ();
-
-        if (child_window_actor == null) {
-            critical ("WindowClone: WindowListModel gave us a bad window");
-            return new Clutter.Actor ();
+    private void on_transient_windows_changed (uint pos, uint removed, uint added) {
+        for (uint i = 0; i < removed; i++) {
+            var to_remove = child_clone_container.get_child_at_index ((int) pos);
+            child_clone_container.remove_child (to_remove);
         }
 
-        return new Clutter.Clone (child_window_actor);
+        for (uint i = 0; i < added; i++) {
+            var window = (Meta.Window) window_list_model.get_item (pos + i);
+            var clone = new Clutter.Clone ((Meta.WindowActor) window.get_compositor_private ());
+            child_clone_container.insert_child_at_index (clone, (int) (pos + i));
+        }
     }
 
     private void reallocate () {
@@ -479,8 +483,6 @@ public class Gala.WindowClone : Widget, RootTarget {
             SignalHandler.disconnect (window.get_display (), check_confirm_dialog_cb);
             check_confirm_dialog_cb = 0;
         }
-
-        child_clone_container.bind_model (null, (Clutter.ActorCreateChildFunc) null);
     }
 
     private void actor_clicked (uint32 button, Clutter.InputDeviceType device_type = POINTER_DEVICE) {
