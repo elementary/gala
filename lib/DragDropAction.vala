@@ -193,10 +193,6 @@ namespace Gala {
             switch (event.get_type ()) {
                 case Clutter.EventType.BUTTON_PRESS:
                 case Clutter.EventType.TOUCH_BEGIN:
-                    if (!is_valid_touch_event (event)) {
-                        return Clutter.EVENT_PROPAGATE;
-                    }
-
                     if (grabbed_actor != null) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -215,10 +211,6 @@ namespace Gala {
 
                 case Clutter.EventType.MOTION:
                 case Clutter.EventType.TOUCH_UPDATE:
-                    if (!is_valid_touch_event (event)) {
-                        return Clutter.EVENT_PROPAGATE;
-                    }
-
                     if (!clicked) {
                         return Clutter.EVENT_PROPAGATE;
                     }
@@ -334,10 +326,6 @@ namespace Gala {
 
                 case Clutter.EventType.BUTTON_RELEASE:
                 case Clutter.EventType.TOUCH_END:
-                    if (!is_valid_touch_event (event)) {
-                        return Clutter.EVENT_PROPAGATE;
-                    }
-
                     if (hovered != null) {
                         finish ();
                         hovered = null;
@@ -349,10 +337,6 @@ namespace Gala {
 
                 case Clutter.EventType.MOTION:
                 case Clutter.EventType.TOUCH_UPDATE:
-                    if (!is_valid_touch_event (event)) {
-                        return Clutter.EVENT_PROPAGATE;
-                    }
-
                     float x, y;
                     event.get_coords (out x, out y);
 
@@ -481,18 +465,6 @@ namespace Gala {
 
             dragging = false;
             handle = null;
-        }
-
-        private bool is_valid_touch_event (Clutter.Event event) {
-            var type = event.get_type ();
-
-            return (
-                Meta.Util.is_wayland_compositor () ||
-                type != Clutter.EventType.TOUCH_BEGIN &&
-                type != Clutter.EventType.TOUCH_CANCEL &&
-                type != Clutter.EventType.TOUCH_END &&
-                type != Clutter.EventType.TOUCH_UPDATE
-            );
         }
     }
 }

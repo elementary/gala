@@ -76,13 +76,15 @@ namespace Gala {
 
         try {
             ctx.start ();
-#if HAS_MUTTER50
-            if (true) {
-#else
-            if (ctx.get_compositor_type () == Meta.CompositorType.WAYLAND) {
-#endif
-                Gala.init_pantheon_shell (ctx);
+
+#if !HAS_MUTTER50
+            if (ctx.get_compositor_type () != WAYLAND) {
+                critical ("Gala only supports Wayland");
+                return Posix.EXIT_FAILURE;
             }
+#endif
+
+            Gala.init_pantheon_shell (ctx);
         } catch (Error e) {
             stderr.printf ("Failed to start: %s\n", e.message);
             return Posix.EXIT_FAILURE;
