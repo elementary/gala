@@ -47,7 +47,6 @@ public class Gala.GestureController : Object {
         }
     }
 
-    public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
     public double overshoot_upper_clamp { get; construct set; default = 1d; }
     public bool follow_natural_scroll { get; set; default = false; }
@@ -239,7 +238,7 @@ public class Gala.GestureController : Object {
     private double get_percentage (GestureBackend.Unit unit, double value) {
         switch (unit) {
             case PIXELS:
-                return value / distance;
+                return value / target.get_distance (action);
             case PERCENTAGE:
             default:
                 return value;
