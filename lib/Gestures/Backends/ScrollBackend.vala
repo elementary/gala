@@ -98,15 +98,15 @@ private class Gala.ScrollBackend : Object, GestureBackend {
                 on_gesture_detected (gesture, time);
 
                 double delta = calculate_delta (delta_x, delta_y, direction);
-                on_begin (delta, time);
+                on_begin (PERCENTAGE, delta, time);
             }
         } else {
             double delta = calculate_delta (delta_x, delta_y, direction);
             if (x == 0 && y == 0) {
-                on_end (delta, time);
+                on_end (PERCENTAGE, delta, time);
                 reset ();
             } else {
-                on_update (delta, time);
+                on_update (PERCENTAGE, delta, time);
             }
         }
 
@@ -119,7 +119,7 @@ private class Gala.ScrollBackend : Object, GestureBackend {
         }
 
         double delta = calculate_delta (delta_x, delta_y, direction);
-        on_end (delta, event.get_time ());
+        on_end (PERCENTAGE, delta, event.get_time ());
         reset ();
 
         return Clutter.EVENT_PROPAGATE;
