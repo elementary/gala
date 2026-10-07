@@ -31,6 +31,7 @@ public class Gala.GlobalTrigger : Object, GestureTrigger {
         controller.enable_backend (ToucheggBackend.get_default (), this);
         controller.enable_backend (new TouchpadSwipeBackend (wm.stage, group), this);
 #if HAS_MUTTER49
+        controller.enable_backend (new TouchScreenSwipeBackend (wm.stage), this);
         // On mutter < 49 there is a bug that pinch gestures aren't delivered when over a window so rely on touch egg there
         controller.enable_backend (new TouchpadPinchBackend (wm.stage), this);
 #endif
