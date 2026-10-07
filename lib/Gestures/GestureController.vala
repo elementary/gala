@@ -167,7 +167,7 @@ public class Gala.GestureController : Object {
         return recognizing;
     }
 
-    private void gesture_begin (double percentage, uint64 elapsed_time) {
+    private void gesture_begin (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
@@ -175,14 +175,16 @@ public class Gala.GestureController : Object {
         prepare ();
 
         gesture_progress = progress;
-        previous_percentage = percentage;
+        previous_percentage = get_percentage (unit, value);
         previous_time = elapsed_time;
     }
 
-    private void gesture_update (double percentage, uint64 elapsed_time) {
+    private void gesture_update (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
+
+        var percentage = get_percentage (unit, value);
 
         var updated_delta = previous_delta;
         if (elapsed_time != previous_time) {
@@ -204,13 +206,14 @@ public class Gala.GestureController : Object {
         previous_delta = updated_delta;
     }
 
-    private void gesture_end (double percentage, uint64 elapsed_time) {
+    private void gesture_end (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
 
         recognizing = false;
 
+        var percentage = get_percentage (unit, value);
         update_gesture_progress (percentage, previous_delta);
 
         var to = progress;
@@ -231,6 +234,16 @@ public class Gala.GestureController : Object {
         previous_delta = 0;
         velocity = 0;
         direction_multiplier = 0;
+    }
+
+    private double get_percentage (GestureBackend.Unit unit, double value) {
+        switch (unit) {
+            case PIXELS:
+                return value / distance;
+            case PERCENTAGE:
+            default:
+                return value;
+        }
     }
 
     private void update_gesture_progress (double percentage, double percentage_delta) {
@@ -334,7 +347,7 @@ public class Gala.GestureController : Object {
     public void cancel_gesture () {
         if (recognizing) {
             recognizing_backend.cancel_gesture ();
-            gesture_end (previous_percentage, previous_time);
+            gesture_end (PERCENTAGE, previous_percentage, previous_time);
         }
     }
 }
