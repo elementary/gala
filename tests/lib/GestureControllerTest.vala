@@ -54,6 +54,10 @@ public class Gala.MockTarget : Object, GestureTarget, RootTarget {
         propagations = new Gee.LinkedList<Propagation> ();
     }
 
+    public double get_distance (GestureAction action) {
+        return 100;
+    }
+
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
         propagations.add (new Propagation (update_type, action, progress));
     }

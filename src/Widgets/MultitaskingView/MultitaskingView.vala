@@ -250,6 +250,14 @@ public class Gala.MultitaskingView : Root, RootTarget {
         workspaces_gesture_controller.cancel_gesture ();
     }
 
+    public double get_distance (GestureAction action) {
+        switch (action) {
+            case MULTITASKING_VIEW: return 100;
+            case SWITCH_WORKSPACE: return workspaces.get_first_child ().get_width ();
+            default: return -1;
+        }
+    }
+
     public override void start_progress (GestureAction action) {
         if (!visible) {
             opened = true;

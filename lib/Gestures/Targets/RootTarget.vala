@@ -12,6 +12,12 @@ public interface Gala.RootTarget : Object, GestureTarget {
      */
     public abstract Clutter.Actor? actor { get; }
 
+    /**
+     * Returns the distance the manipulated actor is expected to travel for
+     * a 100% gesture.
+     */
+    public abstract double get_distance (GestureAction action);
+
     public void add_gesture_controller (GestureController controller) requires (controller.target == null) {
         controller.attached (this);
         weak_ref (controller.detached);

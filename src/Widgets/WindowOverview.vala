@@ -180,6 +180,10 @@ public class Gala.WindowOverview : Root, RootTarget {
         gesture_controller.goto (0);
     }
 
+    public double get_distance (GestureAction action) {
+        return BOTTOM_GAP;
+    }
+
     public override void end_progress (GestureAction action) {
         if (action != MULTITASKING_VIEW || get_current_commit (MULTITASKING_VIEW) != 0) {
             return;
