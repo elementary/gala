@@ -95,7 +95,7 @@ public class Gala.WorkspaceClone : Widget {
     /**
      * The offset of the scaled background to the bottom of the monitor bounds
      */
-    private const int BOTTOM_OFFSET = 100;
+    public const int BOTTOM_OFFSET = 100;
 
     /**
      * The offset of the scaled background to the top of the monitor bounds

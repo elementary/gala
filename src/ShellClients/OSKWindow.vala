@@ -103,6 +103,11 @@ public class Gala.OSKWindow : ShellWindow, RootTarget {
         window_actor.restore_easing_state ();
     }
 
+    public double get_distance (GestureAction action) {
+        var window_actor = (Meta.WindowActor) window.get_compositor_private ();
+        return window_actor.height;
+    }
+
     protected override double get_hidden_progress () {
         return gesture_controller.progress;
     }
