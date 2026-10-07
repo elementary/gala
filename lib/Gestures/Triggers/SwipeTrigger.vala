@@ -23,12 +23,18 @@ public class Gala.SwipeTrigger : Object, GestureTrigger {
 
     internal bool triggers (Gesture gesture) {
         return (
+            (gesture.direction == RIGHT || gesture.direction == LEFT) && orientation == HORIZONTAL ||
+            (gesture.direction == UP || gesture.direction == DOWN) && orientation == VERTICAL
+        ) && (
             gesture.fingers == 1 && gesture.performed_on_device_type == TOUCHSCREEN_DEVICE && gesture.type == TOUCHPAD_SWIPE ||
             gesture.fingers == 2 && gesture.performed_on_device_type == TOUCHPAD_DEVICE && gesture.type == SCROLL
         );
     }
 
     internal void enable_backends (GestureController controller) requires (actor != null) {
+#if HAS_MUTTER49
+        controller.enable_backend (new TouchScreenSwipeBackend (actor), this);
+#endif
         controller.enable_backend (new ScrollBackend (actor, orientation, new GestureSettings ()), this);
     }
 }
