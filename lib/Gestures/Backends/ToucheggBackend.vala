@@ -194,19 +194,19 @@ private class Gala.ToucheggBackend : Object, GestureBackend {
             case DBUS_ON_GESTURE_BEGIN:
                 Idle.add (() => {
                     on_gesture_detected (make_gesture (type, direction, fingers, performed_on_device_type), Meta.CURRENT_TIME);
-                    on_begin (delta, elapsed_time);
+                    on_begin (PERCENTAGE, delta, elapsed_time);
                     return false;
                 }, Priority.DEFAULT);
                 break;
             case DBUS_ON_GESTURE_UPDATE:
                 Idle.add (() => {
-                    on_update (delta, elapsed_time);
+                    on_update (PERCENTAGE, delta, elapsed_time);
                     return false;
                 }, Priority.DEFAULT);
                 break;
             case DBUS_ON_GESTURE_END:
                 Idle.add (() => {
-                    on_end (delta, elapsed_time);
+                    on_end (PERCENTAGE, delta, elapsed_time);
                     return false;
                 }, Priority.DEFAULT);
                 break;
