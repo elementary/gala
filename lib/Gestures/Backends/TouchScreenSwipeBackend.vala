@@ -42,7 +42,8 @@ private class Gala.TouchScreenSwipeBackend : Object, GestureBackend {
             type = TOUCHPAD_SWIPE,
             direction = get_direction (),
             fingers = (int) gesture.get_n_points (),
-            performed_on_device_type = TOUCHSCREEN_DEVICE
+            performed_on_device_type = TOUCHSCREEN_DEVICE,
+            begin_centroid = gesture.get_begin_centroid ()
         };
 
         return on_gesture_detected (detected_gesture, Clutter.get_current_event_time ());
