@@ -46,8 +46,6 @@ public class Gala.MultitaskingView : Root, RootTarget {
     private Drawing.StyleManager style_manager;
     private GlobalTrigger workspaces_trigger;
 
-    private Clutter.PanGesture pan_action;
-
     public MultitaskingView (WindowManager wm) {
         Object (wm: wm);
     }
@@ -68,6 +66,7 @@ public class Gala.MultitaskingView : Root, RootTarget {
             overshoot_lower_clamp = -0.1,
         };
         multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));
+        multitasking_gesture_controller.add_trigger (new EdgeSwipeTrigger (display, BOTTOM));
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
@@ -120,16 +119,6 @@ public class Gala.MultitaskingView : Root, RootTarget {
         });
 
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
-
-        pan_action = new Clutter.PanGesture () {
-            min_n_points = 1,
-            max_n_points = 1,
-            pan_axis = Clutter.PanAxis.X
-        };
-        pan_action.may_recognize.connect (check_valid_gesture);
-        pan_action.pan_update.connect (on_pan);
-
-        wm.stage.add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
     }
 
     /**
@@ -404,31 +393,4 @@ public class Gala.MultitaskingView : Root, RootTarget {
 
         return Clutter.EVENT_PROPAGATE;
     }
-
-    private bool check_valid_gesture () {
-        if (wm.filter_action (MULTITASKING_VIEW)) {
-            return false;
-        }
-
-        float y;
-        y = pan_action.get_point_begin_coords (0).y;
-
-        var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
-        if ((y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
-            return true;
-        }
-
-        return false;
-    }
-
-    private void on_pan () {
-        float delta_y;
-        delta_y = pan_action.get_delta ().get_y ();
-
-        if (delta_y < 0) { // Only allow swipes upwards
-            open ();
-        }
-
-    }
-
 }
