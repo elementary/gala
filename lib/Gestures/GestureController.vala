@@ -78,8 +78,7 @@ public class Gala.GestureController : Object {
 
     private bool running = false;
 
-    private Gee.List<GestureBackend> backends;
-    private Gee.List<GestureTrigger> triggers;
+    private Gee.HashMap<GestureBackend, GestureTrigger> backends;
 
     private GestureBackend? recognizing_backend;
     private double gesture_progress;
@@ -96,8 +95,7 @@ public class Gala.GestureController : Object {
     }
 
     construct {
-        backends = new Gee.ArrayList<GestureBackend> ();
-        triggers = new Gee.ArrayList<GestureTrigger> ();
+        backends = new Gee.HashMap<GestureBackend, GestureTrigger> ();
     }
 
     /**
@@ -114,16 +112,17 @@ public class Gala.GestureController : Object {
     }
 
     public void add_trigger (GestureTrigger trigger) {
-        triggers.add (trigger);
         trigger.enable_backends (this);
     }
 
-    internal void enable_backend (GestureBackend backend) {
+    internal void enable_backend (GestureBackend backend, GestureTrigger trigger) requires (
+        !backends.has_key (backend)
+    ) {
         backend.on_gesture_detected.connect (gesture_detected);
         backend.on_begin.connect (gesture_begin);
         backend.on_update.connect (gesture_update);
         backend.on_end.connect (gesture_end);
-        backends.add (backend);
+        backends[backend] = trigger;
     }
 
     /**
@@ -131,8 +130,8 @@ public class Gala.GestureController : Object {
      * Make sure to call this after you've added all necessary backends.
      */
     public void group_with (GestureController other) {
-        foreach (var backend in backends) {
-            foreach (var other_backend in other.backends) {
+        foreach (var backend in backends.keys) {
+            foreach (var other_backend in other.backends.keys) {
                 backend.group_with (other_backend);
                 other_backend.group_with (backend);
             }
@@ -153,11 +152,8 @@ public class Gala.GestureController : Object {
             return false;
         }
 
-        foreach (var trigger in triggers) {
-            if (trigger.triggers (gesture)) {
-                recognizing = true;
-                break;
-            }
+        if (backends[backend].triggers (gesture)) {
+            recognizing = true;
         }
 
         if (recognizing) {
