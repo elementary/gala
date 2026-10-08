@@ -29,6 +29,6 @@ public class Gala.SwipeTrigger : Object, GestureTrigger {
     }
 
     internal void enable_backends (GestureController controller) requires (actor != null) {
-        controller.enable_backend (new ScrollBackend (actor, orientation, new GestureSettings ()));
+        controller.enable_backend (new ScrollBackend (actor, orientation, new GestureSettings ()), this);
     }
 }
