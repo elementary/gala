@@ -46,9 +46,7 @@ public class Gala.MultitaskingView : Root, RootTarget {
     private Drawing.StyleManager style_manager;
     private GlobalTrigger workspaces_trigger;
 
-#if HAS_MUTTER49
-    private Clutter.PanGesture pan_action;
-#else
+#if !HAS_MUTTER49
     private Clutter.PanAction pan_action;
 #endif
 
@@ -72,6 +70,9 @@ public class Gala.MultitaskingView : Root, RootTarget {
             overshoot_lower_clamp = -0.1,
         };
         multitasking_gesture_controller.add_trigger (new GlobalTrigger (MULTITASKING_VIEW, wm));
+#if HAS_MUTTER49
+        multitasking_gesture_controller.add_trigger (new EdgeSwipeTrigger (display, BOTTOM));
+#endif
         add_gesture_controller (multitasking_gesture_controller);
 
         add_target (ShellClientsManager.get_instance ()); // For hiding the panels
@@ -123,24 +124,16 @@ public class Gala.MultitaskingView : Root, RootTarget {
 
         style_manager.notify["prefers-color-scheme"].connect (update_brightness_effect);
 
-#if HAS_MUTTER49
-        pan_action = new Clutter.PanGesture () {
-            min_n_points = 1,
-            max_n_points = 1,
-            pan_axis = Clutter.PanAxis.X
-        };
-        pan_action.may_recognize.connect (check_valid_gesture);
-        pan_action.pan_update.connect (on_pan);
-#else
+#if !HAS_MUTTER49
         pan_action = new Clutter.PanAction () {
             n_touch_points = 1,
             pan_axis = X_AXIS
         };
         pan_action.gesture_begin.connect (check_valid_gesture);
         pan_action.pan.connect (on_pan);
-#endif
 
         wm.stage.add_action_full ("panel-swipe-gesture", CAPTURE, pan_action);
+#endif
     }
 
     /**
@@ -416,17 +409,14 @@ public class Gala.MultitaskingView : Root, RootTarget {
         return Clutter.EVENT_PROPAGATE;
     }
 
+#if !HAS_MUTTER49
     private bool check_valid_gesture () {
         if (wm.filter_action (MULTITASKING_VIEW)) {
             return false;
         }
 
         float y;
-#if HAS_MUTTER49
-        y = pan_action.get_point_begin_coords (0).y;
-#else
         pan_action.get_press_coords (0, null, out y);
-#endif
 
         var monitor_geom = display.get_monitor_geometry (display.get_primary_monitor ());
         if ((y - monitor_geom.y - monitor_geom.height).abs () < 50) { // Only start if the gesture starts near the bottom of the monitor
@@ -436,25 +426,13 @@ public class Gala.MultitaskingView : Root, RootTarget {
         return false;
     }
 
-#if HAS_MUTTER49
-    private void on_pan () {
-#else
     private bool on_pan () {
-#endif
         float delta_y;
-#if HAS_MUTTER49
-        delta_y = pan_action.get_delta ().get_y ();
-#else
         pan_action.get_motion_delta (0, null, out delta_y);
-#endif
 
         if (delta_y < 0) { // Only allow swipes upwards
             open ();
         }
-
-#if !HAS_MUTTER49
-        return false;
-#endif
     }
-
+#endif
 }
