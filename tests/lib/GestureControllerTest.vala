@@ -20,7 +20,7 @@ internal class Gala.MockTrigger : Object, GestureTrigger {
     }
 
     public void enable_backends (GestureController controller) {
-        controller.enable_backend (backend);
+        controller.enable_backend (backend, this);
     }
 }
 
