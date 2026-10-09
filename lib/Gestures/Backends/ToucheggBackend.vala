@@ -181,7 +181,7 @@ private class Gala.ToucheggBackend : Object, GestureBackend {
             out performed_on_device_type, out elapsed_time);
 
 #if HAS_MUTTER49
-        if (performed_on_device_type != DeviceType.TOUCHSCREEN) {
+        if (!(performed_on_device_type == DeviceType.TOUCHSCREEN && type == PINCH)) {
 #else
         if (performed_on_device_type != DeviceType.TOUCHSCREEN && type != PINCH) {
 #endif
