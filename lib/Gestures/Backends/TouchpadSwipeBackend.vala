@@ -108,7 +108,7 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
             }
 
             state = ONGOING;
-            on_begin (0, event.get_time ());
+            on_begin (PERCENTAGE, 0, event.get_time ());
         } else if (main_handler && group != NONE) {
             foreach (var instance in instances) {
                 if (instance != this && instance.group == group) {
@@ -127,12 +127,12 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
                 break;
 
             case UPDATE:
-                on_update (percentage, event.get_time ());
+                on_update (PERCENTAGE, percentage, event.get_time ());
                 break;
 
             case END:
             case CANCEL:
-                on_end (percentage, event.get_time ());
+                on_end (PERCENTAGE, percentage, event.get_time ());
                 reset ();
                 break;
         }
