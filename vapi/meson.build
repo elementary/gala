@@ -6,7 +6,7 @@ vapigen_args = [
 	'--vapidir=@0@'.format(meson.current_source_dir()),
 ]
 
-if mutter46_dep.found()
+if mutter_api_version == '14'
 	mtk_target = custom_target('mutter-mtk-14',
 		command: [
 			vapigen,
@@ -97,7 +97,7 @@ if mutter46_dep.found()
 		output: 'libmutter-14.vapi'
 	)
 endif
-if mutter47_dep.found()
+if mutter_api_version == '15'
 	mtk_target = custom_target('mutter-mtk-15',
 		command: [
 			vapigen,
@@ -187,7 +187,7 @@ if mutter47_dep.found()
 		output: 'libmutter-15.vapi'
 	)
 endif
-if mutter48_dep.found()
+if mutter_api_version == '16'
 	mtk_target = custom_target('mutter-mtk-16',
 		command: [
 			vapigen,
@@ -258,7 +258,7 @@ if mutter48_dep.found()
 		output: 'libmutter-16.vapi'
 	)
 endif
-if mutter49_dep.found()
+if mutter_api_version == '17'
 	mtk_target = custom_target('mutter-mtk-17',
 		command: [
 			vapigen,
@@ -329,7 +329,7 @@ if mutter49_dep.found()
 		output: 'libmutter-17.vapi'
 	)
 endif
-if mutter50_dep.found()
+if mutter_api_version == '18'
 	mtk_target = custom_target('mutter-mtk-18',
 		command: [
 			vapigen,
