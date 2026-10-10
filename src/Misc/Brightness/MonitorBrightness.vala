@@ -112,8 +112,11 @@ public class Gala.MonitorBrightness : Object {
     private static void set_relative_brightness (Meta.Backlight backlight, double value) {
         var min = backlight.brightness_min;
         var max = backlight.brightness_max;
+        var brightness = (int) (min + (value * (max - min)));
 
-        backlight.brightness = (int) (min + (value * (max - min)));
+        if (backlight.brightness != brightness) {
+            backlight.brightness = brightness;
+        }
     }
 
     public static int brightness_compare_func (MonitorBrightness a, MonitorBrightness b) {
