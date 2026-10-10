@@ -88,6 +88,9 @@ public class Gala.MultitaskingView : Root, RootTarget {
         workspaces_gesture_controller.add_trigger (new SwipeTrigger (this, HORIZONTAL));
         add_gesture_controller (workspaces_gesture_controller);
 
+        workspaces_gesture_controller.group_with (multitasking_gesture_controller);
+        multitasking_gesture_controller.group_with (workspaces_gesture_controller);
+
         update_blurred_bg ();
 
         // Create a child container that will be sized to fit the primary monitor, to contain the "main"

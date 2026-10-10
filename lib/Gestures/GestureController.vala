@@ -127,6 +127,19 @@ public class Gala.GestureController : Object {
         backends.add (backend);
     }
 
+    /**
+     * Allows both GestureControllers to recognize at the same time.
+     * Make sure to call this on both controllers and after you've added
+     * all necessary backends.
+     */
+    public void group_with (GestureController other) {
+        foreach (var backend in backends) {
+            foreach (var other_backend in other.backends) {
+                backend.group_with (other_backend);
+            }
+        }
+    }
+
     private void prepare () {
         if (!running) {
             target.propagate (START, action, progress);
