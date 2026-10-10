@@ -6,11 +6,6 @@
  */
 
 private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
-    public enum Group {
-        NONE,
-        MULTITASKING_VIEW,
-    }
-
     private const int TOUCHPAD_BASE_HEIGHT = 300;
     private const int TOUCHPAD_BASE_WIDTH = 400;
     private const int DRAG_THRESHOLD_DISTANCE = 16;
@@ -24,9 +19,8 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     }
 
     public Clutter.Actor actor { get; construct; }
-    public Group group { get; construct; }
 
-    private static List<TouchpadSwipeBackend> instances = new List<TouchpadSwipeBackend> ();
+    private Gee.Set<unowned TouchpadSwipeBackend> grouped_with;
 
     private State state = NONE;
     private GestureDirection direction = UNKNOWN;
@@ -34,22 +28,23 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     private double distance_y = 0;
     private double distance = 0;
 
-    public TouchpadSwipeBackend (Clutter.Actor actor, Group group) {
-        Object (actor: actor, group: group);
-    }
-
-    ~TouchpadSwipeBackend () {
-        instances.remove (this);
+    public TouchpadSwipeBackend (Clutter.Actor actor) {
+        Object (actor: actor);
     }
 
     construct {
+        grouped_with = new Gee.HashSet<unowned TouchpadSwipeBackend> ();
         actor.captured_event.connect (on_captured_event);
-
-        instances.append (this);
     }
 
     public override void cancel_gesture () {
         state = IGNORED;
+    }
+
+    public override void group_with (GestureBackend other) {
+        if (other is TouchpadSwipeBackend) {
+            grouped_with.add ((TouchpadSwipeBackend) other);
+        }
     }
 
     private bool on_captured_event (Clutter.Event event) {
@@ -109,11 +104,9 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
 
             state = ONGOING;
             on_begin (0, event.get_time ());
-        } else if (main_handler && group != NONE) {
-            foreach (var instance in instances) {
-                if (instance != this && instance.group == group) {
-                    instance.handle_event (event, false);
-                }
+        } else if (main_handler) {
+            foreach (var other_backend in grouped_with) {
+                other_backend.handle_event (event, false);
             }
         }
 
