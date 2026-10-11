@@ -68,16 +68,6 @@ public class Gala.ModalGroup : Clutter.Actor {
             modal_proxy.allow_actions (ZOOM | LOCATE_POINTER | SCREENSHOT | SCREENSHOT_AREA | SCREENSHOT_WINDOW);
         }
 
-        /* push_modal () unsets the input focus if the focus window isn't in an
-         * allowed window group, which it checks before we could allow ours above.
-         * Nothing else can be interacted with while we're modal, so focus the
-         * newly added window.
-         */
-        if (child is Meta.WindowActor) {
-            unowned var window = ((Meta.WindowActor) child).meta_window;
-            window.focus (window.display.get_current_time_roundtrip ());
-        }
-
         if (dimmed.size == 1) {
             background.save_easing_state ();
             background.set_easing_duration (Utils.get_animation_duration (AnimationDuration.OPEN));
