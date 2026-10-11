@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2013 Tom Beckmann
  *                         2013 Rico Tzschichholz
- *                         2025 elementary, Inc. (https://elementary.io)
+ *                         2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.BackgroundContainer : Meta.BackgroundGroup {
