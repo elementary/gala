@@ -273,7 +273,7 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
 
         opened = show;
         if (show && modal_proxy == null) {
-            modal_proxy = wm.push_modal (get_stage (), true);
+            modal_proxy = wm.push_modal (WINDOW_SWITCHER, get_stage (), true);
             modal_proxy.allow_actions (SWITCH_WINDOWS | LOCATE_POINTER | MEDIA_KEYS);
         } else if (modal_proxy != null) {
             wm.pop_modal (modal_proxy);

@@ -38,6 +38,18 @@ namespace Gala {
         MEDIA_KEYS
     }
 
+    [Flags]
+    public enum ActionMode {
+        OTHER, // Actions can't allow this mode
+        DESKTOP,
+        MULTITASKING_VIEW,
+        WINDOW_OVERVIEW,
+        WINDOW_SWITCHER,
+        LOCK_SCREEN,
+        SYSTEM_MODAL,
+        ALL = ~0
+    }
+
     public enum WindowGroup {
         DESKTOP_SHELL,
         MENU,
@@ -52,12 +64,15 @@ namespace Gala {
      * to end your modal mode again with {@link WindowManager.pop_modal}
      */
     public class ModalProxy : Object {
+        public ActionMode mode { get; construct; }
+
         public Clutter.Grab? grab { get; set; }
 
         private ModalActions allowed_actions;
         private WindowGroup[] allowed_window_groups;
 
-        public ModalProxy () {
+        public ModalProxy (ActionMode mode) {
+            Object (mode: mode);
         }
 
         public void allow_actions (ModalActions actions) {
@@ -114,13 +129,14 @@ namespace Gala {
          * Normal windows will never receive keyboard focus though they will still receive pointer events
          * if {@link grab} is false and their {@link Meta.WindowActor} is visible.
          *
+         * @param mode The mode the shell enters. This determines which actions and keybindings are allowed
          * @param actor The actor to grab events for
          * @param grab Whether to grab all events onto the actor
          *
          * @return a {@link ModalProxy} which is needed to end the modal mode again and provides some
          *         some basic control on the behavior of the window manager while it is in modal mode.
          */
-        public abstract ModalProxy push_modal (Clutter.Actor actor, bool grab);
+        public abstract ModalProxy push_modal (ActionMode mode, Clutter.Actor actor, bool grab);
 
         /**
          * May exit the modal mode again, unless another component has called {@link push_modal}
@@ -144,6 +160,11 @@ namespace Gala {
          * @return      Returns true if the prox is valid
          */
         public abstract bool modal_proxy_valid (ModalProxy proxy);
+
+        /**
+         * Returns whether the shell is currently in one of the given action modes.
+         */
+        public abstract bool is_action_allowed (ActionMode allowed_modes);
 
         /**
          * Tells the window manager to perform the given action.

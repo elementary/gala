@@ -339,7 +339,7 @@ public class Gala.SessionLocker : Clutter.Actor {
 #endif
         visible = true;
         grab_key_focus ();
-        modal_proxy = wm.push_modal (this, true);
+        modal_proxy = wm.push_modal (OTHER, this, true);
 
         if (Meta.Prefs.get_gnome_animations () && animate) {
             animate_and_lock (animation_time);

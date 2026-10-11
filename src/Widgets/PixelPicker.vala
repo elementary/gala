@@ -74,6 +74,6 @@ public class Gala.PixelPicker : Clutter.Actor {
 #endif
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this, true);
+        modal_proxy = wm.push_modal (OTHER, this, true);
     }
 }

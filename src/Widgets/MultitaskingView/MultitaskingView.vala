@@ -259,7 +259,7 @@ public class Gala.MultitaskingView : Root, RootTarget {
             wm.top_window_group.hide ();
             show ();
 
-            modal_proxy = wm.push_modal (get_stage (), false);
+            modal_proxy = wm.push_modal (MULTITASKING_VIEW, get_stage (), false);
             modal_proxy.allow_actions (MULTITASKING_VIEW | SWITCH_WORKSPACE | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
             modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         } else if (action == MULTITASKING_VIEW) {

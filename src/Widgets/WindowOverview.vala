@@ -109,7 +109,7 @@ public class Gala.WindowOverview : Root, RootTarget {
 
         grab_key_focus ();
 
-        modal_proxy = wm.push_modal (this, true);
+        modal_proxy = wm.push_modal (WINDOW_OVERVIEW, this, true);
         modal_proxy.allow_actions (WINDOW_OVERVIEW | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
 
         unowned var display = wm.get_display ();

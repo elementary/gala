@@ -66,7 +66,7 @@ public class Gala.ModalGroup : Clutter.Actor {
             assert (modal_proxy == null);
 
             visible = true;
-            modal_proxy = wm.push_modal (this, false);
+            modal_proxy = wm.push_modal (SYSTEM_MODAL, this, false);
             modal_proxy.allow_actions (ZOOM | LOCATE_POINTER | SCREENSHOT | SCREENSHOT_AREA | SCREENSHOT_WINDOW);
             modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         }

@@ -497,8 +497,8 @@ namespace Gala {
         /**
          * {@inheritDoc}
          */
-        public ModalProxy push_modal (Clutter.Actor actor, bool grab) {
-            var proxy = new ModalProxy ();
+        public ModalProxy push_modal (ActionMode mode, Clutter.Actor actor, bool grab) {
+            var proxy = new ModalProxy (mode);
 
             modal_stack.offer_head (proxy);
 
@@ -565,6 +565,14 @@ namespace Gala {
          */
         public bool modal_proxy_valid (ModalProxy proxy) {
             return (proxy in modal_stack);
+        }
+
+        public bool is_action_allowed (ActionMode allowed_modes) {
+            if (modal_stack.is_empty) {
+                return DESKTOP in allowed_modes;
+            }
+
+            return modal_stack.peek_head ().mode in allowed_modes;
         }
 
         private void on_focus_window_changed () {

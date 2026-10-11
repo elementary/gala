@@ -55,7 +55,7 @@ public class Gala.LockScreen : Clutter.Actor {
         if (active) {
             assert (modal_proxy == null);
 
-            modal_proxy = wm.push_modal (this, false);
+            modal_proxy = wm.push_modal (LOCK_SCREEN, this, false);
             modal_proxy.allow_actions (MEDIA_KEYS | ZOOM | LOCATE_POINTER);
             modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         } else {
