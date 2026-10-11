@@ -39,11 +39,6 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
         update ();
     }
 
-    ~BackgroundContainer () {
-        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.disconnect (update);
-    }
-
     private void update () {
         var reference_child = (get_child_at_index (0) as BackgroundManager);
         if (reference_child != null)
