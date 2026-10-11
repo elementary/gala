@@ -23,7 +23,6 @@
  */
 public class Gala.MultitaskingView : Root, RootTarget {
     public const int ANIMATION_DURATION = 250;
-    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { DESKTOP_SHELL, OVERLAY };
 
     private GestureController workspaces_gesture_controller;
     private GestureController multitasking_gesture_controller;
@@ -261,7 +260,6 @@ public class Gala.MultitaskingView : Root, RootTarget {
 
             modal_proxy = wm.push_modal (MULTITASKING_VIEW, get_stage (), false);
             modal_proxy.allow_actions (MULTITASKING_VIEW | SWITCH_WORKSPACE | ZOOM | LOCATE_POINTER | MEDIA_KEYS | SCREENSHOT | SCREENSHOT_AREA);
-            modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         } else if (action == MULTITASKING_VIEW) {
             DragDropAction.cancel_all_by_id ("multitaskingview-window");
         }

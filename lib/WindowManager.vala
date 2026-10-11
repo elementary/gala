@@ -56,7 +56,19 @@ namespace Gala {
         LOCK_SCREEN,
         LOCK_SCREEN_SHELL,
         MODAL,
-        OVERLAY,
+        OVERLAY;
+
+        public ActionMode get_allowed_modes () {
+            switch (this) {
+                case DESKTOP_SHELL: return DESKTOP | MULTITASKING_VIEW;
+                case MENU: return DESKTOP;
+                case LOCK_SCREEN: return ActionMode.LOCK_SCREEN;
+                case LOCK_SCREEN_SHELL: return ActionMode.LOCK_SCREEN;
+                case MODAL: return SYSTEM_MODAL;
+                case OVERLAY: return ALL;
+                default: return DESKTOP;
+            }
+        }
     }
 
     /**
@@ -69,7 +81,6 @@ namespace Gala {
         public Clutter.Grab? grab { get; set; }
 
         private ModalActions allowed_actions;
-        private WindowGroup[] allowed_window_groups;
 
         public ModalProxy (ActionMode mode) {
             Object (mode: mode);
@@ -81,14 +92,6 @@ namespace Gala {
 
         public bool filter_action (ModalActions action) {
             return !(action in allowed_actions);
-        }
-
-        public void allow_window_groups (WindowGroup[] window_groups) requires (grab == null) {
-            allowed_window_groups = window_groups;
-        }
-
-        public bool is_window_group_allowed (WindowGroup window_group) {
-            return window_group in allowed_window_groups;
         }
     }
 

@@ -583,9 +583,9 @@ namespace Gala {
             }
 
             if (overridden_window_group.has_key (display.focus_window)) {
-                var overridden_group = overridden_window_group[display.focus_window];
+                var allowed_modes = overridden_window_group[display.focus_window].get_allowed_modes ();
 
-                if (modal_stack.peek_head ().is_window_group_allowed (overridden_group)) {
+                if (is_action_allowed (allowed_modes)) {
                     return;
                 }
             }

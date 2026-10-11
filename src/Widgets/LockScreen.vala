@@ -6,8 +6,6 @@
  */
 
 public class Gala.LockScreen : Clutter.Actor {
-    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { LOCK_SCREEN, LOCK_SCREEN_SHELL, OVERLAY };
-
     public WindowManager wm { get; construct; }
 
     public Clutter.Actor window_group { get; private set; }
@@ -57,7 +55,6 @@ public class Gala.LockScreen : Clutter.Actor {
 
             modal_proxy = wm.push_modal (LOCK_SCREEN, this, false);
             modal_proxy.allow_actions (MEDIA_KEYS | ZOOM | LOCATE_POINTER);
-            modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         } else {
             assert (modal_proxy != null);
 

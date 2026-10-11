@@ -14,8 +14,6 @@
  * instead to {@link window_group}.
  */
 public class Gala.ModalGroup : Clutter.Actor {
-    private const WindowGroup[] ALLOWED_WINDOW_GROUPS = { MODAL, OVERLAY };
-
     public WindowManager wm { private get; construct; }
     public ShellClientsManager shell_clients { private get; construct; }
 
@@ -68,7 +66,6 @@ public class Gala.ModalGroup : Clutter.Actor {
             visible = true;
             modal_proxy = wm.push_modal (SYSTEM_MODAL, this, false);
             modal_proxy.allow_actions (ZOOM | LOCATE_POINTER | SCREENSHOT | SCREENSHOT_AREA | SCREENSHOT_WINDOW);
-            modal_proxy.allow_window_groups (ALLOWED_WINDOW_GROUPS);
         }
 
         /* push_modal () unsets the input focus if the focus window isn't in an
