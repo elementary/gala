@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2013 Tom Beckmann
  *                         2013 Rico Tzschichholz
- *                         2025 elementary, Inc. (https://elementary.io)
+ *                         2025-2026 elementary, Inc. (https://elementary.io)
  */
 
 public class Gala.BackgroundContainer : Meta.BackgroundGroup {
@@ -37,11 +37,6 @@ public class Gala.BackgroundContainer : Meta.BackgroundGroup {
 #endif
 
         update ();
-    }
-
-    ~BackgroundContainer () {
-        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
-        monitor_manager.monitors_changed.disconnect (update);
     }
 
     private void update () {
