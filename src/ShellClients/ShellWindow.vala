@@ -21,6 +21,17 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     private double multitasking_view_progress = 0;
     private int animations_ongoing = 0;
+    private bool unredirect_disabled = false;
+
+    ~ShellWindow () {
+        if (unredirect_disabled) {
+#if HAS_MUTTER48
+            window.display.get_compositor ().enable_unredirect ();
+#else
+            window.display.enable_unredirect ();
+#endif
+        }
+    }
 
     public virtual void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
@@ -59,18 +70,20 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
         window_actor.visible = animating || visible;
 
-        if (window_actor.visible) {
+        if (window_actor.visible && !unredirect_disabled) {
 #if HAS_MUTTER48
             window.display.get_compositor ().disable_unredirect ();
 #else
             window.display.disable_unredirect ();
 #endif
-        } else {
+            unredirect_disabled = true;
+        } else if (!window_actor.visible && unredirect_disabled) {
 #if HAS_MUTTER48
             window.display.get_compositor ().enable_unredirect ();
 #else
             window.display.enable_unredirect ();
 #endif
+            unredirect_disabled = false;
         }
 
         unowned var manager = ShellClientsManager.get_instance ();

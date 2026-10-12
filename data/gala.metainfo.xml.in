@@ -27,6 +27,22 @@
   <update_contact>contact_at_elementary.io</update_contact>
 
   <releases>
+    <release version="8.6.2" date="2026-10-10" urgency="medium">
+      <description>
+        <p>Improvements:</p>
+        <ul>
+          <li>Fixed the force quit dialog showing after already closing the window</li>
+          <li>Fixed a crash when dialogs appear on inactive workspaces</li>
+        </ul>
+      </description>
+      <issues>
+        <issue url="https://github.com/elementary/gala/issues/2934">Receiving a dialog/popup in an inactive workspace causes a crash</issue>
+        <issue url="https://github.com/elementary/gala/issues/2842">Crash in clutter_actor_child_model__items_changed after opening export dialog in GIMP</issue>
+        <issue url="https://github.com/elementary/gala/issues/1454">'"Window" is not responding' dialog does stay when triggering program is already closed</issue>
+        <issue url="https://github.com/elementary/gala/issues/2453">Wait/Force Quit dialog keeps appearing after app has become responsive and can cause a system crash</issue>
+      </issues>
+    </release>
+
     <release version="8.6.1" date="2026-09-04" urgency="medium">
       <description>
         <p>Improvements:</p>

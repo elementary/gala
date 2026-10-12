@@ -33,7 +33,11 @@ public class Gala.InputMethod : Clutter.InputMethod {
     }
 
     construct {
-        osk_manager = new OSKManager (display);
+#if HAS_MUTTER47
+        osk_manager = new OSKManager (Utils.get_clutter_backend_from_display (display).get_default_seat ());
+#else
+        osk_manager = new OSKManager (Clutter.get_default_backend ().get_default_seat ());
+#endif
         osk_manager.input_panel_deactivation_requested.connect (() => input_panel_active = false);
 
         input_panel_state.connect (on_input_panel_state_changed);

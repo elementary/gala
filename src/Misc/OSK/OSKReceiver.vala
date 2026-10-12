@@ -10,17 +10,16 @@
  * the OSK and forwards it.
  */
 public class Gala.OSKReceiver : Object {
-    public Meta.Display display { private get; construct; }
+    public Clutter.Seat seat { private get; construct; }
     public OSKProxy osk { private get; construct; }
 
     private Clutter.VirtualInputDevice virtual_device;
 
-    public OSKReceiver (Meta.Display display, OSKProxy osk) {
-        Object (display: display, osk: osk);
+    public OSKReceiver (Clutter.Seat seat, OSKProxy osk) {
+        Object (seat: seat, osk: osk);
     }
 
     construct {
-        var seat = Clutter.get_default_backend ().get_default_seat ();
         virtual_device = seat.create_virtual_device (KEYBOARD_DEVICE);
 
         osk.keyval_pressed.connect (on_keyval_pressed);

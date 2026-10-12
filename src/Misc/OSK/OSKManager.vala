@@ -16,7 +16,7 @@ public class Gala.OSKManager : Object {
 
     public signal void input_panel_deactivation_requested ();
 
-    public Meta.Display display { private get; construct; }
+    public Clutter.Seat seat { private get; construct; }
 
     private static Settings settings = new Settings ("org.gnome.desktop.a11y.applications");
 
@@ -27,13 +27,13 @@ public class Gala.OSKManager : Object {
 
     private IBus.InputPurpose input_purpose = FREE_FORM;
 
-    public OSKManager (Meta.Display display) {
-        Object (display: display);
+    public OSKManager (Clutter.Seat seat) {
+        Object (seat: seat);
     }
 
     construct {
         settings.changed[OSK_SETTINGS_KEY].connect (sync_enabled);
-        Clutter.get_default_backend ().get_default_seat ().notify["touch-mode"].connect (sync_enabled);
+        seat.notify["touch-mode"].connect (sync_enabled);
 
         sync_enabled ();
 
@@ -42,7 +42,7 @@ public class Gala.OSKManager : Object {
 
     private void sync_enabled () {
         var manually_enabled = settings.get_boolean (OSK_SETTINGS_KEY);
-        var auto_enabled = Clutter.get_default_backend ().get_default_seat ().touch_mode;
+        var auto_enabled = seat.touch_mode;
 
         enabled = manually_enabled || auto_enabled;
 
@@ -59,7 +59,7 @@ public class Gala.OSKManager : Object {
             return;
         }
 
-        receiver = new OSKReceiver (display, osk);
+        receiver = new OSKReceiver (seat, osk);
 
         osk.set_enabled.begin (enabled);
         osk.set_input_purpose.begin (input_purpose);

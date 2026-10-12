@@ -127,6 +127,19 @@ public class Gala.GestureController : Object {
         backends.add (backend);
     }
 
+    /**
+     * Allows both GestureControllers to recognize at the same time.
+     * Make sure to call this after you've added all necessary backends.
+     */
+    public void group_with (GestureController other) {
+        foreach (var backend in backends) {
+            foreach (var other_backend in other.backends) {
+                backend.group_with (other_backend);
+                other_backend.group_with (backend);
+            }
+        }
+    }
+
     private void prepare () {
         if (!running) {
             target.propagate (START, action, progress);
@@ -260,7 +273,7 @@ public class Gala.GestureController : Object {
             return;
         }
 
-        if (!Meta.Prefs.get_gnome_animations ()) {
+        if (!Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
             target.propagate (COMMIT, action, clamped_to);
             progress = clamped_to;
             finished ();

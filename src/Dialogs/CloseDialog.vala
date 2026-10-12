@@ -11,6 +11,8 @@ public class Gala.CloseDialog : AccessDialog, Meta.CloseDialog {
 
     public App app { get; construct; }
 
+    private bool hidden_by_mutter = false;
+
     public CloseDialog (Gala.App app, Meta.Window window) {
         Object (app: app, window: window);
     }
@@ -35,6 +37,8 @@ public class Gala.CloseDialog : AccessDialog, Meta.CloseDialog {
             return;
         }
 
+        hidden_by_mutter = false;
+
         try {
             var our_pid = new Credentials ().get_unix_pid ();
             if (our_pid == window.get_pid ()) {
@@ -51,6 +55,8 @@ public class Gala.CloseDialog : AccessDialog, Meta.CloseDialog {
     }
 
     public void hide () {
+        hidden_by_mutter = true;
+
         if (path != null) {
             close ();
         }
@@ -68,6 +74,14 @@ public class Gala.CloseDialog : AccessDialog, Meta.CloseDialog {
     }
 
     protected override void on_response (uint response_id) {
+        if (hidden_by_mutter) {
+            /* We received the response because we closed the dialog because Mutter requested it.
+               In this case we don't want to send WAIT to mutter because that would cause the
+               timer to be restarted and the dialog to show up infinitely and a crash if force
+               close is selected after the window was destroyed. */
+            return;
+        }
+
         if (response_id == 0) {
             base.response (Meta.CloseDialogResponse.FORCE_CLOSE);
         } else {
