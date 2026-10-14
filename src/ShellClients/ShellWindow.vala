@@ -6,8 +6,6 @@
  */
 
 public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
-    public bool restore_previous_x11_region { private get; set; default = false; }
-
     /**
      * A gesture target that will receive a CUSTOM update every time a gesture
      * is propagated, with the progress gotten via {@link get_hidden_progress()}
@@ -23,6 +21,17 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     private double multitasking_view_progress = 0;
     private int animations_ongoing = 0;
+    private bool unredirect_disabled = false;
+
+    ~ShellWindow () {
+        if (unredirect_disabled) {
+#if HAS_MUTTER48
+            window.display.get_compositor ().enable_unredirect ();
+#else
+            window.display.enable_unredirect ();
+#endif
+        }
+    }
 
     public virtual void propagate (UpdateType update_type, GestureAction action, double progress) {
         switch (update_type) {
@@ -61,26 +70,20 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
         window_actor.visible = animating || visible;
 
-        if (window_actor.visible) {
+        if (window_actor.visible && !unredirect_disabled) {
 #if HAS_MUTTER48
             window.display.get_compositor ().disable_unredirect ();
 #else
             window.display.disable_unredirect ();
 #endif
-        } else {
+            unredirect_disabled = true;
+        } else if (!window_actor.visible && unredirect_disabled) {
 #if HAS_MUTTER48
             window.display.get_compositor ().enable_unredirect ();
 #else
             window.display.enable_unredirect ();
 #endif
-        }
-
-        if (!Meta.Util.is_wayland_compositor ()) {
-            if (window_actor.visible) {
-                Utils.x11_unset_window_pass_through (window, restore_previous_x11_region);
-            } else {
-                Utils.x11_set_window_pass_through (window);
-            }
+            unredirect_disabled = false;
         }
 
         unowned var manager = ShellClientsManager.get_instance ();
