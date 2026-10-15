@@ -20,6 +20,7 @@ gala_lib_sources = files(
     'Effects/BoxBlurManager.vala',
     'Effects/RoundedCornersEffect.vala',
     'Effects/ShadowEffect.vala',
+    'SimpleShaderEffect.vala',
     'Gestures/Backends/GestureBackend.vala',
     'Gestures/Backends/ToucheggBackend.vala',
     'Gestures/Backends/TouchpadPinchBackend.vala',
