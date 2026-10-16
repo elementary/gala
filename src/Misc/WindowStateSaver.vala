@@ -15,12 +15,28 @@ public class Gala.WindowStateSaver : GLib.Object {
     private static GLib.HashTable<string, GLib.Array<Meta.Window?>> app_windows;
     private static LoginManager? login_manager;
     private static Sqlite.Database db;
+    private static int dock_height;
+    private static int wingpanel_height;
+    private static Settings dock_settings;
+    private static Settings wingpanel_settings;
 
     public static void init (WindowTracker window_tracker) {
         WindowStateSaver.window_tracker = window_tracker;
         app_windows = new GLib.HashTable<string, GLib.Array<Meta.Window?>> (GLib.str_hash, GLib.str_equal);
 
         connect_to_logind.begin ();
+
+        dock_settings = new Settings ("io.elementary.dock");
+        dock_height = dock_settings.get_int ("height");
+        dock_settings.changed["height"].connect (() => {
+            dock_height = dock_settings.get_int ("height");
+        });
+
+        wingpanel_settings = new Settings ("io.elementary.desktop.wingpanel");
+        wingpanel_height = wingpanel_settings.get_int ("height");
+        wingpanel_settings.changed["height"].connect (() => {
+            wingpanel_height = wingpanel_settings.get_int ("height");
+        });
 
         var dir = Path.build_filename (GLib.Environment.get_user_data_dir (), "io.elementary.gala");
         Posix.mkdir (dir, 0775);
@@ -141,6 +157,12 @@ public class Gala.WindowStateSaver : GLib.Object {
         }
 
         var frame_rect = window.get_frame_rect ();
+
+        frame_rect.y += (wingpanel_height - dock_height) / 2;
+
+        if (validate_last_window_position (window.display, { frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height })) {
+            window.move_resize_frame (true, frame_rect.x, frame_rect.y, frame_rect.width, frame_rect.height);
+        }
 
         const string INSERT_QUERY = "INSERT INTO apps (app_id, window_index, last_x, last_y, last_width, last_height) VALUES ($app_id, $window_index, $last_x, $last_y, $last_width, $last_height);";
         rc = db.prepare_v2 (INSERT_QUERY, INSERT_QUERY.length, out stmt);
