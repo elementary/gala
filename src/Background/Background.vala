@@ -128,7 +128,11 @@ public class Gala.Background : Object {
 
         file_watches[filename] = cache.file_changed.connect ((changed_file) => {
             if (changed_file == filename) {
+#if HAS_MUTTER51
+                var image_cache = BackgroundTextureCache.get_default (display);
+#else
                 var image_cache = Meta.BackgroundImageCache.get_default ();
+#endif
                 image_cache.purge (File.new_for_path (changed_file));
                 changed ();
             }
@@ -144,13 +148,25 @@ public class Gala.Background : Object {
 
     private void finish_animation (string[] files) {
         set_loaded ();
+#if HAS_MUTTER51
+        var cache = BackgroundTextureCache.get_default (display);
+#endif
 
+#if HAS_MUTTER51
+        if (files.length > 1)
+            background.set_blend_textures (cache.get_texture (files[0]), cache.get_texture (files[1]), animation.transition_progress, style, null);
+        else if (files.length > 0)
+            background.set_texture (cache.get_texture (files[0]), style, null);
+        else
+            background.set_texture (null, style, null);
+#else
         if (files.length > 1)
             background.set_blend (File.new_for_path (files[0]), File.new_for_path (files[1]), animation.transition_progress, style);
         else if (files.length > 0)
             background.set_file (File.new_for_path (files[0]), style);
         else
             background.set_file (null, style);
+#endif
 
         queue_update_animation ();
     }
@@ -161,7 +177,11 @@ public class Gala.Background : Object {
         animation.update (display.get_monitor_geometry (monitor_index));
         var files = animation.key_frame_files;
 
+#if HAS_MUTTER51
+        var cache = BackgroundTextureCache.get_default (display);
+#else
         var cache = Meta.BackgroundImageCache.get_default ();
+#endif
         var num_pending_images = files.length;
         for (var i = 0; i < files.length; i++) {
             watch_file (files[i]);
@@ -223,16 +243,29 @@ public class Gala.Background : Object {
     }
 
     private void load_image (string filename) {
+#if !HAS_MUTTER51
         background.set_file (File.new_for_path (filename), style);
+#endif
         watch_file (filename);
 
+#if HAS_MUTTER51
+        var cache = BackgroundTextureCache.get_default (display);
+#else
         var cache = Meta.BackgroundImageCache.get_default ();
+#endif
         var image = cache.load (File.new_for_path (filename));
-        if (image.is_loaded ())
+        if (image.is_loaded ()) {
+#if HAS_MUTTER51
+            background.set_texture (image.texture, style, null);
+#endif
             set_loaded ();
+        }
         else {
             ulong handler = 0;
             handler = image.loaded.connect (() => {
+#if HAS_MUTTER51
+                background.set_texture (image.texture, style, null);
+#endif
                 set_loaded ();
                 image.disconnect (handler);
             });
