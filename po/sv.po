@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-10-10 10:07+0000\n"
-"PO-Revision-Date: 2026-02-24 09:55+0000\n"
+"PO-Revision-Date: 2026-10-18 20:04+0000\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <https://l10n.elementaryos.org/projects/desktop/gala/"
 "sv/>\n"
@@ -17,16 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11.4\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 "X-Poedit-Language: Swedish\n"
 
 #: daemon/OSK/Window/Keyboard/KeyButton.vala:16
-#, fuzzy
-#| msgctxt "program"
-#| msgid "Unknown"
 msgid "Unknown Key"
-msgstr "Okänd"
+msgstr "Okänd tangent"
 
 #: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
@@ -103,19 +100,16 @@ msgstr "Förbättringar:"
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed the force quit dialog showing after already closing the window"
 msgstr ""
+"Åtgärdat att dialogrutan för tvångsavslut visades efter att fönstret redan "
+"hade stängts"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix a potential crash when moving windows between workspaces"
 msgid "Fixed a crash when dialogs appear on inactive workspaces"
-msgstr ""
-"Åtgärdat en potentiell krasch vid förflyttning av fönster mellan arbetsytor"
+msgstr "Åtgärdat en krasch när dialogrutor visas på inaktiva arbetsytor"
 
 #: data/gala.metainfo.xml.in:50
-#, fuzzy
-#| msgid "Fixed crash when using tiling shortcuts"
 msgid "Fixed a frequent crash when using the classic session"
-msgstr "Fixade krasch vid användning av kortkommandon för tiling"
+msgstr "Åtgärdat en återkommande krasch i den klassiska sessionen"
 
 #: data/gala.metainfo.xml.in:51 data/gala.metainfo.xml.in:68
 #: data/gala.metainfo.xml.in:82 data/gala.metainfo.xml.in:94
@@ -134,31 +128,34 @@ msgstr "Uppdaterade översättningar"
 
 #: data/gala.metainfo.xml.in:63
 msgid "Show transient windows over their parents in the multitasking view"
-msgstr ""
+msgstr "Visa tillfälliga fönster över sina föräldrafönster i multitaskingvyn"
 
 #: data/gala.metainfo.xml.in:64
 msgid "Added a brand new on screen keyboard for the secure session"
-msgstr ""
+msgstr "Ett nytt skärmtangentbord har lagts till för den säkra sessionen"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Screenshotting a window now includes open menus"
-msgstr ""
+msgstr "Skärmbilder av ett fönster inkluderar nu öppna menyer"
 
 #: data/gala.metainfo.xml.in:66
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
 msgstr ""
+"På pekskärmar öppnar en svepning uppåt från nederkanten nu multitaskingvyn"
 
 #: data/gala.metainfo.xml.in:67
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"Åtgärdat olika specialfall som kunde leda till störningar i animeringarna "
+"för att minimera och maximera"
 
 #: data/gala.metainfo.xml.in:81
 msgid "Fixed a frequent crash with multi monitor setups"
-msgstr ""
+msgstr "Åtgärdat en återkommande krasch med flera bildskärmar"
 
 #: data/gala.metainfo.xml.in:127 data/gala.metainfo.xml.in:147
 #: data/gala.metainfo.xml.in:171
@@ -346,10 +343,8 @@ msgid "Always on Top"
 msgstr "Alltid överst"
 
 #: src/Misc/WindowMenuManager.vala:99
-#, fuzzy
-#| msgid "Always on Visible Workspace"
 msgid "Show on all Workspaces"
-msgstr "Alltid på synlig arbetsyta"
+msgstr "Visa på alla arbetsytor"
 
 #: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
