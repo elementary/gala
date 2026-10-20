@@ -1,6 +1,6 @@
 project('gala',
     'vala',
-    version: '8.6.1',
+    version: '8.6.2',
     meson_version: '>= 0.59.0',
     license: 'GPL3',
     default_options: [
@@ -172,7 +172,6 @@ subdir('protocol')
 subdir('lib')
 subdir('src')
 subdir('daemon')
-subdir('daemon-gtk3')
 subdir('plugins/pip')
 subdir('plugins/template')
 if get_option('documentation')

@@ -145,12 +145,10 @@ namespace Gala {
             display.notify["focus-window"].connect (on_focus_window_changed);
 
 #if WITH_SYSTEMD
-            if (Meta.Util.is_wayland_compositor ()) {
-                display.init_xserver.connect ((task) => {
-                    start_x11_services.begin (task);
-                    return true;
-                });
-            }
+            display.init_xserver.connect ((task) => {
+                start_x11_services.begin (task);
+                return true;
+            });
 #endif
         }
 
@@ -209,7 +207,6 @@ namespace Gala {
             // plugin manager
             unowned var plugin_manager = PluginManager.get_default ();
             plugin_manager.initialize (this);
-            plugin_manager.regions_changed.connect (update_input_area);
 
             /* Then once we have the layout structures that we expose to widgets
                and initialized the plugins, init the rest of the UI */
@@ -218,10 +215,6 @@ namespace Gala {
             lock_screen_manager = new LockScreenManager (layout_manager.lock_screen);
 
             screensaver = new ScreenSaverManager (layout_manager.session_locker);
-            // Due to a bug which enables access to the stage when using multiple monitors
-            // in the screensaver, we have to listen for changes and make sure the input area
-            // is set to NONE when we are in locked mode
-            screensaver.active_changed.connect (update_input_area);
 
             /*keybindings*/
             var keybinding_settings = new GLib.Settings ("io.elementary.desktop.wm.keybindings");
@@ -239,13 +232,6 @@ namespace Gala {
             display.add_keybinding ("expose-all-windows", keybinding_settings, IGNORE_AUTOREPEAT, layout_manager.window_overview.toggle);
 
             display.overlay_key.connect (() => {
-                // Showing panels in fullscreen is broken in X11
-                if (InternalUtils.get_x11_in_fullscreen (display) &&
-                    behavior_settings.get_string ("overlay-action") == OPEN_APPLICATIONS_MENU
-                ) {
-                    return;
-                }
-
                 launch_action (ActionKeys.OVERLAY_ACTION);
             });
 
@@ -269,12 +255,8 @@ namespace Gala {
             }
 
             hot_corner_manager = new HotCornerManager (this, behavior_settings);
-            hot_corner_manager.on_configured.connect (update_input_area);
-            hot_corner_manager.configure ();
 
             zoom = new Zoom (this);
-
-            update_input_area ();
 
             var scroll_action = new SuperScrollAction (display);
             scroll_action.triggered.connect (handle_super_scroll);
@@ -441,31 +423,6 @@ namespace Gala {
             layout_manager.multitasking_view.switch_to_next_workspace (direction);
         }
 
-        private void update_input_area () {
-            unowned Meta.Display display = get_display ();
-
-            if (screensaver != null) {
-                try {
-                    if (screensaver.get_active ()) {
-                        InternalUtils.set_input_area (display, InputArea.NONE);
-                        return;
-                    }
-                } catch (Error e) {
-                    // the screensaver object apparently won't be null even though
-                    // it is unavailable. This error will be thrown however, so we
-                    // can just ignore it, because if it is thrown, the screensaver
-                    // is unavailable.
-                }
-            }
-
-            if (is_modal ()) {
-                var area = layout_manager.multitasking_view.opened ? InputArea.MULTITASKING_VIEW : InputArea.FULLSCREEN;
-                InternalUtils.set_input_area (display, area);
-            } else {
-                InternalUtils.set_input_area (display, InputArea.DEFAULT);
-            }
-        }
-
         /**
          * {@inheritDoc}
          */
@@ -513,8 +470,6 @@ namespace Gala {
                 return proxy;
             }
 
-            update_input_area ();
-
 #if HAS_MUTTER48
             get_display ().get_compositor ().disable_unredirect ();
 #else
@@ -541,8 +496,6 @@ namespace Gala {
             if (is_modal ()) {
                 return;
             }
-
-            update_input_area ();
 
             unowned var display = get_display ();
 #if HAS_MUTTER48
@@ -865,11 +818,6 @@ namespace Gala {
             ) {
                 layout_manager.change_window_group (actor, MENU);
             }
-
-            // Workaround for X11 bug: https://github.com/elementary/dock/issues/479
-            if (!Meta.Util.is_wayland_compositor () && window.window_type == DND) {
-                InternalUtils.clutter_actor_reparent (actor, get_display ().get_compositor ().get_feedback_group ());
-            }
         }
 
         /*
@@ -879,7 +827,7 @@ namespace Gala {
         // must wait for size_changed to get updated frame_rect
         // as which_change is not passed to size_changed, save it as instance variable
         public override void size_change (Meta.WindowActor actor, Meta.SizeChange which_change, Mtk.Rectangle old_frame_rect, Mtk.Rectangle old_buffer_rect) {
-            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations ()) {
+            if (actor.meta_window.window_type != NORMAL || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
                 size_change_completed (actor);
                 return;
             }
@@ -974,10 +922,10 @@ namespace Gala {
             actor.set_pivot_point (0.0f, 0.0f);
 
             var actor_transition_builder = new TransitionBuilder (actor, AnimationDuration.SNAP, EASE_IN_OUT_QUAD);
-            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0);
-            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0);
-            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f);
-            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f);
+            actor_transition_builder.add_property_with_from ("scale-x", actor_scale_x, 1.0, APPLY);
+            actor_transition_builder.add_property_with_from ("scale-y", actor_scale_y, 1.0, APPLY);
+            actor_transition_builder.add_property_with_from ("translation-x", translation_x, 0.0f, APPLY);
+            actor_transition_builder.add_property_with_from ("translation-y", translation_y, 0.0f, APPLY);
 
             yield actor_transition_builder.run ();
 
@@ -1014,16 +962,16 @@ namespace Gala {
                     (actor.y - icon.y) / (icon.height - actor.height)
                 );
 
-                builder.add_property ("scale-x", (double) (icon.width / actor.width));
-                builder.add_property ("scale-y", (double) (icon.height / actor.height));
+                builder.add_property ("scale-x", (double) (icon.width / actor.width), IGNORE);
+                builder.add_property ("scale-y", (double) (icon.height / actor.height), IGNORE);
             } else {
                 actor.set_pivot_point (0.5f, 1.0f);
 
-                builder.add_property ("scale-x", 0.0);
-                builder.add_property ("scale-y", 0.0);
+                builder.add_property ("scale-x", 0.0, IGNORE);
+                builder.add_property ("scale-y", 0.0, IGNORE);
             }
 
-            builder.add_property ("opacity", 0u);
+            builder.add_property ("opacity", 0u, RUN);
 
             yield builder.run ();
 
@@ -1051,9 +999,9 @@ namespace Gala {
             actor.set_pivot_point (0.5f, 1.0f);
 
             var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-            builder.add_property_with_from ("scale-x", 0.01, 1.0);
-            builder.add_property_with_from ("scale-y", 0.1, 1.0);
-            builder.add_property_with_from ("opacity", 0U, 255U);
+            builder.add_property_with_from ("scale-x", 0.01, 1.0, APPLY);
+            builder.add_property_with_from ("scale-y", 0.1, 1.0, APPLY);
+            builder.add_property_with_from ("opacity", 0U, 255U, RUN);
 
             yield builder.run ();
 
@@ -1094,9 +1042,9 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 1.0f);
 
                     var builder = new TransitionBuilder (actor, AnimationDuration.HIDE, EASE_OUT_EXPO);
-                    builder.add_property_with_from ("scale-x", 0.01, 1.0);
-                    builder.add_property_with_from ("scale-y", 0.1, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    builder.add_property_with_from ("scale-x", 0.01, 1.0, APPLY);
+                    builder.add_property_with_from ("scale-y", 0.1, 1.0, APPLY);
+                    builder.add_property_with_from ("opacity", 0U, 255U, RUN);
                     yield builder.run ();
                     break;
 
@@ -1106,9 +1054,9 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
 
                     var builder = new TransitionBuilder (actor, 200, EASE_OUT_QUAD);
-                    builder.add_property_with_from ("scale-x", 1.05, 1.0);
-                    builder.add_property_with_from ("scale-y", 1.05, 1.0);
-                    builder.add_property_with_from ("opacity", 0U, 255U);
+                    builder.add_property_with_from ("scale-x", 1.05, 1.0, APPLY);
+                    builder.add_property_with_from ("scale-y", 1.05, 1.0, APPLY);
+                    builder.add_property_with_from ("opacity", 0U, 255U, RUN);
                     yield builder.run ();
                     break;
 
@@ -1137,9 +1085,9 @@ namespace Gala {
                     actor.show ();
 
                     var builder = new TransitionBuilder (actor, AnimationDuration.CLOSE, LINEAR);
-                    builder.add_property ("scale-x", 0.8);
-                    builder.add_property ("scale-y", 0.8);
-                    builder.add_property ("opacity", 0U);
+                    builder.add_property ("scale-x", 0.8, IGNORE);
+                    builder.add_property ("scale-y", 0.8, IGNORE);
+                    builder.add_property ("opacity", 0U, RUN);
                     yield builder.run ();
 
                     Utils.clear_window_cache (window);
@@ -1150,23 +1098,15 @@ namespace Gala {
                     actor.set_pivot_point (0.5f, 0.5f);
 
                     var builder = new TransitionBuilder (actor, 150, EASE_OUT_QUAD);
-                    builder.add_property ("scale-x", 1.05);
-                    builder.add_property ("scale-y", 1.05);
-                    builder.add_property ("opacity", 0U);
+                    builder.add_property ("scale-x", 1.05, IGNORE);
+                    builder.add_property ("scale-y", 1.05, IGNORE);
+                    builder.add_property ("opacity", 0U, RUN);
                     yield builder.run ();
                     break;
 
                 default:
                     if (NotificationStack.is_notification (window)) {
-                        if (!(yield notification_stack.destroy_notification (actor)) && window.window_type == NOTIFICATION) {
-                            /* This is a workaround for X11. On X11 notifications actually get the window type
-                               notification which is according to mutter not allowed to have any destroy animations.
-                               Therefore if the destroy animation didn't finish this means it was interrupted probably
-                               because mutter destroyed the actor already so don't call destroy_completed
-                               because that would lead to a use after free. */
-                            destroying.remove (actor);
-                            return;
-                        }
+                        yield notification_stack.destroy_notification (actor);
                     }
                     break;
             }

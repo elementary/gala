@@ -18,4 +18,11 @@ private interface Gala.GestureBackend : Object {
      * will be ignored. Once the gesture ends a new gesture should be treated as usual.
      */
     public virtual void cancel_gesture () { }
+
+    /**
+     * Tells this backend that it should not be mutually exclusive with the given other backend.
+     * The usual implementation should check if it's of the same type and then group them accordingly,
+     * e.g. call Clutter.Gesture.can_not_cancel or deliver events to the other backend directly.
+     */
+    public virtual void group_with (GestureBackend other) { }
 }

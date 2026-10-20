@@ -38,13 +38,6 @@ public class Gala.BlurManager : Object {
         Object (wm: wm);
     }
 
-    construct {
-        wm.get_display ().window_created.connect ((window) => {
-            window.notify["mutter-hints"].connect ((obj, pspec) => parse_mutter_hints ((Meta.Window) obj));
-            parse_mutter_hints (window);
-        });
-    }
-
     /**
      * Blurs the given region of the given window.
      */
@@ -111,49 +104,5 @@ public class Gala.BlurManager : Object {
         }
 
         add_blur (window, blur_data.left, blur_data.right, blur_data.top, blur_data.bottom, blur_data.clip_radius);
-    }
-
-    //X11 only
-    private void parse_mutter_hints (Meta.Window window) {
-        if (window.mutter_hints == null) {
-            return;
-        }
-
-        var mutter_hints = window.mutter_hints.split (":");
-        foreach (var mutter_hint in mutter_hints) {
-            var split = mutter_hint.split ("=");
-
-            if (split.length != 2) {
-                continue;
-            }
-
-            var key = split[0];
-            var val = split[1];
-
-            switch (key) {
-                case "blur":
-                    var split_val = val.split (",");
-                    if (split_val.length != 5) {
-                        break;
-                    }
-
-                    uint parsed_left = 0, parsed_right = 0, parsed_top = 0, parsed_bottom = 0, parsed_clip_radius = 0;
-                    if (
-                        uint.try_parse (split_val[0], out parsed_left) &&
-                        uint.try_parse (split_val[1], out parsed_right) &&
-                        uint.try_parse (split_val[2], out parsed_top) &&
-                        uint.try_parse (split_val[3], out parsed_bottom) &&
-                        uint.try_parse (split_val[4], out parsed_clip_radius)
-                    ) {
-                        add_blur (window, parsed_left, parsed_right, parsed_top, parsed_bottom, parsed_clip_radius);
-                    } else {
-                        warning ("Failed to parse %s as width and height", val);
-                    }
-
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }
