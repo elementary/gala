@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-10-10 10:07+0000\n"
-"PO-Revision-Date: 2026-09-17 17:03+0000\n"
+"PO-Revision-Date: 2026-10-22 02:35+0000\n"
 "Last-Translator: кубик круглый <megarainbow29@gmail.com>\n"
 "Language-Team: Russian <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ru/>\n"
@@ -100,12 +100,13 @@ msgstr "Улучшения:"
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed the force quit dialog showing after already closing the window"
 msgstr ""
+"Исправлена ситуация, когда диалог принудительного завершения отображался "
+"после закрытия окна"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix a potential crash when moving windows between workspaces"
 msgid "Fixed a crash when dialogs appear on inactive workspaces"
-msgstr "Исправлен возможный сбой при перемещении окон между рабочими столами"
+msgstr ""
+"Исправлен сбой при появлении диалоговых окон на неактивных рабочих столах"
 
 #: data/gala.metainfo.xml.in:50
 msgid "Fixed a frequent crash when using the classic session"
