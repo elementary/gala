@@ -140,6 +140,10 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         }
     }
 
+    public double get_distance (GestureAction action) {
+        return window.get_frame_rect ().height;
+    }
+
     public override void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         workspace_hide_tracker.update (update_type, action, progress);
         base.propagate (update_type, action, progress);

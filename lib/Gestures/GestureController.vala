@@ -47,7 +47,6 @@ public class Gala.GestureController : Object {
         }
     }
 
-    public double distance { get; construct set; }
     public double overshoot_lower_clamp { get; construct set; default = 0d; }
     public double overshoot_upper_clamp { get; construct set; default = 1d; }
     public bool follow_natural_scroll { get; set; default = false; }
@@ -79,8 +78,7 @@ public class Gala.GestureController : Object {
 
     private bool running = false;
 
-    private Gee.List<GestureBackend> backends;
-    private Gee.List<GestureTrigger> triggers;
+    private Gee.HashMap<GestureBackend, GestureTrigger> backends;
 
     private GestureBackend? recognizing_backend;
     private double gesture_progress;
@@ -97,8 +95,7 @@ public class Gala.GestureController : Object {
     }
 
     construct {
-        backends = new Gee.ArrayList<GestureBackend> ();
-        triggers = new Gee.ArrayList<GestureTrigger> ();
+        backends = new Gee.HashMap<GestureBackend, GestureTrigger> ();
     }
 
     /**
@@ -115,16 +112,17 @@ public class Gala.GestureController : Object {
     }
 
     public void add_trigger (GestureTrigger trigger) {
-        triggers.add (trigger);
         trigger.enable_backends (this);
     }
 
-    internal void enable_backend (GestureBackend backend) {
+    internal void enable_backend (GestureBackend backend, GestureTrigger trigger) requires (
+        !backends.has_key (backend)
+    ) {
         backend.on_gesture_detected.connect (gesture_detected);
         backend.on_begin.connect (gesture_begin);
         backend.on_update.connect (gesture_update);
         backend.on_end.connect (gesture_end);
-        backends.add (backend);
+        backends[backend] = trigger;
     }
 
     /**
@@ -132,8 +130,8 @@ public class Gala.GestureController : Object {
      * Make sure to call this after you've added all necessary backends.
      */
     public void group_with (GestureController other) {
-        foreach (var backend in backends) {
-            foreach (var other_backend in other.backends) {
+        foreach (var backend in backends.keys) {
+            foreach (var other_backend in other.backends.keys) {
                 backend.group_with (other_backend);
                 other_backend.group_with (backend);
             }
@@ -154,11 +152,8 @@ public class Gala.GestureController : Object {
             return false;
         }
 
-        foreach (var trigger in triggers) {
-            if (trigger.triggers (gesture)) {
-                recognizing = true;
-                break;
-            }
+        if (backends[backend].triggers (gesture)) {
+            recognizing = true;
         }
 
         if (recognizing) {
@@ -180,7 +175,7 @@ public class Gala.GestureController : Object {
         return recognizing;
     }
 
-    private void gesture_begin (double percentage, uint64 elapsed_time) {
+    private void gesture_begin (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
@@ -188,14 +183,16 @@ public class Gala.GestureController : Object {
         prepare ();
 
         gesture_progress = progress;
-        previous_percentage = percentage;
+        previous_percentage = get_percentage (unit, value);
         previous_time = elapsed_time;
     }
 
-    private void gesture_update (double percentage, uint64 elapsed_time) {
+    private void gesture_update (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
+
+        var percentage = get_percentage (unit, value);
 
         var updated_delta = previous_delta;
         if (elapsed_time != previous_time) {
@@ -217,13 +214,14 @@ public class Gala.GestureController : Object {
         previous_delta = updated_delta;
     }
 
-    private void gesture_end (double percentage, uint64 elapsed_time) {
+    private void gesture_end (GestureBackend.Unit unit, double value, uint64 elapsed_time) {
         if (!recognizing) {
             return;
         }
 
         recognizing = false;
 
+        var percentage = get_percentage (unit, value);
         update_gesture_progress (percentage, previous_delta);
 
         var to = progress;
@@ -244,6 +242,17 @@ public class Gala.GestureController : Object {
         previous_delta = 0;
         velocity = 0;
         direction_multiplier = 0;
+    }
+
+    private double get_percentage (GestureBackend.Unit unit, double value) {
+        switch (unit) {
+            case PIXELS:
+                return value / target.get_distance (action);
+            case PERCENTAGE:
+                return value;
+        }
+
+        return value;
     }
 
     private void update_gesture_progress (double percentage, double percentage_delta) {
@@ -347,7 +356,7 @@ public class Gala.GestureController : Object {
     public void cancel_gesture () {
         if (recognizing) {
             recognizing_backend.cancel_gesture ();
-            gesture_end (previous_percentage, previous_time);
+            gesture_end (PERCENTAGE, previous_percentage, previous_time);
         }
     }
 }
