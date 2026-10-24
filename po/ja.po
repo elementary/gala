@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-10-10 10:07+0000\n"
-"PO-Revision-Date: 2026-09-10 14:01+0000\n"
+"PO-Revision-Date: 2026-10-24 20:04+0000\n"
 "Last-Translator: Ryo Nakano <ryonakaknock3@gmail.com>\n"
 "Language-Team: Japanese <https://l10n.elementaryos.org/projects/desktop/gala/"
 "ja/>\n"
@@ -100,13 +100,13 @@ msgstr "改善点:"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed the force quit dialog showing after already closing the window"
-msgstr ""
+msgstr "ウィンドウを閉じた後にも強制終了ダイアログが表示される不具合を修正"
 
 #: data/gala.metainfo.xml.in:35
-#, fuzzy
-#| msgid "Fix a potential crash when moving windows between workspaces"
 msgid "Fixed a crash when dialogs appear on inactive workspaces"
-msgstr "ワークスペース間でウィンドウを移動した際に起こりうるクラッシュを修正"
+msgstr ""
+"非アクティブなワークスペースでダイアログが表示された際に起こるクラッシュを修"
+"正"
 
 #: data/gala.metainfo.xml.in:50
 msgid "Fixed a frequent crash when using the classic session"
