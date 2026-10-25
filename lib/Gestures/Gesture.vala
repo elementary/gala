@@ -40,6 +40,7 @@ namespace Gala {
         SWITCH_WINDOWS,
         MULTITASKING_VIEW,
         ZOOM,
+        TOGGLE_MAXIMIZED,
         CUSTOM,
         N_ACTIONS;
 
