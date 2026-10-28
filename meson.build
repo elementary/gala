@@ -80,68 +80,45 @@ if get_option('systemd')
     systemd_dep = dependency('libsystemd')
 endif
 
-mutter_dep = []
-libmutter_dep = []
+# library version -> gnome version
+supported_mutter_versions = {
+    '14': 46,
+    '15': 47,
+    '16': 48,
+    '17': 49,
+    '18': 50,
+}
+
+mutter_api_version = ''
 
 vala_flags = []
 
-mutter46_dep = dependency('libmutter-14', version: ['>= 46', '< 47'], required: false)
-if mutter46_dep.found()
-	libmutter_dep = dependency('libmutter-14', version: '>= 46')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-mtk-14'), dependency('mutter-cogl-14'),
-		dependency('mutter-cogl-pango-14'), dependency('mutter-clutter-14')
-	]
-	vala_flags = []
-endif
+foreach lib_version, gnome_version : supported_mutter_versions
+    vala_flags += ['--define', 'HAS_MUTTER' + gnome_version.to_string()]
 
-mutter47_dep = dependency('libmutter-15', version: ['>= 47', '< 48'], required: false)
-if mutter47_dep.found()
-	libmutter_dep = dependency('libmutter-15', version: '>= 47')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-mtk-15'), dependency('mutter-cogl-15'),
-		dependency('mutter-cogl-pango-15'), dependency('mutter-clutter-15')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER47']
-endif
+    required_version = ['>= ' + gnome_version.to_string(), '< ' + (gnome_version + 1).to_string()]
+    libmutter_dep = dependency('libmutter-' + lib_version, version: required_version, required: false)
+    if libmutter_dep.found()
+        mutter_api_version = lib_version
+        break
+    endif
+endforeach
 
-mutter48_dep = dependency('libmutter-16', version: ['>= 48', '< 49'], required: false)
-if mutter48_dep.found()
-	libmutter_dep = dependency('libmutter-16', version: '>= 48')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-mtk-16'), dependency('mutter-cogl-16'),
-		dependency('mutter-clutter-16')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48']
-endif
-
-mutter49_dep = dependency('libmutter-17', version: ['>= 49', '< 50'], required: false)
-if mutter49_dep.found()
-	libmutter_dep = dependency('libmutter-17', version: '>= 49')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-mtk-17'), dependency('mutter-cogl-17'),
-		dependency('mutter-clutter-17')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49']
-endif
-
-mutter50_dep = dependency('libmutter-18', version: ['>= 50', '< 51'], required: false)
-if mutter50_dep.found()
-	libmutter_dep = dependency('libmutter-18', version: '>= 50')
-	mutter_dep = [
-		libmutter_dep,
-		dependency('mutter-mtk-18'), dependency('mutter-cogl-18'),
-		dependency('mutter-clutter-18')
-	]
-	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50']
-endif
-
-if mutter_dep.length() == 0
+if mutter_api_version == ''
     error ('No supported mutter library found!')
+endif
+
+libmutter_dep = dependency('libmutter-' + mutter_api_version)
+
+mutter_dep = [
+    libmutter_dep,
+    dependency('mutter-mtk-' + mutter_api_version),
+    dependency('mutter-cogl-' + mutter_api_version),
+    dependency('mutter-clutter-' + mutter_api_version)
+]
+
+if libmutter_dep.version().version_compare('<= 47')
+    mutter_dep += dependency('mutter-cogl-pango-' + mutter_api_version)
 endif
 
 if libmutter_dep.version().version_compare('>= 48') and libmutter_dep.get_variable('have_fonts') == 'false'
