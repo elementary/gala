@@ -35,8 +35,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     private GestureController workspace_gesture_controller;
     private WorkspaceHideTracker workspace_hide_tracker;
 
-    private int width = -1;
-    private int height = -1;
     private bool starting = true;
 
     public PanelWindow (WindowManager wm, Meta.Window window, Pantheon.Desktop.Anchor anchor) {
@@ -58,8 +56,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
 
         window.size_changed.connect (update_strut);
         window.position_changed.connect (update_strut);
-        notify["width"].connect (update_strut);
-        notify["height"].connect (update_strut);
 
         user_gesture_controller = new GestureController (CUSTOM) {
             progress = 1.0
@@ -90,31 +86,6 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
         window_actor.notify["height"].connect (update_clip);
         window_actor.notify["translation-y"].connect (update_clip);
         notify["anchor"].connect (update_clip);
-    }
-
-    public Mtk.Rectangle get_custom_window_rect () {
-        var window_rect = window.get_frame_rect ();
-
-        if (width > 0) {
-            window_rect.width = width;
-        }
-
-        if (height > 0) {
-            window_rect.height = height;
-
-            if (anchor == BOTTOM) {
-                var geom = window.display.get_monitor_geometry (window.get_monitor ());
-                window_rect.y = geom.y + geom.height - height;
-            }
-        }
-
-        return window_rect;
-    }
-
-    public void set_size (int width, int height) {
-        this.width = width;
-        this.height = height;
-        position_window ();
     }
 
     public void request_visible_in_multitasking_view () {
@@ -180,7 +151,7 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
                 continue;
             }
 
-            if (!get_custom_window_rect ().overlap (window.get_frame_rect ())) {
+            if (!this.window.get_frame_rect ().overlap (window.get_frame_rect ())) {
                 continue;
             }
 
@@ -215,10 +186,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
             return;
         }
 
-        var rect = get_custom_window_rect ();
-
         Meta.Strut strut = {
-            rect,
+            window.get_frame_rect (),
             side_from_anchor (anchor)
         };
 
@@ -284,7 +253,8 @@ public class Gala.PanelWindow : ShellWindow, RootTarget {
     }
 
     private void update_target () {
-        var to_value = anchor == TOP ? -get_custom_window_rect ().height : get_custom_window_rect ().height;
+        var rect = window.get_frame_rect ();
+        var to_value = anchor == TOP ? -rect.height : rect.height;
         hide_target = new PropertyTarget (CUSTOM, actor, "translation-y", typeof (float), 0f, (float) to_value);
 
         workspace_hide_tracker.recalculate_all_workspaces ();
