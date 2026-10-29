@@ -71,16 +71,16 @@ private class Gala.TouchpadPinchBackend : Object, GestureBackend {
 
         switch (event.get_gesture_phase ()) {
             case BEGIN:
-                on_begin (0, event.get_time ());
+                on_begin (PERCENTAGE, 0, event.get_time ());
                 break;
 
             case UPDATE:
-                on_update (percentage, event.get_time ());
+                on_update (PERCENTAGE, percentage, event.get_time ());
                 break;
 
             case END:
             case CANCEL:
-                on_end (percentage, event.get_time ());
+                on_end (PERCENTAGE, percentage, event.get_time ());
                 reset ();
                 break;
         }
