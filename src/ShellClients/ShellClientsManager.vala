@@ -161,22 +161,6 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
         }
     }
 
-    /**
-     * The size given here is only used for the hide mode. I.e. struts
-     * and collision detection with other windows use this size. By default
-     * or if set to -1 the size of the window is used.
-     *
-     * TODO: Maybe use for strut only?
-     */
-    public void set_size (Meta.Window window, int width, int height) {
-        if (!(window in panel_windows)) {
-            warning ("Set anchor for window before size.");
-            return;
-        }
-
-        panel_windows[window].set_size (width, height);
-    }
-
     public void set_hide_mode (Meta.Window window, Pantheon.Desktop.HideMode hide_mode) {
         if (!(window in panel_windows)) {
             warning ("Set anchor for window before hide mode.");

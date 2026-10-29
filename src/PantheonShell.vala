@@ -320,20 +320,7 @@ namespace Gala {
     }
 
     internal static void set_size (Wl.Client client, Wl.Resource resource, int width, int height) {
-        unowned PanelSurface? panel_surface = resource.get_user_data<PanelSurface> ();
-        if (panel_surface.wayland_surface == null) {
-            warning ("Window tried to set size but wayland surface is null.");
-            return;
-        }
-
-        Meta.Window? window;
-        panel_surface.wayland_surface.get ("window", out window, null);
-        if (window == null) {
-            warning ("Window tried to set size but wayland surface had no associated window.");
-            return;
-        }
-
-        ShellClientsManager.get_instance ().set_size (window, width, height);
+        critical ("PanelSurface.set_size is deprecated and ignored. Use xdg_surface.set_window_geometry instead");
     }
 
     internal static void set_hide_mode (Wl.Client client, Wl.Resource resource, [CCode (type = "uint32_t")] Pantheon.Desktop.HideMode hide_mode) {
