@@ -299,13 +299,4 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
     ) {
         return positioned_windows[window].dim;
     }
-
-    public Mtk.Rectangle? get_shell_client_rect () {
-        foreach (var client in panel_windows.get_values ()) {
-            if (client.visible_in_multitasking_view) {
-                return client.get_custom_window_rect ();
-            }
-        }
-        return null;
-    }
 }
