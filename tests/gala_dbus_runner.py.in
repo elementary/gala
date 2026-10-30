@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+import sys
+
+sys.path.insert(1, '@MUTTER_TEST_PKGDATADIR@')
+
+from mutter_dbusrunner import MutterDBusRunner, meta_run
+
+if __name__ == '__main__':
+    result = meta_run(MutterDBusRunner)
+    sys.exit(result)
