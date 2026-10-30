@@ -25,6 +25,6 @@ lib_test_executable = executable(
 )
 
 foreach test : lib_tests
-    test(test, lib_test_executable, args: 'Gala' + test, suite: ['Gala', 'Gala/lib'], is_parallel: false)
+    test(test, dbus_runner, args: [lib_test_executable, 'Gala' + test], suite: ['Gala', 'Gala/lib'], is_parallel: false)
 endforeach
 

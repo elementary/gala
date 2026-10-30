@@ -82,6 +82,7 @@ endif
 
 mutter_dep = []
 libmutter_dep = []
+libmutter_test_dep = []
 
 vala_flags = []
 
@@ -94,6 +95,10 @@ if mutter46_dep.found()
 		dependency('mutter-cogl-pango-14'), dependency('mutter-clutter-14')
 	]
 	vala_flags = []
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-14')
+    endif
 endif
 
 mutter47_dep = dependency('libmutter-15', version: ['>= 47', '< 48'], required: false)
@@ -105,6 +110,10 @@ if mutter47_dep.found()
 		dependency('mutter-cogl-pango-15'), dependency('mutter-clutter-15')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER47']
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-15')
+    endif
 endif
 
 mutter48_dep = dependency('libmutter-16', version: ['>= 48', '< 49'], required: false)
@@ -116,6 +125,10 @@ if mutter48_dep.found()
 		dependency('mutter-clutter-16')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48']
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-16')
+    endif
 endif
 
 mutter49_dep = dependency('libmutter-17', version: ['>= 49', '< 50'], required: false)
@@ -127,6 +140,10 @@ if mutter49_dep.found()
 		dependency('mutter-clutter-17')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49']
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-17')
+    endif
 endif
 
 mutter50_dep = dependency('libmutter-18', version: ['>= 50', '< 51'], required: false)
@@ -138,6 +155,10 @@ if mutter50_dep.found()
 		dependency('mutter-clutter-18')
 	]
 	vala_flags = ['--define', 'HAS_MUTTER47', '--define', 'HAS_MUTTER48', '--define', 'HAS_MUTTER49', '--define', 'HAS_MUTTER50']
+
+    if get_option('tests')
+        libmutter_test_dep = dependency('libmutter-test-18')
+    endif
 endif
 
 if mutter_dep.length() == 0
