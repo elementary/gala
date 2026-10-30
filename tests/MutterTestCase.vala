@@ -25,6 +25,7 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         "--virtual-monitor", "1280x720@60"
     };
 
+    protected Type plugin_type { get; protected set; default = typeof (MockPlugin); }
     protected Meta.Context? context { get; private set; }
     protected Clutter.Stage stage { get { return (Clutter.Stage) context.get_backend ().get_stage (); } }
 
@@ -44,7 +45,7 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
                 assert_no_error (e);
             }
 
-            context.set_plugin_gtype (typeof (MockPlugin));
+            context.set_plugin_gtype (plugin_type);
 
             try {
                 context.setup ();
