@@ -83,7 +83,7 @@ public class Gala.OSKManager : Object {
     public void set_input_purpose (IBus.InputPurpose purpose) {
         this.input_purpose = purpose;
 
-        if (osk == null) {
+        if (osk == null || !enabled) {
             return;
         }
 
