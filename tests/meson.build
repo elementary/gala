@@ -15,3 +15,4 @@ common_test_sources = files(
 )
 
 subdir('lib')
+subdir('src')

@@ -279,6 +279,7 @@ public class Gala.SessionLocker : Clutter.Actor {
     }
 
     private LoginSessionManager? get_current_session_manager () throws GLib.Error {
+        return null;
         string? session_id = GLib.Environment.get_variable ("XDG_SESSION_ID");
         if (session_id == null) {
             debug ("Unset XDG_SESSION_ID, asking logind");
