@@ -16,6 +16,8 @@ public class Gala.SwipeTriggerTest : MutterTestCase {
     }
 
     public override void set_up () {
+        base.set_up ();
+
         actor = new Clutter.Actor ();
         trigger = new SwipeTrigger (actor, Clutter.Orientation.HORIZONTAL);
     }
