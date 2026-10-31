@@ -47,7 +47,7 @@ jobs:
       env:
         XDG_RUNTIME_DIR: ${{ github.workspace }}/runtime-dir
       run: |
-        meson test -v -C build
+        dbus-run-session -- meson test -v -C build
 
   fedora:
     runs-on: ubuntu-latest
