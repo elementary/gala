@@ -75,6 +75,12 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
             return false;
         }
 
+        if (domain == "libmutter" && FLAG_FATAL in level && "Failed to make thread" in message) {
+            /* Mutter sends a fatal log when failing to make a thread rt scheduled but that doesn't matter for us */
+            Test.message ("Got expected fatal make thread rt log, not aborting");
+            return false;
+        }
+
         return true;
     }
 
