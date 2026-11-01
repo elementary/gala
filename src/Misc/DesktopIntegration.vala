@@ -21,10 +21,14 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void windows_changed ();
     public signal void active_workspace_changed ();
     public signal void workspace_removed (int index);
+    public signal void caps_lock_state_changed ();
+    public signal void num_lock_state_changed ();
+
     [DBus(visible=false)]
     public unowned WindowManagerGala wm { private get; construct; }
     [DBus(visible=false)]
     public WindowOverview window_overview { private get; construct; }
+    private Clutter.Keymap keymap;
     private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
     public DesktopIntegration (WindowManagerGala wm, WindowOverview window_overview) {
@@ -35,7 +39,14 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     construct {
+#if HAS_MUTTER47
+        keymap = wm.stage.get_context ().get_backend ().get_default_seat ().get_keymap ();
+#else
+        keymap = Clutter.get_default_backend ().get_default_seat ().get_keymap ();
+#endif
 
+        keymap.notify["caps-lock-state"].connect (() => caps_lock_state_changed ());
+        keymap.notify["num-lock-state"].connect (() => num_lock_state_changed ());
 
         time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
 
@@ -279,5 +290,13 @@ public class Gala.DesktopIntegration : GLib.Object {
         }
 
         workspace_manager.reorder_workspace (workspace, new_index);
+    }
+
+    public bool get_caps_lock_state () throws DBusError, IOError {
+        return keymap.get_caps_lock_state ();
+    }
+
+    public bool get_num_lock_state () throws DBusError, IOError {
+        return keymap.get_num_lock_state ();
     }
 }
