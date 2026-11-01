@@ -21,14 +21,22 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void windows_changed ();
     public signal void active_workspace_changed ();
     public signal void workspace_removed (int index);
-
-    private unowned WindowManagerGala wm;
-    private WindowOverview window_overview;
+    [DBus(visible=false)]
+    public unowned WindowManagerGala wm { private get; construct; }
+    [DBus(visible=false)]
+    public WindowOverview window_overview { private get; construct; }
     private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
     public DesktopIntegration (WindowManagerGala wm, WindowOverview window_overview) {
-        this.wm = wm;
-        this.window_overview = window_overview;
+        Object (
+            wm: wm,
+            window_overview: window_overview
+        );
+    }
+
+    construct {
+
+
         time_appeared_on_workspace = new GLib.HashTable<Meta.Window, int64?> (GLib.direct_hash, GLib.direct_equal);
 
         wm.window_tracker.windows_changed.connect (() => {
