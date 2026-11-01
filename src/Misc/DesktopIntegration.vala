@@ -24,10 +24,11 @@ public class Gala.DesktopIntegration : GLib.Object {
     public signal void caps_lock_state_changed ();
     public signal void num_lock_state_changed ();
 
-    [DBus(visible=false)]
+    [DBus (visible = false)]
     public unowned WindowManagerGala wm { private get; construct; }
-    [DBus(visible=false)]
+    [DBus (visible = false)]
     public WindowOverview window_overview { private get; construct; }
+
     private Clutter.Keymap keymap;
     private GLib.HashTable<Meta.Window, int64?> time_appeared_on_workspace;
 
