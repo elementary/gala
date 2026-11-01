@@ -25,38 +25,39 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         "--virtual-monitor", "1280x720@60"
     };
 
-    protected Meta.Context context { get; private set; }
+    protected Meta.Context? context { get; private set; }
     protected Clutter.Stage stage { get { return (Clutter.Stage) context.get_backend ().get_stage (); } }
 
     private MainLoop? main_loop;
 
-    construct {
-        context = new Meta.Context ("");
-
-        unowned var unowned_args = MUTTER_ARGS;
-        try {
-            context.configure (ref unowned_args);
-        } catch (Error e) {
-            assert_no_error (e);
-        }
-
-        context.set_plugin_gtype (typeof (MockPlugin));
-
-        try {
-            context.setup ();
-        } catch (Error e) {
-            assert_no_error (e);
-        }
-
-        try {
-            context.start ();
-        } catch (Error e) {
-            assert_no_error (e);
-        }
-    }
-
     public override void set_up () {
         Test.log_set_fatal_handler (fatal_log_handler);
+
+        if (context == null) {
+            /* We can only create the context once, because Mutter doesn't allow recreating it */
+            context = new Meta.Context ("");
+
+            unowned var unowned_args = MUTTER_ARGS;
+            try {
+                context.configure (ref unowned_args);
+            } catch (Error e) {
+                assert_no_error (e);
+            }
+
+            context.set_plugin_gtype (typeof (MockPlugin));
+
+            try {
+                context.setup ();
+            } catch (Error e) {
+                assert_no_error (e);
+            }
+
+            try {
+                context.start ();
+            } catch (Error e) {
+                assert_no_error (e);
+            }
+        }
 
         main_loop = new MainLoop (null, false);
     }
@@ -71,6 +72,12 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         if (domain == "libmutter" && FLAG_FATAL in level && "Failed to connect to colord daemon" in message) {
             /* Mutter sends a fatal log when failing to connect to colord but that doesn't matter for us */
             Test.message ("Got expected fatal colord log, not aborting");
+            return false;
+        }
+
+        if (domain == "libmutter" && FLAG_FATAL in level && "Failed to make thread" in message) {
+            /* Mutter sends a fatal log when failing to make a thread rt scheduled but that doesn't matter for us */
+            Test.message ("Got expected fatal make thread rt log, not aborting");
             return false;
         }
 
