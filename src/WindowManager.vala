@@ -17,6 +17,7 @@
 //
 
 namespace Gala {
+    [SingleInstance]
     public class WindowManagerGala : Meta.Plugin, WindowManager {
         private class SizeChangeInfo {
             public Meta.SizeChange change;

@@ -12,11 +12,26 @@
  * and allows us to interact with it, e.g. by creating a Clutter actor.
  */
 public class Gala.StartupTest : MutterTestCase {
+    private WindowManagerGala? wm;
+
     construct {
-        plugin_type = typeof (Gala.WindowManagerGala);
+        plugin_type = typeof (WindowManagerGala);
 
         add_test ("Test startup successful", test_startup_successful);
         add_test ("Test running successful", test_running_successful);
+    }
+
+    public override void set_up () {
+        Test.log_set_fatal_handler (fatal_log_handler);
+
+        base.set_up ();
+
+        /* WindowManagerGala is [SingleInstance] so this way we get access to the actual one */
+        wm = new WindowManagerGala ();
+    }
+
+    private bool fatal_log_handler (string? domain, LogLevelFlags level, string message) {
+        return false;
     }
 
     /**
@@ -49,9 +64,5 @@ public class Gala.StartupTest : MutterTestCase {
         });
 
         run_main_loop ();
-    }
-
-    protected override bool fatal_log_handler (string? domain, LogLevelFlags level, string message) {
-        return false;
     }
 }
