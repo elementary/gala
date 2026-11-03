@@ -20,7 +20,7 @@ internal class Gala.MockTrigger : Object, GestureTrigger {
     }
 
     public void enable_backends (GestureController controller) {
-        controller.enable_backend (backend);
+        controller.enable_backend (backend, this);
     }
 }
 
@@ -52,6 +52,10 @@ public class Gala.MockTarget : Object, GestureTarget, RootTarget {
 
     construct {
         propagations = new Gee.LinkedList<Propagation> ();
+    }
+
+    public double get_distance (GestureAction action) {
+        return 100;
     }
 
     public void propagate (UpdateType update_type, GestureAction action, double progress) {
@@ -143,17 +147,17 @@ public class Gala.GestureControllerTest : MutterTestCase {
         assert_true (controller.recognizing);
         target.assert_no_propagations ();
 
-        backend.on_begin (0, 0);
+        backend.on_begin (PERCENTAGE, 0, 0);
 
         target.assert_and_remove_propagation (START, CUSTOM, 0);
         target.assert_no_propagations ();
 
-        backend.on_update (0.5, 0);
+        backend.on_update (PERCENTAGE, 0.5, 0);
 
         target.assert_and_remove_propagation (UPDATE, CUSTOM, 0.5);
         target.assert_no_propagations ();
 
-        backend.on_end (1.0, 0);
+        backend.on_end (PERCENTAGE, 1.0, 0);
 
         assert_false (controller.recognizing);
 
