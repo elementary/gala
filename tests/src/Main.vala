@@ -5,6 +5,7 @@
 
 namespace Gala {
     public int main (string[] args) {
+        TestRunner.register_test (typeof (BarrierTest));
         return TestRunner.run (args);
     }
 }
