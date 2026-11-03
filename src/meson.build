@@ -1,8 +1,7 @@
-gala_bin_sources = files(
+gala_bin_base_sources = files(
     'DBus.vala',
     'InternalUtils.vala',
     'LayoutManager.vala',
-    'Main.vala',
     'PantheonShell.vala',
     'SuperScrollAction.vala',
     'WindowListModel.vala',
@@ -80,6 +79,10 @@ gala_bin_sources = files(
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
+)
+
+gala_bin_sources = gala_bin_base_sources + files(
+    'Main.vala',
 )
 
 gala_bin = executable(
