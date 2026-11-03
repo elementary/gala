@@ -1,4 +1,5 @@
 src_tests = [
+    'BarrierTest',
 ]
 
 src_test_sources = []
