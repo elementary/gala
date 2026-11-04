@@ -25,8 +25,25 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
         "--virtual-monitor", "1280x720@60"
     };
 
+    /*
+     * Vala doesn't have async delegates so this has to match the signature of
+     * an async test method. Then we can just cast the test method to this.
+     */
+    [CCode (instance_pos = 0)]
+    public delegate void AsyncTestMethod (TaskReadyCallback callback);
+
+    private class AsyncTestData {
+        public AsyncTestMethod test_method;
+
+        public AsyncTestData (AsyncTestMethod test_method) {
+            this.test_method = test_method;
+        }
+    }
+
     protected Meta.Context? context { get; private set; }
     protected Clutter.Stage stage { get { return (Clutter.Stage) context.get_backend ().get_stage (); } }
+
+    private HashTable<string, AsyncTestData> async_tests = new HashTable<string, AsyncTestData> (str_hash, str_equal);
 
     private MainLoop? main_loop;
 
@@ -96,5 +113,55 @@ public abstract class Gala.MutterTestCase : Gala.TestCase {
     protected void quit_main_loop () {
         assert_true (main_loop != null);
         main_loop.quit ();
+    }
+
+    /**
+     * Adds an async test method. The method will be called while the main loop
+     * is running and once the method ends the main loop is quit.
+     * Note since vala doesn't allow async delegates you have to cast your async method
+     * to AsyncTestMethod.
+     */
+    protected void add_async_test (string name, AsyncTestMethod test_method) {
+        async_tests[name] = new AsyncTestData (test_method);
+        add_test (name, run_async_test);
+    }
+
+    private void run_async_test () {
+        var path = Test.get_path ();
+        var name = Path.get_basename (path);
+
+        assert_true (async_tests.contains (name));
+        assert_true (main_loop != null);
+        assert_true (!main_loop.is_running ());
+
+        Idle.add (() => {
+            AsyncTestData data = async_tests[name];
+            data.test_method (() => quit_main_loop ());
+            return Source.REMOVE;
+        });
+
+        run_main_loop ();
+    }
+
+    protected async void wait (int milliseconds) {
+        assert_true (main_loop != null);
+        assert_true (main_loop.is_running ());
+
+        Timeout.add_once (milliseconds, () => {
+            wait.callback ();
+        });
+
+        yield;
+    }
+
+    protected async void wait_idle () {
+        assert_true (main_loop != null);
+        assert_true (main_loop.is_running ());
+
+        Idle.add_once (() => {
+            wait_idle.callback ();
+        });
+
+        yield;
     }
 }
