@@ -4,6 +4,7 @@ lib_tests = [
     'PropertyTargetTest',
     'SetupTest',
     'SwipeTriggerTest',
+    'TransitionBuilderTest',
 ]
 
 lib_test_sources = []

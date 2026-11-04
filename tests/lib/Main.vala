@@ -10,6 +10,7 @@ namespace Gala {
         TestRunner.register_test (typeof (PropertyTargetTest));
         TestRunner.register_test (typeof (SetupTest));
         TestRunner.register_test (typeof (SwipeTriggerTest));
+        TestRunner.register_test (typeof (TransitionBuilderTest));
         return TestRunner.run (args);
     }
 }
