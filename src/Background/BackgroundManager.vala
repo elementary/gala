@@ -134,8 +134,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     public new void set_size (float width, float height) {
-        // The actor does not exist yet while the first background is still loading.
-        // The size will be applied by create_background_actor() once it is loaded.
         if (background_actor == null) {
             return;
         }
