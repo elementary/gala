@@ -8,72 +8,74 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-10-10 10:07+0000\n"
-"PO-Revision-Date: 2019-12-16 18:35+0000\n"
-"Last-Translator: Daniel Foré <daniel@elementary.io>\n"
-"Language-Team: Armenian <https://l10n.elementary.io/projects/desktop/gala/hy/"
-">\n"
+"PO-Revision-Date: 2026-11-06 14:04+0000\n"
+"Last-Translator: Davit Yedigaryan <davit.yedigaryan.1993@gmail.com>\n"
+"Language-Team: Armenian <https://l10n.elementaryos.org/projects/desktop/gala/"
+"hy/>\n"
 "Language: hy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.9.1\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Launchpad-Export-Date: 2017-02-21 05:47+0000\n"
 
 #: daemon/OSK/Window/Keyboard/KeyButton.vala:16
 msgid "Unknown Key"
-msgstr ""
+msgstr "Անհայտ ստեղն"
 
 #: daemon/DBus.vala:31 daemon-gtk3/BackgroundMenu.vala:11
 msgid "Change Wallpaper…"
-msgstr ""
+msgstr "Փոխել Ետնանկարը…"
 
 #: daemon/DBus.vala:35 daemon-gtk3/BackgroundMenu.vala:16
 msgid "Display Settings…"
-msgstr ""
+msgstr "Էկրանի կարգավորումներ…"
 
 #: daemon/DBus.vala:41 daemon-gtk3/BackgroundMenu.vala:22
 msgid "System Settings…"
-msgstr ""
+msgstr "Համակարգի կարգավորումներ…"
 
 #: daemon/DBus.vala:152 daemon-gtk3/BackgroundMenu.vala:47
 msgid "Failed to open System Settings"
-msgstr ""
+msgstr "Չհաջողվեց բացել Համակարգի կարգավորումները"
 
 #: daemon/DBus.vala:153 daemon-gtk3/BackgroundMenu.vala:48
 msgid "A handler for the “settings://” URI scheme must be installed."
-msgstr ""
+msgstr "Պետք է տեղադրված լինի «settings://» URI սխեմայի մշակիչ։"
 
 #: data/gala-multitaskingview.desktop.in:3
 #: data/gala-multitaskingview.desktop.in:5
 msgid "Multitasking View"
-msgstr ""
+msgstr "Բազմախնդիր դիտում"
 
 #: data/gala-multitaskingview.desktop.in:4
 msgid "View all open windows and workspaces"
-msgstr ""
+msgstr "Դիտել բոլոր բաց պատուհանները և աշխատանքային տարածքները"
 
 #: data/gala-other.desktop.in:3
 msgid "Other"
-msgstr ""
+msgstr "Այլ"
 
 #: data/gala-other.desktop.in:4
 msgid "Fallback desktop file for notifications from outdated applications."
-msgstr ""
+msgstr "Պահուստային աշխատասեղանի ֆայլ հնացած հավելվածների ծանուցումների համար։"
 
 #: data/gala.metainfo.xml.in:11
 msgid "Multitasking & Window Management"
-msgstr ""
+msgstr "Բազմախնդրություն և պատուհանների կառավարում"
 
 #: data/gala.metainfo.xml.in:12
 msgid "A window & compositing manager for Pantheon"
-msgstr ""
+msgstr "Pantheon-ի պատուհանների և կոմպոզիտային կառավարիչ"
 
 #: data/gala.metainfo.xml.in:14
 msgid ""
 "A window & compositing manager based on libmutter and designed by elementary "
 "for use with Pantheon."
 msgstr ""
+"Պատուհանների և կոմպոզիտային կառավարիչ՝ հիմնված libmutter-ի վրա և elementary-"
+"ի կողմից նախագծված Pantheon-ի հետ օգտագործելու համար։"
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
@@ -97,14 +99,18 @@ msgstr ""
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed the force quit dialog showing after already closing the window"
 msgstr ""
+"Ուղղվել է ստիպողաբար փակելու երկխոսության ցուցադրումը պատուհանը արդեն "
+"փակելուց հետո"
 
 #: data/gala.metainfo.xml.in:35
 msgid "Fixed a crash when dialogs appear on inactive workspaces"
 msgstr ""
+"Ուղղվել է խափանումը, երբ երկխոսություններ են հայտնվում ոչ ակտիվ աշխատանքային "
+"տարածքներում"
 
 #: data/gala.metainfo.xml.in:50
 msgid "Fixed a frequent crash when using the classic session"
-msgstr ""
+msgstr "Ուղղվել է հաճախակի խափանումը դասական աշխատաշրջանն օգտագործելիս"
 
 #: data/gala.metainfo.xml.in:51 data/gala.metainfo.xml.in:68
 #: data/gala.metainfo.xml.in:82 data/gala.metainfo.xml.in:94
@@ -124,35 +130,40 @@ msgstr ""
 #: data/gala.metainfo.xml.in:63
 msgid "Show transient windows over their parents in the multitasking view"
 msgstr ""
+"Բազմախնդիր դիտման մեջ ժամանակավոր պատուհանները ցուցադրվում են իրենց ծնող "
+"պատուհանների վրա"
 
 #: data/gala.metainfo.xml.in:64
 msgid "Added a brand new on screen keyboard for the secure session"
 msgstr ""
+"Անվտանգ աշխատաշրջանի համար ավելացվել է բոլորովին նոր էկրանային ստեղնաշար"
 
 #: data/gala.metainfo.xml.in:65
 msgid "Screenshotting a window now includes open menus"
-msgstr ""
+msgstr "Պատուհանի էկրանի նկարն այժմ ներառում է բաց մենյուները"
 
 #: data/gala.metainfo.xml.in:66
 msgid ""
 "On touchscreens swiping up from the bottom will now open the multitasking "
 "view"
-msgstr ""
+msgstr "Հպէկրանների վրա ներքևից վերև սահեցնելն այժմ կբացի բազմախնդիր դիտումը"
 
 #: data/gala.metainfo.xml.in:67
 msgid ""
 "Fixed various edge cases that could lead to glitches with minimize and "
 "maximize animations"
 msgstr ""
+"Ուղղվել են տարբեր սահմանային դեպքեր, որոնք կարող էին թերություններ առաջացնել "
+"ծալելու և ընդլայնելու անիմացիաներում"
 
 #: data/gala.metainfo.xml.in:81
 msgid "Fixed a frequent crash with multi monitor setups"
-msgstr ""
+msgstr "Ուղղվել է հաճախակի խափանումը մի քանի մոնիտորով կարգավորումների դեպքում"
 
 #: data/gala.metainfo.xml.in:127 data/gala.metainfo.xml.in:147
 #: data/gala.metainfo.xml.in:171
 msgid "Improved HiDPI support"
-msgstr ""
+msgstr "Բարելավվել է HiDPI-ի աջակցությունը"
 
 #: data/gala.metainfo.xml.in:148
 msgid "Improve Reduced Motion behavior"
@@ -160,11 +171,11 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:172
 msgid "Improved render performance"
-msgstr ""
+msgstr "Բարելավվել է պատկերման արագագործությունը"
 
 #: data/gala.metainfo.xml.in:173
 msgid "Reveal dock and panel in sync when starting"
-msgstr ""
+msgstr "Dock-ը և վահանակը գործարկման ժամանակ ցուցադրվում են համաժամանակ"
 
 #: data/gala.metainfo.xml.in:174
 msgid "Improved workspace switch dock animation"
@@ -172,11 +183,11 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:175
 msgid "Picture-in-Picture windows now have rounded corners"
-msgstr ""
+msgstr "«Պատկեր պատկերում» պատուհաններն այժմ ունեն կլորացված անկյուններ"
 
 #: data/gala.metainfo.xml.in:285
 msgid "Window state is now saved on sleep and shutdown"
-msgstr ""
+msgstr "Պատուհանի վիճակն այժմ պահպանվում է քնի և անջատման ժամանակ"
 
 #: data/gala.metainfo.xml.in:286
 msgid "Remove scaling effect from menus"
@@ -184,11 +195,12 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:287
 msgid "Swipe up to close windows in Multitasking View"
-msgstr ""
+msgstr "Սահեցրեք վերև՝ Բազմախնդիր դիտման մեջ պատուհանները փակելու համար"
 
 #: data/gala.metainfo.xml.in:318
 msgid "Fixed rare crash when a dock window was killed"
 msgstr ""
+"Ուղղվել է հազվադեպ խափանումը, երբ Dock-ի պատուհանը ստիպողաբար ավարտվում էր"
 
 #: data/gala.metainfo.xml.in:319
 msgid "Added interactive screenshot shortcut"
@@ -196,45 +208,54 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:320
 msgid "Fixed crash when using tiling shortcuts"
-msgstr ""
+msgstr "Ուղղվել է խափանումը սալիկավորման դյուրանցումներ օգտագործելիս"
 
 #: data/gala.metainfo.xml.in:349
 msgid "Improved shadows performance"
-msgstr ""
+msgstr "Բարելավվել է ստվերների արագագործությունը"
 
 #: data/gala.metainfo.xml.in:393
 msgid "Fix a potential crash when moving windows between workspaces"
 msgstr ""
+"Ուղղվել է հնարավոր խափանումը պատուհանները աշխատանքային տարածքների միջև "
+"տեղափոխելիս"
 
 #: data/gala.metainfo.xml.in:394
 msgid "Fix notification animation when entering multitasking view"
-msgstr ""
+msgstr "Ուղղվել է ծանուցման անիմացիան բազմախնդիր դիտում մտնելիս"
 
 #: data/gala.metainfo.xml.in:409
 msgid "Improve keyboard navigation in Multitasking View"
-msgstr ""
+msgstr "Բարելավվել է ստեղնաշարով նավիգացիան Բազմախնդիր դիտման մեջ"
 
 #: data/gala.metainfo.xml.in:410
 msgid "Change panel color at the same time as wallpaper transition"
-msgstr ""
+msgstr "Վահանակի գույնը փոխվում է Ետնանկարի անցման հետ միաժամանակ"
 
 #: data/gala.metainfo.xml.in:450
 msgid ""
 "Changing the wallpaper or going to sleep respects the \"Reduce Motion\" "
 "option"
 msgstr ""
+"Ետնանկարը փոխելիս կամ քնի անցնելիս հաշվի է առնվում «Նվազեցնել շարժումը» "
+"ընտրանքը"
 
 #: data/gala.metainfo.xml.in:451
 msgid "Use appropriate drag-and-drop pointers when moving windows"
 msgstr ""
+"Պատուհանները տեղափոխելիս օգտագործվում են համապատասխան «քաշել և թողնել» "
+"ցուցիչներ"
 
 #: data/gala.metainfo.xml.in:452
 msgid "Fix the issue when gestures in the multitasking view might stop working"
 msgstr ""
+"Ուղղվել է խնդիրը, երբ բազմախնդիր դիտման ժեստերը կարող էին դադարել աշխատել"
 
 #: data/gala.metainfo.xml.in:453
 msgid "Improve dynamic workspaces behaviour with multiple monitors"
 msgstr ""
+"Բարելավվել է դինամիկ աշխատանքային տարածքների վարքը մի քանի մոնիտորների "
+"դեպքում"
 
 #: data/gala.metainfo.xml.in:475
 msgid "Improve handling of move-to-workspace shortcut"
@@ -243,51 +264,53 @@ msgstr ""
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
 msgid "Unknown"
-msgstr ""
+msgstr "Անհայտ"
 
 #: src/Dialogs/CloseDialog.vala:25
 #, c-format
 msgid "“%s” is not responding"
-msgstr ""
+msgstr "«%s»-ը չի արձագանքում"
 
 #: src/Dialogs/CloseDialog.vala:27
 msgid "Application is not responding"
-msgstr ""
+msgstr "Հավելվածը չի արձագանքում"
 
 #: src/Dialogs/CloseDialog.vala:30
 msgid ""
 "You may choose to wait a short while for the application to continue, or "
 "force it to quit entirely."
 msgstr ""
+"Կարող եք մի փոքր սպասել, որ հավելվածը շարունակի աշխատել, կամ ստիպողաբար "
+"փակել այն։"
 
 #: src/Dialogs/CloseDialog.vala:31
 msgid "Force Quit"
-msgstr ""
+msgstr "Ստիպողաբար փակել"
 
 #: src/Dialogs/CloseDialog.vala:32
 msgid "Wait"
-msgstr ""
+msgstr "Սպասել"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:23
 #, c-format
 msgid "“%s” wants to inhibit system shortcuts"
-msgstr ""
+msgstr "«%s»-ը ցանկանում է արգելափակել համակարգային դյուրանցումները"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:25
 msgid "An application wants to inhibit system shortcuts"
-msgstr ""
+msgstr "Հավելվածը ցանկանում է արգելափակել համակարգային դյուրանցումները"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:28
 msgid "All system shortcuts will be redirected to the application."
-msgstr ""
+msgstr "Բոլոր համակարգային դյուրանցումները կվերահասցեագրվեն հավելվածին։"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:29
 msgid "Allow"
-msgstr ""
+msgstr "Թույլատրել"
 
 #: src/Dialogs/InhibitShortcutsDialog.vala:30
 msgid "Deny"
-msgstr ""
+msgstr "Մերժել"
 
 #: src/Misc/DesktopIntegration.vala:213
 msgid "Window has already focus"
@@ -297,73 +320,73 @@ msgstr ""
 #: src/Misc/ScreenshotManager.vala:127
 #, c-format
 msgid "Screenshot from %s"
-msgstr ""
+msgstr "Էկրանի նկար %s-ից"
 
 #. / TRANSLATORS: %s represents a name of file manager
 #: src/Misc/ScreenshotManager.vala:192
 #, c-format
 msgid "Show in %s"
-msgstr ""
+msgstr "Ցուցադրել %s-ում"
 
 #: src/Misc/ScreenshotManager.vala:199 src/Misc/ScreenshotManager.vala:674
 msgid "Screenshot taken"
-msgstr ""
+msgstr "Էկրանի նկարն արված է"
 
 #: src/Misc/ScreenshotManager.vala:200
 msgid "Screenshot is saved to clipboard"
-msgstr ""
+msgstr "Էկրանի նկարը պահպանվել է Սեղմատախտակում"
 
 #: src/Misc/ScreenshotManager.vala:200
 msgid "Screenshot saved to screenshots folder"
-msgstr ""
+msgstr "Էկրանի նկարը պահպանվել է էկրանի նկարների պանակում"
 
 #: src/Misc/ScreenshotManager.vala:589
 msgid "Screenshots"
-msgstr ""
+msgstr "Էկրանի նկարներ"
 
 #: src/Misc/WindowMenuManager.vala:91
 msgid "Take Screenshot"
-msgstr ""
+msgstr "Անել էկրանի նկար"
 
 #: src/Misc/WindowMenuManager.vala:97
 msgid "Always on Top"
-msgstr ""
+msgstr "Միշտ վերևում"
 
 #: src/Misc/WindowMenuManager.vala:99
 msgid "Show on all Workspaces"
-msgstr ""
+msgstr "Ցուցադրել բոլոր աշխատանքային տարածքներում"
 
 #: src/Misc/WindowMenuManager.vala:101
 msgid "Move to Workspace Left"
-msgstr ""
+msgstr "Տեղափոխել ձախ աշխատանքային տարածք"
 
 #: src/Misc/WindowMenuManager.vala:103
 msgid "Move to Workspace Right"
-msgstr ""
+msgstr "Տեղափոխել աջ աշխատանքային տարածք"
 
 #: src/Misc/WindowMenuManager.vala:115
 msgid "Move"
-msgstr ""
+msgstr "Տեղափոխել"
 
 #: src/Misc/WindowMenuManager.vala:121
 msgid "Resize"
-msgstr ""
+msgstr "Փոխել չափը"
 
 #: src/Misc/WindowMenuManager.vala:127
 msgid "Maximize"
-msgstr ""
+msgstr "Ընդլայնել"
 
 #: src/Misc/WindowMenuManager.vala:131
 msgid "Untile"
-msgstr ""
+msgstr "Չեղարկել սալիկավորումը"
 
 #: src/Misc/WindowMenuManager.vala:131
 msgid "Unmaximize"
-msgstr ""
+msgstr "Վերականգնել չափը"
 
 #: src/Misc/WindowMenuManager.vala:142
 msgid "Minimize"
-msgstr ""
+msgstr "Ծալել"
 
 #: src/Misc/WindowMenuManager.vala:148
 msgid "Close"
@@ -371,26 +394,28 @@ msgstr "Փակել"
 
 #: src/Widgets/WindowSwitcher/WindowSwitcher.vala:57
 msgid "Window switcher"
-msgstr ""
+msgstr "Պատուհանների փոխարկիչ"
 
 #: src/WindowManager.vala:1305
 #, c-format
 msgid "Changes will automatically revert after %i second."
 msgid_plural "Changes will automatically revert after %i seconds."
 msgstr[0] ""
+"Փոփոխությունները ավտոմատ կերպով կվերադարձվեն նախկին վիճակին %i վայրկյանից։"
 msgstr[1] ""
+"Փոփոխությունները ավտոմատ կերպով կվերադարձվեն նախկին վիճակին %i վայրկյանից։"
 
 #: src/WindowManager.vala:1312
 msgid "Keep new display settings?"
-msgstr ""
+msgstr "Պահպանե՞լ էկրանի նոր կարգավորումները։"
 
 #: src/WindowManager.vala:1316
 msgid "Keep Settings"
-msgstr ""
+msgstr "Պահպանել կարգավորումները"
 
 #: src/WindowManager.vala:1317
 msgid "Use Previous Settings"
-msgstr ""
+msgstr "Օգտագործել նախորդ կարգավորումները"
 
 #~ msgid "Keep This Configuration"
 #~ msgstr "Պահել այս կարգավորումը"
