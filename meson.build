@@ -8,6 +8,7 @@ project('gala',
     ],
 )
 
+fs = import('fs')
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
