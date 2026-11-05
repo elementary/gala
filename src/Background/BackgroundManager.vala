@@ -113,7 +113,6 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             background.set_data<ulong> ("background-loaded-handler", 0);
 
             // Another update may have replaced this actor while the background was loading.
-            // Swapping a stale actor in would leave new_background_actor null and break the swap.
             if (new_background_actor != actor) {
                 return;
             }
