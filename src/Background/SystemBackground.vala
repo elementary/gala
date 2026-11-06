@@ -13,7 +13,7 @@ public class Gala.SystemBackground : GLib.Object {
 
     construct {
         var system_background = new Meta.Background (background_actor.meta_display);
-        system_background.set_color ({ 0x2e, 0x34, 0x36, 0xff });
+        system_background.set_color ({ 0, 0, 0, 0xff });
 
         ((Meta.BackgroundContent) background_actor.content).background = system_background;
     }
