@@ -105,6 +105,8 @@ public class Gala.LayoutManager : Object {
     }
 
     public void init_ui (WindowManager wm) {
+        window_group.add_child (new WindowMaximizer (wm));
+
         multitasking_view = new MultitaskingView (wm);
         ui_group.add_child (multitasking_view);
 

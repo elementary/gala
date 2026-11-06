@@ -72,6 +72,11 @@ private class Gala.GestureSettings : Object {
                         fingers == 4 && four_finger_swipe_up == "multitasking-view") {
                         return MULTITASKING_VIEW;
                     }
+
+                    if (fingers == 3 && three_finger_swipe_up == "toggle-maximized" ||
+                        fingers == 4 && four_finger_swipe_up == "toggle-maximized") {
+                        return TOGGLE_MAXIMIZED;
+                    }
                 }
                 break;
 

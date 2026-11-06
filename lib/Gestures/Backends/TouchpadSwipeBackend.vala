@@ -28,6 +28,8 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     private double distance_y = 0;
     private double distance = 0;
 
+    private static bool handling = false;
+
     public TouchpadSwipeBackend (Clutter.Actor actor) {
         Object (actor: actor);
     }
@@ -58,7 +60,7 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     }
 
     private bool handle_event (Clutter.Event event, bool main_handler) {
-        if (event.get_type () != TOUCHPAD_SWIPE) {
+        if (event.get_type () != TOUCHPAD_SWIPE || handling && state != ONGOING) {
             return Clutter.EVENT_PROPAGATE;
         }
 
@@ -109,6 +111,7 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
             }
 
             state = ONGOING;
+            handling = true;
             on_begin (0, event.get_time ());
         } else if (main_handler) {
             foreach (var other_backend in grouped_with) {
@@ -145,6 +148,7 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
         direction = UNKNOWN;
         distance_x = 0;
         distance_y = 0;
+        handling = false;
     }
 
     private double get_percentage (double value) {
