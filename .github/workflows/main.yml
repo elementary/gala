@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Install Dependencies
         run: |
-          dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel ibus-devel libhandy-devel mutter-devel sqlite-devel meson valac valadoc
+          dnf install -y desktop-file-utils gettext gsettings-desktop-schemas-devel atk-devel clutter-devel libgee-devel glib2-devel gnome-desktop3-devel granite-devel granite-7-devel gtk3-devel gtk4-devel ibus-devel libhandy-devel mutter-devel sqlite-devel meson valac valadoc glycin-devel
       - name: Build
         env:
           DESTDIR: out
@@ -113,4 +113,3 @@ jobs:
 
       - name: Check POTFILES
         run: bash .github/workflows/check-potfiles.sh
-
