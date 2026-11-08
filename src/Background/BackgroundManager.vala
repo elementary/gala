@@ -106,10 +106,16 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
             return;
         }
 
+        var actor = new_background_actor;
         ulong handler = 0;
         handler = background.loaded.connect (() => {
             background.disconnect (handler);
             background.set_data<ulong> ("background-loaded-handler", 0);
+
+            // Another update may have replaced this actor while the background was loading.
+            if (new_background_actor != actor) {
+                return;
+            }
 
             if (rounded_corners) {
                 var monitor_geometry = display.get_monitor_geometry (monitor_index);
@@ -128,6 +134,10 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     }
 
     public new void set_size (float width, float height) {
+        if (background_actor == null) {
+            return;
+        }
+
         if (width != background_actor.width || height != background_actor.height) {
             update_background_actor (false);
         }
