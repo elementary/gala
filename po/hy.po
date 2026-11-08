@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gala\n"
 "Report-Msgid-Bugs-To: https://github.com/elementary/gala/issues\n"
 "POT-Creation-Date: 2026-10-10 10:07+0000\n"
-"PO-Revision-Date: 2026-11-06 14:04+0000\n"
+"PO-Revision-Date: 2026-11-09 21:04+0000\n"
 "Last-Translator: Davit Yedigaryan <davit.yedigaryan.1993@gmail.com>\n"
 "Language-Team: Armenian <https://l10n.elementaryos.org/projects/desktop/gala/"
 "hy/>\n"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:24
 msgid "elementary, Inc."
-msgstr ""
+msgstr "elementary, Inc."
 
 #: data/gala.metainfo.xml.in:32 data/gala.metainfo.xml.in:48
 #: data/gala.metainfo.xml.in:61 data/gala.metainfo.xml.in:79
@@ -94,7 +94,7 @@ msgstr ""
 #: data/gala.metainfo.xml.in:407 data/gala.metainfo.xml.in:448
 #: data/gala.metainfo.xml.in:473 data/gala.metainfo.xml.in:489
 msgid "Improvements:"
-msgstr ""
+msgstr "Բարելավումներ՝"
 
 #: data/gala.metainfo.xml.in:34
 msgid "Fixed the force quit dialog showing after already closing the window"
@@ -125,7 +125,7 @@ msgstr "Ուղղվել է հաճախակի խափանումը դասական ա�
 #: data/gala.metainfo.xml.in:454 data/gala.metainfo.xml.in:476
 #: data/gala.metainfo.xml.in:491
 msgid "Updated translations"
-msgstr ""
+msgstr "Թարմացված թարգմանություններ"
 
 #: data/gala.metainfo.xml.in:63
 msgid "Show transient windows over their parents in the multitasking view"
@@ -167,7 +167,7 @@ msgstr "Բարելավվել է HiDPI-ի աջակցությունը"
 
 #: data/gala.metainfo.xml.in:148
 msgid "Improve Reduced Motion behavior"
-msgstr ""
+msgstr "Բարելավվել է «Նվազեցված շարժում» գործառույթի աշխատանքը"
 
 #: data/gala.metainfo.xml.in:172
 msgid "Improved render performance"
@@ -179,7 +179,7 @@ msgstr "Dock-ը և վահանակը գործարկման ժամանակ ցուց
 
 #: data/gala.metainfo.xml.in:174
 msgid "Improved workspace switch dock animation"
-msgstr ""
+msgstr "Բարելավվել է աշխատանքային տարածքների փոխարկման Dock-ի անիմացիան"
 
 #: data/gala.metainfo.xml.in:175
 msgid "Picture-in-Picture windows now have rounded corners"
@@ -191,7 +191,7 @@ msgstr "Պատուհանի վիճակն այժմ պահպանվում է քնի 
 
 #: data/gala.metainfo.xml.in:286
 msgid "Remove scaling effect from menus"
-msgstr ""
+msgstr "Ցանկերից հեռացվել է մասշտաբավորման էֆեկտը"
 
 #: data/gala.metainfo.xml.in:287
 msgid "Swipe up to close windows in Multitasking View"
@@ -204,7 +204,7 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:319
 msgid "Added interactive screenshot shortcut"
-msgstr ""
+msgstr "Ավելացվել է էկրանի նկարի ինտերակտիվ դյուրանցում"
 
 #: data/gala.metainfo.xml.in:320
 msgid "Fixed crash when using tiling shortcuts"
@@ -259,7 +259,7 @@ msgstr ""
 
 #: data/gala.metainfo.xml.in:475
 msgid "Improve handling of move-to-workspace shortcut"
-msgstr ""
+msgstr "Բարելավվել է աշխատանքային տարածք տեղափոխելու դյուրանցման մշակումը"
 
 #: lib/AppSystem/App.vala:51
 msgctxt "program"
@@ -314,7 +314,7 @@ msgstr "Մերժել"
 
 #: src/Misc/DesktopIntegration.vala:213
 msgid "Window has already focus"
-msgstr ""
+msgstr "Պատուհանն արդեն ֆոկուսում է"
 
 #. / TRANSLATORS: %s represents a timestamp here
 #: src/Misc/ScreenshotManager.vala:127
