@@ -39,6 +39,7 @@ jobs:
       env:
         DESTDIR: out
       run: |
+        git config --global --add safe.directory "$(pwd)"
         meson build -Ddocumentation=true -Dtests=true
         ninja -C build
         ninja -C build install
@@ -81,6 +82,7 @@ jobs:
         env:
           DESTDIR: out
         run: |
+          git config --global --add safe.directory "$(pwd)"
           meson build
           ninja -C build install
 
