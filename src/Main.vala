@@ -99,6 +99,9 @@ namespace Gala {
 
         WindowStateSaver.on_shutdown ();
 
+        var shutdown_curtain = new Gala.ShutdownCurtain (ctx);
+        shutdown_curtain.animate ();
+
         return Posix.EXIT_SUCCESS;
     }
 }
