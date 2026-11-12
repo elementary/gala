@@ -17,7 +17,7 @@ public class Gala.SessionManager : Object {
         public signal void canceled ();
         public signal void closed ();
 
-        public abstract void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError;
+        public abstract async void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError;
     }
 
     private static SessionManager? instance;
@@ -69,11 +69,11 @@ public class Gala.SessionManager : Object {
         proxy = null;
     }
 
-    public void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
+    public async void open (uint type, uint timestamp, uint open_length, ObjectPath[] inhibiters) throws DBusError, IOError {
         if (proxy == null) {
             throw new DBusError.FAILED ("io.elementary.wingpanel.session.EndSessionDialog DBus interface is not registered.");
         }
 
-        proxy.open (type, timestamp, open_length, inhibiters);
+        yield proxy.open (type, timestamp, open_length, inhibiters);
     }
 }
