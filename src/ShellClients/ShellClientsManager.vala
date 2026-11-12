@@ -197,6 +197,10 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             return;
         }
 
+#if HAS_MUTTER50
+        window.set_type (DOCK);
+#endif
+
         monitor_label_windows[window] = new MonitorLabelWindow (window, monitor_index);
 
         wm.override_window_group (window, DESKTOP_SHELL);
