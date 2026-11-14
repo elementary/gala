@@ -106,6 +106,8 @@ namespace Gala {
 
         private Gee.Map<Meta.Window, WindowGroup> overridden_window_group = new Gee.HashMap<Meta.Window, WindowGroup> ();
 
+        private bool display_closing = false;
+
         construct {
             behavior_settings = new GLib.Settings ("io.elementary.desktop.wm.behavior");
 
@@ -114,6 +116,10 @@ namespace Gala {
         }
 
         public override void start () {
+            get_display ().closing.connect (() => {
+                display_closing = true;
+            });
+
             input_method = new InputMethod (get_display ());
 #if HAS_MUTTER47
             Utils.get_clutter_backend_from_display (get_display ()).set_input_method (input_method);
@@ -484,6 +490,10 @@ namespace Gala {
         public void pop_modal (ModalProxy proxy) {
             if (!modal_stack.remove (proxy)) {
                 warning ("Attempted to remove a modal proxy that was not in the stack");
+                return;
+            }
+
+            if (display_closing) {
                 return;
             }
 
