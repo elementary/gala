@@ -29,8 +29,6 @@ private class Gala.FramedBackground : BackgroundManager {
         pipeline = new Cogl.Pipeline (ctx);
 
         add_effect (new ShadowEffect ("workspace", Utils.get_ui_scaling_factor (display, display.get_primary_monitor ())));
-
-        reactive = true;
     }
 
     public override void paint (Clutter.PaintContext context) {
@@ -110,7 +108,7 @@ public class Gala.WorkspaceClone : Widget {
 
     public WindowCloneContainer window_container { get; private set; }
 
-    private BackgroundManager background;
+    private Clutter.Actor background_container;
     private WindowListModel windows;
     private uint hover_activate_timeout = 0;
 
@@ -125,8 +123,10 @@ public class Gala.WorkspaceClone : Widget {
 
         var background_click_action = new Clutter.ClickGesture ();
         background_click_action.recognize.connect (() => activate (true));
-        background = new FramedBackground (display);
-        background.add_action (background_click_action);
+        background_container = new Clutter.Actor () {
+            reactive = true,
+        };
+        background_container.add_action (background_click_action);
 
         windows = new WindowListModel (display, STACKING, true, true, display.get_primary_monitor (), workspace);
 
@@ -138,7 +138,7 @@ public class Gala.WorkspaceClone : Widget {
         bind_property ("monitor-scale", window_container, "monitor-scale");
 
         var background_drop_action = new DragDropAction (DragDropActionType.DESTINATION, "multitaskingview-window");
-        background.add_action (background_drop_action);
+        background_container.add_action (background_drop_action);
         background_drop_action.crossed.connect ((target, hovered) => {
             if (!hovered && hover_activate_timeout != 0) {
                 Source.remove (hover_activate_timeout);
@@ -157,18 +157,20 @@ public class Gala.WorkspaceClone : Widget {
             }
         });
 
-        add_child (background);
+        add_child (background_container);
         add_child (window_container);
 
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (update_background);
         monitor_manager.monitors_changed.connect (update_targets);
         notify["monitor-scale"].connect (update_targets);
+        update_background ();
         update_targets ();
     }
 
-    ~WorkspaceClone () {
-        background.destroy ();
-        window_container.destroy ();
+    private void update_background () {
+        background_container.remove_all_children ();
+        background_container.add_child (new FramedBackground (wm.get_display ()));
     }
 
     private void update_targets () {
@@ -182,20 +184,20 @@ public class Gala.WorkspaceClone : Widget {
         var monitor = display.get_monitor_geometry (primary);
 
         window_container.set_size (monitor.width, monitor.height);
-        background.set_size (monitor.width, monitor.height);
+        background_container.set_size (monitor.width, monitor.height);
 
         monitor_scale = Utils.get_ui_scaling_factor (display, primary);
 
         var scale = (float)(monitor.height - Utils.scale_to_int (TOP_OFFSET + BOTTOM_OFFSET, monitor_scale)) / monitor.height;
         var pivot_y = Utils.scale_to_int (TOP_OFFSET, monitor_scale) / (monitor.height - monitor.height * scale);
-        background.set_pivot_point (0.5f, pivot_y);
+        background_container.set_pivot_point (0.5f, pivot_y);
 
         var initial_width = monitor.width;
         var target_width = monitor.width * scale + WorkspaceRow.WORKSPACE_GAP * 2;
 
         add_target (new PropertyTarget (MULTITASKING_VIEW, this, "width", typeof (float), (float) initial_width, (float) target_width));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-x", typeof (double), 1d, (double) scale));
-        add_target (new PropertyTarget (MULTITASKING_VIEW, background, "scale-y", typeof (double), 1d, (double) scale));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background_container, "scale-x", typeof (double), 1d, (double) scale));
+        add_target (new PropertyTarget (MULTITASKING_VIEW, background_container, "scale-y", typeof (double), 1d, (double) scale));
 
         window_container.padding_top = Utils.scale_to_int (TOP_OFFSET, monitor_scale);
         window_container.padding_left = window_container.padding_right = (int) (monitor.width - monitor.width * scale) / 2;
