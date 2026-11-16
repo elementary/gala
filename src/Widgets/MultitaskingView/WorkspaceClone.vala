@@ -9,6 +9,7 @@
  */
 private class Gala.FramedBackground : BackgroundManager {
     private Cogl.Pipeline pipeline;
+    private ShadowEffect shadow_effect;
     private Cairo.ImageSurface cached_surface;
     private Cairo.Context cached_context;
     private Cogl.Texture2D cached_texture;
@@ -32,9 +33,29 @@ private class Gala.FramedBackground : BackgroundManager {
 #endif
         pipeline = new Cogl.Pipeline (ctx);
 
-        add_effect (new ShadowEffect ("workspace", Utils.get_ui_scaling_factor (display, display.get_primary_monitor ())));
+        shadow_effect = new ShadowEffect ("workspace", Utils.get_ui_scaling_factor (display, display.get_primary_monitor ()));
+        add_effect (shadow_effect);
 
         reactive = true;
+
+        // monitor_index is captured at construction, keep following the primary
+        // monitor so we never look up the geometry of a monitor that is gone.
+        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.connect (on_monitors_changed);
+    }
+
+    ~FramedBackground () {
+        unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
+        monitor_manager.monitors_changed.disconnect (on_monitors_changed);
+    }
+
+    private void on_monitors_changed () {
+        var primary = display.get_primary_monitor ();
+        shadow_effect.monitor_scale = Utils.get_ui_scaling_factor (display, primary);
+
+        if (monitor_index != primary) {
+            monitor_index = primary;
+        }
     }
 
     public override void paint (Clutter.PaintContext context) {

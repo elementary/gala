@@ -6,6 +6,7 @@
 
 public class Gala.ShadowEffect : Clutter.Effect {
     private const float INITIAL_OPACITY = 0.25f;
+    private const int MAX_TEXTURE_SIZE = 16384;
 
     private class Shadow {
         public int users;
@@ -114,8 +115,19 @@ public class Gala.ShadowEffect : Clutter.Effect {
         var bounding_box = get_bounding_box ();
         var width = (int) (bounding_box.x2 - bounding_box.x1);
         var height = (int) (bounding_box.y2 - bounding_box.y1);
+        var scaled_shadow_size = Utils.scale_to_int (shadow_size, monitor_scale);
+        var scaled_border_radius = Utils.scale_to_int (border_radius, monitor_scale);
 
-        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, Utils.scale_to_int (shadow_size, monitor_scale), Utils.scale_to_int (border_radius, monitor_scale));
+        // get_shadow_texture () allocates width * height bytes and its corner loops
+        // assume the texture fits two full corners. A bogus actor size (e.g. from an
+        // invalid monitor geometry) would otherwise crash the compositor.
+        var min_size = 2 * (scaled_shadow_size + scaled_border_radius);
+        if (width < min_size || height < min_size || width > MAX_TEXTURE_SIZE || height > MAX_TEXTURE_SIZE) {
+            actor.continue_paint (context);
+            return;
+        }
+
+        var shadow = get_shadow (context.get_framebuffer ().get_context (), width, height, scaled_shadow_size, scaled_border_radius);
         if (shadow != null) {
             pipeline.set_layer_texture (0, shadow);
         }

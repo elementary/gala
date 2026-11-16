@@ -11,7 +11,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
     public signal void changed ();
 
     public Meta.Display display { get; construct; }
-    public int monitor_index { get; construct; }
+    public int monitor_index { get; construct set; }
     public bool control_position { get; construct; }
     public bool rounded_corners { get; construct; }
     public Meta.BackgroundActor newest_background_actor {
@@ -32,7 +32,42 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         background_source = BackgroundCache.get_default ().get_background_source (display);
         update_background_actor (false);
 
+        notify["monitor-index"].connect (() => update_background_actor (false));
         destroy.connect (on_destroy);
+    }
+
+    /**
+     * The monitor layout can change after construction (e.g. a laptop lid being
+     * closed) leaving #monitor_index pointing at a monitor that no longer exists.
+     * Mutter then leaves the out rect uninitialized, so never use it in that case.
+     */
+    private bool get_monitor_geometry (out Mtk.Rectangle geometry) {
+        if (monitor_index < 0 || monitor_index >= display.get_n_monitors ()) {
+            geometry = { 0, 0, 0, 0 };
+            return false;
+        }
+
+        geometry = display.get_monitor_geometry (monitor_index);
+        return true;
+    }
+
+    private void set_rounded_clip (Meta.BackgroundContent content) {
+        if (!rounded_corners) {
+            return;
+        }
+
+        Mtk.Rectangle monitor_geometry;
+        if (!get_monitor_geometry (out monitor_geometry)) {
+            return;
+        }
+
+        var clip_bounds = Graphene.Rect () {
+            origin = {0, 0},
+            size = {monitor_geometry.width, monitor_geometry.height},
+        };
+
+        content.set_rounded_clip_bounds (clip_bounds);
+        content.rounded_clip_radius = Utils.scale_to_int (6, Utils.get_ui_scaling_factor (display, monitor_index));
     }
 
     private void on_destroy () {
@@ -91,17 +126,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         var background = new_content.background.get_data<unowned Background> ("delegate");
 
         if (background.is_loaded) {
-            if (rounded_corners) {
-                var monitor_geometry = display.get_monitor_geometry (monitor_index);
-                var clip_bounds = Graphene.Rect () {
-                    origin = {0, 0},
-                    size = {monitor_geometry.width, monitor_geometry.height},
-                };
-
-                new_content.set_rounded_clip_bounds (clip_bounds);
-                new_content.rounded_clip_radius = Utils.scale_to_int (6, Utils.get_ui_scaling_factor (display, monitor_index));
-            }
-
+            set_rounded_clip (new_content);
             swap_background_actor (animate);
             return;
         }
@@ -117,17 +142,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
                 return;
             }
 
-            if (rounded_corners) {
-                var monitor_geometry = display.get_monitor_geometry (monitor_index);
-                var clip_bounds = Graphene.Rect () {
-                    origin = {0, 0},
-                    size = {monitor_geometry.width, monitor_geometry.height},
-                };
-
-                new_content.set_rounded_clip_bounds (clip_bounds);
-                new_content.rounded_clip_radius = Utils.scale_to_int (6, Utils.get_ui_scaling_factor (display, monitor_index));
-            }
-
+            set_rounded_clip (new_content);
             swap_background_actor (animate);
         });
         background.set_data<ulong> ("background-loaded-handler", handler);
@@ -150,7 +165,8 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
         unowned var content = (Meta.BackgroundContent) background_actor.content;
         content.background = background.background;
 
-        var monitor = display.get_monitor_geometry (monitor_index);
+        Mtk.Rectangle monitor;
+        var monitor_valid = get_monitor_geometry (out monitor);
 
         if (background_source.should_dim) {
             content.vignette = true;
@@ -161,7 +177,7 @@ public class Gala.BackgroundManager : Meta.BackgroundGroup, Gala.BackgroundManag
 
         background_actor.set_size (monitor.width, monitor.height);
 
-        if (control_position) {
+        if (control_position && monitor_valid) {
             background_actor.set_position (monitor.x, monitor.y);
         }
 
