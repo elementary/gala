@@ -6,6 +6,7 @@
 
 public class Gala.ShadowEffect : Clutter.Effect {
     private const float INITIAL_OPACITY = 0.25f;
+    // Common GPU max texture size; also keeps width * height well below int overflow.
     private const int MAX_TEXTURE_SIZE = 16384;
 
     private class Shadow {
