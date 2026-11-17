@@ -127,6 +127,10 @@ namespace Gala {
 
             show_stage ();
 
+            get_display ().closing.connect (() => {
+                ui_group.destroy ();
+            });
+
             init_a11y ();
 
             AccessDialog.watch_portal ();
