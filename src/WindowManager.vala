@@ -53,11 +53,6 @@ namespace Gala {
          */
         public Clutter.Actor top_window_group { get; protected set; }
 
-        /**
-         * {@inheritDoc}
-         */
-        public Meta.BackgroundGroup background_group { get; protected set; }
-
         private LayoutManager layout_manager;
 
         public ScreenSaverManager? screensaver { get; private set; }
@@ -201,7 +196,6 @@ namespace Gala {
             ui_group = layout_manager.ui_group;
             window_group = layout_manager.window_group;
             top_window_group = layout_manager.top_window_group;
-            background_group = layout_manager.background_group;
 
             // Initialize plugins. The layout manager will get overridden components from the
             // plugin manager

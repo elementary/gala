@@ -264,7 +264,6 @@ public class Gala.MultitaskingView : Root, RootTarget {
         if (!visible) {
             opened = true;
 
-            wm.background_group.hide ();
             wm.window_group.hide ();
             wm.top_window_group.hide ();
             show ();
@@ -333,7 +332,6 @@ public class Gala.MultitaskingView : Root, RootTarget {
 
     public override void end_progress (GestureAction action) {
         if (!opened && !animating) {
-            wm.background_group.show ();
             wm.window_group.show ();
             wm.top_window_group.show ();
             hide ();

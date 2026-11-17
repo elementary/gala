@@ -102,11 +102,6 @@ namespace Gala {
         public abstract Clutter.Actor top_window_group { get; protected set; }
 
         /**
-         * The background group is a container for the background actors forming the wallpaper
-         */
-        public abstract Meta.BackgroundGroup background_group { get; protected set; }
-
-        /**
          * Enters the modal mode, which will block keybindings and gestures. See {@link ModalProxy} for
          * how to allow certain gestures and keybindings.
          * If {@link grab} is true all events will be redirected to the given {@link Clutter.Actor}.

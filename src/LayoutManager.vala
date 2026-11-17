@@ -12,7 +12,6 @@ public class Gala.LayoutManager : Object {
     public Clutter.Stage stage { get; private set; }
     public Clutter.Actor ui_group { get; private set; }
     public Clutter.Actor window_group { get; private set; }
-    public Meta.BackgroundGroup background_group { get; private set; }
     public Clutter.Actor top_window_group { get; private set; }
 
     public MultitaskingView multitasking_view { get; private set; }
@@ -38,7 +37,6 @@ public class Gala.LayoutManager : Object {
          * + system background
          * + ui group
          * +-- window group
-         * +---- background manager
          * +-- top window group
          * +-- multitasking view
          * +-- window switcher
@@ -89,11 +87,6 @@ public class Gala.LayoutManager : Object {
 #endif
         stage.remove_child (window_group);
         ui_group.add_child (window_group);
-
-        background_group = new BackgroundContainer (display);
-        ((BackgroundContainer)background_group).show_background_menu.connect (daemon_manager.show_background_menu);
-        window_group.add_child (background_group);
-        window_group.set_child_below_sibling (background_group, null);
 
 #if HAS_MUTTER48
         top_window_group = display.get_compositor ().get_top_window_group ();
