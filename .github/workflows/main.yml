@@ -48,6 +48,8 @@ jobs:
 
   fedora:
     runs-on: ubuntu-latest
+    # Temporary disable this job until granite is in the repos again
+    if: false
 
     container:
       image: fedora:latest
