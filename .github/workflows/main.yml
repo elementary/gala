@@ -84,6 +84,24 @@ jobs:
           meson build
           ninja -C build install
 
+  open-suse-tumbleweed:
+    runs-on: ubuntu-latest
+
+    container:
+      image: opensuse/tumbleweed:latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          zypper --non-interactive install tar git desktop-file-utils gsettings-desktop-schemas-devel libatk-1_0-0 clutter-devel libgee-devel libglycin-devel glib2-devel libgnome-desktop-4-devel granite-devel gtk4-devel ibus-devel mutter-devel sqlite3-devel meson vala valadoc gcc
+      - uses: actions/checkout@v7
+      - name: Build
+        env:
+          DESTDIR: out
+        run: |
+          meson build
+          ninja -C build install
+
   lint:
     runs-on: ubuntu-latest
 
