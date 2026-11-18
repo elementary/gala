@@ -75,10 +75,12 @@ gala_bin_base_sources = files(
     'Widgets/PixelPicker.vala',
     'Widgets/PointerLocator.vala',
     'Widgets/SessionLocker.vala',
+    'Widgets/Curtains/ShutdownCurtain.vala',
     'Widgets/SelectionArea.vala',
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
+    'Curtains/TVEffect.vala'
 )
 
 gala_bin_sources = gala_bin_base_sources + files(
