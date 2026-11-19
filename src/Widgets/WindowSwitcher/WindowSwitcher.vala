@@ -59,6 +59,10 @@ public class Gala.WindowSwitcher : AbstractSwitcher, GestureTarget, RootTarget {
         container.button_release_event.connect (container_mouse_release);
     }
 
+    public double get_distance (GestureAction action) {
+        return wm.get_display ().get_monitor_geometry (wm.get_display ().get_current_monitor ()).width;
+    }
+
     public void propagate (GestureTarget.UpdateType update_type, GestureAction action, double progress) {
         if (update_type != UPDATE || container.get_n_children () == 0) {
             return;

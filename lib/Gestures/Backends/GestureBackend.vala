@@ -6,10 +6,15 @@
  */
 
 private interface Gala.GestureBackend : Object {
+    public enum Unit {
+        PIXELS,
+        PERCENTAGE
+    }
+
     public signal bool on_gesture_detected (Gesture gesture, uint32 timestamp);
-    public signal void on_begin (double percentage, uint64 time);
-    public signal void on_update (double percentage, uint64 time);
-    public signal void on_end (double percentage, uint64 time);
+    public signal void on_begin (Unit unit, double value, uint64 time);
+    public signal void on_update (Unit unit, double value, uint64 time);
+    public signal void on_end (Unit unit, double value, uint64 time);
 
     /**
      * The gesture should be cancelled. The implementation should stop emitting

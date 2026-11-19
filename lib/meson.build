@@ -24,6 +24,7 @@ gala_lib_sources = files(
     'Gestures/Backends/ToucheggBackend.vala',
     'Gestures/Backends/TouchpadPinchBackend.vala',
     'Gestures/Backends/TouchpadSwipeBackend.vala',
+    'Gestures/Backends/TouchScreenSwipeBackend.vala',
     'Gestures/Backends/ScrollBackend.vala',
     'Gestures/Targets/ActorTarget.vala',
     'Gestures/Targets/GestureTarget.vala',

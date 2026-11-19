@@ -40,15 +40,13 @@ To install, run `ninja install`, then based on your session type do the followin
 
 ### Running the tests
 
-First make sure you include the tests in your build. In the build directory, use `meson configure`
+First make sure you include the tests in your build. To build the tests you will need the mutter test dependency `mutter-(API version)-tests`. Then in the build directory, use `meson configure`
 
     meson configure -Dtests=true
 
-To run the tests you have to be a user (so no `sudo`). In order for the test environment
-to be somewhat isolated and not clash with your running mutter based compositor use
-`dbus-run-session`. In the build directory run
+To run the test use
 
-    dbus-run-session -- meson test
+    meson test
 
 In order to run the tests even while another compositor is running the test environment
 uses `wayland-1` instead of the default `wayland-0` as the name for the wayland display

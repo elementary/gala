@@ -1,8 +1,7 @@
-gala_bin_sources = files(
+gala_bin_base_sources = files(
     'DBus.vala',
     'InternalUtils.vala',
     'LayoutManager.vala',
-    'Main.vala',
     'PantheonShell.vala',
     'SuperScrollAction.vala',
     'WindowListModel.vala',
@@ -46,6 +45,9 @@ gala_bin_sources = files(
     'Misc/WindowTracker.vala',
     'Misc/WorkspaceManager.vala',
     'Misc/Zoom.vala',
+    'Misc/Brightness/BrightnessManager.vala',
+    'Misc/Brightness/GSDBrightnessAdapter.vala',
+    'Misc/Brightness/MonitorBrightness.vala',
     'Misc/OSK/OSKManager.vala',
     'Misc/OSK/OSKProxy.vala',
     'Misc/OSK/OSKReceiver.vala',
@@ -80,6 +82,10 @@ gala_bin_sources = files(
     'Widgets/WindowOverview.vala',
     'Widgets/WindowSwitcher/WindowSwitcher.vala',
     'Widgets/WindowSwitcher/WindowSwitcherIcon.vala',
+)
+
+gala_bin_sources = gala_bin_base_sources + files(
+    'Main.vala',
 )
 
 gala_bin = executable(

@@ -337,6 +337,10 @@ public class Gala.WindowClone : Widget, RootTarget {
         }
     }
 
+    public double get_distance (GestureAction action) {
+        return CLOSE_TRANSLATION;
+    }
+
     public override void update_progress (Gala.GestureAction action, double progress) {
         if (action == CUSTOM && slot != null) {
             var target_translation_y = (float) (-CLOSE_TRANSLATION * monitor_scale * progress);
