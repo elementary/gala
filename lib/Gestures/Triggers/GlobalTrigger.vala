@@ -27,7 +27,6 @@ public class Gala.GlobalTrigger : Object, GestureTrigger {
     }
 
     internal void enable_backends (GestureController controller) {
-        controller.enable_backend (ToucheggBackend.get_default (), this);
         controller.enable_backend (new TouchpadSwipeBackend (wm.stage), this);
 #if HAS_MUTTER49
         controller.enable_backend (new TouchScreenSwipeBackend (wm.stage), this);
