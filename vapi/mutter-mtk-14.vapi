@@ -173,6 +173,16 @@ namespace Mtk {
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	public static int64 find_nearest_interval_boundary (int64 boundary_us, int64 base_us, int64 interval_us);
 #endif
+#if HAS_MUTTER51
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint idle_add (GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint idle_add_full (int priority, owned GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint idle_add_once (GLib.SourceOnceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static bool is_fd_readable (int fd);
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Rectangle.from_graphene_rect")]
 	public static Mtk.Rectangle rectangle_from_graphene_rect (Graphene.Rect rect, Mtk.RoundingStrategy rounding_strategy);
@@ -185,6 +195,24 @@ namespace Mtk {
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	[Version (replacement = "Region.create_rectangles")]
 	public static Mtk.Region region_create_rectangles (Mtk.Rectangle rects, int n_rects);
+#if HAS_MUTTER51
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static bool source_remove (uint tag);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static void source_set_name_by_id (uint tag, string name);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add (uint interval, GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add_full (int priority, uint interval, owned GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add_once (uint interval, GLib.SourceOnceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add_seconds (uint interval, GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add_seconds_full (int priority, uint interval, owned GLib.SourceFunc function);
+	[CCode (cheader_filename = "mtk/mtk.h")]
+	public static uint timeout_add_seconds_once (uint interval, GLib.SourceOnceFunc function);
+#endif
 	[CCode (cheader_filename = "mtk/mtk.h")]
 	public static void x11_errors_deinit ();
 }
