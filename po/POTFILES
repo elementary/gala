@@ -27,7 +27,6 @@ lib/Effects/BoxBlurManager.vala
 lib/Effects/RoundedCornersEffect.vala
 lib/Effects/ShadowEffect.vala
 lib/Gestures/Backends/GestureBackend.vala
-lib/Gestures/Backends/ToucheggBackend.vala
 lib/Gestures/Backends/TouchpadSwipeBackend.vala
 lib/Gestures/Backends/ScrollBackend.vala
 lib/Gestures/Targets/ActorTarget.vala
