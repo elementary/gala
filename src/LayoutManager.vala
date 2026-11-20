@@ -102,6 +102,8 @@ public class Gala.LayoutManager : Object {
 #endif
         stage.remove_child (top_window_group);
         ui_group.add_child (top_window_group);
+
+        display.closing.connect (on_closing);
     }
 
     public void init_ui (WindowManager wm) {
@@ -170,6 +172,28 @@ public class Gala.LayoutManager : Object {
         }
 
         ui_group.set_size (max_width, max_height);
+    }
+
+    private void on_closing () {
+        var compositor = display.get_compositor ();
+
+        Clutter.Actor[] adopted_actors = {
+#if HAS_MUTTER48
+            compositor.get_window_group (),
+            compositor.get_top_window_group (),
+#else
+            display.get_window_group (),
+            display.get_top_window_group (),
+#endif
+            compositor.get_feedback_group ()
+        };
+
+        foreach (var actor in adopted_actors) {
+            ui_group.remove_child (actor);
+            stage.add_child (actor);
+        }
+
+        ui_group.destroy ();
     }
 
     public void change_window_group (Meta.WindowActor actor, WindowGroup new_group) {
