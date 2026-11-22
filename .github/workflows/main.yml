@@ -122,6 +122,46 @@ jobs:
           meson build
           ninja -C build install
 
+  debian-sid:
+    runs-on: ubuntu-latest
+
+    container:
+      image: debian:sid
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        path: gala
+
+    - name: Clone granite
+      uses: actions/checkout@v7
+      with:
+        repository: elementary/granite
+        ref: 7.8.1
+        path: granite
+
+    - name: Install Dependencies
+      run: |
+        apt update
+        apt install -y git sassc libjson-glib-dev gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-4-dev libgnome-bg-4-dev libibus-1.0-dev libmutter-51-dev libmutter-test-51 mutter-51-tests libsqlite3-dev meson python3 systemd-dev valac valadoc
+    - name: Install granite
+      run: |
+        cd granite
+        meson setup build -Ddemo=false -Dintrospection=false
+        meson install -C build
+    - name: Build
+      env:
+        DESTDIR: out
+      run: |
+        cd gala
+        meson setup build -Ddocumentation=true -Dtests=true
+        ninja -C build
+        ninja -C build install
+    - name: Run Tests
+      run: |
+        cd gala
+        meson test -v -C build
+
   lint:
     runs-on: ubuntu-latest
 
