@@ -60,7 +60,7 @@ private class Gala.TouchpadSwipeBackend : Object, GestureBackend {
     }
 
     private bool handle_event (Clutter.Event event, bool main_handler) {
-        if (event.get_type () != TOUCHPAD_SWIPE || handling && state != ONGOING) {
+        if (event.get_type () != TOUCHPAD_SWIPE || handling && state != ONGOING && main_handler) {
             return Clutter.EVENT_PROPAGATE;
         }
 
