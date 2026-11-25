@@ -29,6 +29,7 @@ gala_lib_sources = files(
     'Gestures/Targets/GestureTarget.vala',
     'Gestures/Targets/PropertyTarget.vala',
     'Gestures/Targets/RootTarget.vala',
+    'Gestures/Triggers/EdgeSwipeTrigger.vala',
     'Gestures/Triggers/GestureTrigger.vala',
     'Gestures/Triggers/GlobalTrigger.vala',
     'Gestures/Triggers/SwipeTrigger.vala',
