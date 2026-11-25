@@ -272,11 +272,7 @@ public class Gala.ScreenshotManager : Object {
         var flash_actor = new Clutter.Actor ();
         flash_actor.set_size (width, height);
         flash_actor.set_position (x, y);
-#if HAS_MUTTER47
         flash_actor.set_background_color (Cogl.Color.from_string ("#FFFFFF"));
-#else
-        flash_actor.set_background_color (Clutter.Color.from_pixel (0xffffffffu));
-#endif
         flash_actor.set_opacity (0);
         flash_actor.transitions_completed.connect ((actor) => {
             wm.ui_group.remove_child (actor);
@@ -711,9 +707,7 @@ public class Gala.ScreenshotManager : Object {
                     image.get_data (),
                     image.get_stride (),
                     BGRA_8888_PRE,
-#if HAS_MUTTER50
                     null,
-#endif
                     paint_flags
                 );
             } else {
@@ -723,9 +717,7 @@ public class Gala.ScreenshotManager : Object {
                     image.get_data (),
                     image.get_stride (),
                     ARGB_8888_PRE,
-#if HAS_MUTTER50
                     null,
-#endif
                     paint_flags
                 );
             }
@@ -736,11 +728,7 @@ public class Gala.ScreenshotManager : Object {
     }
 
     private void composite_stage_cursor (Cairo.ImageSurface image, Cairo.RectangleInt image_rect) {
-#if HAS_MUTTER48
         unowned var cursor_tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-        unowned var cursor_tracker = wm.get_display ().get_cursor_tracker ();
-#endif
         Graphene.Point coords = {};
         cursor_tracker.get_pointer (out coords, null);
 

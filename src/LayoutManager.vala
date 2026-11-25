@@ -56,18 +56,10 @@ public class Gala.LayoutManager : Object {
          * +-- session locker
          */
 
-#if HAS_MUTTER48
         stage = (Clutter.Stage) display.get_compositor ().get_stage ();
-#else
-        stage = (Clutter.Stage) display.get_stage ();
-#endif
         var background_settings = new GLib.Settings ("org.gnome.desktop.background");
         var color = background_settings.get_string ("primary-color");
-#if HAS_MUTTER47
         stage.background_color = Cogl.Color.from_string (color);
-#else
-        stage.background_color = Clutter.Color.from_string (color);
-#endif
         system_background = new SystemBackground (display);
 
         system_background.background_actor.add_constraint (
@@ -82,11 +74,7 @@ public class Gala.LayoutManager : Object {
         unowned var monitor_manager = display.get_context ().get_backend ().get_monitor_manager ();
         monitor_manager.monitors_changed.connect (update_ui_group_size);
 
-#if HAS_MUTTER48
         window_group = display.get_compositor ().get_window_group ();
-#else
-        window_group = display.get_window_group ();
-#endif
         stage.remove_child (window_group);
         ui_group.add_child (window_group);
 
@@ -95,11 +83,7 @@ public class Gala.LayoutManager : Object {
         window_group.add_child (background_group);
         window_group.set_child_below_sibling (background_group, null);
 
-#if HAS_MUTTER48
         top_window_group = display.get_compositor ().get_top_window_group ();
-#else
-        top_window_group = display.get_top_window_group ();
-#endif
         stage.remove_child (top_window_group);
         ui_group.add_child (top_window_group);
     }

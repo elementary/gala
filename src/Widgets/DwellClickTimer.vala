@@ -38,11 +38,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
         visible = false;
         reactive = false;
 
-#if HAS_MUTTER47
         unowned var backend = context.get_backend ();
-#else
-        unowned var backend = Clutter.get_default_backend ();
-#endif
 
         pipeline = new Cogl.Pipeline (backend.get_cogl_context ());
 
@@ -65,11 +61,7 @@ public class Gala.DwellClickTimer : Clutter.Actor, Clutter.Animatable {
             var scale = Utils.get_ui_scaling_factor (display, display.get_current_monitor ());
             update_cursor_size (scale);
 
-#if HAS_MUTTER48
             unowned var tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-            unowned var tracker = display.get_cursor_tracker ();
-#endif
             Graphene.Point coords = {};
             tracker.get_pointer (out coords, null);
 

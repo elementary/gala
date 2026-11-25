@@ -142,11 +142,7 @@ public class Gala.ColorblindnessCorrectionEffect : Clutter.ShaderEffect {
     public ColorblindnessCorrectionEffect (int mode, double strength) {
         Object (
 #if !HAS_MUTTER51
-#if HAS_MUTTER48
             shader_type: Cogl.ShaderType.FRAGMENT,
-#else
-            shader_type: Clutter.ShaderType.FRAGMENT_SHADER,
-#endif
 #endif
             mode: mode,
             strength: strength

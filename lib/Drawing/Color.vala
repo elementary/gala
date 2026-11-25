@@ -9,17 +9,6 @@ namespace Gala.Drawing {
     * A class containing an RGBA color and methods for more powerful color manipulation.
     */
     public class Color : GLib.Object {
-#if !HAS_MUTTER47
-        public const Clutter.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
-        public const Clutter.Color DARK_BACKGROUND = { 51, 51, 51, 255};
-        public const Clutter.Color LIGHT_BORDER = { 0, 0, 0, 51};
-        public const Clutter.Color DARK_BORDER = { 0, 0, 0, 191};
-        public const Clutter.Color LIGHT_HIGHLIGHT = { 255, 255, 255, 255};
-        public const Clutter.Color DARK_HIGHLIGHT = { 255, 255, 255, 13};
-        public const Clutter.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
-        public const Clutter.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
-        public const Clutter.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
-#else
         public const Cogl.Color LIGHT_BACKGROUND = { 250, 250, 250, 255};
         public const Cogl.Color DARK_BACKGROUND = { 51, 51, 51, 255};
         public const Cogl.Color LIGHT_BORDER = { 0, 0, 0, 51};
@@ -29,7 +18,6 @@ namespace Gala.Drawing {
         public const Cogl.Color TOOLTIP_BACKGROUND = { 26, 26, 26, 230};
         public const Cogl.Color TOOLTIP_TEXT_COLOR = { 255, 255, 255, 255};
         public const Cogl.Color TOOLTIP_TEXT_SHADOW_COLOR = { 0, 0, 0, 153};
-#endif
 
         /**
         * The value of the red channel, with 0 being the lowest value and 1.0 being the greatest value.
@@ -121,11 +109,7 @@ namespace Gala.Drawing {
         * @param color the string specifying the color
         */
         public Color.from_string (string color) {
-#if !HAS_MUTTER47
-            var parsed_color = Clutter.Color.from_string (color);
-#else
             var parsed_color = Cogl.Color.from_string (color);
-#endif
             R = parsed_color.red / 255.0;
             G = parsed_color.green / 255.0;
             B = parsed_color.blue / 255.0;
@@ -523,11 +507,7 @@ namespace Gala.Drawing {
         * @return the text string
         */
         public string to_string () {
-#if !HAS_MUTTER47
-            Clutter.Color color = { (uint8) (R * 255), (uint8) (G * 255), (uint8) (B * 255), (uint8) (A * 255) };
-#else
             Cogl.Color color = { (uint8) (R * 255), (uint8) (G * 255), (uint8) (B * 255), (uint8) (A * 255) };
-#endif
             return color.to_string ();
         }
 

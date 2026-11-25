@@ -51,11 +51,7 @@ public class Gala.Drawing.StyleManager : Object {
     }
 
     public ColorScheme prefers_color_scheme { get; private set; default = LIGHT; }
-#if !HAS_MUTTER47
-    public Clutter.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
-#else
     public Cogl.Color theme_accent_color { get; private set; default = { 0, 0, 0, ACCENT_COLOR_ALPHA }; }
-#endif
     public ReducedMotion reduced_motion { get; private set; default = NO_PREFERENCE; }
 
     private PantheonAccountsService? pantheon_proxy;

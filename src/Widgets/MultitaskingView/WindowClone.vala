@@ -104,15 +104,9 @@ public class Gala.WindowClone : Widget, RootTarget {
         window.size_changed.connect (() => request_reposition ());
 
         if (mode != MULTITASKING_VIEW) {
-#if HAS_MUTTER49
             var click_action = new Clutter.ClickGesture ();
             click_action.recognize.connect ((action) => {
                 actor_clicked (((Clutter.PressGesture)action).get_button ());
-#else
-            var click_action = new Clutter.ClickAction ();
-            click_action.clicked.connect ((action, actor) => {
-                actor_clicked (action.get_button ());
-#endif
             });
 
             add_action (click_action);
@@ -534,13 +528,7 @@ public class Gala.WindowClone : Widget, RootTarget {
         close_button.visible = false;
         window_title.visible = false;
 
-#if HAS_MUTTER50
         wm.stage.set_cursor_type (Clutter.CursorType.MOVE);
-#elif HAS_MUTTER48
-        wm.get_display ().set_cursor (Meta.Cursor.MOVE);
-#else
-        wm.get_display ().set_cursor (Meta.Cursor.DND_IN_DRAG);
-#endif
 
         drag_handle = new Clutter.Clone (this);
         drag_handle.set_position (abs_x, abs_y);
@@ -577,11 +565,7 @@ public class Gala.WindowClone : Widget, RootTarget {
 
         active_shape.show ();
 
-#if HAS_MUTTER50
         wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
-#else
-        display.set_cursor (Meta.Cursor.DEFAULT);
-#endif
 
         bool did_move = false;
 
@@ -640,11 +624,7 @@ public class Gala.WindowClone : Widget, RootTarget {
         close_button.visible = true;
         window_title.visible = true;
 
-#if HAS_MUTTER50
         wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
-#else
-        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
-#endif
 
         if (duration > 0) {
             ulong handler = 0;
@@ -697,11 +677,7 @@ public class Gala.WindowClone : Widget, RootTarget {
 
             unowned var style_manager = Drawing.StyleManager.get_instance ();
             style_manager.bind_property ("theme-accent-color", this, "background-color", SYNC_CREATE, (binding, from_value, ref to_value) => {
-#if !HAS_MUTTER47
-                var new_color = (Clutter.Color) from_value;
-#else
                 var new_color = (Cogl.Color) from_value;
-#endif
                 new_color.alpha = COLOR_OPACITY;
 
                 to_value.set_boxed (&new_color);

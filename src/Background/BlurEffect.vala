@@ -29,11 +29,7 @@ public class Gala.BlurEffect : Clutter.Effect {
     }
 
     construct {
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         actor_pipeline = new Cogl.Pipeline (ctx);
         actor_pipeline.set_layer_null_texture (0);
@@ -102,11 +98,7 @@ public class Gala.BlurEffect : Clutter.Effect {
             return true;
         }
 
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         framebuffer = null;
         texture = null;
@@ -144,11 +136,7 @@ public class Gala.BlurEffect : Clutter.Effect {
 
         actor_painted = false;
 
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         actor_framebuffer = null;
         actor_texture = null;

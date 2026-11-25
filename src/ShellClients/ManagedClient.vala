@@ -49,53 +49,20 @@ public class Gala.ManagedClient : Object {
     }
 
     public static void make_dock (Meta.Window window) {
-#if HAS_MUTTER49
         window.set_type (Meta.WindowType.DOCK);
-#else
-        make_dock_wayland (window);
-#endif
     }
 
-#if !HAS_MUTTER49
-    private static void make_dock_wayland (Meta.Window window) {
-        foreach (var client in instances) {
-            if (client.wayland_client.owns_window (window)) {
-                client.wayland_client.make_dock (window);
-                break;
-            }
-        }
-    }
-#endif
 
     public static void make_desktop (Meta.Window window) {
-#if HAS_MUTTER49
         window.set_type (Meta.WindowType.DESKTOP);
-#else
-        make_desktop_wayland (window);
-#endif
     }
 
-#if !HAS_MUTTER49
-    private static void make_desktop_wayland (Meta.Window window) {
-        foreach (var client in instances) {
-            if (client.wayland_client.owns_window (window)) {
-                client.wayland_client.make_desktop (window);
-                break;
-            }
-        }
-    }
-#endif
 
     private async void start_wayland () {
         var subprocess_launcher = new GLib.SubprocessLauncher (INHERIT_FDS);
         try {
-#if HAS_MUTTER49
             wayland_client = new Meta.WaylandClient.subprocess (display.get_context (), subprocess_launcher, args);
             subprocess = wayland_client.get_subprocess ();
-#else
-            wayland_client = new Meta.WaylandClient (display.get_context (), subprocess_launcher);
-            subprocess = wayland_client.spawnv (display, args);
-#endif
 
             yield subprocess.wait_async ();
 

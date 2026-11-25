@@ -33,11 +33,7 @@ public class Gala.Image : GLib.Object, Clutter.Content {
 
     public void paint_content (Clutter.Actor actor, Clutter.PaintNode node, Clutter.PaintContext paint_context) {
         if (pixbuf != null && texture == null) {
-#if HAS_MUTTER48
             var cogl_context = actor.context.get_backend ().get_cogl_context ();
-#else
-            var cogl_context = Clutter.get_default_backend ().get_cogl_context ();
-#endif
             Cogl.PixelFormat pixel_format = (pixbuf.get_has_alpha () ? Cogl.PixelFormat.RGBA_8888 : Cogl.PixelFormat.RGB_888);
             try {
                 texture = new Cogl.Texture2D.from_data (cogl_context, pixbuf.width, pixbuf.height, pixel_format, pixbuf.rowstride, pixbuf.get_pixels ());
@@ -51,9 +47,7 @@ public class Gala.Image : GLib.Object, Clutter.Content {
 
         var content_node = actor.create_texture_paint_node (texture);
 
-#if HAS_MUTTER48
         content_node.set_static_name ("Image Content");
-#endif
         node.add_child (content_node);
     }
 

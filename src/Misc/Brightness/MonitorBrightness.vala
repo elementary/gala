@@ -5,7 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-#if HAS_MUTTER50
 public class Gala.MonitorBrightness : Object {
     private const string DIMMING_SCHEMA_ID = "org.gnome.settings-daemon.plugins.power";
 
@@ -129,4 +128,3 @@ public class Gala.MonitorBrightness : Object {
         }
     }
 }
-#endif

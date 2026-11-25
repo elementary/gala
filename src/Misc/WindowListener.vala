@@ -29,11 +29,7 @@ public class Gala.WindowListener : Object {
 
         instance = new WindowListener ();
 
-#if HAS_MUTTER48
         unowned List<Meta.WindowActor> actors = display.get_compositor ().get_window_actors ();
-#else
-        unowned List<Meta.WindowActor> actors = display.get_window_actors ();
-#endif
         foreach (unowned Meta.WindowActor actor in actors) {
             if (actor.is_destroyed ())
                 continue;

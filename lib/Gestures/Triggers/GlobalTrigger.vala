@@ -28,12 +28,10 @@ public class Gala.GlobalTrigger : Object, GestureTrigger {
 
     internal void enable_backends (GestureController controller) {
         controller.enable_backend (new TouchpadSwipeBackend (wm.stage), this);
-#if HAS_MUTTER49
         controller.enable_backend (new TouchScreenSwipeBackend (wm.stage), this);
         // On mutter < 49 there is a bug that pinch gestures aren't delivered when over a window so
         // if mutter 49 or higher is not available gala 8.x.x should be used since these versions still include
         // a touchegg backend
         controller.enable_backend (new TouchpadPinchBackend (wm.stage), this);
-#endif
     }
 }

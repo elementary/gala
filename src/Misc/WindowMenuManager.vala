@@ -194,19 +194,10 @@ public class Gala.WindowMenuManager : Object {
     }
 
     private void begin_grab_op (Meta.GrabOp op) {
-#if HAS_MUTTER49
         var device = Utils.get_clutter_backend_from_display (wm.get_display ()).get_pointer_sprite (wm.stage);
-#elif HAS_MUTTER47
-        var device = Utils.get_clutter_backend_from_display (wm.get_display ()).get_default_seat ().get_pointer ();
-#else
-        var device = Clutter.get_default_backend ().get_default_seat ().get_pointer ();
-#endif
 
         current_window.begin_grab_op (
             op, device,
-#if !HAS_MUTTER49
-            null,
-#endif
             wm.get_display ().get_current_time (), null
         );
     }

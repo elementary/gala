@@ -75,11 +75,7 @@ public class Gala.ShadowEffect : Clutter.Effect {
         base.set_actor (actor);
 
         if (actor != null) {
-#if HAS_MUTTER47
             pipeline = new Cogl.Pipeline (actor.context.get_backend ().get_cogl_context ());
-#else
-            pipeline = new Cogl.Pipeline (Clutter.get_default_backend ().get_cogl_context ());
-#endif
         } else {
             pipeline = null;
         }

@@ -47,11 +47,7 @@ public class Gala.HideTracker : Object {
             reset_hide_timeout ();
         });
 
-#if HAS_MUTTER48
         unowned var cursor_tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-        unowned var cursor_tracker = display.get_cursor_tracker ();
-#endif
         cursor_tracker.position_invalidated.connect (() => {
             if (panel == null) {
                 return;

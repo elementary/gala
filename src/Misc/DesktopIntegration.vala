@@ -40,11 +40,7 @@ public class Gala.DesktopIntegration : GLib.Object {
     }
 
     construct {
-#if HAS_MUTTER47
         keymap = wm.stage.get_context ().get_backend ().get_default_seat ().get_keymap ();
-#else
-        keymap = Clutter.get_default_backend ().get_default_seat ().get_keymap ();
-#endif
 
         keymap.notify["caps-lock-state"].connect (() => caps_lock_state_changed ());
         keymap.notify["num-lock-state"].connect (() => num_lock_state_changed ());
@@ -220,11 +216,7 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         unowned var display = wm.get_display ();
 
-#if HAS_MUTTER49
         if (window.is_maximized () || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
-#else
-        if (window.get_maximized () == BOTH || !Meta.Prefs.get_gnome_animations () || Utils.should_reduce_motion ()) {
-#endif
             // If user has "Flash screen" enabled, make sure to respect it when shake animation is not played
             InternalUtils.bell_notify (display);
             return;
@@ -248,18 +240,10 @@ public class Gala.DesktopIntegration : GLib.Object {
 
         transition.stopped.connect (() => {
             notifying = false;
-#if HAS_MUTTER48
             wm.get_display ().get_compositor ().enable_unredirect ();
-#else
-            wm.get_display ().enable_unredirect ();
-#endif
         });
 
-#if HAS_MUTTER48
         display.get_compositor ().disable_unredirect ();
-#else
-        display.disable_unredirect ();
-#endif
 
         ((Meta.WindowActor) window.get_compositor_private ()).add_transition ("notify-already-focused", transition);
     }

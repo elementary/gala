@@ -120,11 +120,7 @@ public class Gala.SessionLocker : Clutter.Actor {
             return Clutter.EVENT_STOP;
         });
 
-#if HAS_MUTTER47
         background_color = Cogl.Color.from_string ("#000000");
-#else
-        background_color = Clutter.Color.from_string ("black");
-#endif
 
         expand_to_screen_size ();
 
@@ -327,16 +323,8 @@ public class Gala.SessionLocker : Clutter.Actor {
             activation_time = GLib.get_monotonic_time ();
         }
 
-#if HAS_MUTTER48
         unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-        unowned var tracker = wm.get_display ().get_cursor_tracker ();
-#endif
-#if HAS_MUTTER49
         tracker.inhibit_cursor_visibility ();
-#else
-        tracker.set_pointer_visible (false);
-#endif
         visible = true;
         grab_key_focus ();
         modal_proxy = wm.push_modal (this, true);
@@ -399,16 +387,8 @@ public class Gala.SessionLocker : Clutter.Actor {
             modal_proxy = null;
         }
 
-#if HAS_MUTTER48
         unowned var tracker = wm.get_display ().get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-        unowned var tracker = wm.get_display ().get_cursor_tracker ();
-#endif
-#if HAS_MUTTER49
         tracker.uninhibit_cursor_visibility ();
-#else
-        tracker.set_pointer_visible (true);
-#endif
         visible = false;
 
         activation_time = 0;

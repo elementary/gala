@@ -41,11 +41,7 @@ public class Gala.Root : Widget {
         }
 
         if (!focus (direction)) {
-#if HAS_MUTTER47
             get_stage ().context.get_backend ().get_default_seat ().bell_notify ();
-#else
-            Clutter.get_default_backend ().get_default_seat ().bell_notify ();
-#endif
 
             if (!(get_stage ().key_focus in this)) {
                 get_stage ().key_focus = this;

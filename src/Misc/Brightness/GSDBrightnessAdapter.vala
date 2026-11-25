@@ -5,7 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-#if HAS_MUTTER50
 /**
  * Implements the interface that the gnome settings daemon
  * expects from gnome shell for things like dimming on idle and
@@ -53,4 +52,3 @@ public class Gala.GSDBrightnessAdapter : Object {
         brightness_manager.auto_brightness_target = target;
     }
 }
-#endif

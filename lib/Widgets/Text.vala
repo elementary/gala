@@ -9,20 +9,12 @@
 public class Gala.Text : Clutter.Actor {
     private static GLib.Settings gnome_interface_settings = new GLib.Settings ("org.gnome.desktop.interface");
 
-#if HAS_MUTTER47
     public Cogl.Color color { get { return text_actor.color; } set { text_actor.color = value; } }
-#else
-    public Clutter.Color color { get { return text_actor.color; } set { text_actor.color = value; } }
-#endif
     public Pango.EllipsizeMode ellipsize { get { return text_actor.ellipsize; } set { text_actor.ellipsize = value; } }
     public Pango.Alignment line_alignment { get { return text_actor.line_alignment; } set { text_actor.line_alignment = value; }}
     public string text { get { return text_actor.text; } set { text_actor.text = value; } }
 
-#if HAS_MUTTER47
     public Cogl.Color shadow_color {
-#else
-    public Clutter.Color shadow_color {
-#endif
         get { return shadow_actor.color; }
         set {
             shadow_actor.color = value;
