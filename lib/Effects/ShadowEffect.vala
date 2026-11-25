@@ -189,6 +189,13 @@ public class Gala.ShadowEffect : Clutter.Effect {
     }
 
     private Cogl.Texture? get_shadow_texture (Cogl.Context context, int width, int height, int shadow_size, int corner_radius) {
+        var min_size = shadow_size + corner_radius;
+        // guard against overflows when an actor has an invalid size
+        if (width <= min_size || height <= min_size || (int64) width * height > 64 * 1024 * 1024) {
+            warning ("ShadowEffect: Couldn't create shadow texture, incorrect size %dx%d", width, height);
+            return null;
+        }
+
         var data = new uint8[width * height];
 
         // use fast Gaussian blur approximation
