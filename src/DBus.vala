@@ -29,7 +29,6 @@ public class Gala.DBus {
             on_name_lost
         );
 
-#if HAS_MUTTER50
         var brightness_manager = new BrightnessManager (wm.get_display ());
 
         Bus.own_name (
@@ -55,7 +54,6 @@ public class Gala.DBus {
             },
             on_name_lost
         );
-#endif
 
         Bus.own_name (
             SESSION, "org.pantheon.gala", NONE, null,

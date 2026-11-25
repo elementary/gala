@@ -96,11 +96,7 @@ public class Gala.Background : Object {
         var settings = background_source.gnome_background_settings;
 
         color_string = settings.get_string ("primary-color");
-#if HAS_MUTTER47
         var color = Cogl.Color.from_string (color_string);
-#else
-        var color = Clutter.Color.from_string (color_string);
-#endif
 
         var shading_type = settings.get_enum ("color-shading-type");
 
@@ -108,11 +104,7 @@ public class Gala.Background : Object {
             background.set_color (color);
         } else {
             color_string = settings.get_string ("secondary-color");
-#if HAS_MUTTER47
             var second_color = Cogl.Color.from_string (color_string);
-#else
-            var second_color = Clutter.Color.from_string (color_string);
-#endif
 
             background.set_gradient ((GDesktop.BackgroundShading) shading_type, color, second_color);
         }

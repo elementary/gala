@@ -32,9 +32,7 @@ public class Gala.SwipeTrigger : Object, GestureTrigger {
     }
 
     internal void enable_backends (GestureController controller) requires (actor != null) {
-#if HAS_MUTTER49
         controller.enable_backend (new TouchScreenSwipeBackend (actor), this);
-#endif
         controller.enable_backend (new ScrollBackend (actor, orientation, new GestureSettings ()), this);
     }
 }

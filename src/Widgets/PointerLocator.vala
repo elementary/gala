@@ -34,11 +34,7 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
 
         settings = new GLib.Settings ("org.gnome.desktop.interface");
 
-#if HAS_MUTTER47
         unowned var ctx = context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
         pipeline = new Cogl.Pipeline (ctx);
 
         var pivot = Graphene.Point ();
@@ -137,11 +133,7 @@ public class Gala.PointerLocator : Clutter.Actor, Clutter.Animatable {
         /* Don't use alpha from the stylesheet to ensure contrast */
         fill_color = new Cairo.Pattern.rgba (red, green, blue, BACKGROUND_OPACITY);
 
-#if HAS_MUTTER48
         unowned var tracker = display.get_compositor ().get_backend ().get_cursor_tracker ();
-#else
-        unowned var tracker = display.get_cursor_tracker ();
-#endif
         Graphene.Point coords = {};
         tracker.get_pointer (out coords, null);
 

@@ -100,11 +100,7 @@ public class Gala.SelectionArea : CanvasActor {
     }
 
     public void close () {
-#if HAS_MUTTER50
         wm.stage.set_cursor_type (Clutter.CursorType.DEFAULT);
-#else
-        wm.get_display ().set_cursor (Meta.Cursor.DEFAULT);
-#endif
 
         if (modal_proxy != null) {
             wm.pop_modal (modal_proxy);
@@ -112,11 +108,7 @@ public class Gala.SelectionArea : CanvasActor {
     }
 
     public void start_selection () {
-#if HAS_MUTTER50
         wm.stage.set_cursor_type (Clutter.CursorType.CROSSHAIR);
-#else
-        wm.get_display ().set_cursor (Meta.Cursor.CROSSHAIR);
-#endif
         grab_key_focus ();
 
         modal_proxy = wm.push_modal (this, true);

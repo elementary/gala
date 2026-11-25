@@ -55,11 +55,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
     }
 
     private void construct_pipelines () {
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         background_pipeline = new Cogl.Pipeline (ctx);
         background_pipeline.set_layer_null_texture (0);
@@ -231,11 +227,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             return true;
         }
 
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         var new_width = (int) Math.floorf (width / downscale_factor);
         var new_height = (int) Math.floorf (height / downscale_factor);
@@ -258,11 +250,7 @@ public class Gala.BackgroundBlurEffect : Clutter.Effect {
             return true;
         }
 
-#if HAS_MUTTER47
         unowned var ctx = actor.context.get_backend ().get_cogl_context ();
-#else
-        unowned var ctx = Clutter.get_default_backend ().get_cogl_context ();
-#endif
 
         background_texture = new Cogl.Texture2D.with_size (ctx, width, height);
 

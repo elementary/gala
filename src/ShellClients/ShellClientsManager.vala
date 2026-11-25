@@ -197,9 +197,7 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
             return;
         }
 
-#if HAS_MUTTER50
         window.set_type (DOCK);
-#endif
 
         monitor_label_windows[window] = new MonitorLabelWindow (window, monitor_index);
 
@@ -224,11 +222,9 @@ public class Gala.ShellClientsManager : Object, GestureTarget {
 
         // Mutter does not give keyboard focus to desktop windows when they map
         window.shown.connect ((_window) => _window.focus (_window.display.get_current_time ()));
-#if HAS_MUTTER47
         if (window.mapped) {
             window.focus (window.display.get_current_time ());
         }
-#endif
     }
 
     public void make_osk_window (Meta.Window window) requires (osk_window == null) {

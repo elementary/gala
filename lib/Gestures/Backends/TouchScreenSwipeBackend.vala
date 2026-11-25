@@ -5,7 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-#if HAS_MUTTER49
 private class Gala.TouchScreenSwipeBackend : Object, GestureBackend {
     private const int DRAG_THRESHOLD_DISTANCE = 16;
 
@@ -86,4 +85,3 @@ private class Gala.TouchScreenSwipeBackend : Object, GestureBackend {
         return current_orientation == HORIZONTAL ? distance.get_x () : distance.get_y ();
     }
 }
-#endif

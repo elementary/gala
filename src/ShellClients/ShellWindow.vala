@@ -25,11 +25,7 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
 
     ~ShellWindow () {
         if (unredirect_disabled) {
-#if HAS_MUTTER48
             window.display.get_compositor ().enable_unredirect ();
-#else
-            window.display.enable_unredirect ();
-#endif
         }
     }
 
@@ -71,18 +67,10 @@ public abstract class Gala.ShellWindow : PositionedWindow, GestureTarget {
         window_actor.visible = animating || visible;
 
         if (window_actor.visible && !unredirect_disabled) {
-#if HAS_MUTTER48
             window.display.get_compositor ().disable_unredirect ();
-#else
-            window.display.disable_unredirect ();
-#endif
             unredirect_disabled = true;
         } else if (!window_actor.visible && unredirect_disabled) {
-#if HAS_MUTTER48
             window.display.get_compositor ().enable_unredirect ();
-#else
-            window.display.enable_unredirect ();
-#endif
             unredirect_disabled = false;
         }
 

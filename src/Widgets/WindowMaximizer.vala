@@ -76,17 +76,9 @@ public class Gala.WindowMaximizer : ActorTarget, RootTarget {
         }
 
         if (commit == 0 && current_window.maximized_horizontally) {
-#if HAS_MUTTER49
             current_window.unmaximize ();
-#else
-            current_window.unmaximize (BOTH);
-#endif
         } else if (commit == 1 && !current_window.maximized_horizontally) {
-#if HAS_MUTTER49
             current_window.maximize ();
-#else
-            current_window.maximize (BOTH);
-#endif
         }
 
         remove_all_targets ();

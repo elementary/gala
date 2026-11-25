@@ -118,11 +118,7 @@ public abstract class Gala.AbstractSwitcher : CanvasActor {
             highlight_color = Drawing.Color.DARK_HIGHLIGHT;
         }
 
-#if HAS_MUTTER47
         caption.color = Cogl.Color.from_string (caption_color);
-#else
-        caption.color = Clutter.Color.from_string (caption_color);
-#endif
 
         ctx.save ();
         ctx.set_operator (Cairo.Operator.CLEAR);

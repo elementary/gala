@@ -115,11 +115,7 @@ namespace Gala {
 
         public override void start () {
             input_method = new InputMethod (get_display ());
-#if HAS_MUTTER47
             Utils.get_clutter_backend_from_display (get_display ()).set_input_method (input_method);
-#else
-            Clutter.get_default_backend ().set_input_method (input_method);
-#endif
             ShellClientsManager.init (this, input_method);
             BlurManager.init (this);
             daemon_manager = new DaemonManager (get_display ());
@@ -472,11 +468,7 @@ namespace Gala {
                 return proxy;
             }
 
-#if HAS_MUTTER48
             get_display ().get_compositor ().disable_unredirect ();
-#else
-            get_display ().disable_unredirect ();
-#endif
             return proxy;
         }
 
@@ -500,11 +492,7 @@ namespace Gala {
             }
 
             unowned var display = get_display ();
-#if HAS_MUTTER48
             display.get_compositor ().enable_unredirect ();
-#else
-            display.enable_unredirect ();
-#endif
             display.focus_default_window (display.get_current_time ());
         }
 
@@ -582,19 +570,11 @@ namespace Gala {
                     if (current == null || current.window_type != Meta.WindowType.NORMAL || !current.can_maximize ())
                         break;
 
-#if HAS_MUTTER49
                     if (current.is_maximized ()) {
                         current.unmaximize ();
                     } else {
                         current.maximize ();
                     }
-#else
-                    var maximize_flags = current.get_maximized ();
-                    if (Meta.MaximizeFlags.VERTICAL in maximize_flags || Meta.MaximizeFlags.HORIZONTAL in maximize_flags)
-                        current.unmaximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
-                    else
-                        current.maximize (Meta.MaximizeFlags.HORIZONTAL | Meta.MaximizeFlags.VERTICAL);
-#endif
                     break;
                 case ActionType.HIDE_CURRENT:
                     if (current != null && current.window_type == Meta.WindowType.NORMAL)

@@ -11,11 +11,7 @@ public class Gala.CloseButton : Clutter.Actor {
     public float monitor_scale { get; construct set; }
 
     private Icon icon;
-#if HAS_MUTTER49
     private Clutter.ClickGesture click_action;
-#else
-    private Clutter.ClickAction click_action;
-#endif
 
     public CloseButton (float monitor_scale) {
         Object (monitor_scale: monitor_scale);
@@ -32,17 +28,9 @@ public class Gala.CloseButton : Clutter.Actor {
         };
         add_child (icon);
 
-#if HAS_MUTTER49
         click_action = new Clutter.ClickGesture ();
-#else
-        click_action = new Clutter.ClickAction ();
-#endif
         add_action (click_action);
-#if HAS_MUTTER49
         click_action.recognize.connect (on_clicked);
-#else
-        click_action.clicked.connect (on_clicked);
-#endif
         click_action.notify["pressed"].connect (on_pressed_changed);
     }
 

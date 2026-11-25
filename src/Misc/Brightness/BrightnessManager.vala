@@ -5,7 +5,6 @@
  * Authored by: Leonhard Kargl <leo.kargl@proton.me>
  */
 
-#if HAS_MUTTER50
 [DBus (name = "io.elementary.gala.BrightnessManager")]
 public class Gala.BrightnessManager : Object {
     /**
@@ -156,4 +155,3 @@ public class Gala.BrightnessManager : Object {
         }
     }
 }
-#endif

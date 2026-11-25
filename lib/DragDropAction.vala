@@ -218,11 +218,7 @@ namespace Gala {
                     float x, y;
                     event.get_coords (out x, out y);
 
-#if HAS_MUTTER47
                     var drag_threshold = actor.context.get_settings ().dnd_drag_threshold;
-#else
-                    var drag_threshold = Clutter.Settings.get_default ().dnd_drag_threshold;
-#endif
                     if (Math.fabsf (last_x - x) < drag_threshold && Math.fabsf (last_y - y) < drag_threshold) {
                         // Not moved far enough yet, continue waiting and allowing propagation
                         return Clutter.EVENT_PROPAGATE;

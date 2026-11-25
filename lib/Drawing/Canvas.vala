@@ -18,11 +18,7 @@ public class Gala.Drawing.Canvas : GLib.Object, Clutter.Content {
     public signal void draw (Cairo.Context cr, int width, int height);
 
     public override void attached (Clutter.Actor actor) {
-#if HAS_MUTTER47
         cogl_context = actor.context.get_backend ().get_cogl_context ();
-#else
-        cogl_context = Clutter.get_default_backend ().get_cogl_context ();
-#endif
     }
 
     public override void detached (Clutter.Actor actor) {
