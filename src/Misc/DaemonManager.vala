@@ -49,18 +49,6 @@ public class Gala.DaemonManager : GLib.Object {
         }
 
         switch (info[0]) {
-            case "LABEL":
-                if (info.length < 2) {
-                    return;
-                }
-
-                var index = int.parse (info[1]);
-
-                var monitor_geometry = display.get_monitor_geometry (index);
-                window.move_frame (false, monitor_geometry.x + SPACING, monitor_geometry.y + SPACING);
-                window.make_above ();
-                break;
-
             case "MODAL":
                 ManagedClient.make_dock (window);
                 window.move_frame (false, 0, 0);

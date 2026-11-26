@@ -7,7 +7,6 @@ daemon/OSK/Window/Keyboard/KeyButton.vala
 daemon/DBus.vala
 daemon/DisplayConfig.vala
 daemon/Main.vala
-daemon/MonitorLabel.vala
 daemon/Window.vala
 
 data/gala-multitaskingview.desktop.in
