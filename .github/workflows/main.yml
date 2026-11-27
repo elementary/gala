@@ -123,7 +123,7 @@ jobs:
     - name: Install Dependencies
       run: |
         apt update
-        apt install -y git sassc libjson-glib-dev gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-4-dev libgnome-bg-4-dev libibus-1.0-dev libmutter-51-dev libmutter-test-51 mutter-51-tests libsqlite3-dev meson python3 systemd-dev valac valadoc
+        apt install -y git gettext gsettings-desktop-schemas-dev libatk-bridge2.0-dev libgee-0.8-dev libglib2.0-dev libgnome-desktop-4-dev libgnome-bg-4-dev libibus-1.0-dev libjson-glib-dev libmutter-51-dev libmutter-test-51 libsqlite3-dev meson mutter-51-tests python3 sassc systemd-dev valac valadoc
     - name: Install granite
       run: |
         cd granite
